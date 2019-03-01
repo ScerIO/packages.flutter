@@ -1,0 +1,15 @@
+name: native_color
+description: Flutter plugin for works with colors schemes like a hex, hsl, xyz and cielab
+version: 0.0.1
+author: Serge Shkurko <sergeshkurko@outlook.com>
+homepage: https://github.com/rbcprolabs/flutter_plugins/tree/master/packages/native_color
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  test: ^1.5.3
