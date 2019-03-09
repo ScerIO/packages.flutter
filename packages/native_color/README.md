@@ -1,6 +1,6 @@
 # native_color
 
-A new flutter plugin project.
+Flutter plugin widening a Color class which can be used to create, convert, compare colors and uses in UI.
 
 ## Getting Started
 
@@ -12,3 +12,7 @@ Android and/or iOS.
 For help getting started with Flutter, view our 
 [online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
+
+## Inspired by
+
+[Color dart package](https://pub.dartlang.org/packages/color)

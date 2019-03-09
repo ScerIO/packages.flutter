@@ -7,6 +7,9 @@ assignees: SergeShkurko
 
 ---
 
+**Package name**
+A name of package whom this bug concerns. Ex. `native_color`
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

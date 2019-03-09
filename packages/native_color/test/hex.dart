@@ -1,7 +1,7 @@
 import 'dart:ui' show Color;
 
 import 'package:native_color/native_color.dart';
-import 'package:test/test.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 main() {
   group('hex color', () {

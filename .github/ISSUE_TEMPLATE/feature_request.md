@@ -7,6 +7,9 @@ assignees: SergeShkurko
 
 ---
 
+**Package name**
+A name of package whom this idea concerns. Ex. `native_color`
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
