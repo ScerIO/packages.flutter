@@ -44,8 +44,10 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
     private fun openDocumentDataHandler(call: MethodCall, result: Result) {
         try {
             val data = call.arguments<ByteArray>()!!
-            val documentRenderer = openDataDocument(data)
-            result.success(documents.register(documentRenderer).infoMap)
+            Thread {
+                val documentRenderer = openDataDocument(data)
+                result.success(documents.register(documentRenderer).infoMap)
+            }.start()
         } catch (e: NullPointerException) {
             result.error("PDF_RENDER", "Need call arguments: data!", null)
         } catch (e: IOException) {
@@ -58,8 +60,10 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
     private fun openDocumentFileHandler(call: MethodCall, result: Result) {
         try {
             val path = call.arguments<String>()!!
-            val documentRenderer = openFileDocument(File(path))
-            result.success(documents.register(documentRenderer).infoMap)
+            Thread {
+                val documentRenderer = openFileDocument(File(path))
+                result.success(documents.register(documentRenderer).infoMap)
+            }.start()
         } catch (e: NullPointerException) {
             result.error("PDF_RENDER", "Need call arguments: path", null)
         } catch (e: FileNotFoundException) {
@@ -74,8 +78,10 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
     private fun openDocumentAssetHandler(call: MethodCall, result: Result) {
         try {
             val path = call.arguments<String>()!!
-            val documentRenderer = openAssetDocument(path)
-            result.success(documents.register(documentRenderer).infoMap)
+            Thread {
+                val documentRenderer = openAssetDocument(path)
+                result.success(documents.register(documentRenderer).infoMap)
+            }.start()
         } catch (e: NullPointerException) {
             result.error("PDF_RENDER", "Need call arguments: path", null)
         } catch (e: FileNotFoundException) {
@@ -115,8 +121,10 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
         try {
             val documentId = call.argument<String>("documentId")!!
             val pageNumber  = call.argument<Int>("page")!!
-            val pageRenderer = documents.get(documentId).openPage(pageNumber)
-            result.success(pages.register(documentId, pageRenderer).infoMap)
+            Thread {
+                val pageRenderer = documents.get(documentId).openPage(pageNumber)
+                result.success(pages.register(documentId, pageRenderer).infoMap)
+            }.start()
         } catch (e: NullPointerException) {
             result.error("PDF_RENDER", "Need call arguments: documentId & page!", null)
         } catch (e: RepositoryItemNotFoundException) {
@@ -130,8 +138,10 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
             val width = call.argument<Int>("width")!!
             val height  = call.argument<Int>("height")!!
             val page = pages.get(pageId)
-            val results = page.render(width, height).toMap
-            result.success(results)
+            Thread {
+                val results = page.render(width, height).toMap
+                result.success(results)
+            }.start()
         } catch (e: Exception) {
             result.error("PDF_RENDER", "Unexpected error", e)
         }

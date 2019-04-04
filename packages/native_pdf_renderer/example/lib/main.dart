@@ -1,35 +1,107 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
-void main() async {
-  try {
-    final document = await PDFDocument.openAsset('assets/sample.pdf');
-    final page = await document.getPage(1);
+main() => runApp(ExampleApp());
+
+class ExampleApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final storage = PagesStorage();
+
+    return MaterialApp(
+      title: 'PDF View example',
+      color: Colors.white,
+      home: Scaffold(
+        body: FutureBuilder(
+          future: PDFDocument.openAsset('assets/sample.pdf'),
+          builder: (context, AsyncSnapshot<PDFDocument> snapshot) {
+            if (!snapshot.hasData || snapshot.hasError)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+
+            return PageView(
+              children: <Widget>[
+                ImageLoader(
+                  storage: storage,
+                  document: snapshot.data,
+                  pageNumber: 1,
+                ),
+                ImageLoader(
+                  storage: storage,
+                  document: snapshot.data,
+                  pageNumber: 2,
+                ),
+              ],
+            );
+          },
+        ),
+        bottomNavigationBar: BottomAppBar(
+            child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                'Swipe to right',
+                style: Theme.of(context).textTheme.title,
+              ),
+              Icon(Icons.keyboard_arrow_right)
+            ],
+          ),
+        )),
+      ),
+    );
+  }
+}
+
+class PagesStorage {
+  final Map<int, PDFPageImage> pages = {};
+}
+
+class ImageLoader extends StatelessWidget {
+  final PagesStorage storage;
+  final PDFDocument document;
+  final int pageNumber;
+
+  ImageLoader({
+    Key key,
+    @required this.storage,
+    @required this.document,
+    @required this.pageNumber,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _renderPage(),
+      builder: (context, AsyncSnapshot<PDFPageImage> snapshot) {
+        if (snapshot.hasError)
+          return Center(
+            child: Text('Error'),
+          );
+        if (!snapshot.hasData)
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+
+        return Image(
+          image: MemoryImage(snapshot.data.bytes),
+        );
+      },
+    );
+  }
+
+  Future<PDFPageImage> _renderPage() async {
+    if (storage.pages.containsKey(pageNumber)) return storage.pages[pageNumber];
+    final page = await document.getPage(pageNumber);
     final pageImage =
         await page.render(width: page.width * 2, height: page.height * 2);
     await page.close();
-    final page2 = await document.getPage(2);
-    final page2Image =
-        await page2.render(width: page2.width * 2, height: page2.height * 2);
-    await page2.close();
-    runApp(MaterialApp(
-      home: Scaffold(
-        body: Center(
-            child: PageView(
-          children: <Widget>[
-            Image(
-              image: MemoryImage(pageImage.bytes),
-            ),
-            Image(
-              image: MemoryImage(page2Image.bytes),
-            )
-          ],
-        )),
-      ),
-      color: Colors.white,
-    ));
-  } on PlatformException catch (error) {
-    print(error);
+    storage.pages[pageNumber] = pageImage;
+    return pageImage;
   }
 }
