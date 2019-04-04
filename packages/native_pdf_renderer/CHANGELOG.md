@@ -1,3 +1,11 @@
+## 1.2.0
+
+* Optimized UI freezes on android platform
+
+## 1.1.2
+
+* Update readme
+
 ## 1.1.1
 
 * Fix compilation error on pure android Java projects (#1)
