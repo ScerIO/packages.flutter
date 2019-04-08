@@ -83,7 +83,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
     }
     
     func openAssetDocument(name: String) -> CGPDFDocument? {
-        guard let path = Bundle.main.path(forResource: "flutter_assets/" + name, ofType: "") else {
+        guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
             return nil
         }
         return openFileDocument(pdfFilePath: path)
