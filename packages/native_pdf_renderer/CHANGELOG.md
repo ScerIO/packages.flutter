@@ -1,3 +1,7 @@
+## 1.2.2
+
+* Upgrade to Swift 5
+
 ## 1.2.1
 
 * Fix IOS build error
