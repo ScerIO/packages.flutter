@@ -52,7 +52,7 @@ class Page {
             if context != nil {
                 context!.drawPDFPage(renderer)
                 let image = UIImage(cgImage: context!.makeImage()!)
-                data = UIImagePNGRepresentation(image) as Data?
+                data = image.pngData() as Data?
                 success = true
             }
         }
