@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Fix IOS build error
+
 ## 1.2.0
 
 * Optimized UI freezes on android platform
