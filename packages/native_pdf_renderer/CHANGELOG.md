@@ -1,3 +1,7 @@
+## 1.2.3
+
+* Scale fix on IOS
+
 ## 1.2.2
 
 * Upgrade to Swift 5
