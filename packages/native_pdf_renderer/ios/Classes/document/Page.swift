@@ -42,14 +42,18 @@ class Page {
     }
     
     func render(width: Int, height: Int) -> Page.DataResult? {
+        let pdfBBox = renderer.getBoxRect(.mediaBox)
         let stride = width * 4
         var tempData = Data(repeating: 0xff, count: stride * height)
         var data: Data?
         var success = false
+        let sx = CGFloat(width) / pdfBBox.width
+        let sy = CGFloat(height) / pdfBBox.height
         tempData.withUnsafeMutableBytes { (ptr: UnsafeMutablePointer<UInt8>) in
             let rgb = CGColorSpaceCreateDeviceRGB()
             let context = CGContext(data: ptr, width: width, height: height, bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
+                context!.scaleBy(x: sx, y: sy)
                 context!.drawPDFPage(renderer)
                 let image = UIImage(cgImage: context!.makeImage()!)
                 data = image.pngData() as Data?
