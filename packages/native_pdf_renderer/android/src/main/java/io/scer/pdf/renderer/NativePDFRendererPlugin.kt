@@ -1,6 +1,7 @@
 package io.scer.pdf.renderer
 
 import android.annotation.TargetApi
+import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
 import android.os.ParcelFileDescriptor
@@ -137,9 +138,14 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
             val pageId = call.argument<String>("pageId")!!
             val width = call.argument<Int>("width")!!
             val height  = call.argument<Int>("height")!!
+            val format = call.argument<Int>("format") ?: 1 //0 Bitmap.CompressFormat.PNG
+            val backgroundColor = call.argument<String>("backgroundColor")
+            val color  = if (backgroundColor != null) Color.parseColor(backgroundColor) else Color.TRANSPARENT
+
             val page = pages.get(pageId)
+
             Thread {
-                val results = page.render(width, height).toMap
+                val results = page.render(width, height, color, format).toMap
                 result.success(results)
             }.start()
         } catch (e: Exception) {

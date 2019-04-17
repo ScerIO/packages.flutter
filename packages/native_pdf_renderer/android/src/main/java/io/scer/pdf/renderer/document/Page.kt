@@ -31,18 +31,19 @@ class Page (
         pageRenderer.close()
     }
 
-    fun render(width: Int, height: Int): Data {
+    fun render(width: Int, height: Int, background: Int, format: Int): Data {
         val bitmap = Bitmap.createBitmap(
                 width,
                 height,
                 Bitmap.Config.ARGB_8888)
+        bitmap.eraseColor(background)
 
         pageRenderer.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
         return Data(
                 width,
                 height,
-                data = bitmap.toByteArray()
+                data = bitmap.toByteArray(format)
         )
     }
 

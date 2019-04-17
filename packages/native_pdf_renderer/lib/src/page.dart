@@ -4,6 +4,12 @@ import 'package:meta/meta.dart';
 import './document.dart';
 import './page_image.dart';
 
+class PDFPageFormat {
+  static const JPEG = 0;
+  static const PNG = 1;
+  static const WEBP = 2;
+}
+
 class PDFPage {
   static const MethodChannel _channel =
       const MethodChannel('io.scer.pdf.renderer');
@@ -31,11 +37,15 @@ class PDFPage {
   Future<PDFPageImage> render({
     @required int width,
     @required int height,
+    int format,
+    String backgroundColor,
   }) =>
       PDFPageImage.render(
         pageId: id,
         width: width,
         height: height,
+        format: format,
+        backgroundColor: backgroundColor,
       );
 
   /// Before open another page it is necessary to close the previous.

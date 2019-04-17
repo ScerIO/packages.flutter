@@ -35,11 +35,15 @@ class PDFPageImage {
     String pageId,
     int width = 0,
     int height = 0,
+    int format,
+    String backgroundColor,
   }) async {
     final obj = await _channel.invokeMethod('render', {
       'pageId': pageId,
       'width': width,
       'height': height,
+      'format': format,
+      'backgroundColor': backgroundColor,
     });
 
     if (obj is Map<dynamic, dynamic>) {
