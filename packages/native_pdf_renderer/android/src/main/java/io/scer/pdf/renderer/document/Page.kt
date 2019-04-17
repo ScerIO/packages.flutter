@@ -31,7 +31,7 @@ class Page (
         pageRenderer.close()
     }
 
-    fun render(width: Int, height: Int, background: Int): Data {
+    fun render(width: Int, height: Int, background: Int, format: Int): Data {
         val bitmap = Bitmap.createBitmap(
                 width,
                 height,
@@ -43,7 +43,7 @@ class Page (
         return Data(
                 width,
                 height,
-                data = bitmap.toByteArray()
+                data = bitmap.toByteArray(format)
         )
     }
 

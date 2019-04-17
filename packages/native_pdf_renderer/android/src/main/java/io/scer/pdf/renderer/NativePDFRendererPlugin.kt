@@ -138,7 +138,7 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
             val pageId = call.argument<String>("pageId")!!
             val width = call.argument<Int>("width")!!
             val height  = call.argument<Int>("height")!!
-            val format = call.argument<Int>("format") ?: 0 //0 Bitmap.CompressFormat.JPEG
+            val format = call.argument<Int>("format") ?: 1 //0 Bitmap.CompressFormat.PNG
             val backgroundColor = call.argument<String>("backgroundColor")
             val color  = if (backgroundColor != null) Color.parseColor(backgroundColor) else Color.TRANSPARENT
 

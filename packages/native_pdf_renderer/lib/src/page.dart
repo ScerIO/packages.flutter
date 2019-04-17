@@ -37,8 +37,8 @@ class PDFPage {
   Future<PDFPageImage> render({
     @required int width,
     @required int height,
-    @required int format,
-    @required String backgroundColor,
+    int format,
+    String backgroundColor,
   }) =>
       PDFPageImage.render(
         pageId: id,
