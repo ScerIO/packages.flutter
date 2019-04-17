@@ -1,3 +1,14 @@
+## 1.3.0+1
+
+* Hotfix
+
+## 1.3.0
+
+* Added `format` and `backgroundColor` options for image rendering.
+  *Attention*: it feature works only on Android platform! 
+* Added dart linter
+* Refactoring existing code
+
 ## 1.2.3
 
 * Scale fix on IOS

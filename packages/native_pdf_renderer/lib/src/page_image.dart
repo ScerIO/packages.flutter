@@ -1,9 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
+import 'page.dart';
 
 class PDFPageImage {
+  PDFPageImage._({
+    @required this.id,
+    @required this.pageNumber,
+    @required this.width,
+    @required this.height,
+    @required this.bytes,
+    @required this.format,
+  });
+
   static const MethodChannel _channel =
       const MethodChannel('io.scer.pdf.renderer');
 
@@ -20,46 +32,44 @@ class PDFPageImage {
   /// Height of the rendered area in pixels.
   final int height;
 
-  /// PNG Bytes
+  /// Image bytes
   final Uint8List bytes;
 
-  PDFPageImage._({
-    this.id,
-    this.pageNumber,
-    this.width,
-    this.height,
-    this.bytes,
-  });
+  /// Target compression format
+  final PDFPageFormat format;
 
   static Future<PDFPageImage> render({
-    String pageId,
-    int width = 0,
-    int height = 0,
-    int format,
-    String backgroundColor,
+    @required String pageId,
+    @required int width,
+    @required int height,
+    @required PDFPageFormat format,
+    @required String backgroundColor,
   }) async {
+    if (format != PDFPageFormat.PNG && Platform.isIOS)
+      throw Exception(
+          'PDF Renderer on IOS platform does not support all compression formats except PNG.');
+
     final obj = await _channel.invokeMethod('render', {
       'pageId': pageId,
       'width': width,
       'height': height,
-      'format': format,
+      'format': format.value,
       'backgroundColor': backgroundColor,
     });
 
-    if (obj is Map<dynamic, dynamic>) {
-      final retWidth = obj['width'] as int;
-      final retHeight = obj['height'] as int;
-      final pixels = obj['data'] as Uint8List;
+    if (!(obj is Map<dynamic, dynamic>)) return null;
 
-      return PDFPageImage._(
-        id: pageId,
-        pageNumber: obj['pageNumber'] as int,
-        width: retWidth,
-        height: retHeight,
-        bytes: pixels,
-      );
-    }
-    return null;
+    final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
+    final pixels = obj['data'] as Uint8List;
+
+    return PDFPageImage._(
+      id: pageId,
+      pageNumber: obj['pageNumber'] as int,
+      width: retWidth,
+      height: retHeight,
+      bytes: pixels,
+      format: format,
+    );
   }
 
   @override

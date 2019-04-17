@@ -1,0 +1,35 @@
+include: package:pedantic/analysis_options.yaml
+
+linter:
+  rules:
+    - always_declare_return_types
+    - camel_case_types
+    - empty_constructor_bodies
+    - annotate_overrides
+    - avoid_init_to_null
+    - one_member_abstracts
+    - slash_for_doc_comments
+    - sort_constructors_first
+    - unnecessary_brace_in_string_interps
+    - no_duplicate_case_values
+    - prefer_void_to_null
+    - prefer_final_fields
+    - prefer_final_locals
+    - unnecessary_new
+
+analyzer:
+  strong-mode:
+    implicit-casts: true
+    implicit-dynamic: true
+  errors:
+    always_declare_return_types: error
+    camel_case_types: warning
+    empty_constructor_bodies: warning
+    annotate_overrides: warning
+    avoid_init_to_null: warning
+    one_member_abstracts: warning
+    slash_for_doc_comments: warning
+    sort_constructors_first: warning
+    unnecessary_brace_in_string_interps: warning
+    no_duplicate_case_values: warning
+    prefer_void_to_null: warning

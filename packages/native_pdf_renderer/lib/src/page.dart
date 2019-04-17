@@ -1,16 +1,26 @@
 import 'dart:async';
+import 'package:extension/enum.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import './document.dart';
-import './page_image.dart';
+import 'document.dart';
+import 'page_image.dart';
 
-class PDFPageFormat {
-  static const JPEG = 0;
-  static const PNG = 1;
-  static const WEBP = 2;
+class PDFPageFormat<int> extends Enum<int> {
+  const PDFPageFormat(int val) : super(val);
+
+  static const PDFPageFormat JPEG = const PDFPageFormat(0);
+  static const PDFPageFormat PNG = const PDFPageFormat(1);
+  static const PDFPageFormat WEBP = const PDFPageFormat(2);
 }
 
 class PDFPage {
+  PDFPage(
+      {@required this.document,
+      @required this.id,
+      @required this.pageNumber,
+      @required this.width,
+      @required this.height});
+
   static const MethodChannel _channel =
       const MethodChannel('io.scer.pdf.renderer');
   final PDFDocument document;
@@ -29,15 +39,15 @@ class PDFPage {
   /// Page source height in pixels
   final int height;
 
-  PDFPage({this.document, this.id, this.pageNumber, this.width, this.height});
-
   /// Render a full image of specified PDF file.
   ///
   /// [width], [height] specify resolution to render in pixels.
+  /// As default PNG uses transparent background. For change it you can set
+  /// [backgroundColor] property like a hex string ('#000000')
   Future<PDFPageImage> render({
     @required int width,
     @required int height,
-    int format,
+    PDFPageFormat format = PDFPageFormat.PNG,
     String backgroundColor,
   }) =>
       PDFPageImage.render(
@@ -51,9 +61,7 @@ class PDFPage {
   /// Before open another page it is necessary to close the previous.
   ///
   /// The android platform does not allow parallel rendering.
-  Future<void> close() {
-    return _channel.invokeMethod('close.page', id);
-  }
+  Future<void> close() => _channel.invokeMethod('close.page', id);
 
   @override
   bool operator ==(dynamic other) =>
