@@ -2,9 +2,15 @@ import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
-import './page.dart';
+import 'page.dart';
 
 class PDFDocument {
+  PDFDocument._({
+    this.sourceName,
+    this.id,
+    this.pagesCount,
+  }) : _pages = List<PDFPage>(pagesCount);
+
   static const MethodChannel _channel =
       const MethodChannel('io.scer.pdf.renderer');
 
@@ -22,15 +28,7 @@ class PDFDocument {
 
   final List<PDFPage> _pages;
 
-  PDFDocument._({
-    this.sourceName,
-    this.id,
-    this.pagesCount,
-  }) : _pages = List<PDFPage>(pagesCount);
-
-  Future<void> close() {
-    return _channel.invokeMethod('close.document', id);
-  }
+  Future<void> close() => _channel.invokeMethod('close.document', id);
 
   static PDFDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
       PDFDocument._(

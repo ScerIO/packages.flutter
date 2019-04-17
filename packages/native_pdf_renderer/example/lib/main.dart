@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
-main() => runApp(ExampleApp());
+void main() => runApp(ExampleApp());
 
 class ExampleApp extends StatelessWidget {
   @override
@@ -63,16 +64,16 @@ class PagesStorage {
 }
 
 class ImageLoader extends StatelessWidget {
-  final PagesStorage storage;
-  final PDFDocument document;
-  final int pageNumber;
-
   ImageLoader({
     Key key,
     @required this.storage,
     @required this.document,
     @required this.pageNumber,
   }) : super(key: key);
+
+  final PagesStorage storage;
+  final PDFDocument document;
+  final int pageNumber;
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +99,12 @@ class ImageLoader extends StatelessWidget {
   Future<PDFPageImage> _renderPage() async {
     if (storage.pages.containsKey(pageNumber)) return storage.pages[pageNumber];
     final page = await document.getPage(pageNumber);
-    final pageImage =
-        await page.render(width: page.width * 2, height: page.height * 2, format: PDFPageFormat.JPEG, backgroundColor: "#ffffff");
+    final format = Platform.isIOS ? PDFPageFormat.PNG : PDFPageFormat.JPEG;
+    final pageImage = await page.render(
+        width: page.width * 2,
+        height: page.height * 2,
+        format: format,
+        backgroundColor: '#ffffff');
     await page.close();
     storage.pages[pageNumber] = pageImage;
     return pageImage;
