@@ -23,8 +23,15 @@ fun Bitmap.toFile(file: File): File {
 /**
  * Convert bitmap to byte array using ByteBuffer.
  */
-fun Bitmap.toByteArray(): ByteArray {
+fun Bitmap.toByteArray(format: Int): ByteArray {
     val stream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.PNG, 100, stream)
+    val compressFormat: Bitmap.CompressFormat = when(format) {
+        0 -> Bitmap.CompressFormat.JPEG
+        1 -> Bitmap.CompressFormat.PNG
+        2 -> Bitmap.CompressFormat.WEBP
+        else -> Bitmap.CompressFormat.JPEG
+    }
+
+    this.compress(compressFormat, 100, stream)
     return stream.toByteArray()
 }
