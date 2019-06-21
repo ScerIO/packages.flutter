@@ -13,6 +13,15 @@ class PDFPageFormat<int> extends Enum<int> {
   static const PDFPageFormat WEBP = const PDFPageFormat(2);
 }
 
+class PDFCropDef {
+  final int x;
+  final int y;
+  final int width;
+  final int height;
+
+  PDFCropDef({@required this.x, @required this.y, @required this.width, @required this.height});
+}
+
 class PDFPage {
   PDFPage(
       {@required this.document,
@@ -49,6 +58,7 @@ class PDFPage {
     @required int height,
     PDFPageFormat format = PDFPageFormat.PNG,
     String backgroundColor,
+    PDFCropDef crop,
   }) =>
       PDFPageImage.render(
         pageId: id,
@@ -56,6 +66,7 @@ class PDFPage {
         height: height,
         format: format,
         backgroundColor: backgroundColor,
+        crop: crop,
       );
 
   /// Before open another page it is necessary to close the previous.

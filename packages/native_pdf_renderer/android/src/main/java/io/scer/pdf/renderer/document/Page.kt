@@ -31,7 +31,7 @@ class Page (
         pageRenderer.close()
     }
 
-    fun render(width: Int, height: Int, background: Int, format: Int): Data {
+    fun render(width: Int, height: Int, background: Int, format: Int, crop: Boolean, cropX: Int, cropY: Int, cropW: Int, cropH: Int): Data {
         val bitmap = Bitmap.createBitmap(
                 width,
                 height,
@@ -40,11 +40,20 @@ class Page (
 
         pageRenderer.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-        return Data(
+        if (crop && cropW != width && cropH != height){
+            val cropped = Bitmap.createBitmap(bitmap, cropX, cropY, cropW, cropH)
+            return Data(
+                cropW,
+                cropH,
+                data = cropped.toByteArray(format)
+            )
+        } else {
+            return Data(
                 width,
                 height,
                 data = bitmap.toByteArray(format)
-        )
+            )
+        }
     }
 
     data class Data(
