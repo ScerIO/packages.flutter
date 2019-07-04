@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Now `format` and `backgroundColor` options for image rendering works on IOS.
+
 ## 1.3.0+1
 
 * Hotfix

@@ -11,8 +11,7 @@ class PDFDocument {
     this.pagesCount,
   }) : _pages = List<PDFPage>(pagesCount);
 
-  static const MethodChannel _channel =
-      const MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
 
   /// Neded for toString method
   /// Сontains a method for opening a document (file, data or asset)
@@ -52,7 +51,7 @@ class PDFDocument {
     if (pageNumber < 1 || pageNumber > pagesCount) return null;
     var page = _pages[pageNumber - 1];
     if (page == null) {
-      var obj = await _channel
+      final obj = await _channel
           .invokeMethod('open.page', {'documentId': id, 'page': pageNumber});
       if (obj is Map<dynamic, dynamic>) {
         page = _pages[pageNumber - 1] = PDFPage(
