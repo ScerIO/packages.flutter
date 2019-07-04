@@ -8,9 +8,11 @@ import 'page_image.dart';
 class PDFPageFormat<int> extends Enum<int> {
   const PDFPageFormat(int val) : super(val);
 
-  static const PDFPageFormat JPEG = const PDFPageFormat(0);
-  static const PDFPageFormat PNG = const PDFPageFormat(1);
-  static const PDFPageFormat WEBP = const PDFPageFormat(2);
+  static const PDFPageFormat JPEG = PDFPageFormat(0);
+  static const PDFPageFormat PNG = PDFPageFormat(1);
+
+  /// ***Attention!*** Works only on android
+  static const PDFPageFormat WEBP = PDFPageFormat(2);
 }
 
 class PDFPage {
@@ -21,8 +23,7 @@ class PDFPage {
       @required this.width,
       @required this.height});
 
-  static const MethodChannel _channel =
-      const MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
   final PDFDocument document;
 
   /// Page unique id. Needed for rendering and closing page.

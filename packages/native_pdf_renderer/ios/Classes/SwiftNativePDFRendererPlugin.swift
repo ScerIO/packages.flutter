@@ -118,12 +118,19 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
         let pageId = args["pageId"] as! String
         let width = args["width"] as! Int
         let height = args["height"] as! Int
+        let compressFormat = args["format"]as! Int
+        let backgroundColor = args["backgroundColor"] as! String
         
         dispQueue.async {
             var results: [String: Any]? = nil
             do {
                 let page = try self.pages.get(id: pageId)
-                if let data = page.render(width: width, height: height) {
+                if let data = page.render(
+                    width: width,
+                    height: height,
+                    compressFormat: CompressFormat(rawValue: compressFormat)!,
+                    backgroundColor: UIColor(hexString: backgroundColor)
+                ) {
                     results = [
                         "width": Int32(data.width),
                         "height": Int32(data.height),
