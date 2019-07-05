@@ -3,32 +3,32 @@ class Page {
     let documentId: String
     let renderer: CGPDFPage
     let boxRect: CGRect
-    
+
     init(id: String, documentId: String, renderer: CGPDFPage) {
         self.id = id
         self.documentId = documentId
         self.renderer = renderer
         self.boxRect = renderer.getBoxRect(.mediaBox)
     }
-    
+
     var number: Int {
         get {
             return renderer.pageNumber
         }
     }
-    
+
     var width: Int {
         get {
             return Int(boxRect.width)
         }
     }
-    
+
     var height: Int {
         get {
             return Int(boxRect.height)
         }
     }
-    
+
     var infoMap: [String: Any] {
         get {
             return [
@@ -40,7 +40,7 @@ class Page {
             ]
         }
     }
-    
+
     func render(width: Int, height: Int, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
         let stride = width * 4
@@ -59,13 +59,13 @@ class Page {
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
                         data = image.jpegData(compressionQuality: 1.0) as Data?
+                        success = true
                         break;
                     case CompressFormat.PNG:
                         data = image.pngData() as Data?
+                        success = true
                         break;
                 }
-                data = image.pngData() as Data?
-                success = true
             }
         }
         return success ? Page.DataResult(
@@ -73,12 +73,12 @@ class Page {
             height: height,
             data: data!) : nil
     }
-    
+
     class DataResult {
         let width: Int
         let height: Int
         let data: Data
-        
+
         init(width: Int, height: Int, data: Data) {
             self.width = width
             self.height = height
