@@ -15,20 +15,20 @@ class MyApp extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text(
-                'Color hex',
+                'hex',
                 style: TextStyle(color: HexColor('#ff0000')),
               ),
               Text(
-                'Color hsl',
+                'hsl',
                 style: TextStyle(color: HslColor(120, 100, 50)),
               ),
               Text(
-                'Color xyz',
+                'xyz',
                 style: TextStyle(color: XyzColor(14.31, 6.06, 71.42)),
               ),
               Text(
-                'Color cielab',
-                style: TextStyle(color: XyzColor(60.17, 93.55, -60.50)),
+                'cielab',
+                style: TextStyle(color: CielabColor(36.80, 55.20, -95.61)),
               ),
             ],
           ),
