@@ -4,6 +4,8 @@ import android.annotation.TargetApi
 import android.graphics.Color
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import io.flutter.plugin.common.MethodCall
@@ -25,11 +27,12 @@ import java.io.IOException
  * NativePDFRendererPlugin
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class NativePDFRendererPlugin private constructor(private val registrar: Registrar) : MethodCallHandler {
+class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHandler {
     private val documents = DocumentRepository()
     private val pages = PageRepository()
 
-    override fun onMethodCall(call: MethodCall, result: Result) {
+    override fun onMethodCall(call: MethodCall, rawResult: Result) {
+        val result = MethodResultWrapper(rawResult)
         when(call.method) {
             "open.document.data" -> openDocumentDataHandler(call, result)
             "open.document.file" -> openDocumentFileHandler(call, result)
@@ -194,6 +197,23 @@ class NativePDFRendererPlugin private constructor(private val registrar: Registr
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "io.scer.pdf.renderer")
             channel.setMethodCallHandler(NativePDFRendererPlugin(registrar))
+        }
+    }
+
+    // MethodChannel.Result wrapper that responds on the platform thread.
+    private class MethodResultWrapper internal constructor(private val methodResult: Result) : Result {
+        private val handler: Handler = Handler(Looper.getMainLooper())
+
+        override fun success(result: Any?) {
+            handler.post { methodResult.success(result) }
+        }
+
+        override fun error(errorCode: String, errorMessage: String?, errorDetails: Any?) {
+            handler.post { methodResult.error(errorCode, errorMessage, errorDetails) }
+        }
+
+        override fun notImplemented() {
+            handler.post { methodResult.notImplemented() }
         }
     }
 }
