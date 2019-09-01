@@ -1,3 +1,7 @@
+## 1.4.2
+
+* Fixed not correctly filling background Color on IOS
+
 ## 1.4.1
 
 * Resolve supports Flutter v1.7
