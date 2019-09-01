@@ -44,7 +44,7 @@ class Page {
     func render(width: Int, height: Int, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
         let stride = width * 4
-        var tempData = Data(repeating: backgroundColor.toBytes(), count: stride * height)
+        var tempData = Data(repeating: 0, count: stride * height)
         var data: Data?
         var success = false
         let sx = CGFloat(width) / pdfBBox.width
@@ -54,6 +54,8 @@ class Page {
             let context = CGContext(data: ptr, width: width, height: height, bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 context!.scaleBy(x: sx, y: sy)
+                context!.setFillColor(backgroundColor.cgColor)
+                context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
                 let image = UIImage(cgImage: context!.makeImage()!)
                 switch(compressFormat) {
