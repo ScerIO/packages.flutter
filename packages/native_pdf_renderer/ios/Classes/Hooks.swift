@@ -18,15 +18,4 @@ extension UIColor {
         }
         self.init(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
     }
-    
-    func toBytes() -> UInt8 {
-        var r: CGFloat = 0
-        var g: CGFloat = 0
-        var b: CGFloat = 0
-        var a: CGFloat = 0
-        getRed(&r, green: &g, blue: &b, alpha: &a)
-        let rgb: Int = (Int)(a * 255)<<24 | (Int)(r * 255)<<16 | (Int)(g * 255)<<8 | (Int)(b * 255)<<0
-        let convertedRgb: Int8 = Int8(exactly: rgb) ?? 0
-        return UInt8(bitPattern: convertedRgb)
-    }
 }
