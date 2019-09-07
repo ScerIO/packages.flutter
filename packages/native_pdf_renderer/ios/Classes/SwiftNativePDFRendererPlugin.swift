@@ -119,6 +119,8 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
         let width = args["width"] as! Int
         let height = args["height"] as! Int
         let crop = args["crop"] as! Bool
+        let compressFormat = args["format"]as! Int
+        let backgroundColor = args["backgroundColor"] as! String
 
         // Set crop if required
         var cropZone: CGRect? = nil
@@ -138,7 +140,13 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
             var results: [String: Any]? = nil
             do {
                 let page = try self.pages.get(id: pageId)
-                if let data = page.render(width: width, height: height, crop: cropZone) {
+                if let data = page.render(
+                    width: width,
+                    height: height,
+                    crop: cropZone,
+                    compressFormat: CompressFormat(rawValue: compressFormat)!,
+                    backgroundColor: UIColor(hexString: backgroundColor)
+                ) {
                     results = [
                         "width": Int32(data.width),
                         "height": Int32(data.height),
