@@ -17,10 +17,10 @@ class MyApp extends StatelessWidget {
             padding: EdgeInsets.all(64),
             child: Column(
               children: <Widget>[
-                Text('Color hex', style: TextStyle(color: HexColor('#ff0000')),),
-                Text('Color hsl', style: TextStyle(color: HslColor(120, 100, 50)),),
-                Text('Color xyz', style: TextStyle(color: XyzColor(14.31, 6.06, 71.42)),),
-                Text('Color cielab', style: TextStyle(color: XyzColor(60.17, 93.55, -60.50)),),
+                Text('hex', style: TextStyle(color: HexColor('#ff0000')),),
+                Text('hsl', style: TextStyle(color: HslColor(120, 100, 50)),),
+                Text('xyz', style: TextStyle(color: XyzColor(14.31, 6.06, 71.42)),),
+                Text('cielab', style: TextStyle(color: CielabColor(36.80, 55.20, -95.61)),),
               ],
             ),
           ),

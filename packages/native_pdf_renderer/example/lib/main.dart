@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
@@ -18,10 +17,11 @@ class ExampleApp extends StatelessWidget {
         body: FutureBuilder(
           future: PDFDocument.openAsset('assets/sample.pdf'),
           builder: (context, AsyncSnapshot<PDFDocument> snapshot) {
-            if (!snapshot.hasData || snapshot.hasError)
+            if (!snapshot.hasData || snapshot.hasError) {
               return Center(
                 child: CircularProgressIndicator(),
               );
+            }
 
             return PageView(
               children: <Widget>[
@@ -80,14 +80,16 @@ class ImageLoader extends StatelessWidget {
     return FutureBuilder(
       future: _renderPage(),
       builder: (context, AsyncSnapshot<PDFPageImage> snapshot) {
-        if (snapshot.hasError)
+        if (snapshot.hasError) {
           return Center(
             child: Text('Error'),
           );
-        if (!snapshot.hasData)
+        }
+        if (!snapshot.hasData) {
           return Center(
             child: CircularProgressIndicator(),
           );
+        }
 
         return Image(
           image: MemoryImage(snapshot.data.bytes),
@@ -99,11 +101,10 @@ class ImageLoader extends StatelessWidget {
   Future<PDFPageImage> _renderPage() async {
     if (storage.pages.containsKey(pageNumber)) return storage.pages[pageNumber];
     final page = await document.getPage(pageNumber);
-    final format = Platform.isIOS ? PDFPageFormat.PNG : PDFPageFormat.JPEG;
     final pageImage = await page.render(
         width: page.width * 2,
         height: page.height * 2,
-        format: format,
+        format: PDFPageFormat.JPEG,
         backgroundColor: '#ffffff');
     await page.close();
     storage.pages[pageNumber] = pageImage;

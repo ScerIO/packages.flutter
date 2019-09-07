@@ -16,8 +16,7 @@ class PDFPageImage {
     @required this.format,
   });
 
-  static const MethodChannel _channel =
-      const MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when opening page.
@@ -46,9 +45,10 @@ class PDFPageImage {
     @required String backgroundColor,
     PDFCropDef crop,
   }) async {
-    if (format != PDFPageFormat.PNG && Platform.isIOS)
+    if (format == PDFPageFormat.WEBP && Platform.isIOS) {
       throw Exception(
-          'PDF Renderer on IOS platform does not support all compression formats except PNG.');
+          'PDF Renderer on IOS platform does not support WEBP format');
+    }
 
     final obj = await _channel.invokeMethod('render', {
       'pageId': pageId,

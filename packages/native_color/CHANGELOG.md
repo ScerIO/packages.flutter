@@ -1,3 +1,7 @@
+## 1.0.0
+
+* Added examples
+
 ## 0.0.2
 
 * Cielab color export fix

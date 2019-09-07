@@ -3,32 +3,32 @@ class Page {
     let documentId: String
     let renderer: CGPDFPage
     let boxRect: CGRect
-    
+
     init(id: String, documentId: String, renderer: CGPDFPage) {
         self.id = id
         self.documentId = documentId
         self.renderer = renderer
         self.boxRect = renderer.getBoxRect(.mediaBox)
     }
-    
+
     var number: Int {
         get {
             return renderer.pageNumber
         }
     }
-    
+
     var width: Int {
         get {
             return Int(boxRect.width)
         }
     }
-    
+
     var height: Int {
         get {
             return Int(boxRect.height)
         }
     }
-    
+
     var infoMap: [String: Any] {
         get {
             return [
@@ -40,11 +40,11 @@ class Page {
             ]
         }
     }
-    
-    func render(width: Int, height: Int, crop: CGRect?) -> Page.DataResult? {
+
+    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
         let stride = width * 4
-        var tempData = Data(repeating: 0xff, count: stride * height)
+        var tempData = Data(repeating: 0, count: stride * height)
         var data: Data?
         var success = false
         let sx = CGFloat(width) / pdfBBox.width
@@ -55,6 +55,8 @@ class Page {
             let context = CGContext(data: ptr, width: width, height: height, bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 context!.scaleBy(x: sx, y: sy)
+                context!.setFillColor(backgroundColor.cgColor)
+                context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
                 let image = UIImage(cgImage: context!.makeImage()!)
                 if (crop != nil){
@@ -63,8 +65,23 @@ class Page {
                     let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
                     
                     data = croppedImage.pngData() as Data?
+                    switch(compressFormat) {
+                        case CompressFormat.JPEG:
+                            data = croppedImage.jpegData(compressionQuality: 1.0) as Data?
+                            break;
+                        case CompressFormat.PNG:
+                            data = croppedImage.pngData() as Data?
+                            break;
+                    }
                 } else {
-                     data = image.pngData() as Data?
+                    switch(compressFormat) {
+                        case CompressFormat.JPEG:
+                            data = image.jpegData(compressionQuality: 1.0) as Data?
+                            break;
+                        case CompressFormat.PNG:
+                            data = image.pngData() as Data?
+                            break;
+                    }
                 }
 
                 success = true
@@ -75,16 +92,21 @@ class Page {
             height: (crop != nil) ? Int(crop!.height) : height,
             data: data!) : nil
     }
-    
+
     class DataResult {
         let width: Int
         let height: Int
         let data: Data
-        
+
         init(width: Int, height: Int, data: Data) {
             self.width = width
             self.height = height
             self.data = data
         }
     }
+}
+
+enum CompressFormat: Int {
+    case JPEG = 0
+    case PNG = 1
 }
