@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import 'page.dart';
 
 class PDFPageImage {
-  PDFPageImage._({
+  const PDFPageImage._({
     @required this.id,
     @required this.pageNumber,
     @required this.width,
@@ -86,6 +86,10 @@ class PDFPageImage {
   int get hashCode => identityHashCode(id) ^ pageNumber;
 
   @override
-  String toString() =>
-      '$runtimeType{id: $id, page: $pageNumber,  width: $width, height: $height, bytesLength: ${bytes.lengthInBytes}}';
+  String toString() => '$runtimeType{'
+      'id: $id, '
+      'page: $pageNumber,  '
+      'width: $width, '
+      'height: $height, '
+      'bytesLength: ${bytes.lengthInBytes}}';
 }

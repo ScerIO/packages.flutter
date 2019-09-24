@@ -1,3 +1,8 @@
+## 1.5.0
+
+* Added crop option for rendering (#11)
+* Fixed bug with render same page from issue #5
+
 ## 1.4.2
 
 * Fixed not correctly filling background Color on IOS

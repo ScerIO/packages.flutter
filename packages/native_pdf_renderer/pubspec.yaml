@@ -1,6 +1,6 @@
 name: native_pdf_renderer
 description: Flutter plugin to render PDF pages as images on both Android and iOS devices.
-version: 1.4.2
+version: 1.5.0
 author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/flutter_plugins/tree/master/packages/native_pdf_renderer
 
@@ -10,8 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.1.6
-  extension: ^0.0.4
+  meta: ^1.1.7
+  extension: ^0.0.5
 
 flutter:
   plugin:
