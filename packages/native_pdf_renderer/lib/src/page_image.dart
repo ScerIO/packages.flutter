@@ -43,6 +43,7 @@ class PDFPageImage {
     @required int height,
     @required PDFPageFormat format,
     @required String backgroundColor,
+    PDFCropDef crop,
   }) async {
     if (format == PDFPageFormat.WEBP && Platform.isIOS) {
       throw Exception(
@@ -55,6 +56,11 @@ class PDFPageImage {
       'height': height,
       'format': format.value,
       'backgroundColor': backgroundColor,
+      'crop': crop != null,
+      'crop_x': crop?.x,
+      'crop_y': crop?.y,
+      'crop_height': crop?.height,
+      'crop_width': crop?.width,
     });
 
     if (!(obj is Map<dynamic, dynamic>)) return null;
