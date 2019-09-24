@@ -40,20 +40,21 @@ class ExampleApp extends StatelessWidget {
           },
         ),
         bottomNavigationBar: BottomAppBar(
-            child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'Swipe to right',
-                style: Theme.of(context).textTheme.title,
-              ),
-              Icon(Icons.keyboard_arrow_right)
-            ],
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Swipe to right',
+                  style: Theme.of(context).textTheme.title,
+                ),
+                Icon(Icons.keyboard_arrow_right),
+              ],
+            ),
           ),
-        )),
+        ),
       ),
     );
   }
@@ -102,10 +103,11 @@ class ImageLoader extends StatelessWidget {
     if (storage.pages.containsKey(pageNumber)) return storage.pages[pageNumber];
     final page = await document.getPage(pageNumber);
     final pageImage = await page.render(
-        width: page.width * 2,
-        height: page.height * 2,
-        format: PDFPageFormat.JPEG,
-        backgroundColor: '#ffffff');
+      width: page.width * 2,
+      height: page.height * 2,
+      format: PDFPageFormat.JPEG,
+      backgroundColor: '#ffffff',
+    );
     await page.close();
     storage.pages[pageNumber] = pageImage;
     return pageImage;
