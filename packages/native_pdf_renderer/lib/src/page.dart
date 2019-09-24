@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 import 'document.dart';
 import 'page_image.dart';
 
-class PDFPageFormat<int> extends Enum<int> {
+class PDFPageFormat extends Enum<int> {
   const PDFPageFormat(int val) : super(val);
 
   static const PDFPageFormat JPEG = PDFPageFormat(0);
@@ -15,13 +15,26 @@ class PDFPageFormat<int> extends Enum<int> {
   static const PDFPageFormat WEBP = PDFPageFormat(2);
 }
 
+class PDFCropDef {
+  const PDFCropDef({
+    @required this.x,
+    @required this.y,
+    @required this.width,
+    @required this.height,
+  });
+
+  final int x, y;
+  final int width, height;
+}
+
 class PDFPage {
-  PDFPage(
-      {@required this.document,
-      @required this.id,
-      @required this.pageNumber,
-      @required this.width,
-      @required this.height});
+  const PDFPage({
+    @required this.document,
+    @required this.id,
+    @required this.pageNumber,
+    @required this.width,
+    @required this.height,
+  });
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
   final PDFDocument document;
@@ -50,6 +63,7 @@ class PDFPage {
     @required int height,
     PDFPageFormat format = PDFPageFormat.PNG,
     String backgroundColor,
+    PDFCropDef crop,
   }) =>
       PDFPageImage.render(
         pageId: id,
@@ -57,6 +71,7 @@ class PDFPage {
         height: height,
         format: format,
         backgroundColor: backgroundColor,
+        crop: crop,
       );
 
   /// Before open another page it is necessary to close the previous.
@@ -74,6 +89,9 @@ class PDFPage {
   int get hashCode => document.hashCode ^ pageNumber;
 
   @override
-  String toString() =>
-      '$runtimeType{document: $document, page: $pageNumber,  width: $width, height: $height}';
+  String toString() => '$runtimeType{'
+      'document: $document, '
+      'page: $pageNumber,  '
+      'width: $width, '
+      'height: $height}';
 }

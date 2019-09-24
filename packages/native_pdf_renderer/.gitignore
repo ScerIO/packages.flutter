@@ -1,6 +1,7 @@
 .DS_Store
 .idea/
 .dart_tool/
+*/ios/Flutter/flutter_export_environment.sh
 
 .packages
 .pub/

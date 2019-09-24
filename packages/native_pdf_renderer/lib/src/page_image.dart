@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import 'page.dart';
 
 class PDFPageImage {
-  PDFPageImage._({
+  const PDFPageImage._({
     @required this.id,
     @required this.pageNumber,
     @required this.width,
@@ -43,6 +43,7 @@ class PDFPageImage {
     @required int height,
     @required PDFPageFormat format,
     @required String backgroundColor,
+    PDFCropDef crop,
   }) async {
     if (format == PDFPageFormat.WEBP && Platform.isIOS) {
       throw Exception(
@@ -55,6 +56,11 @@ class PDFPageImage {
       'height': height,
       'format': format.value,
       'backgroundColor': backgroundColor,
+      'crop': crop != null,
+      'crop_x': crop?.x,
+      'crop_y': crop?.y,
+      'crop_height': crop?.height,
+      'crop_width': crop?.width,
     });
 
     if (!(obj is Map<dynamic, dynamic>)) return null;
@@ -80,6 +86,10 @@ class PDFPageImage {
   int get hashCode => identityHashCode(id) ^ pageNumber;
 
   @override
-  String toString() =>
-      '$runtimeType{id: $id, page: $pageNumber,  width: $width, height: $height, bytesLength: ${bytes.lengthInBytes}}';
+  String toString() => '$runtimeType{'
+      'id: $id, '
+      'page: $pageNumber,  '
+      'width: $width, '
+      'height: $height, '
+      'bytesLength: ${bytes.lengthInBytes}}';
 }

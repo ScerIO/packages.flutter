@@ -2,14 +2,15 @@ import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 import 'page.dart';
 
 class PDFDocument {
-  PDFDocument._({
-    this.sourceName,
-    this.id,
-    this.pagesCount,
-  }) : _pages = List<PDFPage>(pagesCount);
+  const PDFDocument._({
+    @required this.sourceName,
+    @required this.id,
+    @required this.pagesCount,
+  });
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
 
@@ -25,8 +26,6 @@ class PDFDocument {
   /// Starts from 1.
   final int pagesCount;
 
-  final List<PDFPage> _pages;
-
   Future<void> close() => _channel.invokeMethod('close.document', id);
 
   static PDFDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
@@ -37,33 +36,43 @@ class PDFDocument {
       );
 
   static Future<PDFDocument> openFile(String filePath) async => _open(
-      await _channel.invokeMethod('open.document.file', filePath),
+      await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        'open.document.file',
+        filePath,
+      ),
       'file:$filePath');
 
   static Future<PDFDocument> openAsset(String name) async => _open(
-      await _channel.invokeMethod('open.document.asset', name), 'asset:$name');
+        await _channel.invokeMethod<Map<dynamic, dynamic>>(
+          'open.document.asset',
+          name,
+        ),
+        'asset:$name',
+      );
 
   static Future<PDFDocument> openData(Uint8List data) async => _open(
-      await _channel.invokeMethod('open.document.data', data), 'memory:$data');
+        await _channel.invokeMethod<Map<dynamic, dynamic>>(
+          'open.document.data',
+          data,
+        ),
+        'memory:$data',
+      );
 
   /// Get page object. The first page is 1.
   Future<PDFPage> getPage(int pageNumber) async {
     if (pageNumber < 1 || pageNumber > pagesCount) return null;
-    var page = _pages[pageNumber - 1];
-    if (page == null) {
-      final obj = await _channel
-          .invokeMethod('open.page', {'documentId': id, 'page': pageNumber});
-      if (obj is Map<dynamic, dynamic>) {
-        page = _pages[pageNumber - 1] = PDFPage(
-          document: this,
-          id: obj['id'] as String,
-          pageNumber: pageNumber,
-          width: obj['width'] as int,
-          height: obj['height'] as int,
-        );
-      }
-    }
-    return page;
+    final obj =
+        await _channel.invokeMethod<Map<dynamic, dynamic>>('open.page', {
+      'documentId': id,
+      'page': pageNumber,
+    });
+    return PDFPage(
+      document: this,
+      id: obj['id'] as String,
+      pageNumber: pageNumber,
+      width: obj['width'] as int,
+      height: obj['height'] as int,
+    );
   }
 
   @override

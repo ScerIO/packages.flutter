@@ -145,10 +145,16 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             val backgroundColor = call.argument<String>("backgroundColor")
             val color  = if (backgroundColor != null) Color.parseColor(backgroundColor) else Color.TRANSPARENT
 
+            val crop = call.argument<Boolean>("crop")!!;
+            val cropX = if (crop) call.argument<Int>("crop_x")!! else 0;
+            val cropY = if (crop) call.argument<Int>("crop_y")!! else 0;
+            val cropH = if (crop) call.argument<Int>("crop_height")!! else 0;
+            val cropW = if (crop) call.argument<Int>("crop_width")!! else 0;
+
             val page = pages.get(pageId)
 
             Thread {
-                val results = page.render(width, height, color, format).toMap
+                val results = page.render(width, height, color, format, crop, cropX, cropY, cropW, cropH).toMap
                 result.success(results)
             }.start()
         } catch (e: Exception) {

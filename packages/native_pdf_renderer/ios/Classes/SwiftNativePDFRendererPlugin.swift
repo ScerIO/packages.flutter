@@ -92,8 +92,8 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
     func openPageHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
         guard let args = call.arguments as! NSDictionary? else {
             return result(FlutterError(code: "RENDER_ERROR",
-                                message: "Arguments not sended",
-                                details: nil))
+                                       message: "Arguments not sended",
+                                       details: nil))
         }
         do {
             let documentId = args["documentId"] as! String
@@ -105,7 +105,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
         } catch {
             result(FlutterError(code: "RENDER_ERROR",
                                 message: "Unexpected error: \(error).",
-                                details: nil))
+                details: nil))
         }
     }
     
@@ -118,8 +118,23 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
         let pageId = args["pageId"] as! String
         let width = args["width"] as! Int
         let height = args["height"] as! Int
+        let crop = args["crop"] as! Bool
         let compressFormat = args["format"]as! Int
         let backgroundColor = args["backgroundColor"] as! String
+        
+        // Set crop if required
+        var cropZone: CGRect? = nil
+        if (crop){
+            let cWidth = args["crop_width"] as! Int
+            let cHeight = args["crop_height"] as! Int
+            if (cWidth != width || cHeight != height){
+                cropZone = CGRect(x: args["crop_x"] as! Int,
+                                  y: args["crop_y"] as! Int,
+                                  width: cWidth,
+                                  height: cHeight)
+            }
+        }
+        
         
         dispQueue.async {
             var results: [String: Any]? = nil
@@ -128,6 +143,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
                 if let data = page.render(
                     width: width,
                     height: height,
+                    crop: cropZone,
                     compressFormat: CompressFormat(rawValue: compressFormat)!,
                     backgroundColor: UIColor(hexString: backgroundColor)
                 ) {
@@ -140,7 +156,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
             } catch {
                 result(FlutterError(code: "RENDER_ERROR",
                                     message: "Unexpected error: \(error).",
-                                    details: nil))
+                    details: nil))
             }
             DispatchQueue.main.async {
                 result(results != nil ? (results! as NSDictionary) : nil)
