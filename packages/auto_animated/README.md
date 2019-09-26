@@ -53,8 +53,8 @@ Widget _buildAnimatedItem(
         // And slide transition
         child: SlideTransition(
             position: Tween<Offset>(
-            begin: Offset(0, -0.1),
-            end: Offset.zero,
+                begin: Offset(0, -0.1),
+                end: Offset.zero,
             ).animate(animation),
             // Paste you Widget
             child: YouWidgetHere(),
