@@ -4,9 +4,9 @@ Auto animated list
 
 ## Screenshots
 <p float="left">
-    <img src='./example/media/horizontal.gif' width="30%">
-    <img src='./example/media/vertical.gif' width="30%" hspace="4%">
-    <img src='./example/media/combined.gif' width="30%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/horizontal.gif' width="30%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/vertical.gif' width="30%" hspace="4%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/combined.gif' width="30%">
 </p>
 
 ## Getting Started
