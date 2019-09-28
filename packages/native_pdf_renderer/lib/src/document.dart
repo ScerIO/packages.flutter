@@ -60,7 +60,9 @@ class PDFDocument {
 
   /// Get page object. The first page is 1.
   Future<PDFPage> getPage(int pageNumber) async {
-    if (pageNumber < 1 || pageNumber > pagesCount) return null;
+    if (pageNumber < 1 || pageNumber > pagesCount) {
+      return null;
+    }
     final obj =
         await _channel.invokeMethod<Map<dynamic, dynamic>>('open.page', {
       'documentId': id,
@@ -76,7 +78,7 @@ class PDFDocument {
   }
 
   @override
-  bool operator ==(dynamic other) => other is PDFDocument && other.id == id;
+  bool operator ==(Object other) => other is PDFDocument && other.id == id;
 
   @override
   int get hashCode => identityHashCode(id);
