@@ -14,6 +14,12 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.grey[100],
           appBar: AppBar(
             title: Text('Auto animated example'),
+            leading: AutoAnimatedIconButton(
+              icon: AnimatedIcons.menu_close,
+              firstToolip: 'Menu',
+              secondToolip: 'Close',
+              onPressed: () {},
+            ),
           ),
           body: Column(
             children: <Widget>[

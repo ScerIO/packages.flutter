@@ -1,49 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'horizontal.dart';
-import 'vertical.dart';
+import 'package:auto_animated_example/screens/icon_button.dart';
+import 'package:auto_animated_example/screens/list.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp({Key key}) : super(key: key) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
       statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.grey[100],
+      systemNavigationBarColor: Colors.white,
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
   }
 
   @override
-  Widget build(BuildContext context) {
-    final textStyle =
-        Theme.of(context).textTheme.title.copyWith(color: Colors.black);
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 16,
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _selectedIndex = 0;
+  final List<Widget> _children = [
+    AutoAnimatedListExample(),
+    AutoAnimatedIconButtonExample(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.grey[100],
+          body: _children[_selectedIndex],
+          bottomNavigationBar: BottomNavigationBar(
+            backgroundColor: Colors.white,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.list),
+                title: Text('List'),
               ),
-              Text('Horizontal AutoAnimatedList', style: textStyle),
-              SizedBox(
-                height: 200,
-                child: HorizontalExample(),
-              ),
-              Text('Vertical AutoAnimatedList', style: textStyle),
-              SizedBox(
-                height: 400,
-                child: VerticalExample(),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.check_circle),
+                title: Text('IconButton'),
               ),
             ],
+            currentIndex: _selectedIndex,
+            // selectedItemColor: Colors.amber[800],
+            onTap: _onItemTapped,
           ),
         ),
-      ),
-    );
-  }
+      );
 }

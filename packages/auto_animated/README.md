@@ -1,12 +1,16 @@
 # Auto animated
 
-Auto animated list
+Auto animated widgets for flutter 
+Already added:
+- `AutoAnimatedList`
+- `AutoAnimatedIconButton`
 
 ## Screenshots
 <p float="left">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/horizontal.gif' width="30%">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/vertical.gif' width="30%" hspace="4%">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/combined.gif' width="30%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/horizontal.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/vertical.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/combined.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/icon_button.gif' width="20%" hspace="1%">
 </p>
 
 ## Getting Started
@@ -21,8 +25,8 @@ dependencies:
 ```
 For help getting started with Flutter, view the online [documentation](https://flutter.io/).
 
-## Usage example
-### **It very simple!**
+## `AutoAnimatedList` usage example
+### Make an automatically animated list in 2 minutes? Easily!
 
 ```dart
 AutoAnimatedList(
@@ -32,7 +36,7 @@ AutoAnimatedList(
     showItemInterval: Duration(milliseconds: 500),
     // Animation duration
     showItemDuration: Duration(seconds: 1),
-    // Other properties correspond to the `AnimatedList` widget
+    // Other properties correspond to the `ListView` widget
     scrollDirection: Axis.horizontal,
     itemsCount: 10,
     itemBuilder: _buildAnimatedItem,
@@ -60,4 +64,21 @@ Widget _buildAnimatedItem(
             child: YouWidgetHere(),
         ),
     )
+```
+
+## `AutoAnimatedIconButton` usage example
+### Basic
+```dart
+AutoAnimatedIconButton(
+    icon: AnimatedIcons.arrow_menu,
+    onPressed: () {},
+)
+```
+### With separate toolips
+```dart
+AutoAnimatedIconButton(
+    icon: AnimatedIcons.arrow_menu,
+    firstToolip: 'Event',
+    secondToolip: 'Add',
+)
 ```
