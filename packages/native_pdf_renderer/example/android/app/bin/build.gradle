@@ -33,7 +33,7 @@ android {
 
     defaultConfig {
         applicationId "io.scer.native_pdf_renderer_exaple"
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
