@@ -63,7 +63,9 @@ class PDFPageImage {
       'crop_width': crop?.width,
     });
 
-    if (!(obj is Map<dynamic, dynamic>)) return null;
+    if (!(obj is Map<dynamic, dynamic>)) {
+      return null;
+    }
 
     final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
     final pixels = obj['data'] as Uint8List;
@@ -79,7 +81,7 @@ class PDFPageImage {
   }
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other is PDFPageImage && other.bytes.lengthInBytes == bytes.lengthInBytes;
 
   @override

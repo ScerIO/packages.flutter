@@ -2,22 +2,24 @@ import 'dart:math' show pow;
 import 'dart:ui' show Color;
 
 class XyzColor extends Color {
-  final double x;
-  final double y;
-  final double z;
+  /// An immutable 32 bit color value in ARGB format.
+  XyzColor(this.x, this.y, this.z, {double opacity = 1})
+      : super(getColorFromXyz(x, y, z, opacity));
+
+  final double x, y, z;
 
   static int getColorFromXyz(double x, double y, double z, double opacity) {
-    double xp = x / 100;
-    double yp = y / 100;
-    double zp = z / 100;
+    final double xp = x / 100;
+    final double yp = y / 100;
+    final double zp = z / 100;
 
-    Map<String, double> rgb = {
+    final Map<String, double> rgb = {
       'r': xp * 3.2406 + yp * -1.5372 + zp * -0.4986,
       'g': xp * -0.9689 + yp * 1.8758 + zp * 0.0415,
       'b': xp * 0.0557 + yp * -0.2040 + zp * 1.0570
     };
 
-    Map<String, int> resultRgb = {};
+    final Map<String, int> resultRgb = {};
 
     rgb.forEach((key, value) {
       if (value > 0.0031308) {
@@ -35,11 +37,7 @@ class XyzColor extends Color {
         0xFFFFFFFF;
   }
 
-  /// An immutable 32 bit color value in ARGB format.
-  XyzColor(this.x, this.y, this.z, {double opacity = 1})
-      : super(getColorFromXyz(x, y, z, opacity));
-
   Map<String, num> toMap() => {'x': x, 'y': y, 'z': z};
 
-  operator [](String key) => this.toMap()[key];
+  double operator [](String key) => toMap()[key];
 }

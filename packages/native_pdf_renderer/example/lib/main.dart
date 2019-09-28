@@ -66,10 +66,10 @@ class PagesStorage {
 
 class ImageLoader extends StatelessWidget {
   ImageLoader({
-    Key key,
     @required this.storage,
     @required this.document,
     @required this.pageNumber,
+    Key key,
   }) : super(key: key);
 
   final PagesStorage storage;
@@ -77,30 +77,30 @@ class ImageLoader extends StatelessWidget {
   final int pageNumber;
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _renderPage(),
-      builder: (context, AsyncSnapshot<PDFPageImage> snapshot) {
-        if (snapshot.hasError) {
-          return Center(
-            child: Text('Error'),
-          );
-        }
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
+  Widget build(BuildContext context) => FutureBuilder(
+        future: _renderPage(),
+        builder: (context, AsyncSnapshot<PDFPageImage> snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error'),
+            );
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-        return Image(
-          image: MemoryImage(snapshot.data.bytes),
-        );
-      },
-    );
-  }
+          return Image(
+            image: MemoryImage(snapshot.data.bytes),
+          );
+        },
+      );
 
   Future<PDFPageImage> _renderPage() async {
-    if (storage.pages.containsKey(pageNumber)) return storage.pages[pageNumber];
+    if (storage.pages.containsKey(pageNumber)) {
+      return storage.pages[pageNumber];
+    }
     final page = await document.getPage(pageNumber);
     final pageImage = await page.render(
       width: page.width * 2,

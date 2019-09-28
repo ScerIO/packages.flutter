@@ -1,12 +1,16 @@
 import 'dart:ui' show Color;
 
 class HslColor extends Color {
+  /// An immutable 32 bit color value in ARGB format.
+  HslColor(double h, double s, double l, {double opacity = 1})
+      : super(getColorFromHsl(h, s, l, opacity));
+
   static int getColorFromHsl(double h, double s, double l, double opacity) {
     List<double> rgb = [0, 0, 0];
 
-    double hue = h / 360 % 1;
-    double saturation = s / 100;
-    double luminance = l / 100;
+    final double hue = h / 360 % 1;
+    final double saturation = s / 100;
+    final double luminance = l / 100;
 
     if (hue < 1 / 6) {
       rgb[0] = 1;
@@ -44,8 +48,4 @@ class HslColor extends Color {
             ((resultRgb[2] & 0xff) << 0)) &
         0xFFFFFFFF;
   }
-
-  /// An immutable 32 bit color value in ARGB format.
-  HslColor(double h, double s, double l, {double opacity = 1})
-      : super(getColorFromHsl(h, s, l, opacity));
 }

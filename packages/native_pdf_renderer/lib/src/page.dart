@@ -80,7 +80,7 @@ class PDFPage {
   Future<void> close() => _channel.invokeMethod('close.page', id);
 
   @override
-  bool operator ==(dynamic other) =>
+  bool operator ==(Object other) =>
       other is PDFPage &&
       other.document.hashCode == document.hashCode &&
       other.pageNumber == pageNumber;

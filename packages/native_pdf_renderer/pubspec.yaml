@@ -19,4 +19,4 @@ flutter:
     pluginClass: NativePDFRendererPlugin
 
 dev_dependencies:
-  pedantic: ^1.4.0
+  pedantic: ^1.5.0

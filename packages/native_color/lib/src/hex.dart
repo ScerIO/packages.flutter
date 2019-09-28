@@ -1,12 +1,6 @@
 import 'dart:ui' show Color;
 
 class HexColor extends Color {
-  static int getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll('#', '');
-    if (hexColor.length == 6) hexColor = 'FF' + hexColor;
-    return int.parse(hexColor, radix: 16);
-  }
-
   /// An immutable 32 bit color value in ARGB format.
   ///
   /// ```dart
@@ -16,4 +10,12 @@ class HexColor extends Color {
   /// HexColor('#FFFFFF')   == Color(0xFFFFFFFF)
   /// ```
   HexColor(final String hexColor) : super(getColorFromHex(hexColor));
+
+  static int getColorFromHex(String hex) {
+    String hexColor = hex.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
 }
