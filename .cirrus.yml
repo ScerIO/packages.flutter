@@ -8,6 +8,7 @@ task:
     - flutter channel master
     - flutter upgrade
     - git fetch origin master
+    - sudo chmod -R 755 ./script
   activate_script: pub global activate flutter_plugin_tools
   matrix:
     - name: publishable
@@ -55,6 +56,7 @@ task:
     - flutter channel master
     - flutter upgrade
     - git fetch origin master
+    - sudo chmod -R 755 ./script
   activate_script:
     - pub global activate flutter_plugin_tools
   create_simulator_script:

@@ -18,11 +18,11 @@ class AutoAnimatedListExample extends StatelessWidget {
             Text('Horizontal AutoAnimatedList', style: textStyle),
             SizedBox(
               height: 200,
+              width: double.infinity,
               child: HorizontalExample(),
             ),
             Text('Vertical AutoAnimatedList', style: textStyle),
-            SizedBox(
-              height: 400,
+            Expanded(
               child: VerticalExample(),
             ),
           ],
