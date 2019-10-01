@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Fixed auto setting state on rebuild widget for `AutoAnimatedIconButton`
+
 ## 1.2.0
 
 * Added constructor `AutoAnimatedIconButton.externalState` with `iconState` property
