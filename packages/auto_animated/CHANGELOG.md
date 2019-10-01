@@ -1,3 +1,7 @@
+## 1.2.2 
+
+* Fixed dispose in `AutoAnimatedIconButton`
+
 ## 1.2.1
 
 * Fixed auto setting state on rebuild widget for `AutoAnimatedIconButton`
