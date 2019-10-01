@@ -34,6 +34,29 @@ class AutoAnimatedIconButton extends StatefulWidget {
     this.textDirection,
     this.firstToolip,
     this.secondToolip,
+  })  : iconState = null,
+        super(key: key);
+
+  AutoAnimatedIconButton.externalState({
+    @required this.icon,
+    @required this.onPressed,
+    @required this.iconState,
+    Key key,
+    this.duration = const Duration(milliseconds: 300),
+    this.splashColor,
+    this.hoverColor,
+    this.size = 24,
+    this.padding = const EdgeInsets.all(18),
+    this.alignment = Alignment.center,
+    this.color,
+    this.focusColor,
+    this.highlightColor,
+    this.disabledColor,
+    this.focusNode,
+    this.semanticLabel,
+    this.textDirection,
+    this.firstToolip,
+    this.secondToolip,
   }) : super(key: key);
 
   final AnimatedIconData icon;
@@ -47,6 +70,7 @@ class AutoAnimatedIconButton extends StatefulWidget {
   final Color color, focusColor, highlightColor, disabledColor;
   final FocusNode focusNode;
   final TextDirection textDirection;
+  final IconState iconState;
 
   @override
   _AutoAnimatedIconButtonState createState() => _AutoAnimatedIconButtonState();
@@ -72,13 +96,30 @@ class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
     _animationController.dispose();
   }
 
+  @override
+  void didUpdateWidget(AutoAnimatedIconButton oldWidget) {
+    if (oldWidget.iconState != widget.iconState) {
+      if (oldWidget.iconState == IconState.first &&
+          widget.iconState == IconState.second) {
+        _animationController.forward();
+      } else if (oldWidget.iconState == IconState.second &&
+          widget.iconState == IconState.first) {
+        _animationController.reverse();
+      }
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
   void _onPressed() {
-    setState(() {
-      _isPressed = !_isPressed;
-      !_isPressed
-          ? _animationController.reverse()
-          : _animationController.forward();
-    });
+    if (widget.iconState == null) {
+      setState(() {
+        _isPressed = !_isPressed;
+        !_isPressed
+            ? _animationController.reverse()
+            : _animationController.forward();
+      });
+    }
     widget.onPressed();
   }
 

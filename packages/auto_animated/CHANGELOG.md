@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Added constructor `AutoAnimatedIconButton.externalState` with `iconState` property
+
 ## 1.1.0
 
 * Added `AutoAnimatedListState.sepparated`
