@@ -88,6 +88,12 @@ class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
       vsync: this,
       duration: widget.duration,
     );
+
+    if (widget.iconState == IconState.first) {
+      _animationController.reverse();
+    } else if (widget.iconState == IconState.second) {
+      _animationController.forward();
+    }
   }
 
   @override
