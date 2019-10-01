@@ -98,8 +98,8 @@ class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
 
   @override
   void dispose() {
-    super.dispose();
     _animationController.dispose();
+    super.dispose();
   }
 
   @override
