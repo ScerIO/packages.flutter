@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 
-class AutoAnimatedIconButtonExample extends StatelessWidget {
+class AutoAnimatedIconButtonExample extends StatefulWidget {
+  @override
+  _AutoAnimatedIconButtonExampleState createState() =>
+      _AutoAnimatedIconButtonExampleState();
+}
+
+class _AutoAnimatedIconButtonExampleState
+    extends State<AutoAnimatedIconButtonExample> {
+  bool _externalState = false;
+
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -18,9 +27,14 @@ class AutoAnimatedIconButtonExample extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              AutoAnimatedIconButton(
+              AutoAnimatedIconButton.externalState(
                 icon: AnimatedIcons.arrow_menu,
-                onPressed: () {},
+                onPressed: () {
+                  setState(() {
+                    _externalState = !_externalState;
+                  });
+                },
+                iconState: !_externalState ? IconState.first : IconState.second,
               ),
               AutoAnimatedIconButton(
                 icon: AnimatedIcons.play_pause,
