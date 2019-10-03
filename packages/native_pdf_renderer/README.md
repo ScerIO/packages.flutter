@@ -2,6 +2,8 @@
 
 `Flutter` Plugin to render PDF pages as images on both **Android 5.0+** and **iOS 11.0+** devices.
 
+For IOS need set swift version to 5 ([instruction](https://stackoverflow.com/questions/46338588/xcode-9-swift-language-version-swift-version/46339401#46339401), [issue](https://github.com/rbcprolabs/flutter_plugins/issues/3))
+
 ## Getting Started
 In your flutter project add the dependency:
 
