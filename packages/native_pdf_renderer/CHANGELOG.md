@@ -1,3 +1,10 @@
+## 1.6.0 
+
+* Added more documentation for public properties and methods
+* `crop` property in `render` method marked as deprecated, usage `cropRect` instead
+* Added `isClosed` property for `PDFDocument` and `PDFPage`
+* Added tests
+
 ## 1.5.0
 
 * Added crop option for rendering (#11)

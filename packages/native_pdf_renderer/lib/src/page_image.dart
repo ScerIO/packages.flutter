@@ -2,10 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data' show Uint8List;
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'page.dart';
 
+/// Object containing a rendered image
+/// in a pre-selected format in [render] method
+/// of [PDFPage]
 class PDFPageImage {
   const PDFPageImage._({
     @required this.id,
@@ -37,17 +41,25 @@ class PDFPageImage {
   /// Target compression format
   final PDFPageFormat format;
 
+  /// Render a full image of specified PDF file.
+  ///
+  /// [width], [height] specify resolution to render in pixels.
+  /// As default PNG uses transparent background. For change it you can set
+  /// [backgroundColor] property like a hex string ('#000000')
+  /// [format] - image type, all types can be seen here [PDFPageFormat]
+  /// [crop] - render only the necessary part of the image
   static Future<PDFPageImage> render({
     @required String pageId,
     @required int width,
     @required int height,
     @required PDFPageFormat format,
     @required String backgroundColor,
-    PDFCropDef crop,
+    @required Rect crop,
   }) async {
     if (format == PDFPageFormat.WEBP && Platform.isIOS) {
-      throw Exception(
-          'PDF Renderer on IOS platform does not support WEBP format');
+      throw PdfNotSupportException(
+        'PDF Renderer on IOS platform does not support WEBP format',
+      );
     }
 
     final obj = await _channel.invokeMethod('render', {
@@ -57,10 +69,10 @@ class PDFPageImage {
       'format': format.value,
       'backgroundColor': backgroundColor,
       'crop': crop != null,
-      'crop_x': crop?.x,
-      'crop_y': crop?.y,
-      'crop_height': crop?.height,
-      'crop_width': crop?.width,
+      'crop_x': crop?.left?.toInt(),
+      'crop_y': crop?.top?.toInt(),
+      'crop_height': crop?.height?.toInt(),
+      'crop_width': crop?.width?.toInt(),
     });
 
     if (!(obj is Map<dynamic, dynamic>)) {
@@ -94,4 +106,13 @@ class PDFPageImage {
       'width: $width, '
       'height: $height, '
       'bytesLength: ${bytes.lengthInBytes}}';
+}
+
+class PdfNotSupportException implements Exception {
+  PdfNotSupportException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => '$runtimeType: $message';
 }

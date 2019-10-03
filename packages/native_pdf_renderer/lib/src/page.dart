@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:extension/enum.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'document.dart';
 import 'page_image.dart';
 
+/// Image compression format
 class PDFPageFormat extends Enum<int> {
   const PDFPageFormat(int val) : super(val);
 
@@ -15,20 +17,44 @@ class PDFPageFormat extends Enum<int> {
   static const PDFPageFormat WEBP = PDFPageFormat(2);
 }
 
+/// Render options for a specific part of the page
+@Deprecated('Usage [cropRect] property instead prop')
 class PDFCropDef {
-  const PDFCropDef({
+  PDFCropDef({
     @required this.x,
     @required this.y,
     @required this.width,
     @required this.height,
   });
 
-  final int x, y;
-  final int width, height;
+  /// Indent left to render part of the page
+  final int x;
+
+  /// Indent top to render part of the page
+  final int y;
+
+  /// Width required for image rendering
+  final int width;
+
+  /// Height required for image rendering
+  final int height;
+
+  /// Is the page closed
+  bool isClosed = false;
+
+  /// Fallback for generating rect
+  Rect get rect => Rect.fromLTWH(
+        x.toDouble(),
+        y.toDouble(),
+        width.toDouble(),
+        height.toDouble(),
+      );
 }
 
+/// An integral part of a document is its page,
+/// which contains a method [render] for rendering into an image
 class PDFPage {
-  const PDFPage({
+  PDFPage({
     @required this.document,
     @required this.id,
     @required this.pageNumber,
@@ -53,31 +79,54 @@ class PDFPage {
   /// Page source height in pixels
   final int height;
 
+  /// Is the page closed
+  bool isClosed = false;
+
   /// Render a full image of specified PDF file.
   ///
   /// [width], [height] specify resolution to render in pixels.
   /// As default PNG uses transparent background. For change it you can set
   /// [backgroundColor] property like a hex string ('#000000')
+  /// [format] - image type, all types can be seen here [PDFPageFormat]
+  /// [cropRect] - render only the necessary part of the image
   Future<PDFPageImage> render({
     @required int width,
     @required int height,
     PDFPageFormat format = PDFPageFormat.PNG,
     String backgroundColor,
-    PDFCropDef crop,
-  }) =>
-      PDFPageImage.render(
-        pageId: id,
-        width: width,
-        height: height,
-        format: format,
-        backgroundColor: backgroundColor,
-        crop: crop,
-      );
+    // ignore: deprecated_member_use_from_same_package
+    @Deprecated('Use cropRect instead') PDFCropDef crop,
+    Rect cropRect,
+  }) {
+    if (document.isClosed) {
+      throw PdfDocumentAlreadyClosedException();
+    } else if (isClosed) {
+      throw PdfPageAlreadyClosedException();
+    }
+
+    final rect = cropRect ?? crop?.rect;
+
+    return PDFPageImage.render(
+      pageId: id,
+      width: width,
+      height: height,
+      format: format,
+      backgroundColor: backgroundColor,
+      crop: rect,
+    );
+  }
 
   /// Before open another page it is necessary to close the previous.
   ///
   /// The android platform does not allow parallel rendering.
-  Future<void> close() => _channel.invokeMethod('close.page', id);
+  Future<void> close() {
+    if (isClosed) {
+      throw PdfPageAlreadyClosedException();
+    } else {
+      isClosed = true;
+    }
+    return _channel.invokeMethod('close.page', id);
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -94,4 +143,9 @@ class PDFPage {
       'page: $pageNumber,  '
       'width: $width, '
       'height: $height}';
+}
+
+class PdfPageAlreadyClosedException implements Exception {
+  @override
+  String toString() => '$runtimeType: Page already closed';
 }

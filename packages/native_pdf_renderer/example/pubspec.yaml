@@ -1,5 +1,6 @@
 name: native_pdf_renderer_example
 description: Demonstrates how to use the native_pdf_renderer plugin.
+version: 1.0.0
 publish_to: 'none'
 
 environment:
