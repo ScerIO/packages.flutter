@@ -58,30 +58,21 @@ class Page {
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
-                let image = UIImage(cgImage: context!.makeImage()!)
+                var image = UIImage(cgImage: context!.makeImage()!)
+
                 if (crop != nil){
                     // Perform cropping in Core Graphics
                     let cutImageRef: CGImage = (image.cgImage?.cropping(to:crop!))!
-                    let croppedImage: UIImage = UIImage(cgImage: cutImageRef)
-                    
-                    data = croppedImage.pngData() as Data?
-                    switch(compressFormat) {
-                        case CompressFormat.JPEG:
-                            data = croppedImage.jpegData(compressionQuality: 1.0) as Data?
-                            break;
-                        case CompressFormat.PNG:
-                            data = croppedImage.pngData() as Data?
-                            break;
-                    }
-                } else {
-                    switch(compressFormat) {
-                        case CompressFormat.JPEG:
-                            data = image.jpegData(compressionQuality: 1.0) as Data?
-                            break;
-                        case CompressFormat.PNG:
-                            data = image.pngData() as Data?
-                            break;
-                    }
+                    image = UIImage(cgImage: cutImageRef)
+                }
+
+                switch(compressFormat) {
+                    case CompressFormat.JPEG:
+                        data = image.jpegData(compressionQuality: 1.0) as Data?
+                        break;
+                    case CompressFormat.PNG:
+                        data = image.pngData() as Data?
+                        break;
                 }
 
                 success = true
