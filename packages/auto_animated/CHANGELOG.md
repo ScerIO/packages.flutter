@@ -1,3 +1,7 @@
+## 1.2.3
+
+* Forvard animation on items count changed in `AutoAnimatedList`
+
 ## 1.2.2 
 
 * Fixed dispose in `AutoAnimatedIconButton`

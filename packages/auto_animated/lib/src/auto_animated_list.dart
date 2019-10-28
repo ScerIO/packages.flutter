@@ -329,6 +329,11 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
   @override
   void initState() {
     super.initState();
+    init();
+  }
+
+  void init() {
+    _itemsCount = 0;
     Future.delayed(widget.delay, () {
       _timer = Timer.periodic(widget.showItemInterval, (Timer timer) {
         if (_itemsCount == widget.itemCount || !mounted) {
@@ -340,6 +345,14 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
         );
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(AutoAnimatedList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.itemCount != widget.itemCount) {
+      init();
+    }
   }
 
   @override
