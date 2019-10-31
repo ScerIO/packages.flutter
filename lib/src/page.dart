@@ -1,8 +1,8 @@
-import 'dart:core';
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import 'package:native_pdf_renderer/document.dart';
-import 'package:native_pdf_renderer/page_image.dart';
+import './document.dart';
+import './page_image.dart';
 
 class PDFPage {
   static const MethodChannel _channel =
@@ -12,8 +12,15 @@ class PDFPage {
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when opening page.
   final String id;
+
+  /// Page number in document.
+  /// Starts from 1.
   final int pageNumber;
+
+  /// Page source width in pixels
   final int width;
+
+  /// Page source height in pixels
   final int height;
 
   PDFPage({this.document, this.id, this.pageNumber, this.width, this.height});

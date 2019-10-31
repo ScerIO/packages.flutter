@@ -1,15 +1,23 @@
-import 'dart:core';
+import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
-import 'package:native_pdf_renderer/page.dart';
+import './page.dart';
 
 class PDFDocument {
   static const MethodChannel _channel =
       const MethodChannel('io.scer.pdf.renderer');
 
+  /// Neded for toString method
+  /// Сontains a method for opening a document (file, data or asset)
   final String sourceName;
+
+  /// Document unique id.
+  /// Generated when opening document.
   final String id;
+
+  /// All pages count in document.
+  /// Starts from 1.
   final int pagesCount;
 
   final List<PDFPage> _pages;
@@ -20,12 +28,8 @@ class PDFDocument {
     this.pagesCount,
   }) : _pages = List<PDFPage>(pagesCount);
 
-  void dispose() {
-    _close();
-  }
-
-  void _close() {
-    _channel.invokeMethod('close.document', id);
+  Future<void> close() {
+    return _channel.invokeMethod('close.document', id);
   }
 
   static PDFDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>

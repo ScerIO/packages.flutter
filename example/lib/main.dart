@@ -6,11 +6,12 @@ void main() async {
   try {
     final document = await PDFDocument.openAsset('assets/sample.pdf');
     final page = await document.getPage(1);
-    final pageImage = await page.render(width: page.width, height: page.height);
+    final pageImage =
+        await page.render(width: page.width * 2, height: page.height * 2);
     await page.close();
     final page2 = await document.getPage(2);
     final page2Image =
-        await page2.render(width: page2.width, height: page2.height);
+        await page2.render(width: page2.width * 2, height: page2.height * 2);
     await page2.close();
     runApp(MaterialApp(
       home: Scaffold(

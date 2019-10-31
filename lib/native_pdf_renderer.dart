@@ -1,3 +1,3 @@
-export './document.dart';
-export './page.dart';
-export './page_image.dart';
+export './src/document.dart';
+export './src/page.dart';
+export './src/page_image.dart';
