@@ -4,6 +4,9 @@ Flutter Plugin to render a PDF file. Supports both Android and iOS.
 
 ## Getting Started
 In your flutter project add the dependency:
+
+[![pub package](https://img.shields.io/pub/v/native_pdf_view.svg)](https://pub.dartlang.org/packages/native_pdf_view)
+
 ```dart
 dependencies:
   ...

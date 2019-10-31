@@ -9,7 +9,6 @@ import 'package:photo_view/photo_view.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   Future<File> createFileOfPdfUrl() async {
     final url = "http://www.pdf995.com/samples/pdf.pdf";
     final filename = url.substring(url.lastIndexOf("/") + 1);
@@ -29,14 +28,14 @@ class MyApp extends StatelessWidget {
       isAsset: false,
       pdfFile: path,
       pageBuilder: (imageFile) => PhotoView(
-        imageProvider: FileImage(imageFile),
-        initialScale: .40,
-        maxScale: 1.75,
-        minScale: .40,
-        backgroundDecoration: BoxDecoration(
-          color: Colors.white,
-        ),
-      ),
+            imageProvider: FileImage(imageFile),
+            initialScale: .40,
+            maxScale: 1.75,
+            minScale: .40,
+            backgroundDecoration: BoxDecoration(
+              color: Colors.white,
+            ),
+          ),
     );
   }
 
@@ -55,7 +54,9 @@ class MyApp extends StatelessWidget {
                 return pdfView(snapshot.data.path);
               }
 
-              return Center(child: CircularProgressIndicator(),);
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             },
           ),
         ),

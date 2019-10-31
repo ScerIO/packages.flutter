@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'dart:io' show File;
 
 import 'package:flutter/services.dart';
@@ -11,7 +12,8 @@ class PDFRenderer {
     @required String pdfFile,
     bool isAsset = false,
   }) async {
-    final Iterable result = await _channel.invokeMethod('renderPdf', <String, dynamic>{
+    final Iterable result =
+        await _channel.invokeMethod('renderPdf', <String, dynamic>{
       'path': pdfFile,
       'isAsset': isAsset,
     });

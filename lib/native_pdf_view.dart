@@ -21,16 +21,17 @@ class NativePDFView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: PDFRenderer.renderPdf(pdfFile: pdfFile ,isAsset: isAsset),
+      future: PDFRenderer.renderPdf(pdfFile: pdfFile, isAsset: isAsset),
       builder: (BuildContext context, AsyncSnapshot<List<File>> snapshot) {
         if (snapshot.hasData)
           return PageView(
             children: snapshot.data.map(pageBuilder).toList(),
           );
 
-        return loader ?? Center(
-          child: CircularProgressIndicator(),
-        );
+        return loader ??
+            Center(
+              child: CircularProgressIndicator(),
+            );
       },
     );
   }
