@@ -1,6 +1,9 @@
 # native_pdf_view
 
-Flutter Plugin to render a PDF file. Supports both Android and iOS.
+*Attention! Doth use this plugin, It is in early development and full of errors.*
+Use [native_pdf_renderer](../native_pdf_renderer/README.md) instead
+
+Flutter Plugin to render and show a PDF file . Supports both Android and iOS.
 
 ## Getting Started
 In your flutter project add the dependency:
