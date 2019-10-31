@@ -18,41 +18,6 @@ For help getting started with Flutter, view the online [documentation](https://f
 Import `native_pdf_view.dart`
 ```dart
 import 'package:native_pdf_view/native_pdf_view.dart';
-import 'package:photo_view/photo_view.dart';
-
-// Load from asset
-Widget pdfViewAsset(String path) {
-  return NativePDFView(
-    pdfFile: 'assets/sample.pdf',
-    isAsset: true,
-    pageBuilder: (imageFile) => PhotoView(
-      imageProvider: FileImage(imageFile),
-      initialScale: .40,
-      maxScale: 1.75,
-      minScale: .40,
-      backgroundDecoration: BoxDecoration(
-        color: Colors.white,
-      ),
-    ),
-  );
-}
-
-// Load from filesystem
-Widget pdfViewFS(String path) {
-  return NativePDFView(
-    pdfFile: 'path/to/pdf/in/file/system/on/you/smartphone',
-    isAsset: false,
-    pageBuilder: (imageFile) => PhotoView(
-      imageProvider: FileImage(imageFile),
-      initialScale: .40,
-      maxScale: 1.75,
-      minScale: .40,
-      backgroundDecoration: BoxDecoration(
-        color: Colors.white,
-      ),
-    ),
-  );
-}
 ```
 
 ## Rendering PDF files on Android devices

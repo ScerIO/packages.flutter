@@ -1,4 +1,3 @@
-import 'dart:core';
 import 'dart:io' show File;
 
 import 'package:flutter/services.dart';

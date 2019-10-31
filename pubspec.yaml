@@ -1,6 +1,6 @@
 name: native_pdf_view
 description: Flutter Plugin to render PDF files on both Android and iOS devices. Provides a Widget to render the pages using a PageView.
-version: 1.0.1
+version: 1.0.2
 author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/native_pdf_view
 
@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.1.6
 
 flutter:
   plugin:
