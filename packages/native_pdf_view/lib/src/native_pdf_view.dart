@@ -1,0 +1,164 @@
+import 'package:flutter/widgets.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+export 'package:native_pdf_renderer/native_pdf_renderer.dart';
+
+typedef PDFViewPageBuilder = Widget Function(
+  PDFPageImage pageImage,
+  bool isCurrentIndex,
+);
+typedef PDFViewPageRenderer = Future<PDFPageImage> Function(PDFPage page);
+
+class PDFView extends StatefulWidget {
+  const PDFView({
+    @required this.document,
+    this.controller,
+    this.loader = const SizedBox(),
+    this.scrollDirection = Axis.horizontal,
+    this.renderer = _render,
+    Key key,
+  })  : assert(document != null),
+        builder = _pageBuilder,
+        super(key: key);
+
+  const PDFView.builder({
+    @required this.document,
+    @required this.builder,
+    this.controller,
+    this.loader = const SizedBox(),
+    this.scrollDirection = Axis.horizontal,
+    this.renderer = _render,
+    Key key,
+  })  : assert(document != null),
+        super(key: key);
+
+  final PDFDocument document;
+  final Widget loader;
+  final Axis scrollDirection;
+  final PDFViewPageBuilder builder;
+  final PDFViewPageRenderer renderer;
+  final PageController controller;
+
+  static Future<PDFPageImage> _render(PDFPage page) => page.render(
+        width: page.width * 2,
+        height: page.height * 2,
+        format: PDFPageFormat.JPEG,
+        backgroundColor: '#ffffff',
+      );
+
+  static const List<double> _doubleTapScales = <double>[1.0, 2.0];
+  static Widget _pageBuilder(PDFPageImage pageImage, bool isCurrentIndex) {
+    Widget image = ExtendedImage.memory(
+      pageImage.bytes,
+      fit: BoxFit.fitWidth,
+      mode: ExtendedImageMode.gesture,
+      initGestureConfigHandler: (_) => GestureConfig(
+        minScale: 1,
+        animationMinScale: .75,
+        maxScale: 2,
+        animationMaxScale: 2.5,
+        speed: 1,
+        inertialSpeed: 100,
+        inPageView: true,
+        initialScale: 1.0,
+        cacheGesture: false,
+      ),
+      onDoubleTap: (ExtendedImageGestureState state) {
+        ///you can use define pointerDownPosition as you can,
+        ///default value is double tap pointer down postion.
+        final pointerDownPosition = state.pointerDownPosition;
+        final begin = state.gestureDetails.totalScale;
+        double end;
+
+        if (begin == _doubleTapScales[0]) {
+          end = _doubleTapScales[1];
+        } else {
+          end = _doubleTapScales[0];
+        }
+
+        state.handleDoubleTap(
+          scale: end,
+          doubleTapPosition: pointerDownPosition,
+        );
+      },
+    );
+    image = Container(
+      child: image,
+      padding: EdgeInsets.all(8.0),
+    );
+    if (isCurrentIndex) {
+      image = Hero(
+        tag: 'pdf_view' + pageImage.pageNumber.toString(),
+        child: image,
+      );
+    }
+    return image;
+  }
+
+  @override
+  _PDFViewState createState() => _PDFViewState();
+}
+
+class _PDFViewState extends State<PDFView> {
+  final Map<int, PDFPageImage> _pages = {};
+  PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    if (widget.controller != null) {
+      _currentIndex = widget.controller.initialPage;
+    } else {
+      _pageController = PageController(initialPage: 0);
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController?.dispose();
+    super.dispose();
+  }
+
+  Future<PDFPageImage> _getPageImage(int pageIndex) async {
+    if (_pages[pageIndex] != null) {
+      return _pages[pageIndex];
+    }
+
+    final page = await widget.document.getPage(pageIndex + 1);
+
+    try {
+      _pages[pageIndex] = await page.render(
+        width: page.width * 2,
+        height: page.height * 2,
+        format: PDFPageFormat.JPEG,
+        backgroundColor: '#ffffff',
+      );
+    } finally {
+      await page.close();
+    }
+
+    return _pages[pageIndex];
+  }
+
+  @override
+  Widget build(BuildContext context) => ExtendedImageGesturePageView.builder(
+        itemBuilder: (BuildContext context, int index) =>
+            FutureBuilder<PDFPageImage>(
+          future: _getPageImage(index),
+          builder: (_, snapshot) {
+            if (snapshot.hasData) {
+              return widget.builder(_pages[index], index == _currentIndex);
+            }
+
+            return widget.loader;
+          },
+        ),
+        itemCount: widget.document.pagesCount,
+        onPageChanged: (int index) {
+          _currentIndex = index;
+        },
+        controller: widget.controller ?? _pageController,
+        scrollDirection: widget.scrollDirection,
+      );
+}

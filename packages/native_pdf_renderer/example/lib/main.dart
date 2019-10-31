@@ -7,25 +7,27 @@ import 'package:native_pdf_renderer_example/has_support.dart';
 void main() => runApp(ExampleApp());
 
 class ExampleApp extends StatelessWidget {
+  Future<PDFDocument> _getDocument() async {
+    if (await hasSupport()) {
+      return PDFDocument.openAsset('assets/sample.pdf');
+    } else {
+      throw Exception(
+        'PDF Rendering does not '
+        'support on the system of this version',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final storage = PagesStorage();
-
-    final test = hasSupport().then((hasSupport) {
-      if (hasSupport) {
-        return PDFDocument.openAsset('assets/sample.pdf');
-      } else {
-        throw Exception('PDF Rendering does not '
-            'supporten on the system of this version');
-      }
-    });
 
     return MaterialApp(
       title: 'PDF View example',
       color: Colors.white,
       home: Scaffold(
         body: FutureBuilder(
-          future: test,
+          future: _getDocument(),
           builder: (context, AsyncSnapshot<PDFDocument> snapshot) {
             if (!snapshot.hasData) {
               return Center(

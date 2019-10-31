@@ -1,8 +1,5 @@
 # native_pdf_view
 
-*Attention! Doth use this plugin, It is in early development and full of errors.*
-Use [native_pdf_renderer](../native_pdf_renderer/README.md) instead
-
 `Flutter` Plugin to render PDF and show a PDF file on both **Android 5.0+** and **iOS 11.0+** devices.
 ## Getting Started
 In your flutter project add the dependency:
@@ -17,9 +14,32 @@ dependencies:
 For help getting started with Flutter, view the online [documentation](https://flutter.io/).
 
 ## Usage example
-Import `native_pdf_view.dart`
+It very simple!
 ```dart
 import 'package:native_pdf_view/native_pdf_view.dart';
+
+Widget pdfView() => FutureBuilder<PDFDocument>(
+  // Open document
+  future: PDFDocument.openAsset('assets/sample.pdf'),
+  builder: (_, snapshot) {
+    if (snapshot.hasData) {
+      // Show document
+      return PDFView(document: snapshot.data);
+    }
+
+    if (snapshot.hasError) {
+      // Catch 
+      return Center(
+        child: Text(
+          'PDF Rendering does not '
+          'support on the system of this version',
+        ),
+      );
+    }
+
+    return Center(child: CircularProgressIndicator());
+  },
+);
 ```
 
 ## Rendering PDF files on Android devices

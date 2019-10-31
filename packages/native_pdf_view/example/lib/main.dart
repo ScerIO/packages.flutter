@@ -1,49 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
 import 'package:native_pdf_view_example/has_support.dart';
-import 'package:photo_view/photo_view.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  Future<PDFDocument> _getDocument() async {
+    if (await hasSupport()) {
+      return PDFDocument.openAsset('assets/sample.pdf');
+    } else {
+      throw Exception(
+        'PDF Rendering does not '
+        'support on the system of this version',
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) => MaterialApp(
+        theme: ThemeData(primaryColor: Colors.white),
         home: Scaffold(
-          appBar: AppBar(
-            title: Text('NativePDFView example app'),
-          ),
-          body: Container(
-            child: FutureBuilder(
-              future: hasSupport(),
-              builder: (_, AsyncSnapshot<bool> snapshot) {
-                if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
+          appBar: AppBar(title: Text('PDFView example')),
+          body: FutureBuilder<PDFDocument>(
+            future: _getDocument(),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                return PDFView(
+                  document: snapshot.data,
+                );
+              }
 
-                if (snapshot.data == false || snapshot.hasError) {
-                  return Center(
-                    child: Text('PDF Rendering does not '
-                        'supporten on the system of this version'),
-                  );
-                }
-
-                return NativePDFView(
-                  pdfFile: 'assets/sample.pdf',
-                  isAsset: true,
-                  pageBuilder: (imageFile) => PhotoView(
-                    imageProvider: FileImage(imageFile),
-                    initialScale: .40,
-                    maxScale: 1.75,
-                    minScale: .40,
-                    backgroundDecoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'PDF Rendering does not '
+                    'support on the system of this version',
                   ),
                 );
-              },
-            ),
+              }
+
+              return Center(child: CircularProgressIndicator());
+            },
           ),
         ),
       );
