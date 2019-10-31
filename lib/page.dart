@@ -1,3 +1,4 @@
+import 'dart:core';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 import 'package:native_pdf_renderer/document.dart';
