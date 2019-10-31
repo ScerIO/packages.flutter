@@ -1,6 +1,4 @@
-# Flutter plugins
-
-Common plugins for flutter framework
+<img src=".github/MEDIA/logo.png" alt="Flutter plugins" width="100%">
 
 ## Available plugins
 
