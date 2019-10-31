@@ -1,3 +1,7 @@
+## 1.1.1
+
+* Fix compilation error on pure android Java projects (#1)
+
 ## 1.1.0
 
 * Transferred sources to `src` directory

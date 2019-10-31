@@ -32,7 +32,7 @@ void main() async {
       MaterialApp(
         home: Scaffold(
           body: Center(
-            Image(
+            child: Image(
               image: MemoryImage(pageImage.bytes),
             ),
           ),
