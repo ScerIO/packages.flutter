@@ -50,6 +50,7 @@ class PDFPageImage {
   /// [crop] - render only the necessary part of the image
   static Future<PDFPageImage> render({
     @required String pageId,
+    @required int pageNumber,
     @required int width,
     @required int height,
     @required PDFPageFormat format,
@@ -84,7 +85,7 @@ class PDFPageImage {
 
     return PDFPageImage._(
       id: pageId,
-      pageNumber: obj['pageNumber'] as int,
+      pageNumber: pageNumber,
       width: retWidth,
       height: retHeight,
       bytes: pixels,

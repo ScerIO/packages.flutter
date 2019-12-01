@@ -15,8 +15,8 @@ class PDFDocument {
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
 
-  /// Neded for toString method
-  /// Сontains a method for opening a document (file, data or asset)
+  /// Needed for toString method
+  /// Contains a method for opening a document (file, data or asset)
   final String sourceName;
 
   /// Document unique id.
@@ -81,7 +81,7 @@ class PDFDocument {
       throw PdfDocumentAlreadyClosedException();
     }
     if (pageNumber < 1 || pageNumber > pagesCount) {
-      return null;
+      throw PdfPageNotFoundException();
     }
     final obj = await _channel.invokeMethod<Map<dynamic, dynamic>>(
       'open.page',
@@ -113,4 +113,9 @@ class PDFDocument {
 class PdfDocumentAlreadyClosedException implements Exception {
   @override
   String toString() => '$runtimeType: Document already closed';
+}
+
+class PdfPageNotFoundException implements Exception {
+  @override
+  String toString() => '$runtimeType: Page is not in the document';
 }

@@ -10,8 +10,7 @@ final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 
 void main() {
   final List<MethodCall> log = <MethodCall>[];
-  final Map<String, bool> openedDocumentsIds = {};
-  final Map<String, PDFDocument> openedDocuments = {};
+  PDFDocument document;
 
   setUpAll(() async {
     MethodChannel('io.scer.pdf.renderer')
@@ -19,26 +18,36 @@ void main() {
       log.add(methodCall);
       switch (methodCall.method) {
         case 'open.document.file':
-          openedDocumentsIds['uuid-file'] = true;
           return {
             'id': 'uuid-file',
-            'pagesCount': 2,
+            'pagesCount': 1,
           };
         case 'open.document.asset':
-          openedDocumentsIds['uuid-asset'] = true;
           return {
             'id': 'uuid-asset',
             'pagesCount': 2,
           };
         case 'open.document.data':
-          openedDocumentsIds['uuid-data'] = true;
           return {
             'id': 'uuid-data',
-            'pagesCount': 2,
+            'pagesCount': 3,
           };
         case 'close.document':
-          openedDocumentsIds.remove(methodCall.arguments);
           return null;
+        case 'open.page':
+          return {
+            'id': 'page-id',
+            'width': 720,
+            'height': 1280,
+          };
+        case 'close.page':
+          return null;
+        case 'render':
+          return {
+            'width': methodCall.arguments['width'],
+            'height': methodCall.arguments['height'],
+            'data': _testData,
+          };
         default:
           return null;
       }
@@ -47,48 +56,128 @@ void main() {
 
   tearDown(log.clear);
 
-  test('Open document from file path', () async {
-    final document = await PDFDocument.openFile(_testFilePath);
-    expect(log, <Matcher>[
-      isMethodCall(
-        'open.document.file',
-        arguments: _testFilePath,
-      ),
-    ]);
-    expect(openedDocumentsIds['uuid-file'], isTrue);
-    openedDocuments['file'] = document;
+  group('Open document', () {
+    test('from file path', () async {
+      final document = await PDFDocument.openFile(_testFilePath);
+      expect(log, <Matcher>[
+        isMethodCall(
+          'open.document.file',
+          arguments: _testFilePath,
+        ),
+      ]);
+      expect(document.pagesCount, 1);
+    });
+
+    test('from asset', () async {
+      final document = await PDFDocument.openAsset(_testAssetPath);
+      expect(log, <Matcher>[
+        isMethodCall(
+          'open.document.asset',
+          arguments: _testAssetPath,
+        ),
+      ]);
+      expect(document.pagesCount, 2);
+      await document.close();
+      expect(document.isClosed, isTrue);
+    });
+
+    test('from data', () async {
+      document = await PDFDocument.openData(_testData);
+      expect(log, <Matcher>[
+        isMethodCall(
+          'open.document.data',
+          arguments: _testData,
+        ),
+      ]);
+      expect(document.pagesCount, 3);
+    });
   });
 
-  test('Open document from asset', () async {
-    final document = await PDFDocument.openAsset(_testAssetPath);
-    expect(log, <Matcher>[
-      isMethodCall(
-        'open.document.asset',
-        arguments: _testAssetPath,
-      ),
-    ]);
-    expect(openedDocumentsIds['uuid-asset'], isTrue);
-    openedDocuments['asset'] = document;
-  });
+  group('Page', () {
+    PDFPage page;
 
-  test('Open document from data', () async {
-    final document = await PDFDocument.openData(_testData);
-    expect(log, <Matcher>[
-      isMethodCall(
-        'open.document.data',
-        arguments: _testData,
-      ),
-    ]);
-    expect(openedDocumentsIds['uuid-data'], isTrue);
-    openedDocuments['data'] = document;
+    test('open', () async {
+      // page number 0 - not available
+      expect(document.getPage(0), throwsA(isInstanceOf<PdfPageNotFound>()));
+
+      page = await document.getPage(3);
+      expect(log, <Matcher>[
+        isMethodCall(
+          'open.page',
+          arguments: {
+            'documentId': 'uuid-data',
+            'page': 3,
+          },
+        ),
+      ]);
+      expect(page.pageNumber, 3);
+      expect(page.height, 1280);
+      expect(page.width, 720);
+
+      expect(page.document, document);
+
+      // page number 4 more than the document
+      expect(document.getPage(4), throwsA(isInstanceOf<PdfPageNotFound>()));
+    });
+
+    test('render', () async {
+      final width = page.width * 2, height = page.height * 2;
+      final pageImage = await page.render(
+        width: width,
+        height: height,
+        format: PDFPageFormat.JPEG,
+        backgroundColor: '#ffffff',
+      );
+
+      expect(log, <Matcher>[
+        isMethodCall(
+          'render',
+          arguments: {
+            'pageId': page.id,
+            'width': width,
+            'height': height,
+            'format': PDFPageFormat.JPEG.value,
+            'backgroundColor': '#ffffff',
+            'crop': false,
+            'crop_x': null,
+            'crop_y': null,
+            'crop_height': null,
+            'crop_width': null
+          },
+        ),
+      ]);
+
+      expect(pageImage.bytes, _testData);
+      expect(pageImage.format, PDFPageFormat.JPEG);
+      expect(pageImage.width, width);
+      expect(pageImage.height, height);
+      expect(pageImage.pageNumber, page.pageNumber);
+    });
+
+    test('close', () async {
+      await page.close();
+      expect(page.isClosed, isTrue);
+      expect(
+        page.close,
+        throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
+      );
+      expect(
+        page.render,
+        throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
+      );
+    });
   });
 
   test('Close document', () async {
-    await openedDocuments['asset'].close();
-    expect(openedDocuments['asset'].isClosed, isTrue);
-    await openedDocuments['data'].close();
-    expect(openedDocuments['data'].isClosed, isTrue);
-    expect(openedDocuments['asset'].close,
-        throwsA(isInstanceOf<PdfDocumentAlreadyClosedException>()));
+    await document.close();
+    expect(document.isClosed, isTrue);
+    expect(
+      document.close,
+      throwsA(isInstanceOf<PdfDocumentAlreadyClosedException>()),
+    );
+    expect(
+      document.getPage(1),
+      throwsA(isInstanceOf<PdfDocumentAlreadyClosedException>()),
+    );
   });
 }

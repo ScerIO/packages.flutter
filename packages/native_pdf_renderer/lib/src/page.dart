@@ -108,6 +108,7 @@ class PDFPage {
 
     return PDFPageImage.render(
       pageId: id,
+      pageNumber: pageNumber,
       width: width,
       height: height,
       format: format,

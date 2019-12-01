@@ -1,3 +1,9 @@
+## 1.6.1
+
+* Added more tests
+* Fixed `PDFPageImage.pageNumber` always returns `null`
+* If page not in document throws `PdfPageNotFoundException`
+
 ## 1.6.0 
 
 * Added more documentation for public properties and methods
