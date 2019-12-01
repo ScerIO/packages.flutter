@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:auto_animated_example/screens/icon_button.dart';
 import 'package:auto_animated_example/screens/list.dart';
+import 'package:auto_animated_example/screens/sliver.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,6 +25,7 @@ class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
   final List<Widget> _children = [
     AutoAnimatedListExample(),
+    SliverExample(),
     AutoAnimatedIconButtonExample(),
   ];
 
@@ -44,6 +46,10 @@ class _MyAppState extends State<MyApp> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
                 title: Text('List'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.view_day),
+                title: Text('Sliver'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.check_circle),

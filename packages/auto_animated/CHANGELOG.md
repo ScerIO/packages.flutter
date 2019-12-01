@@ -1,3 +1,7 @@
+## 1.3.0-dev.1
+
+* Added `AutoAnimatedSliverList`
+
 ## 1.2.3
 
 * Forvard animation on items count changed in `AutoAnimatedList`

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
+import 'package:auto_animated_example/utils.dart';
 
 class AutoAnimatedListExample extends StatelessWidget {
   @override
@@ -61,27 +62,7 @@ class HorizontalExample extends StatelessWidget {
           ).animate(animation),
           child: Padding(
             padding: EdgeInsets.only(right: 32),
-            child: _buildCard(index.toString()),
-          ),
-        ),
-      );
-
-  /// UI item for showing
-  Widget _buildCard(String text) => Builder(
-        builder: (context) => Container(
-          width: 140,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: Material(
-              color: Theme.of(context).colorScheme.secondary,
-              child: Center(
-                child: Text(
-                  text,
-                  style: Theme.of(context).textTheme.display1.copyWith(
-                      color: Theme.of(context).colorScheme.onSecondary),
-                ),
-              ),
-            ),
+            child: HorizontalItem(title: index.toString()),
           ),
         ),
       );
@@ -115,25 +96,7 @@ class VerticalExample extends StatelessWidget {
             begin: Offset(0, -0.1),
             end: Offset.zero,
           ).animate(animation),
-          child: _buildCard(index.toString()),
-        ),
-      );
-
-  /// UI item for showing
-  Widget _buildCard(String text) => Builder(
-        builder: (context) => Container(
-          margin: EdgeInsets.only(bottom: 8),
-          color: Theme.of(context).colorScheme.secondary,
-          child: ListTile(
-            leading: FlutterLogo(
-              colors: Colors.pink,
-            ),
-            title: Text(
-              '$text a long title',
-              style:
-                  TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-            ),
-          ),
+          child: VerticalItem(title: index.toString()),
         ),
       );
 }

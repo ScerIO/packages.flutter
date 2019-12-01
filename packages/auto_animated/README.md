@@ -3,6 +3,7 @@
 Auto animated widgets for flutter 
 Already added:
 - `AutoAnimatedList`
+- `AutoAnimatedSliverList`
 - `AutoAnimatedIconButton`
 
 ## Screenshots
