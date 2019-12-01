@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
+export 'package:extended_image/extended_image.dart';
 
 typedef PDFViewPageBuilder = Widget Function(
   PDFPageImage pageImage,
@@ -9,6 +10,7 @@ typedef PDFViewPageBuilder = Widget Function(
 );
 typedef PDFViewPageRenderer = Future<PDFPageImage> Function(PDFPage page);
 
+/// Widget for viewing PDF documents
 class PDFView extends StatefulWidget {
   const PDFView({
     @required this.document,
@@ -32,13 +34,25 @@ class PDFView extends StatefulWidget {
   })  : assert(document != null),
         super(key: key);
 
+  /// The document to be displayed
   final PDFDocument document;
+
+  /// Widget showing pdf page loading
   final Widget loader;
+
+  /// Page turning direction
   final Axis scrollDirection;
+
+  /// Page builder. Available in PDFView.builder
   final PDFViewPageBuilder builder;
+
+  /// Custom PdfRenderer options
   final PDFViewPageRenderer renderer;
+
+  /// Page management
   final PageController controller;
 
+  /// Default PdfRenderer options
   static Future<PDFPageImage> _render(PDFPage page) => page.render(
         width: page.width * 2,
         height: page.height * 2,
@@ -47,6 +61,8 @@ class PDFView extends StatefulWidget {
       );
 
   static const List<double> _doubleTapScales = <double>[1.0, 2.0];
+
+  /// Default page builder
   static Widget _pageBuilder(PDFPageImage pageImage, bool isCurrentIndex) {
     Widget image = ExtendedImage.memory(
       pageImage.bytes,
@@ -65,7 +81,7 @@ class PDFView extends StatefulWidget {
       ),
       onDoubleTap: (ExtendedImageGestureState state) {
         ///you can use define pointerDownPosition as you can,
-        ///default value is double tap pointer down postion.
+        ///default value is double tap pointer down position.
         final pointerDownPosition = state.pointerDownPosition;
         final begin = state.gestureDetails.totalScale;
         double end;
@@ -81,10 +97,6 @@ class PDFView extends StatefulWidget {
           doubleTapPosition: pointerDownPosition,
         );
       },
-    );
-    image = Container(
-      child: image,
-      padding: EdgeInsets.all(8.0),
     );
     if (isCurrentIndex) {
       image = Hero(
