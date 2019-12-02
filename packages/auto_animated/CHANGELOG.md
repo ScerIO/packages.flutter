@@ -1,3 +1,8 @@
+## 1.3.0-dev.2
+
+* Added `AutoAnimatedGrid`
+* Added `AutoAnimatedSliverGrid`
+
 ## 1.3.0-dev.1
 
 * Added `AutoAnimatedSliverList`

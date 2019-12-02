@@ -1,3 +1,4 @@
+import 'package:auto_animated_example/screens/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:auto_animated_example/screens/icon_button.dart';
@@ -25,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
   final List<Widget> _children = [
     AutoAnimatedListExample(),
+    AutoAnimatedGridExample(),
     SliverExample(),
     AutoAnimatedIconButtonExample(),
   ];
@@ -37,15 +39,24 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        home: Scaffold(
+        theme: ThemeData(
           backgroundColor: Colors.grey[100],
+          scaffoldBackgroundColor: Colors.grey[100],
+        ),
+        home: Scaffold(
           body: _children[_selectedIndex],
           bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: Colors.blue,
+            unselectedItemColor: Colors.grey,
             backgroundColor: Colors.white,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
                 title: Text('List'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.grid_on),
+                title: Text('Grid'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.view_day),

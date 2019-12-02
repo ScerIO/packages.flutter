@@ -7,11 +7,13 @@ import 'list_animation.dart';
 
 const Duration _kDuration = Duration(milliseconds: 300);
 
-class AutoAnimatedSliverList extends StatefulWidget {
+class AutoAnimatedSliverGrid extends StatefulWidget {
   ///  when they are inserted or removed.
-  const AutoAnimatedSliverList({
+  const AutoAnimatedSliverGrid({
     @required
         this.itemBuilder,
+    @required
+        this.gridDelegate,
     Key key,
     this.delay = Duration.zero,
     this.reverse = false,
@@ -64,14 +66,22 @@ class AutoAnimatedSliverList extends StatefulWidget {
   /// Defaults to false.
   final bool reverse;
 
+  /// A delegate that controls the layout of the children within the [GridView].
+  ///
+  /// The [GridView], [GridView.builder], and [GridView.custom]
+  /// constructors let you specify this
+  /// delegate explicitly. The other constructors create a [gridDelegate]
+  /// implicitly.
+  final SliverGridDelegate gridDelegate;
+
   @override
-  _AutoAnimatedSliverListState createState() => _AutoAnimatedSliverListState();
+  _AutoAnimatedSliverGridState createState() => _AutoAnimatedSliverGridState();
 }
 
-class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
+class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
     with
-        TickerProviderStateMixin<AutoAnimatedSliverList>,
-        ListAnimation<AutoAnimatedSliverList> {
+        TickerProviderStateMixin<AutoAnimatedSliverGrid>,
+        ListAnimation<AutoAnimatedSliverGrid> {
   Timer _timer;
 
   @override
@@ -96,7 +106,7 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
   }
 
   @override
-  void didUpdateWidget(AutoAnimatedSliverList oldWidget) {
+  void didUpdateWidget(AutoAnimatedSliverGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.itemCount != widget.itemCount) {
       init();
@@ -129,11 +139,12 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
   }
 
   @override
-  Widget build(BuildContext context) => SliverList(
+  Widget build(BuildContext context) => SliverGrid(
         delegate: SliverChildBuilderDelegate(
           _itemBuilder,
           childCount: itemsCount,
         ),
+        gridDelegate: widget.gridDelegate,
       );
 
   @override

@@ -9,7 +9,6 @@ class AutoAnimatedListExample extends StatelessWidget {
         Theme.of(context).textTheme.title.copyWith(color: Colors.black);
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Column(
           children: <Widget>[
@@ -41,30 +40,8 @@ class HorizontalExample extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
         scrollDirection: Axis.horizontal,
         itemCount: 10,
-        itemBuilder: _buildAnimatedItem,
-      );
-
-  /// Wrap Ui item with animation & padding
-  Widget _buildAnimatedItem(
-    BuildContext context,
-    int index,
-    Animation<double> animation,
-  ) =>
-      FadeTransition(
-        opacity: Tween<double>(
-          begin: 0,
-          end: 1,
-        ).animate(animation),
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: Offset(0, -0.1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: Padding(
-            padding: EdgeInsets.only(right: 32),
-            child: HorizontalItem(title: index.toString()),
-          ),
-        ),
+        itemBuilder: animationItemBuilder(
+            (index) => HorizontalItem(title: index.toString())),
       );
 }
 
@@ -77,26 +54,7 @@ class VerticalExample extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
         scrollDirection: Axis.vertical,
         itemCount: 10,
-        itemBuilder: _buildAnimatedItem,
-      );
-
-  /// Wrap Ui item with animation & padding
-  Widget _buildAnimatedItem(
-    BuildContext context,
-    int index,
-    Animation<double> animation,
-  ) =>
-      FadeTransition(
-        opacity: Tween<double>(
-          begin: 0,
-          end: 1,
-        ).animate(animation),
-        child: SlideTransition(
-          position: Tween<Offset>(
-            begin: Offset(0, -0.1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: VerticalItem(title: index.toString()),
-        ),
+        itemBuilder: animationItemBuilder(
+            (index) => VerticalItem(title: index.toString())),
       );
 }

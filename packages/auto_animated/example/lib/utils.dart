@@ -10,8 +10,10 @@ class VerticalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: EdgeInsets.only(bottom: 8),
-        color: Theme.of(context).colorScheme.secondary,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
+          borderRadius: BorderRadius.circular(4),
+        ),
         child: ListTile(
           leading: FlutterLogo(
             colors: Colors.pink,
@@ -52,3 +54,30 @@ class HorizontalItem extends StatelessWidget {
         ),
       );
 }
+
+/// Wrap Ui item with animation & padding
+Widget Function(
+  BuildContext context,
+  int index,
+  Animation<double> animation,
+) animationItemBuilder(Widget Function(int index) child) => (
+      BuildContext context,
+      int index,
+      Animation<double> animation,
+    ) =>
+        FadeTransition(
+          opacity: Tween<double>(
+            begin: 0,
+            end: 1,
+          ).animate(animation),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset(0, -0.1),
+              end: Offset.zero,
+            ).animate(animation),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: child(index),
+            ),
+          ),
+        );
