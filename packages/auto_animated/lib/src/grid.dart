@@ -10,11 +10,10 @@ class AutoAnimatedGrid extends StatefulWidget {
   const AutoAnimatedGrid({
     @required this.itemBuilder,
     @required this.gridDelegate,
-    Key key,
+    @required this.itemCount,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
-    this.itemCount = 0,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -25,6 +24,7 @@ class AutoAnimatedGrid extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
+    Key key,
   })  : assert(itemBuilder != null),
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
@@ -207,7 +207,7 @@ class _AutoAnimatedGridViewState extends State<AutoAnimatedGrid>
   @override
   void didUpdateWidget(AutoAnimatedGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemCount != widget.itemCount) {
+    if (widget.itemCount < oldWidget.itemCount) {
       init();
     }
   }

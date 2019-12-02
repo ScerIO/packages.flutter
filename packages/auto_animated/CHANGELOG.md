@@ -1,3 +1,9 @@
+## 1.3.0-dev.3
+
+* Fixed retry animation on items count change
+* Marked `itemCount` required 
+* Removed deprecated props
+
 ## 1.3.0-dev.2
 
 * Added `AutoAnimatedGrid`

@@ -28,16 +28,11 @@ class AutoAnimatedList extends StatefulWidget {
   /// Creates a scrolling container that animates items
   ///  when they are inserted or removed.
   const AutoAnimatedList({
-    @required
-        this.itemBuilder,
-    Key key,
+    @required this.itemBuilder,
+    @required this.itemCount,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
-    @Deprecated('Usage `itemCount` instead '
-        '(without character "s"). Will be deleted in 1.2.0')
-        int itemsCount = 0,
-    int itemCount = 0,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -45,9 +40,8 @@ class AutoAnimatedList extends StatefulWidget {
     this.physics,
     this.shrinkWrap = false,
     this.padding,
+    Key key,
   })  : assert(itemBuilder != null),
-        // ignore: deprecated_member_use_from_same_package
-        itemCount = itemCount ?? itemsCount,
         assert(itemCount != null && itemCount >= 0),
         separatorBuilder = null,
         super(key: key);
@@ -323,7 +317,7 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
   @override
   void didUpdateWidget(AutoAnimatedList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemCount != widget.itemCount) {
+    if (widget.itemCount < oldWidget.itemCount) {
       init();
     }
   }

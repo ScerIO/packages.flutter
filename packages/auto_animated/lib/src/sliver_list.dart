@@ -10,20 +10,14 @@ const Duration _kDuration = Duration(milliseconds: 300);
 class AutoAnimatedSliverList extends StatefulWidget {
   ///  when they are inserted or removed.
   const AutoAnimatedSliverList({
-    @required
-        this.itemBuilder,
-    Key key,
+    @required this.itemBuilder,
+    @required this.itemCount,
     this.delay = Duration.zero,
     this.reverse = false,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
-    @Deprecated('Usage `itemCount` instead '
-        '(without character "s"). Will be deleted in 1.2.0')
-        int itemsCount = 0,
-    int itemCount = 0,
+    Key key,
   })  : assert(itemBuilder != null),
-        // ignore: deprecated_member_use_from_same_package
-        itemCount = itemCount ?? itemsCount,
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
@@ -98,7 +92,7 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
   @override
   void didUpdateWidget(AutoAnimatedSliverList oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.itemCount != widget.itemCount) {
+    if (widget.itemCount < oldWidget.itemCount) {
       init();
     }
   }

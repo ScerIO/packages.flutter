@@ -2,7 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:auto_animated_example/utils.dart';
 
-class AutoAnimatedGridExample extends StatelessWidget {
+class AutoAnimatedGridExample extends StatefulWidget {
+  @override
+  _AutoAnimatedGridExampleState createState() =>
+      _AutoAnimatedGridExampleState();
+}
+
+class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
+  int itemsCount = 10;
+  @override
+  void initState() {
+    Future.delayed(Duration(seconds: 3), () {
+      setState(() {
+        itemsCount += 10;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,7 +27,7 @@ class AutoAnimatedGridExample extends StatelessWidget {
         child: AutoAnimatedGrid(
           showItemInterval: Duration(milliseconds: 500),
           showItemDuration: Duration(seconds: 1),
-          itemCount: 10,
+          itemCount: itemsCount,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
           ),
