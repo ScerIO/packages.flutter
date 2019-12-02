@@ -83,8 +83,8 @@ class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
     init();
   }
 
-  void init() {
-    itemsCount = 0;
+  void init({int from = 0}) {
+    itemsCount = from;
     Future.delayed(widget.delay, () {
       _timer = Timer.periodic(widget.showItemInterval, (Timer timer) {
         if (itemsCount == widget.itemCount || !mounted) {
@@ -103,6 +103,8 @@ class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
     super.didUpdateWidget(oldWidget);
     if (widget.itemCount < oldWidget.itemCount) {
       init();
+    } else if (itemsCount < widget.itemCount && !_timer.isActive) {
+      init(from: itemsCount);
     }
   }
 

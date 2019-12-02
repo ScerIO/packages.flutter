@@ -9,10 +9,10 @@ class AutoAnimatedGridExample extends StatefulWidget {
 }
 
 class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
-  int itemsCount = 10;
+  int itemsCount = 4;
   @override
   void initState() {
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(milliseconds: 500) * 5, () {
       setState(() {
         itemsCount += 10;
       });

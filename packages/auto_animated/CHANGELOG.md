@@ -1,3 +1,7 @@
+## 1.3.0-dev.4
+
+* Fixed items auto additions after animation end
+
 ## 1.3.0-dev.3
 
 * Fixed retry animation on items count change
