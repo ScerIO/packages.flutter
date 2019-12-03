@@ -1,3 +1,7 @@
+## 1.3.0-dev.5
+
+* Fixed error when timer not initialized
+
 ## 1.3.0-dev.4
 
 * Fixed items auto additions after animation end

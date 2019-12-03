@@ -209,7 +209,7 @@ class _AutoAnimatedGridViewState extends State<AutoAnimatedGrid>
     super.didUpdateWidget(oldWidget);
     if (widget.itemCount < oldWidget.itemCount) {
       init();
-    } else if (itemsCount < widget.itemCount && !_timer.isActive) {
+    } else if (itemsCount < widget.itemCount && !(_timer?.isActive ?? true)) {
       init(from: itemsCount);
     }
   }
