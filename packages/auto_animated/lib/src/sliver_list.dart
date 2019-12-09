@@ -98,6 +98,7 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
       init(from: itemsCount);
     }
   }
+
   @override
   void dispose() {
     _timer?.cancel();

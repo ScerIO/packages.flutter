@@ -22,15 +22,15 @@ class _AutoAnimatedIconButtonExampleState
               padding: EdgeInsets.all(16),
               child: AppBar(
                 primary: false,
-              title: Text('Auto animated Icon'),
-              // Implement animated icon
-              leading: AutoAnimatedIconButton(
-                icon: AnimatedIcons.menu_close,
-                firstToolip: 'Menu',
-                secondToolip: 'Close',
-                onPressed: () {},
+                title: Text('Auto animated Icon'),
+                // Implement animated icon
+                leading: AutoAnimatedIconButton(
+                  icon: AnimatedIcons.menu_close,
+                  firstToolip: 'Menu',
+                  secondToolip: 'Close',
+                  onPressed: () {},
+                ),
               ),
-            ),
             ),
             AutoAnimatedIconButton.externalState(
               icon: AnimatedIcons.arrow_menu,

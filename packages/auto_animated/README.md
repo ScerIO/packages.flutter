@@ -10,10 +10,10 @@ Already added:
 
 ## Screenshots
 <p float="left">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/horizontal.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/vertical.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/combined.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/flutter_plugins/raw/master/packages/auto_animated/example/media/icon_button.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/horizontal.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/vertical.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/combined.gif' width="20%" hspace="1%">
+    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/icon_button.gif' width="20%" hspace="1%">
 </p>
 
 ## Getting Started
