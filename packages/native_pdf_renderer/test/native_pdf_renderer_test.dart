@@ -98,7 +98,12 @@ void main() {
 
     test('open', () async {
       // page number 0 - not available
-      expect(document.getPage(0), throwsA(isInstanceOf<PdfPageNotFound>()));
+      expect(
+        document.getPage(0),
+        throwsA(
+          isInstanceOf<PdfNotSupportException>(),
+        ),
+      );
 
       page = await document.getPage(3);
       expect(log, <Matcher>[
@@ -117,7 +122,12 @@ void main() {
       expect(page.document, document);
 
       // page number 4 more than the document
-      expect(document.getPage(4), throwsA(isInstanceOf<PdfPageNotFound>()));
+      expect(
+        document.getPage(4),
+        throwsA(
+          isInstanceOf<PdfNotSupportException>(),
+        ),
+      );
     });
 
     test('render', () async {

@@ -15,6 +15,7 @@ class PDFView extends StatefulWidget {
   const PDFView({
     @required this.document,
     this.controller,
+    this.onPageChanged,
     this.loader = const SizedBox(),
     this.scrollDirection = Axis.horizontal,
     this.renderer = _render,
@@ -27,6 +28,7 @@ class PDFView extends StatefulWidget {
     @required this.document,
     @required this.builder,
     this.controller,
+    this.onPageChanged,
     this.loader = const SizedBox(),
     this.scrollDirection = Axis.horizontal,
     this.renderer = _render,
@@ -51,6 +53,9 @@ class PDFView extends StatefulWidget {
 
   /// Page management
   final PageController controller;
+
+  /// Called whenever the page in the center of the viewport changes
+  final void Function(int page) onPageChanged;
 
   /// Default PdfRenderer options
   static Future<PDFPageImage> _render(PDFPage page) => page.render(
@@ -169,6 +174,7 @@ class _PDFViewState extends State<PDFView> {
         itemCount: widget.document.pagesCount,
         onPageChanged: (int index) {
           _currentIndex = index;
+          widget.onPageChanged?.call(index+1);
         },
         controller: widget.controller ?? _pageController,
         scrollDirection: widget.scrollDirection,

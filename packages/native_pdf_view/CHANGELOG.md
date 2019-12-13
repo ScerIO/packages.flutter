@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Added `onPageChanged` callback
+
 ## 2.0.0
 
 * Removed default padding
