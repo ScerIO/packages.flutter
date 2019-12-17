@@ -174,7 +174,7 @@ class _PDFViewState extends State<PDFView> {
         itemCount: widget.document.pagesCount,
         onPageChanged: (int index) {
           _currentIndex = index;
-          widget.onPageChanged?.call(index+1);
+          widget.onPageChanged?.call(index + 1);
         },
         controller: widget.controller ?? _pageController,
         scrollDirection: widget.scrollDirection,

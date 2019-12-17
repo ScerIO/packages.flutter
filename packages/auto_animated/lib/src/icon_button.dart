@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 enum IconState { first, second }
 
-///Creates an AnimatedIcon which is automaically animated.
+///Creates an AnimatedIcon which is automatically animated.
 ///
 ///The [icon] and [onPressed] are required.
 ///[icon] cannot be null.
@@ -32,8 +32,8 @@ class AutoAnimatedIconButton extends StatefulWidget {
     this.focusNode,
     this.semanticLabel,
     this.textDirection,
-    this.firstToolip,
-    this.secondToolip,
+    this.firstTooltip,
+    this.secondTooltip,
   })  : iconState = null,
         super(key: key);
 
@@ -55,15 +55,15 @@ class AutoAnimatedIconButton extends StatefulWidget {
     this.focusNode,
     this.semanticLabel,
     this.textDirection,
-    this.firstToolip,
-    this.secondToolip,
+    this.firstTooltip,
+    this.secondTooltip,
   }) : super(key: key);
 
   final AnimatedIconData icon;
   final Function onPressed;
   final Duration duration;
   final Color splashColor, hoverColor;
-  final String firstToolip, secondToolip, semanticLabel;
+  final String firstTooltip, secondTooltip, semanticLabel;
   final double size;
   final EdgeInsetsGeometry padding;
   final AlignmentGeometry alignment;
@@ -134,7 +134,7 @@ class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
         onPressed: _onPressed,
         splashColor: widget.splashColor,
         hoverColor: widget.hoverColor,
-        tooltip: !_isPressed ? widget.firstToolip : widget.secondToolip,
+        tooltip: !_isPressed ? widget.firstTooltip : widget.secondTooltip,
         iconSize: widget.size,
         padding: widget.padding,
         alignment: widget.alignment,

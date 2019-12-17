@@ -22,15 +22,17 @@ class SliverExample extends StatelessWidget {
               SliverPadding(
                 padding: EdgeInsets.all(16),
                 sliver: AutoAnimatedSliverGrid(
-                    delay: Duration(milliseconds: 500) * 4,
-                    showItemInterval: Duration(milliseconds: 500),
-                    showItemDuration: Duration(seconds: 1),
-                    itemCount: 6,
-                    itemBuilder: animationItemBuilder(
-                        (index) => HorizontalItem(title: index.toString())),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                    )),
+                  delay: Duration(milliseconds: 500) * 4,
+                  showItemInterval: Duration(milliseconds: 500),
+                  showItemDuration: Duration(seconds: 1),
+                  itemCount: 6,
+                  itemBuilder: animationItemBuilder(
+                    (index) => HorizontalItem(title: index.toString()),
+                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                  ),
+                ),
               )
             ],
           ),

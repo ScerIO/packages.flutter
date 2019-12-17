@@ -1,3 +1,7 @@
+## 1.3.0
+
+* Fixed lexical error in `AutoAnimatedIconButton` (`firstToolip` & `secondToolip` renamed to `firstTooltip` & secondTooltip)
+
 ## 1.3.0-dev.5
 
 * Fixed error when timer not initialized

@@ -64,9 +64,26 @@ Widget _buildAnimatedItem(
                 end: Offset.zero,
             ).animate(animation),
             // Paste you Widget
-            child: YouWidgetHere(),
+            child: YouWidgetHere(title: index.toString()),
         ),
     )
+```
+
+## `AutoAnimatedSliverGrid` usage example
+
+```dart
+AutoAnimatedSliverGrid(
+  delay: Duration(milliseconds: 500) * 4,
+  showItemInterval: Duration(milliseconds: 500),
+  showItemDuration: Duration(seconds: 1),
+  itemCount: 6,
+  itemBuilder: animationItemBuilder(
+    (index) => YouWidgetHere(title: index.toString()),
+  ),
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 3,
+  ),
+)
 ```
 
 ## `AutoAnimatedIconButton` usage example
@@ -77,11 +94,11 @@ AutoAnimatedIconButton(
     onPressed: () {},
 )
 ```
-### With separate toolips
+### With separate tooltips
 ```dart
 AutoAnimatedIconButton(
     icon: AnimatedIcons.arrow_menu,
-    firstToolip: 'Event',
-    secondToolip: 'Add',
+    firstTooltip: 'Event',
+    secondTooltip: 'Add',
 )
 ```

@@ -13,6 +13,9 @@ class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 500) * 5, () {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         itemsCount += 10;
       });
@@ -21,20 +24,18 @@ class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: AutoAnimatedGrid(
-          showItemInterval: Duration(milliseconds: 500),
-          showItemDuration: Duration(seconds: 1),
-          itemCount: itemsCount,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+  Widget build(BuildContext context) => Scaffold(
+        body: SafeArea(
+          child: AutoAnimatedGrid(
+            showItemInterval: Duration(milliseconds: 500),
+            showItemDuration: Duration(seconds: 1),
+            itemCount: itemsCount,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+            itemBuilder: animationItemBuilder(
+                (index) => HorizontalItem(title: index.toString())),
           ),
-          itemBuilder: animationItemBuilder(
-              (index) => HorizontalItem(title: index.toString())),
         ),
-      ),
-    );
-  }
+      );
 }
