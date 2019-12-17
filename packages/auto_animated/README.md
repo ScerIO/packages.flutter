@@ -7,6 +7,7 @@ Already added:
 - `AutoAnimatedGrid`
 - `AutoAnimatedSliverGrid`
 - `AutoAnimatedIconButton`
+- `AnimateOnVisibilityChange`
 
 ## Screenshots
 <p float="left">
@@ -21,7 +22,7 @@ In your flutter project add the dependency:
 
 [![pub package](https://img.shields.io/pub/v/auto_animated.svg)](https://pub.dartlang.org/packages/auto_animated)
 
-```dart
+```yaml
 dependencies:
   ...
   auto_animated: any

@@ -9,7 +9,7 @@ In your flutter project add the dependency:
 
 [![pub package](https://img.shields.io/pub/v/native_pdf_renderer.svg)](https://pub.dartlang.org/packages/native_pdf_renderer)
 
-```dart
+```yaml
 dependencies:
   ...
   native_pdf_renderer: any

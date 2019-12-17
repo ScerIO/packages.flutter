@@ -1,3 +1,4 @@
+import 'package:auto_animated_example/screens/animate_on_visibility.dart';
 import 'package:auto_animated_example/screens/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,6 +30,7 @@ class _MyAppState extends State<MyApp> {
     AutoAnimatedGridExample(),
     SliverExample(),
     AutoAnimatedIconButtonExample(),
+    AnimateOnVisibilityExample(),
   ];
 
   void _onItemTapped(int index) {
@@ -65,6 +67,10 @@ class _MyAppState extends State<MyApp> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.check_circle),
                 title: Text('IconButton'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.remove_red_eye),
+                title: Text('On visibility'),
               ),
             ],
             currentIndex: _selectedIndex,

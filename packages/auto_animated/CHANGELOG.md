@@ -1,3 +1,7 @@
+## 1.4.0-dev.1
+
+* Added `AnimateOnVisibilityChange` & `AnimateOnVisibilityWrapper`
+
 ## 1.3.0
 
 * Fixed lexical error in `AutoAnimatedIconButton` (`firstToolip` & `secondToolip` renamed to `firstTooltip` & secondTooltip)
