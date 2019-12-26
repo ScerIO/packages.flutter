@@ -1,3 +1,7 @@
+## 2.0.0-dev.2
+
+* Replace list gif in readme
+
 ## 2.0.0-dev.1
 
 * Improvement animation algorithm for `AutoAnimatedList`, `AutoAnimatedSliverList`, `AutoAnimatedGrid`, `AutoAnimatedSliverGrid`. 
