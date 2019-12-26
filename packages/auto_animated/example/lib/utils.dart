@@ -10,15 +10,9 @@ class VerticalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: ListTile(
-          leading: FlutterLogo(
-            colors: Colors.pink,
-          ),
-          title: Text(
+        height: 96,
+        child: Card(
+          child: Text(
             '$title a long title',
             style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
           ),
@@ -40,14 +34,11 @@ class HorizontalItem extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(4),
           child: Material(
-            color: Theme.of(context).colorScheme.secondary,
+            color: Colors.white,
             child: Center(
               child: Text(
                 title,
-                style: Theme.of(context)
-                    .textTheme
-                    .display1
-                    .copyWith(color: Theme.of(context).colorScheme.onSecondary),
+                style: Theme.of(context).textTheme.display1,
               ),
             ),
           ),
@@ -60,7 +51,11 @@ Widget Function(
   BuildContext context,
   int index,
   Animation<double> animation,
-) animationItemBuilder(Widget Function(int index) child) => (
+) animationItemBuilder(
+  Widget Function(int index) child, {
+  EdgeInsets padding = EdgeInsets.zero,
+}) =>
+    (
       BuildContext context,
       int index,
       Animation<double> animation,
@@ -76,7 +71,7 @@ Widget Function(
               end: Offset.zero,
             ).animate(animation),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: padding,
               child: child(index),
             ),
           ),
@@ -85,7 +80,12 @@ Widget Function(
 Widget Function(
   BuildContext context,
   Animation<double> animation,
-) animationBuilder(Widget child, {double xOffset = 0}) => (
+) animationBuilder(
+  Widget child, {
+  double xOffset = 0,
+  EdgeInsets padding = EdgeInsets.zero,
+}) =>
+    (
       BuildContext context,
       Animation<double> animation,
     ) =>
@@ -100,7 +100,7 @@ Widget Function(
               end: Offset.zero,
             ).animate(animation),
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: padding,
               child: child,
             ),
           ),

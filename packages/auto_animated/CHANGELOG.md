@@ -1,3 +1,8 @@
+## 2.0.0-dev.1
+
+* Improvement animation algorithm for `AutoAnimatedList`, `AutoAnimatedSliverList`, `AutoAnimatedGrid`, `AutoAnimatedSliverGrid`. 
+Now animations start on scroll (element visibility change)
+
 ## 1.4.0-dev.1
 
 * Added `AnimateOnVisibilityChange` & `AnimateOnVisibilityWrapper`

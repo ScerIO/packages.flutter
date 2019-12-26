@@ -10,27 +10,30 @@ class SliverExample extends StatelessWidget {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverPadding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 sliver: AutoAnimatedSliverList(
-                  showItemInterval: Duration(milliseconds: 500),
-                  showItemDuration: Duration(seconds: 1),
+                  showItemInterval: Duration(milliseconds: 250),
+                  showItemDuration: Duration(milliseconds: 300),
                   itemCount: 4,
                   itemBuilder: animationItemBuilder(
-                      (index) => VerticalItem(title: index.toString())),
+                      (index) => VerticalItem(title: index.toString()),
+                      padding: EdgeInsets.symmetric(vertical: 8)),
                 ),
               ),
               SliverPadding(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 sliver: AutoAnimatedSliverGrid(
-                  delay: Duration(milliseconds: 500) * 4,
-                  showItemInterval: Duration(milliseconds: 500),
-                  showItemDuration: Duration(seconds: 1),
-                  itemCount: 6,
+                  delay: Duration(milliseconds: 250) * 5,
+                  showItemInterval: Duration(milliseconds: 250),
+                  showItemDuration: Duration(milliseconds: 300),
+                  itemCount: 12,
                   itemBuilder: animationItemBuilder(
                     (index) => HorizontalItem(title: index.toString()),
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
                   ),
                 ),
               )

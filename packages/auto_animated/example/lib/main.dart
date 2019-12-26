@@ -29,8 +29,8 @@ class _MyAppState extends State<MyApp> {
     AutoAnimatedListExample(),
     AutoAnimatedGridExample(),
     SliverExample(),
-    AutoAnimatedIconButtonExample(),
     AnimateOnVisibilityExample(),
+    AutoAnimatedIconButtonExample(),
   ];
 
   void _onItemTapped(int index) {
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(
           backgroundColor: Colors.grey[100],
-          scaffoldBackgroundColor: Colors.grey[100],
+          scaffoldBackgroundColor: Colors.grey[200],
         ),
         home: Scaffold(
           body: _children[_selectedIndex],
@@ -65,12 +65,12 @@ class _MyAppState extends State<MyApp> {
                 title: Text('Sliver'),
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.check_circle),
-                title: Text('IconButton'),
-              ),
-              BottomNavigationBarItem(
                 icon: Icon(Icons.remove_red_eye),
                 title: Text('On visibility'),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.check_circle),
+                title: Text('IconButton'),
               ),
             ],
             currentIndex: _selectedIndex,

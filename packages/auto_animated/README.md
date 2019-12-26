@@ -1,21 +1,22 @@
 # Auto animated
 
 Auto animated widgets for flutter 
-Already added:
+
+Animate on scroll containers:
 - `AutoAnimatedList`
 - `AutoAnimatedSliverList`
 - `AutoAnimatedGrid`
 - `AutoAnimatedSliverGrid`
-- `AutoAnimatedIconButton`
 - `AnimateOnVisibilityChange`
 
-## Screenshots
-<p float="left">
-    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/horizontal.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/vertical.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/combined.gif' width="20%" hspace="1%">
-    <img src='https://github.com/rbcprolabs/packages.flutter/raw/master/packages/auto_animated/example/media/icon_button.gif' width="20%" hspace="1%">
-</p>
+Another animated widgets
+- `AutoAnimatedIconButton`
+
+## Showcase
+
+| ListView                  | GridView                   | Sliver                       |
+| ---                       | ---                        | ---                          |
+|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/auto_animated/example/media/2.0/list.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/auto_animated/example/media/2.0/grid.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/auto_animated/example/media/2.0/sliver.gif?raw=true)  |
 
 ## Getting Started
 In your flutter project add the dependency:

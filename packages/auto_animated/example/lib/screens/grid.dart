@@ -9,7 +9,7 @@ class AutoAnimatedGridExample extends StatefulWidget {
 }
 
 class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
-  int itemsCount = 4;
+  int itemsCount = 20;
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 500) * 5, () {
@@ -27,11 +27,14 @@ class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           child: AutoAnimatedGrid(
-            showItemInterval: Duration(milliseconds: 500),
-            showItemDuration: Duration(seconds: 1),
+            padding: EdgeInsets.all(16),
+            showItemInterval: Duration(milliseconds: 150),
+            showItemDuration: Duration(milliseconds: 300),
             itemCount: itemsCount,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
             ),
             itemBuilder: animationItemBuilder(
                 (index) => HorizontalItem(title: index.toString())),

@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 
+import 'animator/stack.dart';
+
 typedef AutoAnimatedBuilder = Widget Function(
   BuildContext context,
   Animation<double> animation,
@@ -13,9 +15,11 @@ class AnimateOnVisibilityChange extends StatefulWidget {
   const AnimateOnVisibilityChange({
     @required Key key,
     @required this.builder,
-    this.duration = const Duration(milliseconds: 300),
     this.delay = Duration.zero,
-  }) : super(key: key);
+    this.duration = const Duration(milliseconds: 300),
+  })  : assert(delay != null),
+        assert(duration != null),
+        super(key: key);
 
   final AutoAnimatedBuilder builder;
   final Duration duration, delay;
@@ -62,15 +66,16 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
     }
     if (info.visibleFraction > 0.025 && !_controller.isCompleted) {
       Future.delayed(widget.delay, () {
-        if (!mounted) {
-          return;
-        }
         if (_wrapper != null) {
           _wrapper.stack.add(() {
-            _controller.forward();
+            if (mounted) {
+              _controller.forward();
+            }
           });
         } else {
-          _controller.forward();
+          if (mounted) {
+            _controller.forward();
+          }
         }
       });
     } else if (info.visibleFraction <= 0.025 && mounted) {
@@ -82,12 +87,17 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
 class AnimateOnVisibilityWrapper extends StatefulWidget {
   const AnimateOnVisibilityWrapper({
     @required this.child,
+    this.delay = Duration.zero,
     this.showItemInterval = const Duration(milliseconds: 150),
+    this.useListStack = false,
     Key key,
-  }) : super(key: key);
+  })  : assert(delay != null),
+        assert(showItemInterval != null),
+        super(key: key);
 
+  final bool useListStack;
   final Widget child;
-  final Duration showItemInterval;
+  final Duration delay, showItemInterval;
 
   @override
   _AnimateOnVisibilityWrapperState createState() =>
@@ -96,12 +106,20 @@ class AnimateOnVisibilityWrapper extends StatefulWidget {
 
 class _AnimateOnVisibilityWrapperState
     extends State<AnimateOnVisibilityWrapper> {
-  _VisibilityStack _stack;
+  VisibilityStack _stack;
   double _lastScrollExtend = 0;
 
   @override
   void initState() {
-    _stack = _VisibilityStack(widget.showItemInterval);
+    _stack = widget.useListStack
+        ? ListStack(
+            delay: widget.delay,
+            showItemInterval: widget.showItemInterval,
+          )
+        : AnimateOnVisibilityStack(
+            delay: widget.delay,
+            showItemInterval: widget.showItemInterval,
+          );
     super.initState();
   }
 
@@ -149,71 +167,13 @@ class _VisibilityStackProvider extends InheritedWidget {
   })  : assert(child != null),
         super(key: key, child: child);
 
-  final _VisibilityStack stack;
+  final VisibilityStack stack;
 
   static _VisibilityStackProvider of(BuildContext context) => context
-      .ancestorInheritedElementForWidgetOfExactType(_VisibilityStackProvider)
+      .getElementForInheritedWidgetOfExactType<_VisibilityStackProvider>()
       ?.widget;
 
   @override
   bool updateShouldNotify(_VisibilityStackProvider oldWidget) =>
       oldWidget.stack != stack;
-}
-
-class _VisibilityStack {
-  _VisibilityStack(this.showItemInterval);
-
-  Duration showItemInterval;
-  AnimationDirection direction = AnimationDirection.toEnd;
-  bool _isAnimated = false;
-
-  final List<Function> _stack = [];
-
-  void add(VoidCallback callback) {
-    _stack.add(callback);
-    _animate();
-  }
-
-  void _show() {
-    if (direction == AnimationDirection.toEnd) {
-      _stack
-        ..first.call()
-        ..removeAt(0);
-    } else {
-      _stack
-        ..last.call()
-        ..removeLast();
-    }
-  }
-
-  void _animate() {
-    if (_isAnimated) {
-      return;
-    }
-    _isAnimated = true;
-
-    Future.delayed(showItemInterval, () {
-      if (_stack.isNotEmpty) {
-        _show();
-        _isAnimated = false;
-        _animate();
-      } else {
-        _isAnimated = false;
-      }
-    });
-  }
-
-  void dispose() {}
-
-  @override
-  bool operator ==(Object o) =>
-      o is _VisibilityStack && showItemInterval == o.showItemInterval;
-
-  @override
-  int get hashCode => showItemInterval.hashCode;
-}
-
-enum AnimationDirection {
-  toStart,
-  toEnd,
 }

@@ -1,29 +1,18 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-import 'dart:async';
-
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import 'list_animation.dart';
+import 'helpers/callbacks.dart';
+import 'helpers/utils.dart' as utils;
+import 'on_visibility_change.dart';
 
-const Duration _kDuration = Duration(milliseconds: 300);
+const Duration _kDuration = Duration(milliseconds: 150);
 
 /// A scrolling container that animates items
 /// when widget mounted or they are inserted or removed.
-///
-/// This widget's [AutoAnimatedListState] can
-///  be used to dynamically insert or remove
-/// items. To refer to the [AutoAnimatedListState]
-/// either provide a [GlobalKey] or
-/// use the static [of] method from an item's input callback.
-///
-/// This widget is similar to one created by [ListView.builder].
-///
-/// {@youtube 560 315 https://www.youtube.com/watch?v=ZtfItHwFlZ8}
 class AutoAnimatedList extends StatefulWidget {
   /// Creates a scrolling container that animates items
   ///  when they are inserted or removed.
@@ -129,10 +118,6 @@ class AutoAnimatedList extends StatefulWidget {
   final Duration showItemDuration;
 
   /// Called, as needed, to build list item widgets.
-  ///
-  /// List items are only built when they're scrolled into view.
-  /// Implementations of this callback should assume that
-  /// [AutoAnimatedListState.removeItem] removes an item immediately.
   final AutoAnimatedListItemBuilder itemBuilder;
 
   /// Signature for a function that creates a widget for
@@ -225,52 +210,12 @@ class AutoAnimatedList extends StatefulWidget {
   /// The amount of space by which to inset the children.
   final EdgeInsetsGeometry padding;
 
-  /// The state from the closest instance of
-  /// this class that encloses the given context.
-  ///
-  /// This method is typically used by
-  /// [AutoAnimatedList] item widgets that insert or
-  /// remove items in response to user input.
-  ///
-  /// ```dart
-  /// AutoAnimatedListState AutoAnimatedList = AutoAnimatedList.of(context);
-  /// ```
-  static AutoAnimatedListState of(BuildContext context, {bool nullOk = false}) {
-    assert(context != null);
-    assert(nullOk != null);
-    final AutoAnimatedListState result =
-        context.ancestorStateOfType(const TypeMatcher<AutoAnimatedListState>());
-    if (nullOk || result != null) {
-      return result;
-    }
-    throw FlutterError('AutoAnimatedList.of() called with a context '
-        'that does not contain an AutoAnimatedList.\n'
-        'No AutoAnimatedList ancestor could be found '
-        'starting from the context that was passed to AutoAnimatedList.of(). '
-        'This can happen when the context provided '
-        'is from the same StatefulWidget that '
-        'built the AutoAnimatedList. Please see the '
-        'AutoAnimatedList documentation for examples '
-        'of how to refer to an AutoAnimatedListState object: '
-        '  https://api.flutter.dev/flutter/widgets/AutoAnimatedListState-class.html \n'
-        'The context used was:\n'
-        '  $context');
-  }
-
   @override
   AutoAnimatedListState createState() => AutoAnimatedListState();
 }
 
 /// The state for a scrolling container that animates items when they are
 /// inserted or removed.
-///
-/// When an item is inserted with [insertItem] an animation begins running. The
-/// animation is passed to [AutoAnimatedList.itemBuilder]
-/// whenever the item's widget is needed.
-///
-/// When an item is removed with [removeItem] its animation is reversed.
-/// The removed item's animation is passed to the [removeItem] builder
-/// parameter.
 ///
 /// An app that needs to insert or remove items in response to an event
 /// can refer to the [AutoAnimatedList]'s state with a global key:
@@ -283,79 +228,41 @@ class AutoAnimatedList extends StatefulWidget {
 /// ...
 /// listKey.currentState.insert(123);
 /// ```
-///
-/// [AutoAnimatedList] item input handlers can
-/// also refer to their [AutoAnimatedListState]
-/// with the static [AutoAnimatedList.of] method.
 class AutoAnimatedListState extends State<AutoAnimatedList>
-    with
-        TickerProviderStateMixin<AutoAnimatedList>,
-        ListAnimation<AutoAnimatedList> {
-  Timer _timer;
+    with TickerProviderStateMixin<AutoAnimatedList> {
+  final String _keyPrefix = utils.createCryptoRandomString();
 
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  void init({int from = 0}) {
-    itemsCount = from;
-    Future.delayed(widget.delay, () {
-      _timer = Timer.periodic(widget.showItemInterval, (Timer timer) {
-        if (itemsCount == widget.itemCount || !mounted) {
-          return timer.cancel();
-        }
-        insertItem(
-          widget.reverse ? 0 : itemsCount,
-          duration: widget.showItemDuration,
-        );
-      });
-    });
-  }
-
-  @override
-  void didUpdateWidget(AutoAnimatedList oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.itemCount < oldWidget.itemCount) {
-      init();
-    } else if (itemsCount < widget.itemCount && !(_timer?.isActive ?? true)) {
-      init(from: itemsCount);
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    for (ActiveItem item in incomingItems) {
-      item.controller.dispose();
-    }
-    for (ActiveItem item in outgoingItems) {
-      item.controller.dispose();
-    }
-    super.dispose();
-  }
-
-  Widget _itemBuilder(BuildContext context, int itemIndex) {
-    final ActiveItem outgoingItem = activeItemAt(outgoingItems, itemIndex);
-    if (outgoingItem != null) {
-      return outgoingItem.removedItemBuilder(
-          context, outgoingItem.controller.view);
-    }
-
-    final ActiveItem incomingItem = activeItemAt(incomingItems, itemIndex);
-    final Animation<double> animation =
-        incomingItem?.controller?.view ?? kAlwaysCompleteAnimation;
-    return widget.itemBuilder(context, indexToItemIndex(itemIndex), animation);
-  }
+  Widget _itemBuilder(BuildContext context, int itemIndex) =>
+      AnimateOnVisibilityChange(
+        duration: widget.showItemDuration,
+        key: Key('$_keyPrefix.$itemIndex'),
+        builder: (context, animation) => widget.itemBuilder(
+          context,
+          itemIndex,
+          animation,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
+    Widget list;
     if (widget.separatorBuilder != null) {
-      return ListView.separated(
+      list = ListView.separated(
         itemBuilder: _itemBuilder,
         separatorBuilder: widget.separatorBuilder,
-        itemCount: itemsCount,
+        itemCount: widget.itemCount,
+        scrollDirection: widget.scrollDirection,
+        reverse: widget.reverse,
+        controller: widget.controller,
+        primary: widget.primary,
+        physics: widget.physics,
+        shrinkWrap: widget.shrinkWrap,
+        padding: widget.padding,
+      );
+    } else {
+      list = ListView.builder(
+        itemBuilder: _itemBuilder,
+        itemCount: widget.itemCount,
         scrollDirection: widget.scrollDirection,
         reverse: widget.reverse,
         controller: widget.controller,
@@ -366,19 +273,11 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
       );
     }
 
-    return ListView.builder(
-      itemBuilder: _itemBuilder,
-      itemCount: itemsCount,
-      scrollDirection: widget.scrollDirection,
-      reverse: widget.reverse,
-      controller: widget.controller,
-      primary: widget.primary,
-      physics: widget.physics,
-      shrinkWrap: widget.shrinkWrap,
-      padding: widget.padding,
+    return AnimateOnVisibilityWrapper(
+      delay: widget.delay,
+      showItemInterval: widget.showItemInterval,
+      useListStack: true,
+      child: list,
     );
   }
-
-  @override
-  TickerProvider get vsync => this;
 }

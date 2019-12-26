@@ -10,10 +10,6 @@ enum IconState { first, second }
 ///The [icon] and [onPressed] are required.
 ///[icon] cannot be null.
 ///[duration] is the time taken to animate the transition.
-///
-///
-///For other customization info, Please
-///refere to [IconButton] and [AnimatedIcon].
 class AutoAnimatedIconButton extends StatefulWidget {
   AutoAnimatedIconButton({
     @required this.icon,

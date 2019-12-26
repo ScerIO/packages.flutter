@@ -1,14 +1,6 @@
+import 'package:auto_animated/src/helpers/callbacks.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
-
-/// Signature for the builder callback used by [ListAnimation].
-typedef AutoAnimatedListItemBuilder = Widget Function(
-    BuildContext context, int index, Animation<double> animation);
-
-/// Signature for the builder callback
-/// used by [ListAnimation.removeItem].
-typedef AutoAnimatedListRemovedItemBuilder = Widget Function(
-    BuildContext context, Animation<double> animation);
 
 // The default insert/remove animation duration.
 const Duration _kDuration = Duration(milliseconds: 300);

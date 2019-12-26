@@ -1,8 +1,8 @@
-import 'dart:async';
-
+import 'package:auto_animated/src/on_visibility_change.dart';
 import 'package:flutter/widgets.dart';
 
-import 'list_animation.dart';
+import 'helpers/callbacks.dart';
+import 'helpers/utils.dart' as utils;
 
 const Duration _kDuration = Duration(milliseconds: 300);
 
@@ -41,8 +41,6 @@ class AutoAnimatedGrid extends StatefulWidget {
   /// Called, as needed, to build list item widgets.
   ///
   /// List items are only built when they're scrolled into view.
-  /// Implementations of this callback should assume that
-  /// [_AutoAnimatedGridState.removeItem] removes an item immediately.
   final AutoAnimatedListItemBuilder itemBuilder;
 
   /// The number of items the list will start with.
@@ -175,84 +173,39 @@ class AutoAnimatedGrid extends StatefulWidget {
 }
 
 class _AutoAnimatedGridViewState extends State<AutoAnimatedGrid>
-    with
-        TickerProviderStateMixin<AutoAnimatedGrid>,
-        ListAnimation<AutoAnimatedGrid> {
-  Timer _timer;
+    with TickerProviderStateMixin<AutoAnimatedGrid> {
+  final String _keyPrefix = utils.createCryptoRandomString();
+
+  Widget _itemBuilder(BuildContext context, int itemIndex) =>
+      AnimateOnVisibilityChange(
+        duration: widget.showItemDuration,
+        key: Key('$_keyPrefix.$itemIndex'),
+        builder: (context, animation) => widget.itemBuilder(
+          context,
+          itemIndex,
+          animation,
+        ),
+      );
 
   @override
-  TickerProvider get vsync => this;
-
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  void init({int from = 0}) {
-    itemsCount = from;
-    Future.delayed(widget.delay, () {
-      _timer = Timer.periodic(widget.showItemInterval, (Timer timer) {
-        if (itemsCount == widget.itemCount || !mounted) {
-          return timer.cancel();
-        }
-        insertItem(
-          widget.reverse ? 0 : itemsCount,
-          duration: widget.showItemDuration,
-        );
-      });
-    });
-  }
-
-  @override
-  void didUpdateWidget(AutoAnimatedGrid oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (widget.itemCount < oldWidget.itemCount) {
-      init();
-    } else if (itemsCount < widget.itemCount && !(_timer?.isActive ?? true)) {
-      init(from: itemsCount);
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    for (ActiveItem item in incomingItems) {
-      item.controller.dispose();
-    }
-    for (ActiveItem item in outgoingItems) {
-      item.controller.dispose();
-    }
-    super.dispose();
-  }
-
-  Widget _itemBuilder(BuildContext context, int itemIndex) {
-    final ActiveItem outgoingItem = activeItemAt(outgoingItems, itemIndex);
-    if (outgoingItem != null) {
-      return outgoingItem.removedItemBuilder(
-          context, outgoingItem.controller.view);
-    }
-
-    final ActiveItem incomingItem = activeItemAt(incomingItems, itemIndex);
-    final Animation<double> animation =
-        incomingItem?.controller?.view ?? kAlwaysCompleteAnimation;
-    return widget.itemBuilder(context, indexToItemIndex(itemIndex), animation);
-  }
-
-  @override
-  Widget build(BuildContext context) => GridView.builder(
-        itemBuilder: _itemBuilder,
-        gridDelegate: widget.gridDelegate,
-        itemCount: itemsCount,
-        scrollDirection: widget.scrollDirection,
-        reverse: widget.reverse,
-        controller: widget.controller,
-        primary: widget.primary,
-        physics: widget.physics,
-        shrinkWrap: widget.shrinkWrap,
-        padding: widget.padding,
-        addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
-        addRepaintBoundaries: widget.addRepaintBoundaries,
-        addSemanticIndexes: widget.addSemanticIndexes,
+  Widget build(BuildContext context) => AnimateOnVisibilityWrapper(
+        delay: widget.delay,
+        showItemInterval: widget.showItemInterval,
+        useListStack: true,
+        child: GridView.builder(
+          itemBuilder: _itemBuilder,
+          gridDelegate: widget.gridDelegate,
+          itemCount: widget.itemCount,
+          scrollDirection: widget.scrollDirection,
+          reverse: widget.reverse,
+          controller: widget.controller,
+          primary: widget.primary,
+          physics: widget.physics,
+          shrinkWrap: widget.shrinkWrap,
+          padding: widget.padding,
+          addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+          addRepaintBoundaries: widget.addRepaintBoundaries,
+          addSemanticIndexes: widget.addSemanticIndexes,
+        ),
       );
 }
