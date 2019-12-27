@@ -12,6 +12,7 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
     @required this.itemBuilder,
     @required this.gridDelegate,
     @required this.itemCount,
+    this.hideWhenGoingBeyond = true,
     this.delay = Duration.zero,
     this.reverse = false,
     this.showItemInterval = _kDuration,
@@ -29,6 +30,16 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
 
   /// Animation duration
   final Duration showItemDuration;
+
+  /// Hide the element when it approaches the
+  /// frame of the screen so that in the future,
+  /// when it falls into the visibility
+  ///  range, the animation can be played again.
+  ///
+  /// The appearance animation will also play when the item
+  /// is redrawn. Redrawing is peculiar for all
+  ///  list \ grid views with builder methods
+  final bool hideWhenGoingBeyond;
 
   /// Called, as needed, to build list item widgets.
   final AutoAnimatedListItemBuilder itemBuilder;
@@ -72,8 +83,9 @@ class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
 
   Widget _itemBuilder(BuildContext context, int itemIndex) =>
       AnimateOnVisibilityChange(
-        duration: widget.showItemDuration,
         key: Key('$_keyPrefix.$itemIndex'),
+        duration: widget.showItemDuration,
+        hideWhenGoingBeyond: widget.hideWhenGoingBeyond,
         builder: (context, animation) => widget.itemBuilder(
           context,
           itemIndex,

@@ -1,3 +1,8 @@
+## 2.0.0-dev.3
+
+* Fixed reanimate on view unmount
+* Added `hideWhenGoingBeyond` value Hide the element when it approaches the frame of the screen so that in the future, when it falls into the visibility  range, the animation can be played again. The appearance animation will also play when the item is redrawn. Redrawing is peculiar for all list \ grid views with builder methods
+
 ## 2.0.0-dev.2
 
 * Replace list gif in readme
@@ -40,7 +45,7 @@ Now animations start on scroll (element visibility change)
 
 ## 1.2.3
 
-* Forvard animation on items count changed in `AutoAnimatedList`
+* Forward animation on items count changed in `AutoAnimatedList`
 
 ## 1.2.2 
 
@@ -58,7 +63,7 @@ Now animations start on scroll (element visibility change)
 
 * Added `AutoAnimatedListState.sepparated`
 * Added `AutoAnimatedIconButton`
-* Optimized perfomance
+* Optimized performance
 
 
 ## 1.0.1

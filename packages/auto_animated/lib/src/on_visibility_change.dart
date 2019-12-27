@@ -17,12 +17,19 @@ class AnimateOnVisibilityChange extends StatefulWidget {
     @required this.builder,
     this.delay = Duration.zero,
     this.duration = const Duration(milliseconds: 300),
+    this.hideWhenGoingBeyond = true,
   })  : assert(delay != null),
         assert(duration != null),
         super(key: key);
 
   final AutoAnimatedBuilder builder;
   final Duration duration, delay;
+
+  /// Hide the element when it approaches the
+  /// frame of the screen so that in the future,
+  /// when it falls into the visibility
+  ///  range, the animation can be played again
+  final bool hideWhenGoingBeyond;
 
   @override
   _AnimateOnVisibilityChangeState createState() =>
@@ -78,7 +85,10 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
           }
         }
       });
-    } else if (info.visibleFraction <= 0.025 && mounted) {
+    } else if (info.visibleFraction <= 0.025 &&
+        mounted &&
+        widget.hideWhenGoingBeyond &&
+        !info.visibleBounds.isEmpty) {
       _controller.reverse();
     }
   }

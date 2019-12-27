@@ -19,6 +19,7 @@ class AutoAnimatedList extends StatefulWidget {
   const AutoAnimatedList({
     @required this.itemBuilder,
     @required this.itemCount,
+    this.hideWhenGoingBeyond = true,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
@@ -83,18 +84,13 @@ class AutoAnimatedList extends StatefulWidget {
   /// [SliverChildBuilderDelegate.addSemanticIndexes] property. None may be
   /// null.
   const AutoAnimatedList.separated({
-    @required
-        this.itemBuilder,
-    @required
-        this.separatorBuilder,
-    Key key,
+    @required this.itemBuilder,
+    @required this.separatorBuilder,
+    @required this.itemCount,
+    this.hideWhenGoingBeyond = true,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
-    @Deprecated('Usage `itemCount` instead '
-        '(without character "s"). Will be deleted in 1.2.0')
-        int itemsCount = 0,
-    int itemCount = 0,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -102,9 +98,8 @@ class AutoAnimatedList extends StatefulWidget {
     this.physics,
     this.shrinkWrap = false,
     this.padding,
+    Key key,
   })  : assert(itemBuilder != null && separatorBuilder != null),
-        // ignore: deprecated_member_use_from_same_package
-        itemCount = itemCount ?? itemsCount,
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
@@ -116,6 +111,16 @@ class AutoAnimatedList extends StatefulWidget {
 
   /// Animation duration
   final Duration showItemDuration;
+
+  /// Hide the element when it approaches the
+  /// frame of the screen so that in the future,
+  /// when it falls into the visibility
+  ///  range, the animation can be played again.
+  ///
+  /// The appearance animation will also play when the item
+  /// is redrawn. Redrawing is peculiar for all
+  ///  list \ grid views with builder methods
+  final bool hideWhenGoingBeyond;
 
   /// Called, as needed, to build list item widgets.
   final AutoAnimatedListItemBuilder itemBuilder;
@@ -234,8 +239,9 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
 
   Widget _itemBuilder(BuildContext context, int itemIndex) =>
       AnimateOnVisibilityChange(
-        duration: widget.showItemDuration,
         key: Key('$_keyPrefix.$itemIndex'),
+        duration: widget.showItemDuration,
+        hideWhenGoingBeyond: widget.hideWhenGoingBeyond,
         builder: (context, animation) => widget.itemBuilder(
           context,
           itemIndex,
