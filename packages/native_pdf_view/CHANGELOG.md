@@ -1,3 +1,7 @@
+## 2.1.1
+
+* Target sdk version for android upped to 28
+
 ## 2.1.0
 
 * Added `onPageChanged` callback
