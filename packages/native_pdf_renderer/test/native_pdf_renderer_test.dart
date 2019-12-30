@@ -9,6 +9,7 @@ const String _testAssetPath = '/assets/file.pdf';
 final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final List<MethodCall> log = <MethodCall>[];
   PDFDocument document;
 
@@ -100,9 +101,7 @@ void main() {
       // page number 0 - not available
       expect(
         document.getPage(0),
-        throwsA(
-          isInstanceOf<PdfNotSupportException>(),
-        ),
+        throwsA(isInstanceOf<PdfPageNotFoundException>()),
       );
 
       page = await document.getPage(3);
@@ -124,9 +123,7 @@ void main() {
       // page number 4 more than the document
       expect(
         document.getPage(4),
-        throwsA(
-          isInstanceOf<PdfNotSupportException>(),
-        ),
+        throwsA(isInstanceOf<PdfPageNotFoundException>()),
       );
     });
 
