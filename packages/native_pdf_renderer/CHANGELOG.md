@@ -1,3 +1,8 @@
+## 1.7.0-dev.1
+
+* Added package synchronized for sequential access to the native api render to reduce the likelihood of a crash due to lack of memory. 
+Additional information: [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14) & [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)  
+
 ## 1.6.2
 
 * Target sdk version for android upped to 28
