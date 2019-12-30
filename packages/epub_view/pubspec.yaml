@@ -5,16 +5,18 @@ author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: '>=2.3.0 <3.0.0'
+  flutter: '>=1.9.1 <2.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  epub: ^2.0.0
-  flutter_html: ^0.11.0
+  epub: ^2.1.0
+  flutter_html: ^0.11.1
   flutter_widgets: ^0.1.7+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  pedantic: ^1.8.0+1
 

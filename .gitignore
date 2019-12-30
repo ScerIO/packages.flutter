@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+local.properties
 
 # IntelliJ related
 *.iml
@@ -15,18 +16,15 @@
 *.iws
 .idea/
 
-# Visual Studio Code related
-.vscode/
-
 # Flutter/Dart/Pub related
 **/doc/api/
 .dart_tool/
 .flutter-plugins
+.flutter-plugins-dependencies
 .packages
 .pub-cache/
 .pub/
 /build/
-/packages/**/build/*
 
 # Android related
 **/android/**/gradle-wrapper.jar
@@ -54,6 +52,7 @@
 **/ios/**/profile
 **/ios/**/xcuserdata
 **/ios/.generated/
+**/ios/build/**/*
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Generated.xcconfig
@@ -73,3 +72,4 @@
 
 # Additional packages
 packages/**/pubspec.lock
+packages/**/build/
