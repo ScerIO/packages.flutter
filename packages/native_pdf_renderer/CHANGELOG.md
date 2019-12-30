@@ -1,3 +1,7 @@
+## 1.6.2
+
+* Target sdk version for android upped to 28
+
 ## 1.6.1
 
 * Added more tests
