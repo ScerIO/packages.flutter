@@ -10,11 +10,7 @@ readonly REPO_DIR="$(dirname "$SCRIPT_DIR")"
 source "$SCRIPT_DIR/common.sh"
 check_changed_packages > /dev/null
 
-readonly EXCLUDED_PLUGINS_LIST=()
-# Comma-separated string of the list above
-readonly EXCLUDED=$(IFS=, ; echo "${EXCLUDED_PLUGINS_LIST[*]}")
-
-(cd "$REPO_DIR" && pub global run flutter_plugin_tools all-plugins-app --exclude $EXCLUDED)
+(cd "$REPO_DIR" && pub global run flutter_plugin_tools all-plugins-app)
 
 function error() {
   echo "$@" 1>&2
