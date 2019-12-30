@@ -14,7 +14,6 @@ class AutoAnimatedSliverList extends StatefulWidget {
     @required this.controller,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
-    this.reverse = false,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
     Key key,
@@ -51,11 +50,6 @@ class AutoAnimatedSliverList extends StatefulWidget {
   /// are created, as needed, by [itemBuilder] with an animation parameter
   /// of [kAlwaysCompleteAnimation].
   final int itemCount;
-
-  /// Whether the scroll view scrolls in the reading direction.
-  ///
-  /// Defaults to false.
-  final bool reverse;
 
   @override
   _AutoAnimatedSliverListState createState() => _AutoAnimatedSliverListState();

@@ -5,7 +5,7 @@ author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/auto_animated
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.5.2 <3.0.0'
   flutter: '>=1.9.1 <2.0.0'
 
 dependencies:

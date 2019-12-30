@@ -164,13 +164,13 @@ class AutoAnimatedGrid extends StatefulWidget {
   /// Typically, children in a scrolling container must be annotated with a
   /// semantic index in order to generate the correct accessibility
   /// announcements. This should only be set to false if the indexes have
-  /// already been provided by an [IndexedChildSemantics] widget.
+  /// already been provided by an IndexedChildSemantics widget.
   ///
   /// Defaults to true.
   ///
   /// See also:
   ///
-  ///  * [IndexedChildSemantics], for an explanation of how to manually
+  ///  * IndexedChildSemantics, for an explanation of how to manually
   ///    provide semantic indexes.
   final bool addSemanticIndexes;
 

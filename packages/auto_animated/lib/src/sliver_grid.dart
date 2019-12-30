@@ -15,7 +15,6 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
     @required this.controller,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
-    this.reverse = false,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
     Key key,
@@ -52,20 +51,6 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
   /// are created, as needed, by [itemBuilder] with an animation parameter
   /// of [kAlwaysCompleteAnimation].
   final int itemCount;
-
-  /// Whether the scroll view scrolls in the reading direction.
-  ///
-  /// For example, if the reading direction is left-to-right and
-  /// [scrollDirection] is [Axis.horizontal], then the scroll view scrolls from
-  /// left to right when [reverse] is false and from right to left when
-  /// [reverse] is true.
-  ///
-  /// Similarly, if [scrollDirection] is [Axis.vertical], then the scroll view
-  /// scrolls from top to bottom when [reverse] is false and from bottom to top
-  /// when [reverse] is true.
-  ///
-  /// Defaults to false.
-  final bool reverse;
 
   /// A delegate that controls the layout of the children within the [GridView].
   ///
