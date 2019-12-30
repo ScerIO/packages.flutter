@@ -1,44 +1,65 @@
-import 'package:flutter/widgets.dart';
+import 'dart:async';
 
-abstract class VisibilityStack {
+import 'package:flutter/widgets.dart' hide Stack;
+
+class _Animatable {
+  _Animatable(this.key, this.callback);
+
+  final Key key;
+  final VoidCallback callback;
+}
+
+class VisibilityStack {
   VisibilityStack({
     @required this.delay,
     @required this.showItemInterval,
-  });
+  }) {
+    // _stream = Stream.periodic(showItemInterval);
+    // Future.delayed(delay, () {
+    //   _listener = _stream.timeout(showItemInterval).listen((data) {
+    //     show();
+    //   });
+    // });
+  }
 
   Duration delay, showItemInterval;
   AnimationDirection direction = AnimationDirection.toEnd;
   bool _isAnimated = false, _firstAnimation = true;
 
-  final List<Function> _stack = [];
+  // Stream<Key Function()> _stream;
+  // StreamSubscription _listener;
 
-  void add(VoidCallback callback) {
-    _stack.add(callback);
+  final List<_Animatable> _stack = [];
+  final Map<Key, bool> _alreadyAnimated = {};
+
+  void add(Key key, VoidCallback callback) {
+    _stack.add(_Animatable(key, callback));
+    _alreadyAnimated[key] = false;
+
     animate();
   }
 
-  @protected
   void show() {
+    _Animatable animatable;
     if (direction == AnimationDirection.toEnd) {
-      _stack
-        ..first.call()
-        ..removeAt(0);
+      animatable = _stack.first;
+      _stack.removeAt(0);
     } else {
-      _stack
-        ..last.call()
-        ..removeLast();
+      animatable = _stack.last;
+      _stack.removeLast();
     }
+    animatable.callback();
+    _alreadyAnimated[animatable.key] = true;
   }
 
-  @protected
+  bool isAlreadyAnimated(Key key) => _alreadyAnimated[key] ?? false;
+
   void animate() {
     if (_isAnimated) {
       return;
     }
     _isAnimated = true;
 
-    Duration delay =
-        this.delay < showItemInterval ? showItemInterval : this.delay;
     delay = _firstAnimation ? delay : showItemInterval;
 
     Future.delayed(delay, () {
@@ -55,7 +76,11 @@ abstract class VisibilityStack {
     });
   }
 
-  void dispose() {}
+  void dispose() {
+    // _listener.cancel();
+    _stack.clear();
+    _alreadyAnimated.clear();
+  }
 
   @override
   bool operator ==(Object o) =>
@@ -68,44 +93,4 @@ abstract class VisibilityStack {
 enum AnimationDirection {
   toStart,
   toEnd,
-}
-
-class AnimateOnVisibilityStack extends VisibilityStack {
-  AnimateOnVisibilityStack({
-    @required Duration delay,
-    @required Duration showItemInterval,
-  }) : super(
-          delay: delay,
-          showItemInterval: showItemInterval,
-        );
-
-  @override
-  void show() {
-    if (direction == AnimationDirection.toEnd) {
-      _stack
-        ..first.call()
-        ..removeAt(0);
-    } else {
-      _stack
-        ..last.call()
-        ..removeLast();
-    }
-  }
-}
-
-class ListStack extends VisibilityStack {
-  ListStack({
-    @required Duration delay,
-    @required Duration showItemInterval,
-  }) : super(
-          delay: delay,
-          showItemInterval: showItemInterval,
-        );
-
-  @override
-  void show() {
-    _stack
-      ..first.call()
-      ..removeAt(0);
-  }
 }

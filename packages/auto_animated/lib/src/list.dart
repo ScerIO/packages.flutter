@@ -19,7 +19,7 @@ class AutoAnimatedList extends StatefulWidget {
   const AutoAnimatedList({
     @required this.itemBuilder,
     @required this.itemCount,
-    this.hideWhenGoingBeyond = true,
+    this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
@@ -87,7 +87,7 @@ class AutoAnimatedList extends StatefulWidget {
     @required this.itemBuilder,
     @required this.separatorBuilder,
     @required this.itemCount,
-    this.hideWhenGoingBeyond = true,
+    this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
@@ -114,13 +114,8 @@ class AutoAnimatedList extends StatefulWidget {
 
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
-  /// when it falls into the visibility
-  ///  range, the animation can be played again.
-  ///
-  /// The appearance animation will also play when the item
-  /// is redrawn. Redrawing is peculiar for all
-  ///  list \ grid views with builder methods
-  final bool hideWhenGoingBeyond;
+  /// when it falls into the visibility range - reproduce animation again
+  final bool reAnimateOnVisibility;
 
   /// Called, as needed, to build list item widgets.
   final AutoAnimatedListItemBuilder itemBuilder;
@@ -241,7 +236,7 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
       AnimateOnVisibilityChange(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
-        hideWhenGoingBeyond: widget.hideWhenGoingBeyond,
+        reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
           itemIndex,
@@ -282,7 +277,6 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
     return AnimateOnVisibilityWrapper(
       delay: widget.delay,
       showItemInterval: widget.showItemInterval,
-      useListStack: true,
       child: list,
     );
   }

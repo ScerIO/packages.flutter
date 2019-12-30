@@ -1,3 +1,8 @@
+## 2.0.0-dev.4
+
+* SliverList & SliverGrid now requires scrollController (From custom `CustomScrollView`). It is necessary in order to find out in which direction the widget scrolls in order to play the animation in the corresponding direction
+* `hideWhenGoingBeyond` renamed to `reAnimateOnVisibility` & works with all widgets of the library normally
+
 ## 2.0.0-dev.3
 
 * Fixed reanimate on view unmount

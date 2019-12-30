@@ -16,8 +16,8 @@ class AnimateOnVisibilityChange extends StatefulWidget {
     @required Key key,
     @required this.builder,
     this.delay = Duration.zero,
-    this.duration = const Duration(milliseconds: 300),
-    this.hideWhenGoingBeyond = true,
+    this.duration = const Duration(milliseconds: 250),
+    this.reAnimateOnVisibility = false,
   })  : assert(delay != null),
         assert(duration != null),
         super(key: key);
@@ -27,9 +27,8 @@ class AnimateOnVisibilityChange extends StatefulWidget {
 
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
-  /// when it falls into the visibility
-  ///  range, the animation can be played again
-  final bool hideWhenGoingBeyond;
+  /// when it falls into the visibility range - reproduce animation again
+  final bool reAnimateOnVisibility;
 
   @override
   _AnimateOnVisibilityChangeState createState() =>
@@ -44,7 +43,11 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
   @override
   void initState() {
     _wrapper = _VisibilityStackProvider.of(context);
+    final itemAlreadyShowed = _wrapper.stack.isAlreadyAnimated(widget.key) &&
+        !widget.reAnimateOnVisibility;
+
     _controller = AnimationController(
+      value: itemAlreadyShowed ? 1 : 0,
       duration: widget.duration,
       vsync: this,
     );
@@ -68,13 +71,10 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
       );
 
   void _visibilityChanged(VisibilityInfo info) {
-    if (_controller.isAnimating) {
-      return;
-    }
     if (info.visibleFraction > 0.025 && !_controller.isCompleted) {
       Future.delayed(widget.delay, () {
         if (_wrapper != null) {
-          _wrapper.stack.add(() {
+          _wrapper.stack.add(widget.key, () {
             if (mounted) {
               _controller.forward();
             }
@@ -87,7 +87,7 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
       });
     } else if (info.visibleFraction <= 0.025 &&
         mounted &&
-        widget.hideWhenGoingBeyond &&
+        widget.reAnimateOnVisibility &&
         !info.visibleBounds.isEmpty) {
       _controller.reverse();
     }
@@ -99,13 +99,13 @@ class AnimateOnVisibilityWrapper extends StatefulWidget {
     @required this.child,
     this.delay = Duration.zero,
     this.showItemInterval = const Duration(milliseconds: 150),
-    this.useListStack = false,
+    this.controller,
     Key key,
   })  : assert(delay != null),
         assert(showItemInterval != null),
         super(key: key);
 
-  final bool useListStack;
+  final ScrollController controller;
   final Widget child;
   final Duration delay, showItemInterval;
 
@@ -121,21 +121,20 @@ class _AnimateOnVisibilityWrapperState
 
   @override
   void initState() {
-    _stack = widget.useListStack
-        ? ListStack(
-            delay: widget.delay,
-            showItemInterval: widget.showItemInterval,
-          )
-        : AnimateOnVisibilityStack(
-            delay: widget.delay,
-            showItemInterval: widget.showItemInterval,
-          );
+    _stack = VisibilityStack(
+      delay: widget.delay,
+      showItemInterval: widget.showItemInterval,
+    );
+    if (widget.controller != null && widget.controller.hasClients) {
+      widget.controller.addListener(_handleScrollController);
+    }
     super.initState();
   }
 
   @override
   void dispose() {
     _stack.dispose();
+    widget.controller?.removeListener(_handleScrollController);
     super.dispose();
   }
 
@@ -152,20 +151,28 @@ class _AnimateOnVisibilityWrapperState
         stack: _stack,
         child: NotificationListener<ScrollNotification>(
           child: widget.child,
-          onNotification: _onScroll,
+          onNotification: _handleScrollNotifications,
         ),
       );
 
-  bool _onScroll(ScrollNotification scrollInfo) {
-    if (scrollInfo.metrics.pixels > _lastScrollExtend + 2.5) {
+  void _handleScrollController() {
+    _setDirection(widget.controller.offset);
+  }
+
+  bool _handleScrollNotifications(ScrollNotification scrollInfo) {
+    _setDirection(scrollInfo.metrics.pixels);
+    return true;
+  }
+
+  void _setDirection(double offset) {
+    if (offset > _lastScrollExtend + 2.5) {
       // to end
       _stack.direction = AnimationDirection.toEnd;
-    } else if (scrollInfo.metrics.pixels < _lastScrollExtend - 2.5) {
+    } else if (offset < _lastScrollExtend - 2.5) {
       // to start
       _stack.direction = AnimationDirection.toStart;
     }
-    _lastScrollExtend = scrollInfo.metrics.pixels;
-    return true;
+    _lastScrollExtend = offset;
   }
 }
 

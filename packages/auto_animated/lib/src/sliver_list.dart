@@ -5,13 +5,14 @@ import 'package:flutter/widgets.dart';
 import 'helpers/callbacks.dart';
 import 'helpers/utils.dart' as utils;
 
-const Duration _kDuration = Duration(milliseconds: 300);
+const Duration _kDuration = Duration(milliseconds: 250);
 
 class AutoAnimatedSliverList extends StatefulWidget {
   const AutoAnimatedSliverList({
     @required this.itemBuilder,
     @required this.itemCount,
-    this.hideWhenGoingBeyond = true,
+    @required this.controller,
+    this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.reverse = false,
     this.showItemInterval = _kDuration,
@@ -32,13 +33,14 @@ class AutoAnimatedSliverList extends StatefulWidget {
 
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
-  /// when it falls into the visibility
-  ///  range, the animation can be played again
-  ///
-  /// The appearance animation will also play when the item
-  /// is redrawn. Redrawing is peculiar for all
-  ///  list \ grid views with builder methods
-  final bool hideWhenGoingBeyond;
+  /// when it falls into the visibility range - reproduce animation again
+  final bool reAnimateOnVisibility;
+
+  /// It is necessary in order to
+  /// find out in which direction the
+  /// widget scrolls in order to play
+  ///  the animation in the corresponding direction
+  final ScrollController controller;
 
   /// Called, as needed, to build list item widgets.
   final AutoAnimatedListItemBuilder itemBuilder;
@@ -67,7 +69,7 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
       AnimateOnVisibilityChange(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
-        hideWhenGoingBeyond: widget.hideWhenGoingBeyond,
+        reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
           itemIndex,
@@ -77,9 +79,9 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
 
   @override
   Widget build(BuildContext context) => AnimateOnVisibilityWrapper(
+        controller: widget.controller,
         delay: widget.delay,
         showItemInterval: widget.showItemInterval,
-        useListStack: true,
         child: SliverList(
           delegate: SliverChildBuilderDelegate(
             _itemBuilder,
