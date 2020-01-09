@@ -1,3 +1,12 @@
+## 2.0.0
+
+* All widgets with pattern `AutoAnimated{List,Grid,SliverList,SliverGrid,IconButton}` renamed to `Live{List,Grid,SliverList,SliverGrid,IconButton}`. For example: `AutoAnimatedList` now named `LiveList`
+* `AnimateOnVisibilityWrapper` renamed to `AnimateIfVisibleWrapper` and `AnimateOnVisibilityChange` renamed to `AnimateIfVisible`
+* Added `{List,Grid,SliverList,SliverGrid,IconButton}.options` constructors
+* Removed `AutoAnimated.separated()` constructor. Now property `separatorBuilder` added in `LiveList()` & `LiveList.options()` constructor and marked as optional
+* Added `visibleFraction` as option for `Live{List,Grid,SliverList,SliverGrid,IconButton}` & `AutoAnimatedOptions`. Animations starts at `double visibleFraction` visible item fraction in sight (default 0.025)
+* Docs improvements
+
 ## 2.0.0-dev.4
 
 * SliverList & SliverGrid now requires scrollController (From custom `CustomScrollView`). It is necessary in order to find out in which direction the widget scrolls in order to play the animation in the corresponding direction

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 
-class AutoAnimatedIconButtonExample extends StatefulWidget {
+class LiveIconButtonExample extends StatefulWidget {
   @override
-  _AutoAnimatedIconButtonExampleState createState() =>
-      _AutoAnimatedIconButtonExampleState();
+  _LiveIconButtonExampleState createState() => _LiveIconButtonExampleState();
 }
 
-class _AutoAnimatedIconButtonExampleState
-    extends State<AutoAnimatedIconButtonExample> {
+class _LiveIconButtonExampleState extends State<LiveIconButtonExample> {
   bool _externalState = false;
 
   @override
@@ -23,7 +21,7 @@ class _AutoAnimatedIconButtonExampleState
                   primary: false,
                   title: Text('Auto animated Icon'),
                   // Implement animated icon
-                  leading: AutoAnimatedIconButton(
+                  leading: LiveIconButton(
                     icon: AnimatedIcons.menu_close,
                     firstTooltip: 'Menu',
                     secondTooltip: 'Close',
@@ -31,7 +29,7 @@ class _AutoAnimatedIconButtonExampleState
                   ),
                 ),
               ),
-              AutoAnimatedIconButton.externalState(
+              LiveIconButton.externalState(
                 icon: AnimatedIcons.arrow_menu,
                 onPressed: () {
                   setState(() {
@@ -40,11 +38,11 @@ class _AutoAnimatedIconButtonExampleState
                 },
                 iconState: !_externalState ? IconState.first : IconState.second,
               ),
-              AutoAnimatedIconButton(
+              LiveIconButton(
                 icon: AnimatedIcons.play_pause,
                 onPressed: () {},
               ),
-              AutoAnimatedIconButton(
+              LiveIconButton(
                 icon: AnimatedIcons.search_ellipsis,
                 onPressed: () {},
               ),

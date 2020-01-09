@@ -1,16 +1,18 @@
-import 'package:auto_animated/src/on_visibility_change.dart';
+import 'package:auto_animated/src/animate_if_visible.dart';
 import 'package:flutter/widgets.dart';
 
 import 'helpers/callbacks.dart';
+import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
 
 const Duration _kDuration = Duration(milliseconds: 250);
 
-class AutoAnimatedGrid extends StatefulWidget {
-  const AutoAnimatedGrid({
+class LiveGrid extends StatefulWidget {
+  const LiveGrid({
     @required this.itemBuilder,
     @required this.gridDelegate,
     @required this.itemCount,
+    this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
@@ -30,6 +32,31 @@ class AutoAnimatedGrid extends StatefulWidget {
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
+  LiveGrid.options({
+    @required this.itemBuilder,
+    @required this.gridDelegate,
+    @required this.itemCount,
+    @required AutoAnimatedOptions options,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.controller,
+    this.primary,
+    this.physics,
+    this.shrinkWrap = false,
+    this.padding,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    Key key,
+  })  : delay = options.delay,
+        showItemInterval = options.showItemInterval,
+        showItemDuration = options.showItemDuration,
+        visibleFraction = options.visibleFraction,
+        reAnimateOnVisibility = options.reAnimateOnVisibility,
+        assert(itemBuilder != null),
+        assert(itemCount != null && itemCount >= 0),
+        super(key: key);
+
   /// Start animation after (default zero)
   final Duration delay;
 
@@ -39,6 +66,12 @@ class AutoAnimatedGrid extends StatefulWidget {
   /// Animation duration
   final Duration showItemDuration;
 
+  /// A fraction in the range \[0, 1\] that represents what proportion of the
+  /// widget is visible (assuming rectangular bounding boxes).
+  ///
+  /// 0 means not visible; 1 means fully visible.
+  final double visibleFraction;
+
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
   /// when it falls into the visibility range - reproduce animation again
@@ -47,7 +80,7 @@ class AutoAnimatedGrid extends StatefulWidget {
   /// Called, as needed, to build list item widgets.
   ///
   /// List items are only built when they're scrolled into view.
-  final AutoAnimatedListItemBuilder itemBuilder;
+  final LiveListItemBuilder itemBuilder;
 
   /// The number of items the list will start with.
   ///
@@ -175,17 +208,17 @@ class AutoAnimatedGrid extends StatefulWidget {
   final bool addSemanticIndexes;
 
   @override
-  _AutoAnimatedGridViewState createState() => _AutoAnimatedGridViewState();
+  _LiveGridViewState createState() => _LiveGridViewState();
 }
 
-class _AutoAnimatedGridViewState extends State<AutoAnimatedGrid>
-    with TickerProviderStateMixin<AutoAnimatedGrid> {
+class _LiveGridViewState extends State<LiveGrid>
+    with TickerProviderStateMixin<LiveGrid> {
   final String _keyPrefix = utils.createCryptoRandomString();
 
-  Widget _itemBuilder(BuildContext context, int itemIndex) =>
-      AnimateOnVisibilityChange(
+  Widget _itemBuilder(BuildContext context, int itemIndex) => AnimateIfVisible(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
+        visibleFraction: widget.visibleFraction,
         reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
@@ -195,7 +228,7 @@ class _AutoAnimatedGridViewState extends State<AutoAnimatedGrid>
       );
 
   @override
-  Widget build(BuildContext context) => AnimateOnVisibilityWrapper(
+  Widget build(BuildContext context) => AnimateIfVisibleWrapper(
         delay: widget.delay,
         showItemInterval: widget.showItemInterval,
         child: GridView.builder(

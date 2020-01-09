@@ -6,24 +6,36 @@ import 'package:flutter_widgets/flutter_widgets.dart';
 
 import 'animator/stack.dart';
 
+const double defaultVisibilityFraction = 0.025;
+
 typedef AutoAnimatedBuilder = Widget Function(
   BuildContext context,
   Animation<double> animation,
 );
 
-class AnimateOnVisibilityChange extends StatefulWidget {
-  const AnimateOnVisibilityChange({
+class AnimateIfVisible extends StatefulWidget {
+  const AnimateIfVisible({
     @required Key key,
     @required this.builder,
     this.delay = Duration.zero,
     this.duration = const Duration(milliseconds: 250),
     this.reAnimateOnVisibility = false,
+    this.visibleFraction = 0.025,
   })  : assert(delay != null),
         assert(duration != null),
+        assert(visibleFraction != null &&
+            visibleFraction > 0 &&
+            visibleFraction < 1),
         super(key: key);
 
   final AutoAnimatedBuilder builder;
   final Duration duration, delay;
+
+  /// A fraction in the range \[0, 1\] that represents what proportion of the
+  /// widget is visible (assuming rectangular bounding boxes).
+  ///
+  /// 0 means not visible; 1 means fully visible.
+  final double visibleFraction;
 
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
@@ -31,11 +43,10 @@ class AnimateOnVisibilityChange extends StatefulWidget {
   final bool reAnimateOnVisibility;
 
   @override
-  _AnimateOnVisibilityChangeState createState() =>
-      _AnimateOnVisibilityChangeState();
+  _AnimateIfVisibleState createState() => _AnimateIfVisibleState();
 }
 
-class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
+class _AnimateIfVisibleState extends State<AnimateIfVisible>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
   _VisibilityStackProvider _wrapper;
@@ -71,7 +82,8 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
       );
 
   void _visibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction > 0.025 && !_controller.isCompleted) {
+    if (info.visibleFraction > widget.visibleFraction &&
+        !_controller.isCompleted) {
       Future.delayed(widget.delay, () {
         if (_wrapper != null) {
           _wrapper.stack.add(widget.key, () {
@@ -85,7 +97,7 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
           }
         }
       });
-    } else if (info.visibleFraction <= 0.025 &&
+    } else if (info.visibleFraction <= widget.visibleFraction &&
         mounted &&
         widget.reAnimateOnVisibility &&
         !info.visibleBounds.isEmpty) {
@@ -94,8 +106,8 @@ class _AnimateOnVisibilityChangeState extends State<AnimateOnVisibilityChange>
   }
 }
 
-class AnimateOnVisibilityWrapper extends StatefulWidget {
-  const AnimateOnVisibilityWrapper({
+class AnimateIfVisibleWrapper extends StatefulWidget {
+  const AnimateIfVisibleWrapper({
     @required this.child,
     this.delay = Duration.zero,
     this.showItemInterval = const Duration(milliseconds: 150),
@@ -110,12 +122,11 @@ class AnimateOnVisibilityWrapper extends StatefulWidget {
   final Duration delay, showItemInterval;
 
   @override
-  _AnimateOnVisibilityWrapperState createState() =>
-      _AnimateOnVisibilityWrapperState();
+  _AnimateIfVisibleWrapperState createState() =>
+      _AnimateIfVisibleWrapperState();
 }
 
-class _AnimateOnVisibilityWrapperState
-    extends State<AnimateOnVisibilityWrapper> {
+class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
   VisibilityStack _stack;
   double _lastScrollExtend = 0;
 
@@ -139,7 +150,7 @@ class _AnimateOnVisibilityWrapperState
   }
 
   @override
-  void didUpdateWidget(AnimateOnVisibilityWrapper oldWidget) {
+  void didUpdateWidget(AnimateIfVisibleWrapper oldWidget) {
     if (oldWidget.showItemInterval != widget.showItemInterval) {
       _stack.showItemInterval = widget.showItemInterval;
     }

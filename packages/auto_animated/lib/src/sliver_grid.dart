@@ -1,4 +1,4 @@
-import 'package:auto_animated/src/on_visibility_change.dart';
+import 'package:auto_animated/src/animate_if_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -7,12 +7,13 @@ import 'helpers/utils.dart' as utils;
 
 const Duration _kDuration = Duration(milliseconds: 250);
 
-class AutoAnimatedSliverGrid extends StatefulWidget {
-  const AutoAnimatedSliverGrid({
+class LiveSliverGrid extends StatefulWidget {
+  const LiveSliverGrid({
     @required this.itemBuilder,
     @required this.gridDelegate,
     @required this.itemCount,
     @required this.controller,
+    this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.reverse = false,
@@ -32,6 +33,12 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
   /// Animation duration
   final Duration showItemDuration;
 
+  /// A fraction in the range \[0, 1\] that represents what proportion of the
+  /// widget is visible (assuming rectangular bounding boxes).
+  ///
+  /// 0 means not visible; 1 means fully visible.
+  final double visibleFraction;
+
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
   /// when it falls into the visibility range - reproduce animation again
@@ -44,7 +51,7 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
   final ScrollController controller;
 
   /// Called, as needed, to build list item widgets.
-  final AutoAnimatedListItemBuilder itemBuilder;
+  final LiveListItemBuilder itemBuilder;
 
   /// The number of items the list will start with.
   ///
@@ -76,17 +83,17 @@ class AutoAnimatedSliverGrid extends StatefulWidget {
   final SliverGridDelegate gridDelegate;
 
   @override
-  _AutoAnimatedSliverGridState createState() => _AutoAnimatedSliverGridState();
+  _LiveSliverGridState createState() => _LiveSliverGridState();
 }
 
-class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
-    with TickerProviderStateMixin<AutoAnimatedSliverGrid> {
+class _LiveSliverGridState extends State<LiveSliverGrid>
+    with TickerProviderStateMixin<LiveSliverGrid> {
   final String _keyPrefix = utils.createCryptoRandomString();
 
-  Widget _itemBuilder(BuildContext context, int itemIndex) =>
-      AnimateOnVisibilityChange(
+  Widget _itemBuilder(BuildContext context, int itemIndex) => AnimateIfVisible(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
+        visibleFraction: widget.visibleFraction,
         reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
@@ -96,7 +103,7 @@ class _AutoAnimatedSliverGridState extends State<AutoAnimatedSliverGrid>
       );
 
   @override
-  Widget build(BuildContext context) => AnimateOnVisibilityWrapper(
+  Widget build(BuildContext context) => AnimateIfVisibleWrapper(
         controller: widget.controller,
         delay: widget.delay,
         showItemInterval: widget.showItemInterval,

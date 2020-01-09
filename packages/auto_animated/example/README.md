@@ -14,10 +14,10 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.grey[100],
           appBar: AppBar(
             title: Text('Auto animated example'),
-            leading: AutoAnimatedIconButton(
+            leading: LiveIconButton(
               icon: AnimatedIcons.menu_close,
-              firstToolip: 'Menu',
-              secondToolip: 'Close',
+              firstTooltip: 'Menu',
+              secondTooltip: 'Close',
               onPressed: () {},
             ),
           ),
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
             children: <Widget>[
               SizedBox(
                 height: 200,
-                child: AutoAnimatedList(
+                child: LiveList(
                   showItemInterval: Duration(milliseconds: 500),
                   showItemDuration: Duration(seconds: 1),
                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),

@@ -10,8 +10,8 @@ enum IconState { first, second }
 ///The [icon] and [onPressed] are required.
 ///[icon] cannot be null.
 ///[duration] is the time taken to animate the transition.
-class AutoAnimatedIconButton extends StatefulWidget {
-  AutoAnimatedIconButton({
+class LiveIconButton extends StatefulWidget {
+  LiveIconButton({
     @required this.icon,
     @required this.onPressed,
     Key key,
@@ -33,7 +33,7 @@ class AutoAnimatedIconButton extends StatefulWidget {
   })  : iconState = null,
         super(key: key);
 
-  AutoAnimatedIconButton.externalState({
+  LiveIconButton.externalState({
     @required this.icon,
     @required this.onPressed,
     @required this.iconState,
@@ -69,10 +69,10 @@ class AutoAnimatedIconButton extends StatefulWidget {
   final IconState iconState;
 
   @override
-  _AutoAnimatedIconButtonState createState() => _AutoAnimatedIconButtonState();
+  _LiveIconButtonState createState() => _LiveIconButtonState();
 }
 
-class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
+class _LiveIconButtonState extends State<LiveIconButton>
     with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   bool _isPressed = false;
@@ -99,7 +99,7 @@ class _AutoAnimatedIconButtonState extends State<AutoAnimatedIconButton>
   }
 
   @override
-  void didUpdateWidget(AutoAnimatedIconButton oldWidget) {
+  void didUpdateWidget(LiveIconButton oldWidget) {
     if (oldWidget.iconState != widget.iconState) {
       if (oldWidget.iconState == IconState.first &&
           widget.iconState == IconState.second) {

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 // The default insert/remove animation duration.
 const Duration _kDuration = Duration(milliseconds: 300);
 
-// Incoming and outgoing AutoAnimatedList items.
+// Incoming and outgoing LiveList items.
 class ActiveItem implements Comparable<ActiveItem> {
   ActiveItem.incoming(this.controller, this.itemIndex)
       : removedItemBuilder = null;
@@ -15,7 +15,7 @@ class ActiveItem implements Comparable<ActiveItem> {
         removedItemBuilder = null;
 
   final AnimationController controller;
-  final AutoAnimatedListRemovedItemBuilder removedItemBuilder;
+  final LiveListRemovedItemBuilder removedItemBuilder;
   int itemIndex;
 
   @override
@@ -121,7 +121,7 @@ mixin ListAnimation<T extends StatefulWidget> on State<T> {
   /// before [index] towards the beginning of the list.
   void removeItem(
     int index,
-    AutoAnimatedListRemovedItemBuilder builder, {
+    LiveListRemovedItemBuilder builder, {
     Duration duration = _kDuration,
   }) {
     assert(index != null && index >= 0);

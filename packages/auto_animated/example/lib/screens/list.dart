@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:auto_animated_example/utils.dart';
 
-class AutoAnimatedListExample extends StatelessWidget {
+class LiveListExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
@@ -19,12 +19,13 @@ class AutoAnimatedListExample extends StatelessWidget {
 
 class VerticalExample extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => AutoAnimatedList(
+  Widget build(BuildContext context) => LiveList(
         showItemInterval: Duration(milliseconds: 150),
-        showItemDuration: Duration(milliseconds: 500),
+        showItemDuration: Duration(milliseconds: 350),
         padding: EdgeInsets.all(16),
+        reAnimateOnVisibility: true,
         scrollDirection: Axis.vertical,
-        itemCount: 10,
+        itemCount: 20,
         itemBuilder: animationItemBuilder(
           (index) => VerticalItem(title: index.toString()),
           padding: EdgeInsets.symmetric(vertical: 8),

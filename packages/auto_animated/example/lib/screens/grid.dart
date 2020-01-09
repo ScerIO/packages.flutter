@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:auto_animated_example/utils.dart';
 
-class AutoAnimatedGridExample extends StatefulWidget {
+class LiveGridExample extends StatefulWidget {
   @override
-  _AutoAnimatedGridExampleState createState() =>
-      _AutoAnimatedGridExampleState();
+  _LiveGridExampleState createState() => _LiveGridExampleState();
 }
 
-class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
+class _LiveGridExampleState extends State<LiveGridExample> {
   int itemsCount = 20;
   @override
   void initState() {
@@ -26,10 +25,11 @@ class _AutoAnimatedGridExampleState extends State<AutoAnimatedGridExample> {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
-          child: AutoAnimatedGrid(
+          child: LiveGrid(
             padding: EdgeInsets.all(16),
-            showItemInterval: Duration(milliseconds: 150),
-            showItemDuration: Duration(milliseconds: 300),
+            showItemInterval: Duration(milliseconds: 50),
+            showItemDuration: Duration(milliseconds: 150),
+            visibleFraction: 0.001,
             itemCount: itemsCount,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
