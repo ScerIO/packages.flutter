@@ -7,10 +7,10 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import 'animate_if_visible.dart';
 import 'helpers/callbacks.dart';
 import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
-import 'animate_if_visible.dart';
 
 const Duration _kDuration = Duration(milliseconds: 150);
 
