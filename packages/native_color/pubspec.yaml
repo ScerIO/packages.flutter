@@ -5,13 +5,14 @@ author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_color
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.1.0 <3.0.0'
+  flutter: '>=1.9.1 <2.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
 
 dev_dependencies:
-  pedantic: ^1.5.0
   flutter_test:
     sdk: flutter
+  pedantic: ^1.8.0+1

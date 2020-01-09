@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:native_color/native_color.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('hex color', () {
     test('Normal color', () {
       expect(HexColor('#FFFFFF').value, equals(Color(0xFFFFFFFF).value));

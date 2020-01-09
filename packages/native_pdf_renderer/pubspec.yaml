@@ -5,20 +5,21 @@ author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_renderer
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: '>=2.0.0 <3.0.0'
+  flutter: '>=1.9.1 <2.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  meta: ^1.1.7
+  meta: ^1.1.8
   extension: ^0.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  pedantic: ^1.8.0+1
 
 flutter:
   plugin:
     androidPackage: io.scer.pdf.renderer
     pluginClass: NativePDFRendererPlugin
-
-dev_dependencies:
-  flutter_test:
-      sdk: flutter
-  pedantic: ^1.5.0

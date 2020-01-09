@@ -1,5 +1,5 @@
-import 'package:auto_animated_example/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:auto_animated_example/utils.dart';
 import 'package:auto_animated/auto_animated.dart';
 
 class AnimateIfVisibleExample extends StatelessWidget {

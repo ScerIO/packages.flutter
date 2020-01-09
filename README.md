@@ -1,5 +1,7 @@
 <img src=".github/MEDIA/logo.png" alt="Flutter plugins" width="100%">
 
+[![Build Status](https://api.cirrus-ci.com/github/rbcprolabs/packages.flutter.svg)](https://cirrus-ci.com/github/rbcprolabs/packages.flutter/master)
+
 ## Available plugins
 
 | Plugin | Source code |

@@ -8,6 +8,7 @@ typedef PDFViewPageBuilder = Widget Function(
   PDFPageImage pageImage,
   bool isCurrentIndex,
 );
+
 typedef PDFViewPageRenderer = Future<PDFPageImage> Function(PDFPage page);
 
 /// Widget for viewing PDF documents

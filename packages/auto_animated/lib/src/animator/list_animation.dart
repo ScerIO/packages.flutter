@@ -65,7 +65,7 @@ mixin ListAnimation<T extends StatefulWidget> on State<T> {
   }
 
   /// Insert an item at [index] and start an animation that will be passed
-  /// to [ListAnimation.itemBuilder] when the item is visible.
+  /// to itemBuilder when the item is visible.
   ///
   /// This method's semantics are the same as Dart's [List.insert] method:
   /// it increases the length of the list by one and shifts all items at or
@@ -111,7 +111,7 @@ mixin ListAnimation<T extends StatefulWidget> on State<T> {
   /// to [builder] when the item is visible.
   ///
   /// Items are removed immediately. After an item has been removed, its index
-  /// will no longer be passed to the [ListAnimation.itemBuilder].
+  /// will no longer be passed to the itemBuilder.
   /// However the
   /// item will still appear in the list for [duration] and during that time
   /// [builder] must construct its widget as needed.

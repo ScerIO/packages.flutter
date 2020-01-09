@@ -15,7 +15,6 @@ class LiveSliverList extends StatefulWidget {
     this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
-    this.reverse = false,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
     Key key,
@@ -58,11 +57,6 @@ class LiveSliverList extends StatefulWidget {
   /// are created, as needed, by [itemBuilder] with an animation parameter
   /// of [kAlwaysCompleteAnimation].
   final int itemCount;
-
-  /// Whether the scroll view scrolls in the reading direction.
-  ///
-  /// Defaults to false.
-  final bool reverse;
 
   @override
   _LiveSliverListState createState() => _LiveSliverListState();
