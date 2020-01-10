@@ -116,9 +116,9 @@ class LiveList extends StatefulWidget {
   /// This example
   ///
   /// ```dart
-  /// LiveList(
+  /// LiveList.options(
   ///   itemCount: 25,
-  ///   option: AutoAnimatedOptions(
+  ///   option: LiveOptions(
   ///     // Start animation after (default zero)
   ///     delay: Duration(seconds: 1),
   ///     // Show each item through
@@ -148,7 +148,7 @@ class LiveList extends StatefulWidget {
   LiveList.options({
     @required this.itemBuilder,
     @required this.itemCount,
-    @required AutoAnimatedOptions options,
+    @required LiveOptions options,
     this.separatorBuilder,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,

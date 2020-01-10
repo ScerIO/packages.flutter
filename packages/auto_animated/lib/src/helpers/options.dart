@@ -1,7 +1,24 @@
 const Duration _kDuration = Duration(milliseconds: 250);
 
-class AutoAnimatedOptions {
-  const AutoAnimatedOptions({
+class LiveOptions {
+  /// Configuration suitable for reuse in
+  /// Live{List,SliverList,Grid,SliverGrid}.options constructors
+  /// {@tool sample}
+  ///
+  /// This example
+  ///
+  /// ```dart
+  /// LiveList.options(
+  ///   option: AutoAnimatedOptions(
+  ///     delay: Duration(seconds: 1),
+  ///     showItemInterval: Duration(milliseconds: 500),
+  ///     showItemDuration: Duration(seconds: 1),
+  ///     visibleFraction: 0.025,
+  ///   ),
+  /// )
+  /// ```
+  /// {@end-tool}
+  const LiveOptions({
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
@@ -29,14 +46,16 @@ class AutoAnimatedOptions {
   /// when it falls into the visibility range - reproduce animation again
   final bool reAnimateOnVisibility;
 
-  AutoAnimatedOptions copyWith({
+  /// Creates a copy of this options but with the
+  /// given fields replaced with the new values.
+  LiveOptions copyWith({
     Duration delay,
     Duration showItemInterval,
     Duration showItemDuration,
     double visibleFraction,
     bool reAnimateOnVisibility,
   }) =>
-      AutoAnimatedOptions(
+      LiveOptions(
         delay: delay ?? this.delay,
         showItemInterval: showItemInterval ?? this.showItemInterval,
         showItemDuration: showItemDuration ?? this.showItemDuration,

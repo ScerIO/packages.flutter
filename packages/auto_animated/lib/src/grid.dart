@@ -36,7 +36,7 @@ class LiveGrid extends StatefulWidget {
     @required this.itemBuilder,
     @required this.gridDelegate,
     @required this.itemCount,
-    @required AutoAnimatedOptions options,
+    @required LiveOptions options,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,

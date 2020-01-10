@@ -40,7 +40,7 @@ Another animated widgets
 ## Options for all examples
 __declared `options` variable for all next examples__
 ```dart
-final options = AutoAnimatedOptions(
+final options = LiveOptions(
   // Start animation after (default zero)
   delay: Duration(seconds: 1),
 
@@ -109,7 +109,7 @@ LiveList.options(
 LiveList(
   delay: /*...*/,
   showItemInterval: /*...*/,
-  // ... and all other arguments from `AutoAnimatedOptions` (see above)
+  // ... and all other arguments from `LiveOptions` (see above)
 );
 ```
 
@@ -135,7 +135,7 @@ LiveGrid.options(
 LiveGrid(
   delay: /*...*/,
   showItemInterval: /*...*/,
-  // ... and all other arguments from `AutoAnimatedOptions` (see above)
+  // ... and all other arguments from `LiveOptions` (see above)
 );
 ```
 

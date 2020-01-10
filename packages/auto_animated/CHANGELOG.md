@@ -4,7 +4,8 @@
 * `AnimateOnVisibilityWrapper` renamed to `AnimateIfVisibleWrapper` and `AnimateOnVisibilityChange` renamed to `AnimateIfVisible`
 * Added `{List,Grid,SliverList,SliverGrid,IconButton}.options` constructors
 * Removed `AutoAnimated.separated()` constructor. Now property `separatorBuilder` added in `LiveList()` & `LiveList.options()` constructor and marked as optional
-* Added `visibleFraction` as option for `Live{List,Grid,SliverList,SliverGrid,IconButton}` & `AutoAnimatedOptions`. Animations starts at `double visibleFraction` visible item fraction in sight (default 0.025)
+* Added `LiveOptions`
+* Added `visibleFraction` as option for `Live{List,Grid,SliverList,SliverGrid,IconButton}` & `LiveOptions`. Animations starts at `double visibleFraction` visible item fraction in sight (default 0.025)
 * Docs improvements
 
 ## 2.0.0-dev.4
@@ -75,7 +76,7 @@ Now animations start on scroll (element visibility change)
 
 ## 1.1.0
 
-* Added `AutoAnimatedListState.sepparated`
+* Added `AutoAnimatedListState.separated`
 * Added `AutoAnimatedIconButton`
 * Optimized performance
 

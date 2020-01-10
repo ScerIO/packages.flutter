@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'helpers/callbacks.dart';
+import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
 
 const Duration _kDuration = Duration(milliseconds: 250);
@@ -20,6 +21,22 @@ class LiveSliverGrid extends StatefulWidget {
     this.showItemDuration = _kDuration,
     Key key,
   })  : assert(itemBuilder != null),
+        assert(itemCount != null && itemCount >= 0),
+        super(key: key);
+
+  LiveSliverGrid.options({
+    @required this.itemBuilder,
+    @required this.gridDelegate,
+    @required this.itemCount,
+    @required this.controller,
+    @required LiveOptions options,
+    Key key,
+  })  : delay = options.delay,
+        showItemInterval = options.showItemInterval,
+        showItemDuration = options.showItemDuration,
+        visibleFraction = options.visibleFraction,
+        reAnimateOnVisibility = options.reAnimateOnVisibility,
+        assert(itemBuilder != null),
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
