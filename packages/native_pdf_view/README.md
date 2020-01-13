@@ -8,7 +8,6 @@ In your flutter project add the dependency:
 
 ```yaml
 dependencies:
-  ...
   native_pdf_view: any
 ```
 For help getting started with Flutter, view the online [documentation](https://flutter.io/).

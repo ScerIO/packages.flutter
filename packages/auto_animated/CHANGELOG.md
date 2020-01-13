@@ -1,3 +1,7 @@
+## 2.0.1 
+
+* Fix missing import for `LiveOptions` ([issue#23](https://github.com/rbcprolabs/packages.flutter/issues/23))
+
 ## 2.0.0
 
 * All widgets with pattern `AutoAnimated{List,Grid,SliverList,SliverGrid,IconButton}` renamed to `Live{List,Grid,SliverList,SliverGrid,IconButton}`. For example: `AutoAnimatedList` now named `LiveList`
