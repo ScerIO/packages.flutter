@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Added source hex string field `hexColor` to `HexColor`
+
 ## 1.0.0
 
 * Added examples

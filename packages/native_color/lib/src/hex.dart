@@ -9,7 +9,9 @@ class HexColor extends Color {
   /// HexColor('#B1000000') == Color(0xB1000000)
   /// HexColor('#FFFFFF')   == Color(0xFFFFFFFF)
   /// ```
-  HexColor(final String hexColor) : super(getColorFromHex(hexColor));
+  HexColor(this.hexColor) : super(getColorFromHex(hexColor));
+
+  final String hexColor;
 
   static int getColorFromHex(String hex) {
     String hexColor = hex.toUpperCase().replaceAll('#', '');
