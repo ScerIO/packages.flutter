@@ -1,64 +1,54 @@
 # native_color
 
-A new flutter plugin project.
+Flutter package widening a Color class which can be used to create, convert, compare colors and uses in UI. And also for working with editing color
 
-## Examples
+```dart
+// Usage hex from string and alternative color systems
 
-*HexColor*:
-```dart
-main() {
-  assert(HexColor('000000')    == Color(0xFF000000));
-  assert(HexColor('FFFFFFFF')  == Color(0xFFFFFFFF));
-  assert(HexColor('#B1000000') == Color(0xB1000000));
-}
-```
-*HslColor*:
-```dart
-main() {
-  assert(HslColor(164, 100, 88) == Color(0xFFC2FFEF));
-}
-```
-*HyzColor*:
-```dart
-main() {
-  assert(XyzColor(0.1669, 0.2293, 0.0434) == Color(0xFF659027));
-}
-```
-*CielabColor*:
-```dart
-main() {
-  assert(CielabColor(36.80, 55.20, -95.61) == Color(0xFF4832F7));
-}
+HexColor('000000')                 // -> Color(0xFF000000)
+HslColor(164, 100, 88)             // -> Color(0xFFC2FFEF)
+XyzColor(0.1669, 0.2293, 0.0434)   // -> Color(0xFF659027)
+CielabColor(36.80, 55.20, -95.61)  // -> Color(0xFF4832F7)
+
+// Make color darker or lighter
+Color(0xFF000000).lighter(100)     // -> Color(0xFFFFFFFF)
+Color(0xFF000000).darker(50)       // -> Color(0xFF808080)
 ```
 
 ## Examples
 
-*HexColor*:
 ```dart
-main() {
-  assert(HexColor('000000')    == Color(0xFF000000));
-  assert(HexColor('FFFFFFFF')  == Color(0xFFFFFFFF));
-  assert(HexColor('#B1000000') == Color(0xB1000000));
-}
+// HexColor
+assert(HexColor('000000')    == Color(0xFF000000));
+assert(HexColor('#000000')   == Color(0xFF000000));
+assert(HexColor('FFFFFFFF')  == Color(0xFFFFFFFF));
+assert(HexColor('#B1000000') == Color(0xB1000000));
+assert(HexColor('#B1000000').hexColor, '#B1000000');
+
+// HslColor
+assert(HslColor(164, 100, 88) == Color(0xFFC2FFEF));
+
+// HyzColor
+assert(XyzColor(0.1669, 0.2293, 0.0434) == Color(0xFF659027));
+
+/// CielabColor
+assert(CielabColor(36.80, 55.20, -95.61) == Color(0xFF4832F7));
 ```
-*HslColor*:
+
+*Make color darker or lighter*
+Usage dart extension methods
 ```dart
-main() {
-  assert(HslColor(164, 100, 88) == Color(0xFFC2FFEF));
-}
+// [black -> white] lighter by 100 percents
+assert(Color(0xFF000000).lighter(100), Color(0xFFFFFFFF));
+// Another lighter example
+assert(Color.fromARGB(255, 64, 64, 64).lighter(50),   Color.fromARGB(255, 192, 192, 192));
+
+// [white -> grey] darker by 50 percents
+assert(Color(0xFF000000).darker(50), Color(0xFF808080));
+// Another darker example
+assert(Color.fromARGB(255, 192, 192, 192).darker(25), Color.fromARGB(255, 128, 128, 128));
 ```
-*HyzColor*:
-```dart
-main() {
-  assert(XyzColor(0.1669, 0.2293, 0.0434) == Color(0xFF659027));
-}
-```
-*CielabColor*:
-```dart
-main() {
-  assert(CielabColor(36.80, 55.20, -95.61) == Color(0xFF4832F7));
-}
-```
+How it works? [Easy :)](https://graphicdesign.stackexchange.com/a/75419)
 
 ## Getting Started
 
@@ -70,3 +60,7 @@ Android and/or iOS.
 For help getting started with Flutter, view our 
 [online documentation](https://flutter.io/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
+
+## Inspired by
+
+[Color dart package](https://pub.dev/packages/color)
