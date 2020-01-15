@@ -15,6 +15,20 @@ Color(0xFF000000).lighter(100)     // -> Color(0xFFFFFFFF)
 Color(0xFF000000).darker(50)       // -> Color(0xFF808080)
 ```
 
+
+## Getting Started
+
+In your flutter project add the dependency:
+
+[![pub package](https://img.shields.io/pub/v/native_color.svg)](https://pub.dartlang.org/packages/native_color)
+
+```yaml
+dependencies:
+  native_color: any
+```
+
+For help getting started with Flutter, view the online [documentation](https://flutter.io/).
+
 ## Examples
 
 ```dart
