@@ -1,5 +1,6 @@
 name: neumorphic_example
 description: Demonstrates how to use the neumorphic plugin.
+version: 1.0.0+0
 publish_to: 'none'
 
 environment:
