@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:neumorphic/neumorphic.dart';
+import 'package:neumorphic_example/screen.dart';
 
 void main() => runApp(NeumorphicApp());
 
@@ -10,65 +10,10 @@ class NeumorphicApp extends StatelessWidget {
         title: 'Neumorphic App',
         theme: ThemeData(
           primarySwatch: Colors.blue,
-          backgroundColor: Colors.blueGrey.shade200,
-          scaffoldBackgroundColor: Colors.blueGrey.shade200,
-          dialogBackgroundColor: Colors.blueGrey.shade200,
+          backgroundColor: Color.lerp(Colors.grey[200], Colors.black, 0.005),
+          scaffoldBackgroundColor: Colors.grey[200],
+          dialogBackgroundColor: Colors.grey[300],
         ),
-        home: Scaffold(
-          body: Padding(
-            padding: EdgeInsets.all(48),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(width: double.maxFinite),
-                Neumorphic(
-                  padding: EdgeInsets.all(48),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Neumorphic container',
-                        style: Typography.blackCupertino.display1
-                            .copyWith(fontSize: 24),
-                      ),
-                      SizedBox(height: 32),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Neumorphic(
-                            padding: EdgeInsets.all(12),
-                            status: NeumorphicStatus.concave,
-                            child: Text(
-                              'concave',
-                              style: Typography.blackCupertino.display1
-                                  .copyWith(fontSize: 16),
-                            ),
-                          ),
-                          Neumorphic(
-                            padding: EdgeInsets.all(12),
-                            status: NeumorphicStatus.convex,
-                            child: Text(
-                              'convex',
-                              style: Typography.blackCupertino.display1
-                                  .copyWith(fontSize: 16),
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                SizedBox(height: 64),
-                NeumorphicButton(
-                  child: Text('Button'),
-                  onPressed: () {
-                    print('pressed');
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
+        home: Neumorphism(),
       );
 }

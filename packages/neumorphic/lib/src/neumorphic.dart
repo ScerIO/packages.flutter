@@ -11,7 +11,7 @@ enum NeumorphicStatus {
 class Neumorphic extends StatelessWidget {
   Neumorphic({
     this.child,
-    this.bevel = 10.0,
+    this.bevel = 12.0,
     this.status = NeumorphicStatus.convex,
     this.color,
     NeumorphicDecoration decoration,
@@ -23,7 +23,7 @@ class Neumorphic extends StatelessWidget {
     this.padding,
     this.transform,
     Key key,
-  })  : blurOffset = Offset(bevel / 5, bevel / 5),
+  })  : blurOffset = Offset(bevel / 2, bevel / 2),
         decoration = decoration ?? NeumorphicDecoration(color: color),
         constraints = (width != null || height != null)
             ? constraints?.tighten(width: width, height: height) ??
@@ -70,14 +70,18 @@ class Neumorphic extends StatelessWidget {
       transform: transform,
       decoration: BoxDecoration(
         borderRadius: decoration.borderRadius,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+        gradient: RadialGradient(
+          // begin: Alignment.topLeft,
+          // end: Alignment.bottomRight,
           colors: [
-            isConcave ? color.mix(Colors.black, .05) : color,
-            isConcave ? color : color.mix(Colors.black, .01),
-            isConcave ? color : color.mix(Colors.black, .01),
-            isConcave ? color.mix(Colors.white, .2) : color,
+            isConcave ? color.mix(Colors.black, .035) : color,
+            isConcave
+                ? color.mix(Colors.white, .01)
+                : color.mix(Colors.black, .01),
+            isConcave
+                ? color.mix(Colors.white, .01)
+                : color.mix(Colors.black, .01),
+            isConcave ? color.mix(Colors.black, .035) : color,
           ],
           stops: [
             0.0,
@@ -90,12 +94,12 @@ class Neumorphic extends StatelessWidget {
           BoxShadow(
             blurRadius: bevel,
             offset: -blurOffset,
-            color: color.mix(Colors.white, .6).withOpacity(0.85),
+            color: color.mix(Colors.white, 1),
           ),
           BoxShadow(
             blurRadius: bevel,
             offset: blurOffset,
-            color: color.mix(Colors.black, .3).withOpacity(0.85),
+            color: color.mix(Colors.black, .15),
           )
         ],
         shape: decoration.shape,
@@ -109,7 +113,7 @@ class Neumorphic extends StatelessWidget {
 class NeumorphicDecoration {
   const NeumorphicDecoration({
     this.color,
-    this.borderRadius = const BorderRadius.all(Radius.circular(8)),
+    this.borderRadius,
     this.shape = BoxShape.rectangle,
     this.border,
   });
