@@ -38,7 +38,7 @@ class NeumorphicApp extends StatelessWidget {
                         children: <Widget>[
                           Neumorphic(
                             padding: EdgeInsets.all(12),
-                            neumorphicShape: NeumorphicShape.concave,
+                            status: NeumorphicStatus.concave,
                             child: Text(
                               'concave',
                               style: Typography.blackCupertino.display1
@@ -47,7 +47,7 @@ class NeumorphicApp extends StatelessWidget {
                           ),
                           Neumorphic(
                             padding: EdgeInsets.all(12),
-                            neumorphicShape: NeumorphicShape.convex,
+                            status: NeumorphicStatus.convex,
                             child: Text(
                               'convex',
                               style: Typography.blackCupertino.display1

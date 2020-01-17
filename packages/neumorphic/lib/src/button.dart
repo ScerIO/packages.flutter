@@ -20,21 +20,17 @@ class NeumorphicButton extends StatefulWidget {
 class _NeumorphicButtonState extends State<NeumorphicButton> {
   bool _isPressed = false;
 
-  void _tapDown() {
-    if (!_isPressed) {
+  void _toggle(bool value) {
+    if (_isPressed != value) {
       setState(() {
-        _isPressed = true;
+        _isPressed = value;
       });
     }
   }
 
-  void _tapUp() {
-    if (_isPressed) {
-      setState(() {
-        _isPressed = false;
-      });
-    }
-  }
+  void _tapDown() => _toggle(true);
+
+  void _tapUp() => _toggle(false);
 
   @override
   Widget build(BuildContext context) => GestureDetector(
@@ -43,8 +39,8 @@ class _NeumorphicButtonState extends State<NeumorphicButton> {
         onTapCancel: _tapUp,
         onTap: widget.onPressed,
         child: Neumorphic(
-          neumorphicShape:
-              _isPressed ? NeumorphicShape.concave : NeumorphicShape.convex,
+          status:
+              _isPressed ? NeumorphicStatus.concave : NeumorphicStatus.convex,
           padding: widget.padding,
           child: widget.child,
         ),
