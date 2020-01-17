@@ -13,20 +13,43 @@ class Neumorphic extends StatelessWidget {
     this.child,
     this.bevel = 10.0,
     this.color,
-    this.padding = const EdgeInsets.all(24.0),
     this.borderRadius = const BorderRadius.all(Radius.circular(8)),
     this.neumorphicShape = NeumorphicShape.convex,
+    this.alignment,
+    this.width,
+    this.height,
+    BoxConstraints constraints,
+    this.margin,
+    this.padding,
+    this.transform,
+    this.shape = BoxShape.rectangle,
+    this.border,
     Key key,
   })  : blurOffset = Offset(bevel / 5, bevel / 5),
+        constraints = (width != null || height != null)
+            ? constraints?.tighten(width: width, height: height) ??
+                BoxConstraints.tightFor(width: width, height: height)
+            : constraints,
         super(key: key);
 
   final Widget child;
+
+  /// Elevation relative to parent. Main constituent of Neumorphism
   final double bevel;
   final Offset blurOffset;
   final Color color;
-  final EdgeInsets padding;
   final BorderRadiusGeometry borderRadius;
   final NeumorphicShape neumorphicShape;
+
+  final AlignmentGeometry alignment;
+  final double width;
+  final double height;
+  final BoxConstraints constraints;
+  final EdgeInsetsGeometry margin;
+  final EdgeInsets padding;
+  final Matrix4 transform;
+  final BoxShape shape;
+  final BoxBorder border;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +58,13 @@ class Neumorphic extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
+      alignment: alignment,
+      width: width,
+      height: height,
+      constraints: constraints,
+      margin: margin,
       padding: padding,
+      transform: transform,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         gradient: LinearGradient(
@@ -66,6 +95,8 @@ class Neumorphic extends StatelessWidget {
             color: color.mix(Colors.black, .3).withOpacity(0.85),
           )
         ],
+        shape: shape,
+        border: border,
       ),
       child: child,
     );
