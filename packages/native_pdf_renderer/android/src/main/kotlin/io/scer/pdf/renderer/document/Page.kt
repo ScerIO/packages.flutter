@@ -40,7 +40,7 @@ class Page (
 
         pageRenderer.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-        if (crop && cropW != width && cropH != height){
+        if (crop && (cropW != width || cropH != height)){
             val cropped = Bitmap.createBitmap(bitmap, cropX, cropY, cropW, cropH)
             return Data(
                 cropW,
