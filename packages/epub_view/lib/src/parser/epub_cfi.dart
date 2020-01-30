@@ -187,8 +187,9 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseRange() {
-    var result0, result1, result2, result3, result4, result5;
-    var pos0, pos1;
+    dynamic result0, result1, result2, result3, result5;
+    String result4;
+    int pos0, pos1;
 
     pos0 = pos;
     pos1 = pos;
@@ -270,11 +271,9 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parsePath() {
-    var result0, result1;
-    var pos0, pos1;
+    dynamic result0, result1;
+    final int pos0 = pos, pos1 = pos;
 
-    pos0 = pos;
-    pos1 = pos;
     result0 = _parseIndexStep();
     if (result0 != null) {
       result1 = _parseLocalPath();
@@ -302,11 +301,9 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseLocalPath() {
-    var result0, result1;
-    var pos0, pos1;
+    dynamic result0, result1;
+    final int pos0 = pos, pos1 = pos;
 
-    pos0 = pos;
-    pos1 = pos;
     result1 = _parseIndexStep();
     if (result1 == null) {
       result1 = _parseIndirectionStep();
@@ -349,11 +346,11 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseIndexStep() {
-    var result0, result1, result2, result3, result4;
-    var pos0, pos1, pos2;
+    dynamic result0, result1, result2;
+    String result3, result4;
+    final int pos0 = pos, pos1 = pos;
+    int pos2;
 
-    pos0 = pos;
-    pos1 = pos;
     if (input.codeUnitAt(pos) == 47) {
       result0 = '/';
       pos++;
@@ -433,11 +430,11 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseIndirectionStep() {
-    var result0, result1, result2, result3, result4;
-    var pos0, pos1, pos2;
+    dynamic result0, result1, result2;
+    String result3, result4;
+    final int pos0 = pos, pos1 = pos;
+    int pos2;
 
-    pos0 = pos;
-    pos1 = pos;
     if (input.substring(pos, 2) == '!/') {
       result0 = '!/';
       pos += 2;
@@ -517,11 +514,11 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseTerminus() {
-    var result0, result1, result2, result3, result4;
-    var pos0, pos1, pos2;
+    dynamic result0, result1, result2, result3;
+    String result4;
+    final int pos0 = pos, pos1 = pos;
+    int pos2;
 
-    pos0 = pos;
-    pos1 = pos;
     if (input.codeUnitAt(pos) == 58) {
       result0 = ':';
       pos++;
@@ -600,11 +597,10 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseIdAssertion() {
-    var result0;
-    var pos0;
+  String _parseIdAssertion() {
+    String result0;
+    final int pos0 = pos;
 
-    pos0 = pos;
     result0 = _parseValue();
     if (result0 != null) {
       result0 = ((offset, idVal) => idVal)(pos0, result0);
@@ -616,11 +612,9 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseTextLocationAssertion() {
-    var result0, result1;
-    var pos0, pos1;
+    dynamic result0, result1;
+    final int pos0 = pos, pos1 = pos;
 
-    pos0 = pos;
-    pos1 = pos;
     result0 = _parseCsv();
     result0 = result0 != null ? result0 : '';
     if (result0 != null) {
@@ -650,11 +644,10 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseParameter() {
-    var result0, result1, result2, result3;
-    var pos0, pos1;
+    dynamic result0;
+    String result1, result2, result3;
+    final int pos0 = pos, pos1 = pos;
 
-    pos0 = pos;
-    pos1 = pos;
     if (input.codeUnitAt(pos) == 59) {
       result0 = ';';
       pos++;
@@ -710,13 +703,13 @@ class EpubCfiParser {
   }
 
   Map<String, dynamic> _parseCsv() {
-    var result0, result1, result2;
-    var pos0, pos1;
+    dynamic result0;
+    String result1, result2;
+    final int pos0 = pos, pos1 = pos;
 
-    pos0 = pos;
-    pos1 = pos;
     result0 = _parseValue();
     result0 = result0 != null ? result0 : '';
+
     if (result0 != null) {
       if (input.codeUnitAt(pos) == 44) {
         result1 = ',';
@@ -1435,7 +1428,7 @@ class EpubCfiParser {
 
     String lastExpected;
     final List<String> cleanExpected = [];
-    for (var i = 0; i < expected.length; i++) {
+    for (int i = 0; i < expected.length; i++) {
       if (expected[i] != lastExpected) {
         cleanExpected.add(expected[i]);
         lastExpected = expected[i];
@@ -1445,10 +1438,10 @@ class EpubCfiParser {
   }
 
   String _padLeft(String input, String padding, int length) {
-    var result = input;
+    String result = input;
 
     final padLength = length - input.length;
-    for (var i = 0; i < padLength; i++) {
+    for (int i = 0; i < padLength; i++) {
       result = padding + result;
     }
 
@@ -1457,8 +1450,8 @@ class EpubCfiParser {
 
   String _escape(String ch) {
     final charCode = ch.codeUnitAt(0);
-    var escapeChar = 'u';
-    var length = 4;
+    String escapeChar = 'u';
+    int length = 4;
 
     if (charCode <= 0xFF) {
       escapeChar = 'x';
@@ -1478,11 +1471,11 @@ class EpubCfiParser {
          * enough to prevent it.
          */
 
-    var line = 1;
-    var column = 1;
-    var seenCR = false;
+    int line = 1;
+    int column = 1;
+    bool seenCR = false;
 
-    for (var i = 0; i < max(pos, rightmostFailuresPos); i++) {
+    for (int i = 0; i < max(pos, rightmostFailuresPos); i++) {
       final ch = input[i];
       if (ch == '\n') {
         if (!seenCR) {
