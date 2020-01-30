@@ -9,6 +9,97 @@ class CfiFragment {
   final String cfiString;
 }
 
+class CfiRange {
+  CfiRange({
+    @required this.type,
+    @required this.path,
+    @required this.localPath,
+    @required this.range1,
+    @required this.range2,
+  });
+
+  final String type;
+  final String path;
+  final String localPath;
+  final String range1;
+  final String range2;
+}
+
+class CfiPath {
+  CfiPath({@required this.type, @required this.path, @required this.localPath});
+
+  final String type;
+  final String path;
+  final CfiLocalPath localPath;
+}
+
+class CfiLocalPath {
+  CfiLocalPath({@required this.steps, @required this.termStep});
+
+  final String steps;
+  final String termStep;
+}
+
+class CfiStep {
+  CfiStep({
+    @required this.type,
+    @required this.stepLength,
+    @required this.idAssertion,
+  });
+
+  final String type;
+  final int stepLength;
+  final int idAssertion;
+}
+
+class CfiTerminus {
+  CfiTerminus({
+    @required this.type,
+    @required this.offsetValue,
+    @required this.textAssertion,
+  });
+
+  final String type;
+  final int offsetValue;
+  final String textAssertion;
+}
+
+class CfiTextLocationAssertion {
+  CfiTextLocationAssertion({
+    @required this.type,
+    @required this.csv,
+    @required this.parameter,
+  });
+
+  final String type;
+  final CfiCsv csv;
+  final CfiParameter parameter;
+}
+
+class CfiParameter {
+  CfiParameter({
+    @required this.type,
+    @required this.lHSValue,
+    @required this.rHSValue,
+  });
+
+  final String type;
+  final String lHSValue;
+  final String rHSValue;
+}
+
+class CfiCsv {
+  CfiCsv({
+    @required this.type,
+    @required this.preAssertion,
+    @required this.postAssertion,
+  });
+
+  final String type;
+  final String preAssertion;
+  final String postAssertion;
+}
+
 class ErrorPosition {
   ErrorPosition({@required this.line, @required this.column});
 
@@ -186,7 +277,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseRange() {
+  CfiRange _parseRange() {
     dynamic result0, result1, result2, result3, result5;
     String result4;
     int pos0, pos1;
@@ -254,15 +345,15 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, stepVal, localPathVal, rangeLocalPath1Val,
-              rangeLocalPath2Val) =>
-          {
-            'type': 'range',
-            'path': stepVal,
-            'localPath': localPathVal,
-            'range1': rangeLocalPath1Val,
-            'range2': rangeLocalPath2Val,
-          })(pos0, result0[0], result0[1], result0[3], result0[5]);
+      result0 = ((int offset, String stepVal, String localPathVal,
+              String rangeLocalPath1Val, String rangeLocalPath2Val) =>
+          CfiRange(
+            type: 'range',
+            path: stepVal,
+            localPath: localPathVal,
+            range1: rangeLocalPath1Val,
+            range2: rangeLocalPath2Val,
+          ))(pos0, result0[0], result0[1], result0[3], result0[5]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -270,7 +361,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parsePath() {
+  CfiPath _parsePath() {
     dynamic result0, result1;
     final int pos0 = pos, pos1 = pos;
 
@@ -288,11 +379,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, stepVal, localPathVal) => {
-            'type': 'path',
-            'path': stepVal,
-            'localPath': localPathVal,
-          })(pos0, result0[0], result0[1]);
+      result0 =
+          ((int offset, String stepVal, CfiLocalPath localPathVal) => CfiPath(
+                type: 'path',
+                path: stepVal,
+                localPath: localPathVal,
+              ))(pos0, result0[0], result0[1]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -300,7 +392,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseLocalPath() {
+  CfiLocalPath _parseLocalPath() {
     dynamic result0, result1;
     final int pos0 = pos, pos1 = pos;
 
@@ -334,10 +426,9 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, localPathStepVal, termStepVal) => {
-            'steps': localPathStepVal,
-            'termStep': termStepVal
-          })(pos0, result0[0], result0[1]);
+      result0 = ((int offset, String localPathStepVal, String termStepVal) =>
+              CfiLocalPath(steps: localPathStepVal, termStep: termStepVal))(
+          pos0, result0[0], result0[1]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -345,7 +436,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseIndexStep() {
+  CfiStep _parseIndexStep() {
     dynamic result0, result1, result2;
     String result3, result4;
     final int pos0 = pos, pos1 = pos;
@@ -415,13 +506,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, stepLengthVal, assertVal) {
-        return {
-          'type': 'indexStep',
-          'stepLength': stepLengthVal,
-          'idAssertion': assertVal[1]
-        };
-      })(pos0, result0[1], result0[2]);
+      result0 =
+          ((int offset, String stepLengthVal, List<int> assertVal) => CfiStep(
+                type: 'indexStep',
+                stepLength: int.parse(stepLengthVal),
+                idAssertion: assertVal[1],
+              ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -429,7 +519,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseIndirectionStep() {
+  CfiStep _parseIndirectionStep() {
     dynamic result0, result1, result2;
     String result3, result4;
     final int pos0 = pos, pos1 = pos;
@@ -499,13 +589,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, stepLengthVal, assertVal) {
-        return {
-          'type': 'indirectionStep',
-          'stepLength': stepLengthVal,
-          'idAssertion': assertVal[1]
-        };
-      })(pos0, result0[1], result0[2]);
+      result0 =
+          ((int offset, String stepLengthVal, List<int> assertVal) => CfiStep(
+                type: 'indirectionStep',
+                stepLength: int.parse(stepLengthVal),
+                idAssertion: assertVal[1],
+              ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -513,7 +602,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseTerminus() {
+  CfiTerminus _parseTerminus() {
     dynamic result0, result1, result2, result3;
     String result4;
     final int pos0 = pos, pos1 = pos;
@@ -583,13 +672,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, textOffsetValue, textLocAssertVal) {
-        return {
-          'type': 'textTerminus',
-          'offsetValue': textOffsetValue,
-          'textAssertion': textLocAssertVal[1]
-        };
-      })(pos0, result0[1], result0[2]);
+      result0 = ((int offset, int textOffsetValue, String textLocAssertVal) =>
+          CfiTerminus(
+            type: 'textTerminus',
+            offsetValue: textOffsetValue,
+            textAssertion: textLocAssertVal[1],
+          ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -611,7 +699,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseTextLocationAssertion() {
+  CfiTextLocationAssertion _parseTextLocationAssertion() {
     dynamic result0, result1;
     final int pos0 = pos, pos1 = pos;
 
@@ -631,11 +719,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, csvVal, paramVal) => {
-            'type': 'textLocationAssertion',
-            'csv': csvVal,
-            'parameter': paramVal,
-          })(pos0, result0[0], result0[1]);
+      result0 = ((int offset, CfiCsv csvVal, CfiParameter paramVal) =>
+          CfiTextLocationAssertion(
+            type: 'textLocationAssertion',
+            csv: csvVal,
+            parameter: paramVal,
+          ))(pos0, result0[0], result0[1]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -643,7 +732,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseParameter() {
+  CfiParameter _parseParameter() {
     dynamic result0;
     String result1, result2, result3;
     final int pos0 = pos, pos1 = pos;
@@ -690,11 +779,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, paramLHSVal, paramRHSVal) => {
-            'type': 'parameter',
-            'LHSValue': paramLHSVal,
-            'RHSValue': paramRHSVal,
-          })(pos0, result0[1], result0[3]);
+      result0 = ((offset, paramLHSVal, paramRHSVal) => CfiParameter(
+            type: 'parameter',
+            lHSValue: paramLHSVal,
+            rHSValue: paramRHSVal,
+          ))(pos0, result0[1], result0[3]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -702,7 +791,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseCsv() {
+  CfiCsv _parseCsv() {
     dynamic result0;
     String result1, result2;
     final int pos0 = pos, pos1 = pos;
@@ -738,11 +827,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, preAssertionVal, postAssertionVal) => {
-            'type': 'csv',
-            'preAssertion': preAssertionVal,
-            'postAssertion': postAssertionVal,
-          })(pos0, result0[0], result0[2]);
+      result0 = ((offset, preAssertionVal, postAssertionVal) => CfiCsv(
+            type: 'csv',
+            preAssertion: preAssertionVal,
+            postAssertion: postAssertionVal,
+          ))(pos0, result0[0], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
