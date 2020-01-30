@@ -1,117 +1,14 @@
 import 'dart:math';
+
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
-class CfiFragment {
-  CfiFragment({@required this.type, @required this.cfiString});
-
-  final String type;
-  final String cfiString;
-}
-
-class CfiRange {
-  CfiRange({
-    @required this.type,
-    @required this.path,
-    @required this.localPath,
-    @required this.range1,
-    @required this.range2,
-  });
-
-  final String type;
-  final String path;
-  final String localPath;
-  final String range1;
-  final String range2;
-}
-
-class CfiPath {
-  CfiPath({@required this.type, @required this.path, @required this.localPath});
-
-  final String type;
-  final String path;
-  final CfiLocalPath localPath;
-}
-
-class CfiLocalPath {
-  CfiLocalPath({@required this.steps, @required this.termStep});
-
-  final String steps;
-  final String termStep;
-}
-
-class CfiStep {
-  CfiStep({
-    @required this.type,
-    @required this.stepLength,
-    @required this.idAssertion,
-  });
-
-  final String type;
-  final int stepLength;
-  final int idAssertion;
-}
-
-class CfiTerminus {
-  CfiTerminus({
-    @required this.type,
-    @required this.offsetValue,
-    @required this.textAssertion,
-  });
-
-  final String type;
-  final int offsetValue;
-  final String textAssertion;
-}
-
-class CfiTextLocationAssertion {
-  CfiTextLocationAssertion({
-    @required this.type,
-    @required this.csv,
-    @required this.parameter,
-  });
-
-  final String type;
-  final CfiCsv csv;
-  final CfiParameter parameter;
-}
-
-class CfiParameter {
-  CfiParameter({
-    @required this.type,
-    @required this.lHSValue,
-    @required this.rHSValue,
-  });
-
-  final String type;
-  final String lHSValue;
-  final String rHSValue;
-}
-
-class CfiCsv {
-  CfiCsv({
-    @required this.type,
-    @required this.preAssertion,
-    @required this.postAssertion,
-  });
-
-  final String type;
-  final String preAssertion;
-  final String postAssertion;
-}
-
-class ErrorPosition {
-  ErrorPosition({@required this.line, @required this.column});
-
-  final int line;
-  final int column;
-}
-
 class EpubCfiParser {
-  int pos = 0;
   final int reportFailures = 0;
   int rightmostFailuresPos = 0;
   List<String> rightmostFailuresExpected = [];
+  int pos = 0;
   String input;
   String startRule;
 
@@ -206,9 +103,9 @@ class EpubCfiParser {
        * handle these states.
        */
     if (result == null || pos != input.length) {
-      var offset = max(pos, rightmostFailuresPos);
-      var found = offset < input.length ? input[offset] : null;
-      var errorPosition = _computeErrorPosition();
+      // final offset = max(pos, rightmostFailuresPos);
+      // final found = offset < input.length ? input[offset] : null;
+      // final errorPosition = _computeErrorPosition();
 
       // throw this.SyntaxError(
       //   _cleanupExpected(rightmostFailuresExpected),
@@ -228,7 +125,7 @@ class EpubCfiParser {
 
     pos0 = pos;
     pos1 = pos;
-    if (input.substring(pos, 8) == 'epubcfi(') {
+    if (pos < input.length && input.substring(pos, pos + 8) == 'epubcfi(') {
       result0 = 'epubcfi(';
       pos += 8;
     } else {
@@ -267,9 +164,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((offset, fragmentVal) =>
-              CfiFragment(type: 'CFIAST', cfiString: fragmentVal))(
-          pos0, result0[1]);
+      result0 = ((int offset, fragmentVal) => CfiFragment(
+            type: 'CFIAST',
+            cfiRange: fragmentVal is CfiRange ? fragmentVal : null,
+            cfiPath: fragmentVal is CfiPath ? fragmentVal : null,
+          ))(pos0, result0[1]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -345,8 +244,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((int offset, String stepVal, String localPathVal,
-              String rangeLocalPath1Val, String rangeLocalPath2Val) =>
+      result0 = ((int offset,
+              CfiStep stepVal,
+              CfiLocalPath localPathVal,
+              CfiLocalPath rangeLocalPath1Val,
+              CfiLocalPath rangeLocalPath2Val) =>
           CfiRange(
             type: 'range',
             path: stepVal,
@@ -393,7 +295,11 @@ class EpubCfiParser {
   }
 
   CfiLocalPath _parseLocalPath() {
-    dynamic result0, result1;
+    dynamic result0;
+    CfiStep result1;
+    CfiTerminus result2;
+    List<CfiStep> result3;
+
     final int pos0 = pos, pos1 = pos;
 
     result1 = _parseIndexStep();
@@ -402,8 +308,9 @@ class EpubCfiParser {
     }
     if (result1 != null) {
       result0 = [];
+      result3 = [];
       while (result1 != null) {
-        result0.add(result1);
+        result3.add(result1);
         result1 = _parseIndexStep();
         if (result1 == null) {
           result1 = _parseIndirectionStep();
@@ -411,12 +318,16 @@ class EpubCfiParser {
       }
     } else {
       result0 = null;
+      result3 = null;
     }
     if (result0 != null) {
-      result1 = _parseTerminus();
-      result1 = result1 != null ? result1 : '';
-      if (result1 != null) {
-        result0 = [result0, result1];
+      result2 = _parseTerminus();
+      result2 = result2 != null
+          ? result2
+          : CfiTerminus(
+              type: 'textTerminus', offsetValue: null, textAssertion: null);
+      if (result2 != null) {
+        result0 = [result3, result2];
       } else {
         result0 = null;
         pos = pos1;
@@ -426,7 +337,7 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((int offset, String localPathStepVal, String termStepVal) =>
+      result0 = ((int offset, List<CfiStep> localPathStepVal, termStepVal) =>
               CfiLocalPath(steps: localPathStepVal, termStep: termStepVal))(
           pos0, result0[0], result0[1]);
     }
@@ -506,12 +417,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 =
-          ((int offset, String stepLengthVal, List<int> assertVal) => CfiStep(
-                type: 'indexStep',
-                stepLength: int.parse(stepLengthVal),
-                idAssertion: assertVal[1],
-              ))(pos0, result0[1], result0[2]);
+      result0 = ((int offset, String stepLengthVal, assertVal) => CfiStep(
+            type: 'indexStep',
+            stepLength: int.parse(stepLengthVal),
+            idAssertion: assertVal.length > 1 ? assertVal[1] : null,
+          ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -525,7 +435,7 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
     int pos2;
 
-    if (input.substring(pos, 2) == '!/') {
+    if (pos < input.length && input.substring(pos, pos + 2) == '!/') {
       result0 = '!/';
       pos += 2;
     } else {
@@ -589,12 +499,11 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 =
-          ((int offset, String stepLengthVal, List<int> assertVal) => CfiStep(
-                type: 'indirectionStep',
-                stepLength: int.parse(stepLengthVal),
-                idAssertion: assertVal[1],
-              ))(pos0, result0[1], result0[2]);
+      result0 = ((int offset, String stepLengthVal, assertVal) => CfiStep(
+            type: 'indirectionStep',
+            stepLength: int.parse(stepLengthVal),
+            idAssertion: assertVal.length > 1 ? assertVal[1] : null,
+          ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -672,11 +581,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((int offset, int textOffsetValue, String textLocAssertVal) =>
+      result0 = ((int offset, String textOffsetValue, textLocAssertVal) =>
           CfiTerminus(
             type: 'textTerminus',
-            offsetValue: textOffsetValue,
-            textAssertion: textLocAssertVal[1],
+            offsetValue: int.parse(textOffsetValue),
+            textAssertion:
+                textLocAssertVal.length > 0 ? textLocAssertVal[1] : null,
           ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
@@ -1214,7 +1124,7 @@ class EpubCfiParser {
         if (integerVal == '0') {
           return '0';
         } else {
-          return integerVal[0].concat(integerVal[1].join(''));
+          return integerVal[0] + integerVal[1].join('');
         }
       })(pos0, result0);
     }
@@ -1584,4 +1494,141 @@ class EpubCfiParser {
 
     return ErrorPosition(line: line, column: column);
   }
+}
+
+class CfiFragment extends Equatable {
+  CfiFragment(
+      {@required this.type, @required this.cfiRange, @required this.cfiPath});
+
+  final String type;
+  final CfiRange cfiRange;
+  final CfiPath cfiPath;
+
+  @override
+  List<Object> get props => [type, cfiRange, cfiPath];
+}
+
+class CfiRange extends Equatable {
+  CfiRange({
+    @required this.type,
+    @required this.path,
+    @required this.localPath,
+    @required this.range1,
+    @required this.range2,
+  });
+
+  final String type;
+  final CfiStep path;
+  final CfiLocalPath localPath;
+  final CfiLocalPath range1;
+  final CfiLocalPath range2;
+
+  @override
+  List<Object> get props => [type, path, localPath, range1, range2];
+}
+
+class CfiPath extends Equatable {
+  CfiPath({@required this.type, @required this.path, @required this.localPath});
+
+  final String type;
+  final String path;
+  final CfiLocalPath localPath;
+
+  @override
+  List<Object> get props => [type, path, localPath];
+}
+
+class CfiLocalPath extends Equatable {
+  CfiLocalPath({@required this.steps, @required this.termStep});
+
+  final List<CfiStep> steps;
+  final CfiTerminus termStep;
+
+  @override
+  List<Object> get props => [steps, termStep];
+}
+
+class CfiStep extends Equatable {
+  CfiStep({
+    @required this.type,
+    @required this.stepLength,
+    @required this.idAssertion,
+  });
+
+  final String type;
+  final int stepLength;
+  final String idAssertion;
+
+  @override
+  List<Object> get props => [type, stepLength, idAssertion];
+}
+
+class CfiTerminus extends Equatable {
+  CfiTerminus({
+    @required this.type,
+    @required this.offsetValue,
+    @required this.textAssertion,
+  });
+
+  final String type;
+  final int offsetValue;
+  final String textAssertion;
+
+  @override
+  List<Object> get props => [type, offsetValue, textAssertion];
+}
+
+class CfiTextLocationAssertion extends Equatable {
+  CfiTextLocationAssertion({
+    @required this.type,
+    @required this.csv,
+    @required this.parameter,
+  });
+
+  final String type;
+  final CfiCsv csv;
+  final CfiParameter parameter;
+
+  @override
+  List<Object> get props => [type, csv, parameter];
+}
+
+class CfiParameter extends Equatable {
+  CfiParameter({
+    @required this.type,
+    @required this.lHSValue,
+    @required this.rHSValue,
+  });
+
+  final String type;
+  final String lHSValue;
+  final String rHSValue;
+
+  @override
+  List<Object> get props => [type, lHSValue, rHSValue];
+}
+
+class CfiCsv extends Equatable {
+  CfiCsv({
+    @required this.type,
+    @required this.preAssertion,
+    @required this.postAssertion,
+  });
+
+  final String type;
+  final String preAssertion;
+  final String postAssertion;
+
+  @override
+  List<Object> get props => [type, preAssertion, postAssertion];
+}
+
+class ErrorPosition extends Equatable {
+  ErrorPosition({@required this.line, @required this.column});
+
+  final int line;
+  final int column;
+
+  @override
+  List<Object> get props => [line, column];
 }

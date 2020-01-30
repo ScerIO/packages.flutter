@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:epub_view/epub_view.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:epub_view/epub_view.dart';
 
 // .replaceAll(RegExp(r'<head>.*?<\/head>'), '')
 // .replaceAll(RegExp(r'<[^>]*>'), '')
