@@ -282,7 +282,7 @@ class EpubCfiParser {
     }
     if (result0 != null) {
       result0 =
-          ((int offset, String stepVal, CfiLocalPath localPathVal) => CfiPath(
+          ((int offset, CfiStep stepVal, CfiLocalPath localPathVal) => CfiPath(
                 type: 'path',
                 path: stepVal,
                 localPath: localPathVal,
@@ -585,8 +585,9 @@ class EpubCfiParser {
           CfiTerminus(
             type: 'textTerminus',
             offsetValue: int.parse(textOffsetValue),
-            textAssertion:
-                textLocAssertVal.length > 0 ? textLocAssertVal[1] : null,
+            textAssertion: (textLocAssertVal ?? []).isNotEmpty
+                ? textLocAssertVal[1]
+                : null,
           ))(pos0, result0[1], result0[2]);
     }
     if (result0 == null) {
@@ -614,10 +615,14 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
 
     result0 = _parseCsv();
-    result0 = result0 != null ? result0 : '';
+    result0 = result0 != null
+        ? result0
+        : CfiCsv(type: 'csv', preAssertion: null, postAssertion: null);
     if (result0 != null) {
       result1 = _parseParameter();
-      result1 = result1 != null ? result1 : '';
+      result1 = result1 != null
+          ? result1
+          : CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null);
       if (result1 != null) {
         result0 = [result0, result1];
       } else {
@@ -1531,7 +1536,7 @@ class CfiPath extends Equatable {
   CfiPath({@required this.type, @required this.path, @required this.localPath});
 
   final String type;
-  final String path;
+  final CfiStep path;
   final CfiLocalPath localPath;
 
   @override
@@ -1572,7 +1577,7 @@ class CfiTerminus extends Equatable {
 
   final String type;
   final int offsetValue;
-  final String textAssertion;
+  final CfiTextLocationAssertion textAssertion;
 
   @override
   List<Object> get props => [type, offsetValue, textAssertion];
