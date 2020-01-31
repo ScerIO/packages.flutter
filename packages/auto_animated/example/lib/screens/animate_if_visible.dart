@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:auto_animated_example/utils.dart';
 import 'package:auto_animated/auto_animated.dart';
 
-class AnimateOnVisibilityExample extends StatelessWidget {
+class AnimateIfVisibleExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         body: SafeArea(
           // Wrapper before Scroll view!
-          child: AnimateOnVisibilityWrapper(
+          child: AnimateIfVisibleWrapper(
             showItemInterval: Duration(milliseconds: 150),
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   for (int i = 0; i < 20; i++)
-                    AnimateOnVisibilityChange(
+                    AnimateIfVisible(
                       key: Key('$i'),
                       builder: animationBuilder(
                         SizedBox(

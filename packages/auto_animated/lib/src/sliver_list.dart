@@ -1,23 +1,40 @@
-import 'package:auto_animated/src/on_visibility_change.dart';
+import 'package:auto_animated/src/animate_if_visible.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'helpers/callbacks.dart';
+import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
 
 const Duration _kDuration = Duration(milliseconds: 250);
 
-class AutoAnimatedSliverList extends StatefulWidget {
-  const AutoAnimatedSliverList({
+class LiveSliverList extends StatefulWidget {
+  const LiveSliverList({
     @required this.itemBuilder,
     @required this.itemCount,
     @required this.controller,
+    this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
     Key key,
   })  : assert(itemBuilder != null),
+        assert(itemCount != null && itemCount >= 0),
+        super(key: key);
+
+  LiveSliverList.options({
+    @required this.itemBuilder,
+    @required this.itemCount,
+    @required this.controller,
+    @required LiveOptions options,
+    Key key,
+  })  : delay = options.delay,
+        showItemInterval = options.showItemInterval,
+        showItemDuration = options.showItemDuration,
+        visibleFraction = options.visibleFraction,
+        reAnimateOnVisibility = options.reAnimateOnVisibility,
+        assert(itemBuilder != null),
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
@@ -29,6 +46,12 @@ class AutoAnimatedSliverList extends StatefulWidget {
 
   /// Animation duration
   final Duration showItemDuration;
+
+  /// A fraction in the range \[0, 1\] that represents what proportion of the
+  /// widget is visible (assuming rectangular bounding boxes).
+  ///
+  /// 0 means not visible; 1 means fully visible.
+  final double visibleFraction;
 
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
@@ -42,7 +65,7 @@ class AutoAnimatedSliverList extends StatefulWidget {
   final ScrollController controller;
 
   /// Called, as needed, to build list item widgets.
-  final AutoAnimatedListItemBuilder itemBuilder;
+  final LiveListItemBuilder itemBuilder;
 
   /// The number of items the list will start with.
   ///
@@ -52,17 +75,17 @@ class AutoAnimatedSliverList extends StatefulWidget {
   final int itemCount;
 
   @override
-  _AutoAnimatedSliverListState createState() => _AutoAnimatedSliverListState();
+  _LiveSliverListState createState() => _LiveSliverListState();
 }
 
-class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
-    with TickerProviderStateMixin<AutoAnimatedSliverList> {
+class _LiveSliverListState extends State<LiveSliverList>
+    with TickerProviderStateMixin<LiveSliverList> {
   final String _keyPrefix = utils.createCryptoRandomString();
 
-  Widget _itemBuilder(BuildContext context, int itemIndex) =>
-      AnimateOnVisibilityChange(
+  Widget _itemBuilder(BuildContext context, int itemIndex) => AnimateIfVisible(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
+        visibleFraction: widget.visibleFraction,
         reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
@@ -72,7 +95,7 @@ class _AutoAnimatedSliverListState extends State<AutoAnimatedSliverList>
       );
 
   @override
-  Widget build(BuildContext context) => AnimateOnVisibilityWrapper(
+  Widget build(BuildContext context) => AnimateIfVisibleWrapper(
         controller: widget.controller,
         delay: widget.delay,
         showItemInterval: widget.showItemInterval,

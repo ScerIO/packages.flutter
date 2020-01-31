@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart' hide Stack;
 
 class _Animatable {
@@ -9,76 +7,92 @@ class _Animatable {
   final VoidCallback callback;
 }
 
+class _DirectionStack {
+  _DirectionStack(this.items, this.direction);
+
+  final List<_Animatable> items;
+  final AnimationDirection direction;
+}
+
 class VisibilityStack {
   VisibilityStack({
     @required this.delay,
     @required this.showItemInterval,
-  }) {
-    // _stream = Stream.periodic(showItemInterval);
-    // Future.delayed(delay, () {
-    //   _listener = _stream.timeout(showItemInterval).listen((data) {
-    //     show();
-    //   });
-    // });
-  }
+  });
 
   Duration delay, showItemInterval;
-  AnimationDirection direction = AnimationDirection.toEnd;
-  bool _isAnimated = false, _firstAnimation = true;
+  bool _firstAnimation = true;
+  final Map<AnimationDirection, bool> _isAnimatedTo = {
+    AnimationDirection.toEnd: false,
+    AnimationDirection.toStart: false,
+  };
 
-  // Stream<Key Function()> _stream;
-  // StreamSubscription _listener;
-
-  final List<_Animatable> _stack = [];
+  _DirectionStack _stack = _DirectionStack([], AnimationDirection.toEnd);
   final Map<Key, bool> _alreadyAnimated = {};
 
-  void add(Key key, VoidCallback callback) {
-    _stack.add(_Animatable(key, callback));
-    _alreadyAnimated[key] = false;
-
-    animate();
+  AnimationDirection _direction = AnimationDirection.toEnd;
+  AnimationDirection get direction => _direction;
+  set direction(AnimationDirection direction) {
+    if (_direction == direction) {
+      return;
+    }
+    animate(
+      _DirectionStack(List.from(_stack.items), _stack.direction),
+      showItemInterval ~/ 10,
+    );
+    _stack = _DirectionStack([], direction);
+    _direction = direction;
   }
 
-  void show() {
-    _Animatable animatable;
-    if (direction == AnimationDirection.toEnd) {
-      animatable = _stack.first;
-      _stack.removeAt(0);
-    } else {
-      animatable = _stack.last;
-      _stack.removeLast();
+  void add(Key key, VoidCallback callback) {
+    _stack.items.add(_Animatable(key, callback));
+
+    _alreadyAnimated[key] = false;
+
+    animate(_stack, showItemInterval);
+    if (_firstAnimation) {
+      _firstAnimation = false;
     }
-    animatable.callback();
-    _alreadyAnimated[animatable.key] = true;
+  }
+
+  void show(_DirectionStack stack) {
+    _Animatable animatable;
+    if (stack.direction == AnimationDirection.toEnd) {
+      animatable = stack.items.first;
+      stack.items.removeAt(0);
+    } else {
+      animatable = stack.items.last;
+      stack.items.removeLast();
+    }
+    if (animatable != null) {
+      animatable.callback();
+      _alreadyAnimated[animatable.key] = true;
+    }
   }
 
   bool isAlreadyAnimated(Key key) => _alreadyAnimated[key] ?? false;
 
-  void animate() {
-    if (_isAnimated) {
+  void animate(_DirectionStack stack, Duration showItemInterval) {
+    if (_isAnimatedTo[stack.direction]) {
       return;
     }
-    _isAnimated = true;
+    _isAnimatedTo[stack.direction] = true;
 
-    delay = _firstAnimation ? delay : showItemInterval;
+    final showDelay = _firstAnimation ? delay : showItemInterval;
 
-    Future.delayed(delay, () {
-      if (_stack.isNotEmpty) {
-        if (_firstAnimation) {
-          _firstAnimation = false;
-        }
-        show();
-        _isAnimated = false;
-        animate();
+    Future.delayed(showDelay, () {
+      if (stack.items.isNotEmpty) {
+        show(stack);
+        _isAnimatedTo[stack.direction] = false;
+        animate(stack, showItemInterval);
       } else {
-        _isAnimated = false;
+        _isAnimatedTo[stack.direction] = false;
       }
     });
   }
 
   void dispose() {
-    // _listener.cancel();
-    _stack.clear();
+    _stack.items.clear();
     _alreadyAnimated.clear();
   }
 

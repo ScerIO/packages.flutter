@@ -1,4 +1,4 @@
-import 'package:auto_animated_example/screens/animate_on_visibility.dart';
+import 'package:auto_animated_example/screens/animate_if_visible.dart';
 import 'package:auto_animated_example/screens/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,11 +26,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
   final List<Widget> _children = [
-    AutoAnimatedListExample(),
-    AutoAnimatedGridExample(),
+    LiveListExample(),
+    LiveGridExample(),
     SliverExample(),
-    AnimateOnVisibilityExample(),
-    AutoAnimatedIconButtonExample(),
+    AnimateIfVisibleExample(),
+    LiveIconButtonExample(),
   ];
 
   void _onItemTapped(int index) {
@@ -54,22 +54,27 @@ class _MyAppState extends State<MyApp> {
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
+                backgroundColor: Colors.white,
                 title: Text('List'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.grid_on),
+                backgroundColor: Colors.white,
                 title: Text('Grid'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.view_day),
+                backgroundColor: Colors.white,
                 title: Text('Sliver'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.remove_red_eye),
+                backgroundColor: Colors.white,
                 title: Text('On visibility'),
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.check_circle),
+                backgroundColor: Colors.white,
                 title: Text('IconButton'),
               ),
             ],

@@ -31,7 +31,7 @@ class _SliverExampleState extends State<SliverExample> {
             slivers: <Widget>[
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                sliver: AutoAnimatedSliverList(
+                sliver: LiveSliverList(
                   controller: _scrollController,
                   showItemInterval: Duration(milliseconds: 250),
                   showItemDuration: Duration(milliseconds: 300),
@@ -43,7 +43,7 @@ class _SliverExampleState extends State<SliverExample> {
               ),
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                sliver: AutoAnimatedSliverGrid(
+                sliver: LiveSliverGrid(
                   controller: _scrollController,
                   delay: Duration(milliseconds: 250) * 5,
                   showItemInterval: Duration(milliseconds: 250),

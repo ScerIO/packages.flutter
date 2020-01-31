@@ -1,41 +1,22 @@
 // Copyright 2017 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import 'dart:math' as math;
+
 import 'package:flutter/animation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import 'animate_if_visible.dart';
 import 'helpers/callbacks.dart';
+import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
-import 'on_visibility_change.dart';
 
 const Duration _kDuration = Duration(milliseconds: 150);
 
 /// A scrolling container that animates items
 /// when widget mounted or they are inserted or removed.
-class AutoAnimatedList extends StatefulWidget {
-  /// Creates a scrolling container that animates items
-  ///  when they are inserted or removed.
-  const AutoAnimatedList({
-    @required this.itemBuilder,
-    @required this.itemCount,
-    this.reAnimateOnVisibility = false,
-    this.delay = Duration.zero,
-    this.showItemInterval = _kDuration,
-    this.showItemDuration = _kDuration,
-    this.scrollDirection = Axis.vertical,
-    this.reverse = false,
-    this.controller,
-    this.primary,
-    this.physics,
-    this.shrinkWrap = false,
-    this.padding,
-    Key key,
-  })  : assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
-        separatorBuilder = null,
-        super(key: key);
-
+class LiveList extends StatefulWidget {
   /// Creates a fixed-length scrollable linear array of list "items" separated
   /// by list item "separators".
   ///
@@ -50,21 +31,21 @@ class AutoAnimatedList extends StatefulWidget {
   /// 0 and the last separator appears before the last item.
   ///
   /// The `separatorBuilder` callback will be called with indices greater than
-  /// or equal to zero and less than `itemCount - 1`.
+  /// or equal to zero and less than `itemCount - 1`. May be null
   ///
   /// The `itemBuilder` and `separatorBuilder` callbacks should actually create
   /// widget instances when called. Avoid using a builder that returns a
   /// previously-constructed widget; if the list view's children are created in
   /// advance, or all at once when the
-  /// [AutoAnimatedList] itself is created, it is more
-  /// efficient to use [new AutoAnimatedList].
+  /// [LiveList] itself is created, it is more
+  /// efficient to use [new LiveList].
   ///
   /// {@tool sample}
   ///
   /// This example
   ///
   /// ```dart
-  /// AutoAnimatedList.separated(
+  /// LiveList(
   ///   itemCount: 25,
   ///   separatorBuilder: (BuildContext context, int index) => Divider(),
   ///   itemBuilder: (_ context, int index, Animation<double> animation) {
@@ -83,10 +64,11 @@ class AutoAnimatedList extends StatefulWidget {
   /// `addSemanticIndexes` argument corresponds to the
   /// [SliverChildBuilderDelegate.addSemanticIndexes] property. None may be
   /// null.
-  const AutoAnimatedList.separated({
+  const LiveList({
     @required this.itemBuilder,
-    @required this.separatorBuilder,
     @required this.itemCount,
+    this.separatorBuilder,
+    this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
@@ -98,8 +80,93 @@ class AutoAnimatedList extends StatefulWidget {
     this.physics,
     this.shrinkWrap = false,
     this.padding,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
     Key key,
-  })  : assert(itemBuilder != null && separatorBuilder != null),
+  })  : assert(itemBuilder != null),
+        assert(itemCount != null && itemCount >= 0),
+        super(key: key);
+
+  /// Creates a fixed-length scrollable linear array of list "items" separated
+  /// by list item "separators".
+  ///
+  /// This constructor is appropriate for list views with a large number of
+  /// item and separator children because the builders are only called for
+  /// the children that are actually visible.
+  ///
+  /// The `itemBuilder` callback will be called with indices greater than
+  /// or equal to zero and less than `itemCount`.
+  ///
+  /// Separators only appear between list items: separator 0 appears after item
+  /// 0 and the last separator appears before the last item.
+  ///
+  /// The `separatorBuilder` callback will be called with indices greater than
+  /// or equal to zero and less than `itemCount - 1`. May be null
+  ///
+  /// The `itemBuilder` and `separatorBuilder` callbacks should actually create
+  /// widget instances when called. Avoid using a builder that returns a
+  /// previously-constructed widget; if the list view's children are created in
+  /// advance, or all at once when the
+  /// [LiveList] itself is created, it is more
+  /// efficient to use [new LiveList].
+  ///
+  /// {@tool sample}
+  ///
+  /// This example
+  ///
+  /// ```dart
+  /// LiveList.options(
+  ///   itemCount: 25,
+  ///   option: LiveOptions(
+  ///     // Start animation after (default zero)
+  ///     delay: Duration(seconds: 1),
+  ///     // Show each item through
+  ///     showItemInterval: Duration(milliseconds: 500),
+  ///     // Animation duration
+  ///     showItemDuration: Duration(seconds: 1),
+  ///     // Animations starts at 0.025 visible item fraction in sight
+  ///     visibleFraction: 0.025,
+  ///   ),
+  ///   separatorBuilder: (BuildContext context, int index) => Divider(),
+  ///   itemBuilder: (_ context, int index, Animation<double> animation) {
+  ///     return ListTile(
+  ///       title: Text('item $index'),
+  ///     );
+  ///   },
+  /// )
+  /// ```
+  /// {@end-tool}
+  ///
+  /// The `addAutomaticKeepAlives` argument corresponds to the
+  /// [SliverChildBuilderDelegate.addAutomaticKeepAlives] property. The
+  /// `addRepaintBoundaries` argument corresponds to the
+  /// [SliverChildBuilderDelegate.addRepaintBoundaries] property. The
+  /// `addSemanticIndexes` argument corresponds to the
+  /// [SliverChildBuilderDelegate.addSemanticIndexes] property. None may be
+  /// null.
+  LiveList.options({
+    @required this.itemBuilder,
+    @required this.itemCount,
+    @required LiveOptions options,
+    this.separatorBuilder,
+    this.scrollDirection = Axis.vertical,
+    this.reverse = false,
+    this.controller,
+    this.primary,
+    this.physics,
+    this.shrinkWrap = false,
+    this.padding,
+    this.addAutomaticKeepAlives = true,
+    this.addRepaintBoundaries = true,
+    this.addSemanticIndexes = true,
+    Key key,
+  })  : delay = options.delay,
+        showItemInterval = options.showItemInterval,
+        showItemDuration = options.showItemDuration,
+        visibleFraction = options.visibleFraction,
+        reAnimateOnVisibility = options.reAnimateOnVisibility,
+        assert(itemBuilder != null),
         assert(itemCount != null && itemCount >= 0),
         super(key: key);
 
@@ -112,13 +179,19 @@ class AutoAnimatedList extends StatefulWidget {
   /// Animation duration
   final Duration showItemDuration;
 
+  /// A fraction in the range \[0, 1\] that represents what proportion of the
+  /// widget is visible (assuming rectangular bounding boxes).
+  ///
+  /// 0 means not visible; 1 means fully visible.
+  final double visibleFraction;
+
   /// Hide the element when it approaches the
   /// frame of the screen so that in the future,
   /// when it falls into the visibility range - reproduce animation again
   final bool reAnimateOnVisibility;
 
   /// Called, as needed, to build list item widgets.
-  final AutoAnimatedListItemBuilder itemBuilder;
+  final LiveListItemBuilder itemBuilder;
 
   /// Signature for a function that creates a widget for
   ///  a given index, e.g., in a
@@ -210,32 +283,38 @@ class AutoAnimatedList extends StatefulWidget {
   /// The amount of space by which to inset the children.
   final EdgeInsetsGeometry padding;
 
+  final bool addAutomaticKeepAlives;
+
+  final bool addRepaintBoundaries;
+
+  final bool addSemanticIndexes;
+
   @override
-  AutoAnimatedListState createState() => AutoAnimatedListState();
+  LiveListState createState() => LiveListState();
 }
 
 /// The state for a scrolling container that animates items when they are
 /// inserted or removed.
 ///
 /// An app that needs to insert or remove items in response to an event
-/// can refer to the [AutoAnimatedList]'s state with a global key:
+/// can refer to the [LiveList]'s state with a global key:
 ///
 /// ```dart
-/// GlobalKey<AutoAnimatedListState> listKey =
-///    GlobalKey<AutoAnimatedListState>();
+/// GlobalKey<LiveListState> listKey =
+///    GlobalKey<LiveListState>();
 /// ...
-/// AutoAnimatedList(key: listKey, ...);
+/// LiveList(key: listKey, ...);
 /// ...
 /// listKey.currentState.insert(123);
 /// ```
-class AutoAnimatedListState extends State<AutoAnimatedList>
-    with TickerProviderStateMixin<AutoAnimatedList> {
+class LiveListState extends State<LiveList>
+    with TickerProviderStateMixin<LiveList> {
   final String _keyPrefix = utils.createCryptoRandomString();
 
-  Widget _itemBuilder(BuildContext context, int itemIndex) =>
-      AnimateOnVisibilityChange(
+  Widget _itemBuilder(BuildContext context, int itemIndex) => AnimateIfVisible(
         key: Key('$_keyPrefix.$itemIndex'),
         duration: widget.showItemDuration,
+        visibleFraction: widget.visibleFraction,
         reAnimateOnVisibility: widget.reAnimateOnVisibility,
         builder: (context, animation) => widget.itemBuilder(
           context,
@@ -246,38 +325,60 @@ class AutoAnimatedListState extends State<AutoAnimatedList>
 
   @override
   Widget build(BuildContext context) {
-    Widget list;
+    SliverChildBuilderDelegate childDelegate;
     if (widget.separatorBuilder != null) {
-      list = ListView.separated(
-        itemBuilder: _itemBuilder,
-        separatorBuilder: widget.separatorBuilder,
-        itemCount: widget.itemCount,
-        scrollDirection: widget.scrollDirection,
-        reverse: widget.reverse,
-        controller: widget.controller,
-        primary: widget.primary,
-        physics: widget.physics,
-        shrinkWrap: widget.shrinkWrap,
-        padding: widget.padding,
+      childDelegate = SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          final int itemIndex = index ~/ 2;
+          Widget widget;
+          if (index.isEven) {
+            widget = _itemBuilder(context, itemIndex);
+          } else {
+            widget = this.widget.separatorBuilder(context, itemIndex);
+            assert(() {
+              if (widget == null) {
+                throw FlutterError('separatorBuilder cannot return null.');
+              }
+              return true;
+            }());
+          }
+          return widget;
+        },
+        childCount: _computeSemanticChildCount(widget.itemCount),
+        addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+        addRepaintBoundaries: widget.addRepaintBoundaries,
+        addSemanticIndexes: widget.addSemanticIndexes,
+        semanticIndexCallback: (Widget _, int index) =>
+            index.isEven ? index ~/ 2 : null,
       );
     } else {
-      list = ListView.builder(
-        itemBuilder: _itemBuilder,
-        itemCount: widget.itemCount,
-        scrollDirection: widget.scrollDirection,
-        reverse: widget.reverse,
-        controller: widget.controller,
-        primary: widget.primary,
-        physics: widget.physics,
-        shrinkWrap: widget.shrinkWrap,
-        padding: widget.padding,
+      childDelegate = SliverChildBuilderDelegate(
+        _itemBuilder,
+        childCount: widget.itemCount,
+        addAutomaticKeepAlives: widget.addAutomaticKeepAlives,
+        addRepaintBoundaries: widget.addRepaintBoundaries,
+        addSemanticIndexes: widget.addSemanticIndexes,
       );
     }
 
-    return AnimateOnVisibilityWrapper(
+    return AnimateIfVisibleWrapper(
       delay: widget.delay,
       showItemInterval: widget.showItemInterval,
-      child: list,
+      child: ListView.custom(
+        scrollDirection: widget.scrollDirection,
+        reverse: widget.reverse,
+        controller: widget.controller,
+        primary: widget.primary,
+        physics: widget.physics,
+        shrinkWrap: widget.shrinkWrap,
+        padding: widget.padding,
+        childrenDelegate: childDelegate,
+      ),
     );
   }
+
+  // Helper method to compute the semantic
+  // child count for the separated constructor.
+  static int _computeSemanticChildCount(int itemCount) =>
+      math.max(0, itemCount * 2 - 1);
 }
