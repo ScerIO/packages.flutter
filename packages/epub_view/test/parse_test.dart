@@ -105,13 +105,12 @@ void main() {
       termStep: CfiTerminus(
         type: 'textTerminus',
         offsetValue: 3,
-        textAssertion: null,
-        // textAssertion: CfiTextLocationAssertion(
-        //   type: 'textLocationAssertion',
-        //   csv: CfiCsv(type: 'csv', preAssertion: 'xx', postAssertion: 'y'),
-        //   parameter:
-        //       CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null),
-        // ),
+        textAssertion: CfiTextLocationAssertion(
+          type: 'textLocationAssertion',
+          csv: CfiCsv(type: 'csv', preAssertion: '2[1]', postAssertion: ''),
+          parameter:
+              CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null),
+        ),
       ),
       steps: [
         CfiStep(type: 'indexStep', idAssertion: 'chap05ref', stepLength: 14),

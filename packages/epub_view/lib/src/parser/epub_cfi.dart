@@ -725,6 +725,10 @@ class EpubCfiParser {
           _matchFailed('\",\"');
         }
       }
+
+      // added for parsing values like [2^[1^]], without ","
+      result1 = result1 != null ? result1 : '';
+
       if (result1 != null) {
         result2 = _parseValue();
         result2 = result2 != null ? result2 : '';
