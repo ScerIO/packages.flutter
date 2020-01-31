@@ -105,17 +105,19 @@ void main() {
       termStep: CfiTerminus(
         type: 'textTerminus',
         offsetValue: 3,
-        textAssertion: CfiTextLocationAssertion(
-          type: 'textLocationAssertion',
-          csv: CfiCsv(type: 'csv', preAssertion: 'xx', postAssertion: 'y'),
-          parameter:
-              CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null),
-        ),
+        textAssertion: null,
+        // textAssertion: CfiTextLocationAssertion(
+        //   type: 'textLocationAssertion',
+        //   csv: CfiCsv(type: 'csv', preAssertion: 'xx', postAssertion: 'y'),
+        //   parameter:
+        //       CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null),
+        // ),
       ),
       steps: [
-        CfiStep(type: 'indexStep', idAssertion: 'chap01ref', stepLength: 4),
+        CfiStep(type: 'indexStep', idAssertion: 'chap05ref', stepLength: 14),
         CfiStep(type: 'indirectionStep', idAssertion: 'body01', stepLength: 4),
-        CfiStep(type: 'indexStep', idAssertion: 'para05', stepLength: 10),
+        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 10),
+        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 2),
         CfiStep(type: 'indexStep', idAssertion: null, stepLength: 1),
       ],
     );
@@ -241,6 +243,39 @@ void main() {
         CfiStep(type: 'indexStep', idAssertion: 'chap01ref', stepLength: 4),
         CfiStep(type: 'indirectionStep', idAssertion: 'body01', stepLength: 4),
         CfiStep(type: 'indexStep', idAssertion: 'para05', stepLength: 10),
+        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 2),
+        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 1),
+      ],
+    );
+
+    expect(
+      result,
+      CfiFragment(
+          type: 'CFIAST',
+          cfiRange: null,
+          cfiPath: CfiPath(
+            type: 'path',
+            path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
+            localPath: localPath,
+          )),
+    );
+  });
+
+  test('fragment parse - example 6', () async {
+    final parser = EpubCfiParser();
+    final result = parser.parse(
+        'epubcfi(/6/14[chap05ref]!/4[body01]/10/2/1:3)', 'fragment');
+
+    final localPath = CfiLocalPath(
+      termStep: CfiTerminus(
+        type: 'textTerminus',
+        offsetValue: 3,
+        textAssertion: null,
+      ),
+      steps: [
+        CfiStep(type: 'indexStep', idAssertion: 'chap05ref', stepLength: 14),
+        CfiStep(type: 'indirectionStep', idAssertion: 'body01', stepLength: 4),
+        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 10),
         CfiStep(type: 'indexStep', idAssertion: null, stepLength: 2),
         CfiStep(type: 'indexStep', idAssertion: null, stepLength: 1),
       ],
