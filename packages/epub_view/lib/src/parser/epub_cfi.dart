@@ -125,7 +125,8 @@ class EpubCfiParser {
 
     pos0 = pos;
     pos1 = pos;
-    if (pos < input.length && input.substring(pos, pos + 8) == 'epubcfi(') {
+    if ((pos + 8) < input.length &&
+        input.substring(pos, pos + 8) == 'epubcfi(') {
       result0 = 'epubcfi(';
       pos += 8;
     } else {
@@ -435,7 +436,7 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
     int pos2;
 
-    if (pos < input.length && input.substring(pos, pos + 2) == '!/') {
+    if ((pos + 2) < input.length && input.substring(pos, pos + 2) == '!/') {
       result0 = '!/';
       pos += 2;
     } else {

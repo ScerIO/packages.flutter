@@ -141,19 +141,13 @@ void main() {
     final localPath = CfiLocalPath(
       termStep: CfiTerminus(
         type: 'textTerminus',
-        offsetValue: 3,
-        textAssertion: CfiTextLocationAssertion(
-          type: 'textLocationAssertion',
-          csv: CfiCsv(type: 'csv', preAssertion: 'xx', postAssertion: 'y'),
-          parameter:
-              CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null),
-        ),
+        offsetValue: null,
+        textAssertion: null,
       ),
       steps: [
         CfiStep(type: 'indexStep', idAssertion: 'chap01ref', stepLength: 4),
         CfiStep(type: 'indirectionStep', idAssertion: 'body01', stepLength: 4),
-        CfiStep(type: 'indexStep', idAssertion: 'para05', stepLength: 10),
-        CfiStep(type: 'indexStep', idAssertion: null, stepLength: 1),
+        CfiStep(type: 'indexStep', idAssertion: 'svgimg', stepLength: 16),
       ],
     );
 
