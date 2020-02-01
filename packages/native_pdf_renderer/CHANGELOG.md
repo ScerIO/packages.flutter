@@ -1,9 +1,6 @@
 ## 1.7.0
 
 * Fixed PDF crop on Android ([pull#25](https://github.com/rbcprolabs/packages.flutter/pull/25)) 
-
-## 1.7.0-dev.1
-
 * Added package synchronized for sequential access to the native api render to reduce the likelihood of a crash due to lack of memory. 
 Additional information: [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14) & [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)  
 
