@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:epub/epub.dart';
+import 'package:epub_view/src/parser/epub_cfi.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
@@ -20,6 +21,7 @@ typedef ChaptersBuilder = Widget Function(
 class EpubReaderView extends StatefulWidget {
   const EpubReaderView({
     @required this.book,
+    this.epubCfi,
     this.headerBuilder,
     this.dividerBuilder,
     this.onChange,
@@ -33,6 +35,7 @@ class EpubReaderView extends StatefulWidget {
   const EpubReaderView.builder({
     @required this.book,
     @required this.itemBuilder,
+    this.epubCfi,
     this.headerBuilder,
     this.onChange,
     this.startFrom,
@@ -43,6 +46,7 @@ class EpubReaderView extends StatefulWidget {
         super(key: key);
 
   final EpubBook book;
+  final String epubCfi;
   final Widget Function(EpubChapterViewValue value) headerBuilder;
   final Widget Function(EpubChapter value) dividerBuilder;
   final void Function(EpubChapterViewValue value) onChange;
@@ -60,10 +64,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
   List<EpubChapter> _chapters;
+  CfiFragment _cfiFragment;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
   void initState() {
+    _cfiFragment = EpubReaderCfi.parseCfi(widget.epubCfi);
     _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
       [],
       (acc, next) => acc..addAll(next.SubChapters),
@@ -216,6 +222,16 @@ class EpubReaderLastPosition {
 
   @override
   String toString() => '$chapterNumber:$leadingEdge:$trailingEdge';
+}
+
+class EpubReaderCfi {
+  static CfiFragment parseCfi(String cfiInput) {
+    final parser = EpubCfiParser();
+    return parser.parse(cfiInput, 'fragment');
+  }
+
+  // TODO(Ramil): create epub-cfi generator
+  static String generateCfi() => '';
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {

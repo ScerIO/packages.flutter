@@ -14,6 +14,18 @@ void main() {
     expect(result, null);
   });
 
+  test('fragment parse - null', () async {
+    final parser = EpubCfiParser();
+    CfiResult result;
+    try {
+      result = parser.parse(null, null);
+    } catch (e) {
+      expect(e, CfiSyntaxException(['\"epubcfi(\"'], null, 0, 1, 1));
+    }
+
+    expect(result, null);
+  });
+
   test('fragment parse - path', () async {
     final parser = EpubCfiParser();
     final result = parser.parse(

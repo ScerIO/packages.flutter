@@ -37,7 +37,7 @@ class EpubCfiParser {
       '"';
 
   dynamic parse(String _input, String _startRule) {
-    input = _input;
+    input = _input ?? '';
     startRule = _startRule;
 
     final parseFunctions = {
