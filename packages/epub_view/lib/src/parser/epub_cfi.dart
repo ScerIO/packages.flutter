@@ -22,7 +22,7 @@ class EpubCfiParser {
    * characters. Note that "\0" and "\v" escape sequences are not used
    * because JSHint does not like the first and IE the second.
    */
-  String quote(String s) =>
+  static String quote(String s) =>
       '"' +
       s
           .replaceAll(RegExp(r'\\'), '\\\\') // backslash
@@ -103,17 +103,17 @@ class EpubCfiParser {
        * handle these states.
        */
     if (result == null || pos != input.length) {
-      // final offset = max(pos, rightmostFailuresPos);
-      // final found = offset < input.length ? input[offset] : null;
-      // final errorPosition = _computeErrorPosition();
+      final offset = max(pos, rightmostFailuresPos);
+      final found = offset < input.length ? input[offset] : null;
+      final errorPosition = _computeErrorPosition();
 
-      // throw this.SyntaxError(
-      //   _cleanupExpected(rightmostFailuresExpected),
-      //   found,
-      //   offset,
-      //   errorPosition.line,
-      //   errorPosition.column,
-      // );
+      throw CfiSyntaxException(
+        _cleanupExpected(rightmostFailuresExpected),
+        found,
+        offset,
+        errorPosition.line,
+        errorPosition.column,
+      );
     }
 
     return result;
@@ -1095,6 +1095,7 @@ class EpubCfiParser {
           _matchFailed('[1-9]');
         }
       }
+      // ignore: invariant_booleans
       if (result0 != null) {
         result1 = [];
         if (RegExp(r'^[0-9]').hasMatch(input[pos])) {
@@ -1365,6 +1366,7 @@ class EpubCfiParser {
           _matchFailed('[A-Z]');
         }
       }
+      // ignore: invariant_booleans
       if (result0 == null) {
         if (RegExp(r'^[0-9]').hasMatch(input[pos])) {
           result0 = input[pos];
@@ -1375,6 +1377,7 @@ class EpubCfiParser {
             _matchFailed('[0-9]');
           }
         }
+        // ignore: invariant_booleans
         if (result0 == null) {
           if (input.codeUnitAt(pos) == 45) {
             result0 = '-';
@@ -1385,6 +1388,7 @@ class EpubCfiParser {
               _matchFailed('\"-\"');
             }
           }
+          // ignore: invariant_booleans
           if (result0 == null) {
             if (input.codeUnitAt(pos) == 95) {
               result0 = '_';
@@ -1395,6 +1399,7 @@ class EpubCfiParser {
                 _matchFailed('\"_\"');
               }
             }
+            // ignore: invariant_booleans
             if (result0 == null) {
               if (input.codeUnitAt(pos) == 46) {
                 result0 = '.';
@@ -1446,31 +1451,33 @@ class EpubCfiParser {
     return cleanExpected;
   }
 
-  String _padLeft(String input, String padding, int length) {
-    String result = input;
+  // Not used, but may be needed
+  // String _padLeft(String input, String padding, int length) {
+  //   String result = input;
 
-    final padLength = length - input.length;
-    for (int i = 0; i < padLength; i++) {
-      result = padding + result;
-    }
+  //   final padLength = length - input.length;
+  //   for (int i = 0; i < padLength; i++) {
+  //     result = padding + result;
+  //   }
 
-    return result;
-  }
+  //   return result;
+  // }
 
-  String _escape(String ch) {
-    final charCode = ch.codeUnitAt(0);
-    String escapeChar = 'u';
-    int length = 4;
+  // Not used, but may be needed
+  // String _escape(String ch) {
+  //   final charCode = ch.codeUnitAt(0);
+  //   String escapeChar = 'u';
+  //   int length = 4;
 
-    if (charCode <= 0xFF) {
-      escapeChar = 'x';
-      length = 2;
-    }
+  //   if (charCode <= 0xFF) {
+  //     escapeChar = 'x';
+  //     length = 2;
+  //   }
 
-    return '\\' +
-        escapeChar +
-        _padLeft(charCode.toRadixString(16).toUpperCase(), '0', length);
-  }
+  //   return '\\' +
+  //       escapeChar +
+  //       _padLeft(charCode.toRadixString(16).toUpperCase(), '0', length);
+  // }
 
   ErrorPosition _computeErrorPosition() {
     /*
@@ -1506,7 +1513,9 @@ class EpubCfiParser {
   }
 }
 
-class CfiFragment extends Equatable {
+abstract class CfiResult extends Equatable {}
+
+class CfiFragment extends CfiResult {
   CfiFragment(
       {@required this.type, @required this.cfiRange, @required this.cfiPath});
 
@@ -1518,7 +1527,7 @@ class CfiFragment extends Equatable {
   List<Object> get props => [type, cfiRange, cfiPath];
 }
 
-class CfiRange extends Equatable {
+class CfiRange extends CfiResult {
   CfiRange({
     @required this.type,
     @required this.path,
@@ -1537,7 +1546,7 @@ class CfiRange extends Equatable {
   List<Object> get props => [type, path, localPath, range1, range2];
 }
 
-class CfiPath extends Equatable {
+class CfiPath extends CfiResult {
   CfiPath({@required this.type, @required this.path, @required this.localPath});
 
   final String type;
@@ -1548,7 +1557,7 @@ class CfiPath extends Equatable {
   List<Object> get props => [type, path, localPath];
 }
 
-class CfiLocalPath extends Equatable {
+class CfiLocalPath extends CfiResult {
   CfiLocalPath({@required this.steps, @required this.termStep});
 
   final List<CfiStep> steps;
@@ -1558,7 +1567,7 @@ class CfiLocalPath extends Equatable {
   List<Object> get props => [steps, termStep];
 }
 
-class CfiStep extends Equatable {
+class CfiStep extends CfiResult {
   CfiStep({
     @required this.type,
     @required this.stepLength,
@@ -1573,7 +1582,7 @@ class CfiStep extends Equatable {
   List<Object> get props => [type, stepLength, idAssertion];
 }
 
-class CfiTerminus extends Equatable {
+class CfiTerminus extends CfiResult {
   CfiTerminus({
     @required this.type,
     @required this.offsetValue,
@@ -1588,7 +1597,7 @@ class CfiTerminus extends Equatable {
   List<Object> get props => [type, offsetValue, textAssertion];
 }
 
-class CfiTextLocationAssertion extends Equatable {
+class CfiTextLocationAssertion extends CfiResult {
   CfiTextLocationAssertion({
     @required this.type,
     @required this.csv,
@@ -1603,7 +1612,7 @@ class CfiTextLocationAssertion extends Equatable {
   List<Object> get props => [type, csv, parameter];
 }
 
-class CfiParameter extends Equatable {
+class CfiParameter extends CfiResult {
   CfiParameter({
     @required this.type,
     @required this.lHSValue,
@@ -1618,7 +1627,7 @@ class CfiParameter extends Equatable {
   List<Object> get props => [type, lHSValue, rHSValue];
 }
 
-class CfiCsv extends Equatable {
+class CfiCsv extends CfiResult {
   CfiCsv({
     @required this.type,
     @required this.preAssertion,
@@ -1633,12 +1642,60 @@ class CfiCsv extends Equatable {
   List<Object> get props => [type, preAssertion, postAssertion];
 }
 
-class ErrorPosition extends Equatable {
+class ErrorPosition {
   ErrorPosition({@required this.line, @required this.column});
 
   final int line;
   final int column;
+}
+
+class CfiSyntaxException extends Equatable implements Exception {
+  CfiSyntaxException(
+    this.expected,
+    this.found,
+    this.offset,
+    this.line,
+    this.column,
+  );
+
+  final List<String> expected;
+  final String found;
+  final int offset;
+  final int line;
+  final int column;
+
+  String _buildMessage() {
+    String expectedHumanized, foundHumanized;
+
+    switch (expected.length) {
+      case 0:
+        expectedHumanized = 'end of input';
+        break;
+      case 1:
+        expectedHumanized = expected[0];
+        break;
+      default:
+        expectedHumanized =
+            expected.sublist(0, expected.length - 1).join(', ') +
+                ' or ' +
+                expected[expected.length - 1];
+    }
+
+    foundHumanized =
+        (found ?? '').isNotEmpty ? EpubCfiParser.quote(found) : 'end of input';
+
+    // ignore: lines_longer_than_80_chars
+    return 'Expected $expectedHumanized but $foundHumanized found (line: $line col: $column).';
+  }
 
   @override
-  List<Object> get props => [line, column];
+  String toString() {
+    if ((expected ?? []).isEmpty) {
+      return 'CfiSyntaxException';
+    }
+    return _buildMessage();
+  }
+
+  @override
+  List<Object> get props => [expected, found, offset, line, column];
 }

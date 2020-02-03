@@ -4,15 +4,18 @@ import 'package:epub_view/src/parser/epub_cfi.dart';
 void main() {
   test('fragment parse - empty', () async {
     final parser = EpubCfiParser();
-    final result = parser.parse('epubcfi()', 'fragment');
+    CfiResult result;
+    try {
+      result = parser.parse('', 'fragment');
+    } catch (e) {
+      expect(e, CfiSyntaxException(['\"epubcfi(\"'], null, 0, 1, 1));
+    }
 
     expect(result, null);
   });
 
   test('fragment parse - path', () async {
     final parser = EpubCfiParser();
-    // final result = parser.parse(
-    //     'epubcfi(/6/14[chap05ref]!/4[body01]/10/2/1:3[2^[1^]])', 'fragment');
     final result = parser.parse(
         'epubcfi(/6/4[chap01ref]!/4[body01]/10[para05]/1:3[xx,y])', 'fragment');
 
@@ -291,5 +294,54 @@ void main() {
             localPath: localPath,
           )),
     );
+  });
+
+  test('fragment parse - error at the beginning', () async {
+    final parser = EpubCfiParser();
+    CfiResult result;
+    try {
+      result = parser.parse(
+          'epubcfi(q/6/14[chap05ref]!/4[body01]/10/2/1:3)', 'fragment');
+    } catch (e) {
+      expect(e, CfiSyntaxException(['\"/\"'], 'q', 8, 1, 9));
+    }
+
+    expect(result, null);
+  });
+
+  test('fragment parse - error in the middle', () async {
+    final parser = EpubCfiParser();
+    CfiResult result;
+    try {
+      result = parser.parse(
+          'epubcfi(/6/14q[chap05ref]!/4[body01]/10/2/1:3)', 'fragment');
+    } catch (e) {
+      expect(
+        e,
+        CfiSyntaxException(
+          ['\"!/\"', '\")\"', '\",\"', '\"/\"', '\":\"', '\"[\"', '[0-9]'],
+          'q',
+          13,
+          1,
+          14,
+        ),
+      );
+    }
+
+    expect(result, null);
+  });
+
+  test('fragment parse - error at the end', () async {
+    final parser = EpubCfiParser();
+    CfiResult result;
+    try {
+      result = parser.parse(
+          'epubcfi(/6/14[chap05ref]!/4[body01]/10/2/1:3)q', 'fragment');
+    } catch (e) {
+      expect(
+          e, CfiSyntaxException(['\",\"', '\"[\"', '[0-9]'], 'q', 45, 1, 46));
+    }
+
+    expect(result, null);
   });
 }
