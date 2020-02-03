@@ -54,8 +54,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -100,14 +100,14 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: CfiRange(
+          range: CfiRange(
             type: 'range',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
             range1: range1,
             range2: range2,
           ),
-          cfiPath: null),
+          path: null),
     );
   });
 
@@ -140,8 +140,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -171,8 +171,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -203,8 +203,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -236,8 +236,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -266,8 +266,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,
@@ -299,8 +299,8 @@ void main() {
       result,
       CfiFragment(
           type: 'CFIAST',
-          cfiRange: null,
-          cfiPath: CfiPath(
+          range: null,
+          path: CfiPath(
             type: 'path',
             path: CfiStep(type: 'indexStep', stepLength: 6, idAssertion: null),
             localPath: localPath,

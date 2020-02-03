@@ -64,12 +64,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
   List<EpubChapter> _chapters;
-  CfiFragment _cfiFragment;
+  EpubReaderCfi _epubReaderCfi;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
   void initState() {
-    _cfiFragment = EpubReaderCfi.parseCfi(widget.epubCfi);
+    _epubReaderCfi = EpubReaderCfi(widget.epubCfi);
     _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
       [],
       (acc, next) => acc..addAll(next.SubChapters),
@@ -104,8 +104,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         _defaultItemBuilder(index);
 
     Widget content = ScrollablePositionedList.builder(
-      initialScrollIndex: widget.startFrom?._itemIndex ?? 0,
-      initialAlignment: widget.startFrom?.leadingEdge ?? 0,
+      initialScrollIndex: _epubReaderCfi.lastPosition?._itemIndex ??
+          widget.startFrom?._itemIndex ??
+          0,
+      initialAlignment: _epubReaderCfi.lastPosition?.leadingEdge ??
+          widget.startFrom?.leadingEdge ??
+          0,
       itemCount: _chapters.length,
       itemScrollController: _itemScrollController,
       itemPositionsListener: _itemPositionListener,
@@ -225,13 +229,36 @@ class EpubReaderLastPosition {
 }
 
 class EpubReaderCfi {
-  static CfiFragment parseCfi(String cfiInput) {
+  EpubReaderCfi(this._cfiInput);
+
+  final String _cfiInput;
+  CfiFragment _cfiFragment;
+  EpubReaderLastPosition _lastPosition;
+
+  EpubReaderLastPosition get lastPosition {
+    if (_lastPosition == null) {
+      _cfiFragment = parseCfi(_cfiInput);
+      _lastPosition = convertToLastPosition(_cfiFragment);
+    }
+    return _lastPosition;
+  }
+
+  CfiFragment parseCfi(String cfiInput) {
     final parser = EpubCfiParser();
     return parser.parse(cfiInput, 'fragment');
   }
 
+  EpubReaderLastPosition convertToLastPosition(CfiFragment cfiFragment) {
+    if (cfiFragment == null) {
+      return null;
+    }
+    final int chapter = cfiFragment.path?.localPath?.steps[0]?.stepLength;
+
+    return EpubReaderLastPosition(chapter);
+  }
+
   // TODO(Ramil): create epub-cfi generator
-  static String generateCfi() => '';
+  String generateCfi(EpubReaderLastPosition lastPosition) => '';
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {

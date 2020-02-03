@@ -167,8 +167,8 @@ class EpubCfiParser {
     if (result0 != null) {
       result0 = ((int offset, fragmentVal) => CfiFragment(
             type: 'CFIAST',
-            cfiRange: fragmentVal is CfiRange ? fragmentVal : null,
-            cfiPath: fragmentVal is CfiPath ? fragmentVal : null,
+            range: fragmentVal is CfiRange ? fragmentVal : null,
+            path: fragmentVal is CfiPath ? fragmentVal : null,
           ))(pos0, result0[1]);
     }
     if (result0 == null) {
@@ -1516,15 +1516,14 @@ class EpubCfiParser {
 abstract class CfiResult extends Equatable {}
 
 class CfiFragment extends CfiResult {
-  CfiFragment(
-      {@required this.type, @required this.cfiRange, @required this.cfiPath});
+  CfiFragment({@required this.type, @required this.range, @required this.path});
 
   final String type;
-  final CfiRange cfiRange;
-  final CfiPath cfiPath;
+  final CfiRange range;
+  final CfiPath path;
 
   @override
-  List<Object> get props => [type, cfiRange, cfiPath];
+  List<Object> get props => [type, range, path];
 }
 
 class CfiRange extends CfiResult {
