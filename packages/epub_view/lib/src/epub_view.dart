@@ -64,12 +64,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
   List<EpubChapter> _chapters;
-  EpubReaderCfi _epubReaderCfi;
+  EpubCfiReader _epubCfiReader;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
   void initState() {
-    _epubReaderCfi = EpubReaderCfi(widget.epubCfi);
+    _epubCfiReader = EpubCfiReader(widget.epubCfi);
     _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
       [],
       (acc, next) => acc..addAll(next.SubChapters),
@@ -104,10 +104,10 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         _defaultItemBuilder(index);
 
     Widget content = ScrollablePositionedList.builder(
-      initialScrollIndex: _epubReaderCfi.lastPosition?._itemIndex ??
+      initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
           widget.startFrom?._itemIndex ??
           0,
-      initialAlignment: _epubReaderCfi.lastPosition?.leadingEdge ??
+      initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
           widget.startFrom?.leadingEdge ??
           0,
       itemCount: _chapters.length,
@@ -228,8 +228,8 @@ class EpubReaderLastPosition {
   String toString() => '$chapterNumber:$leadingEdge:$trailingEdge';
 }
 
-class EpubReaderCfi {
-  EpubReaderCfi(this._cfiInput);
+class EpubCfiReader {
+  EpubCfiReader(this._cfiInput);
 
   final String _cfiInput;
   CfiFragment _cfiFragment;
