@@ -26,7 +26,8 @@ class EpubReaderView extends StatefulWidget {
     this.dividerBuilder,
     this.onChange,
     this.startFrom,
-    this.chapterPadding = const EdgeInsets.all(8),
+    this.chapterPadding =
+        const EdgeInsets.symmetric(horizontal: 8), // const EdgeInsets.all(8),
     this.textStyle = _defaultTextStyle,
     Key key,
   })  : itemBuilder = null,
@@ -66,6 +67,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   List<EpubChapter> _chapters;
   EpubCfiReader _epubCfiReader;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
+  List<String> _paragraphs;
 
   @override
   void initState() {
@@ -74,6 +76,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       [],
       (acc, next) => acc..addAll(next.SubChapters),
     );
+    _paragraphs = _paragraphBreak(_chapters[0].HtmlContent);
     _itemPositionListener.itemPositions.addListener(_changeListener);
 
     super.initState();
@@ -99,6 +102,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
+    // print(_chapters.length);
+    // print(widget.book.Schema.Package.Manifest.Items);
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, index) ??
         _defaultItemBuilder(index);
@@ -155,17 +160,45 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final nextChapter =
         index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
     final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
+    final p = _paragraphBreak(parsed);
+
+    return SingleChildScrollView(
+      child: Column(
+        children: p
+            .map(
+              (s) => Html(
+                data: s,
+                padding: widget.chapterPadding,
+                defaultTextStyle: widget.textStyle,
+              ),
+            )
+            .toList(),
+      ),
+    );
 
     return Column(
       children: <Widget>[
         Html(
           padding: widget.chapterPadding,
-          data: parsed,
+          data: _paragraphs[index],
           defaultTextStyle: widget.textStyle,
         ),
         if (nextChapter != null) _buildDivider(nextChapter),
       ],
     );
+  }
+
+  List<String> _paragraphBreak(String htmlContent) {
+    final regExp = RegExp(
+      r'<p class=".+?">.+?</p>',
+      caseSensitive: false,
+      multiLine: true,
+      dotAll: true,
+    );
+    final matches = regExp.allMatches(htmlContent);
+    // print(matches.length);
+
+    return matches.map((match) => match.group(0)).toList();
   }
 }
 
