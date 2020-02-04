@@ -26,8 +26,7 @@ class EpubReaderView extends StatefulWidget {
     this.dividerBuilder,
     this.onChange,
     this.startFrom,
-    this.chapterPadding =
-        const EdgeInsets.symmetric(horizontal: 8), // const EdgeInsets.all(8),
+    this.chapterPadding = const EdgeInsets.all(8),
     this.textStyle = _defaultTextStyle,
     Key key,
   })  : itemBuilder = null,
@@ -160,31 +159,39 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final nextChapter =
         index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
     final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
-    final p = _paragraphBreak(parsed);
+    final paragraphs = _paragraphBreak(parsed);
 
-    return SingleChildScrollView(
-      child: Column(
-        children: p
-            .map(
-              (s) => Html(
-                data: s,
-                padding: widget.chapterPadding,
-                defaultTextStyle: widget.textStyle,
-              ),
-            )
-            .toList(),
-      ),
+    final content = ScrollablePositionedList.builder(
+      initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
+          widget.startFrom?._itemIndex ??
+          0,
+      initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
+          widget.startFrom?.leadingEdge ??
+          0,
+      itemCount: paragraphs.length,
+      // itemScrollController: _itemScrollController,
+      // itemPositionsListener: _itemPositionListener,
+      itemBuilder: (c, i) => _buildParagraph(paragraphs, i),
     );
 
-    return Column(
-      children: <Widget>[
-        Html(
-          padding: widget.chapterPadding,
-          data: _paragraphs[index],
-          defaultTextStyle: widget.textStyle,
-        ),
-        if (nextChapter != null) _buildDivider(nextChapter),
-      ],
+    return Container(height: 1000, width: 320, child: content);
+
+    // return Column(
+    //   children: <Widget>[
+    //     Html(
+    //       padding: widget.chapterPadding,
+    //       data: _paragraphs[index],
+    //       defaultTextStyle: widget.textStyle,
+    //     ),
+    //     if (nextChapter != null) _buildDivider(nextChapter),
+    //   ],
+    // );
+  }
+
+  Widget _buildParagraph(List<String> paragraphs, int index) {
+    return Html(
+      data: paragraphs[index],
+      defaultTextStyle: widget.textStyle,
     );
   }
 
