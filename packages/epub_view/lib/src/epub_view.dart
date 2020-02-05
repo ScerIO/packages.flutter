@@ -66,7 +66,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   List<EpubChapter> _chapters;
   EpubCfiReader _epubCfiReader;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
-  List<String> _paragraphs;
 
   @override
   void initState() {
@@ -75,7 +74,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       [],
       (acc, next) => acc..addAll(next.SubChapters),
     );
-    _paragraphs = _paragraphBreak(_chapters[0].HtmlContent);
     _itemPositionListener.itemPositions.addListener(_changeListener);
 
     super.initState();
@@ -101,8 +99,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(_chapters.length);
-    // print(widget.book.Schema.Package.Manifest.Items);
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, index) ??
         _defaultItemBuilder(index);
@@ -120,19 +116,23 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       itemBuilder: _buildItem,
     );
 
+    Widget scrollableContent = CustomScrollView(
+      slivers: _buildChaptersSliverList(),
+    );
+
     if (widget.headerBuilder != null) {
-      content = Column(
+      scrollableContent = Column(
         children: <Widget>[
           StreamBuilder<EpubChapterViewValue>(
             stream: _actualItem.stream,
             builder: (_, snapshot) => widget.headerBuilder(snapshot.data),
           ),
-          Expanded(child: content)
+          Expanded(child: scrollableContent)
         ],
       );
     }
 
-    return content;
+    return scrollableContent;
   }
 
   Widget _defaultItemBuilder(index) {
@@ -159,33 +159,47 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final nextChapter =
         index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
     final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
-    final paragraphs = _paragraphBreak(parsed);
 
-    final content = ScrollablePositionedList.builder(
-      initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
-          widget.startFrom?._itemIndex ??
-          0,
-      initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
-          widget.startFrom?.leadingEdge ??
-          0,
-      itemCount: paragraphs.length,
-      // itemScrollController: _itemScrollController,
-      // itemPositionsListener: _itemPositionListener,
-      itemBuilder: (c, i) => _buildParagraph(paragraphs, i),
+    return Column(
+      children: <Widget>[
+        Html(
+          padding: widget.chapterPadding,
+          data: parsed,
+          defaultTextStyle: widget.textStyle,
+        ),
+        if (nextChapter != null) _buildDivider(nextChapter),
+      ],
     );
+  }
 
-    return Container(height: 1000, width: 320, child: content);
+  List<Widget> _buildChaptersSliverList() {
+    return _chapters.map((chapter) {
+      final paragraphs = _paragraphBreak(chapter.HtmlContent);
 
-    // return Column(
-    //   children: <Widget>[
-    //     Html(
-    //       padding: widget.chapterPadding,
-    //       data: _paragraphs[index],
-    //       defaultTextStyle: widget.textStyle,
-    //     ),
-    //     if (nextChapter != null) _buildDivider(nextChapter),
-    //   ],
-    // );
+      return SliverPadding(
+        padding: widget.chapterPadding,
+        sliver: SliverList(
+          key: Key(chapter.hashCode.toString()),
+          delegate: SliverChildBuilderDelegate(
+            (c, i) => _buildParagraph(paragraphs, i),
+            childCount: paragraphs.length,
+          ),
+        ),
+      );
+
+      return ScrollablePositionedList.builder(
+        // initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
+        //     widget.startFrom?._itemIndex ??
+        //     0,
+        // initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
+        //     widget.startFrom?.leadingEdge ??
+        //     0,
+        itemCount: paragraphs.length,
+        // itemScrollController: _itemScrollController,
+        // itemPositionsListener: _itemPositionListener,
+        itemBuilder: (c, i) => _buildParagraph(paragraphs, i),
+      );
+    }).toList();
   }
 
   Widget _buildParagraph(List<String> paragraphs, int index) {
