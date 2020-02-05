@@ -64,6 +64,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
   List<EpubChapter> _chapters;
+  List<String> _paragraphs;
+  List<int> _chapterParargraphCounts = [];
   EpubCfiReader _epubCfiReader;
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
@@ -74,6 +76,15 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       [],
       (acc, next) => acc..addAll(next.SubChapters),
     );
+    _paragraphs = _chapters.fold<List<String>>(
+      [],
+      (acc, next) {
+        final pList = _paragraphBreak(next.HtmlContent);
+        _chapterParargraphCounts.add(pList.length);
+        return acc..addAll(pList);
+      },
+    );
+    print(_chapterParargraphCounts);
     _itemPositionListener.itemPositions.addListener(_changeListener);
 
     super.initState();
@@ -88,42 +99,59 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   void _changeListener() {
     final position = _itemPositionListener.itemPositions.value.first;
+    final chapterIndex = _getChapterIndexBy(position: position);
     final value = EpubChapterViewValue(
-      chapter: _chapters[position.index],
-      number: position.index + 1,
+      chapter: _chapters[chapterIndex],
+      number: chapterIndex + 1,
       position: position,
+      paragraphIndex: _getParagraphIndexBy(position: position),
+      paragraphsCount: _chapterParargraphCounts[chapterIndex],
     );
     _actualItem.sink.add(value);
     widget.onChange?.call(value);
   }
 
+  int _getChapterIndexBy({ItemPosition position}) {
+    int index = 0;
+    int sum = 0;
+    _chapterParargraphCounts.forEach((count) {
+      sum += count;
+      if (position.index >= sum) {
+        index++;
+      }
+    });
+    return index;
+  }
+
+  int _getParagraphIndexBy({ItemPosition position}) {
+    int sum = 0;
+    int index = position.index;
+    _chapterParargraphCounts.forEach((count) {
+      if (position.index >= sum) {
+        index -= sum;
+        sum += count;
+      }
+    });
+    return index;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Widget _buildItem(BuildContext context, int index) =>
-    //     widget.itemBuilder?.call(context, _chapters, index) ??
-    //     _defaultItemBuilder(index);
+    Widget _buildItem(BuildContext context, int index) =>
+        widget.itemBuilder?.call(context, _chapters, index) ??
+        _defaultItemBuilder(index);
 
-    // Widget content = ScrollablePositionedList.builder(
-    //   initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
-    //       widget.startFrom?._itemIndex ??
-    //       0,
-    //   initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
-    //       widget.startFrom?.leadingEdge ??
-    //       0,
-    //   itemCount: _chapters.length,
-    //   itemScrollController: _itemScrollController,
-    //   itemPositionsListener: _itemPositionListener,
-    //   itemBuilder: _buildItem,
-    // );
-
-    Widget content = NotificationListener(
-      onNotification: (ScrollNotification scrollInfo) {
-        // print(scrollInfo.metrics.pixels);
-        // if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {}
-      },
-      child: CustomScrollView(
-        slivers: _buildChaptersSliverList(),
-      ),
+    Widget content = ScrollablePositionedList.builder(
+      initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
+          widget.startFrom?._itemIndex ??
+          0,
+      initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
+          widget.startFrom?.leadingEdge ??
+          0,
+      itemCount: _paragraphs.length,
+      itemScrollController: _itemScrollController,
+      itemPositionsListener: _itemPositionListener,
+      itemBuilder: _buildItem,
     );
 
     if (widget.headerBuilder != null) {
@@ -161,19 +189,19 @@ class _EpubReaderViewState extends State<EpubReaderView> {
           ),
         );
 
-    final chapter = _chapters[index];
-    final nextChapter =
-        index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
-    final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
+    // final chapter = _chapters[index];
+    // final nextChapter =
+    //     index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
+    // final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
 
     return Column(
       children: <Widget>[
         Html(
-          padding: widget.chapterPadding,
-          data: parsed,
+          // padding: widget.chapterPadding,
+          data: _paragraphs[index],
           defaultTextStyle: widget.textStyle,
         ),
-        if (nextChapter != null) _buildDivider(nextChapter),
+        // if (nextChapter != null) _buildDivider(nextChapter),
       ],
     );
   }
@@ -219,11 +247,15 @@ class EpubChapterViewValue {
     @required this.chapter,
     @required this.number,
     @required this.position,
+    @required this.paragraphIndex,
+    @required this.paragraphsCount,
   });
 
   final EpubChapter chapter;
   final int number;
   final ItemPosition position;
+  final int paragraphIndex;
+  final int paragraphsCount;
 
   /// Chapter view in percents
   double get progress => _calcProgress(
