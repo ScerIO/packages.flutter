@@ -99,40 +99,46 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _buildItem(BuildContext context, int index) =>
-        widget.itemBuilder?.call(context, _chapters, index) ??
-        _defaultItemBuilder(index);
+    // Widget _buildItem(BuildContext context, int index) =>
+    //     widget.itemBuilder?.call(context, _chapters, index) ??
+    //     _defaultItemBuilder(index);
 
-    Widget content = ScrollablePositionedList.builder(
-      initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
-          widget.startFrom?._itemIndex ??
-          0,
-      initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
-          widget.startFrom?.leadingEdge ??
-          0,
-      itemCount: _chapters.length,
-      itemScrollController: _itemScrollController,
-      itemPositionsListener: _itemPositionListener,
-      itemBuilder: _buildItem,
-    );
+    // Widget content = ScrollablePositionedList.builder(
+    //   initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
+    //       widget.startFrom?._itemIndex ??
+    //       0,
+    //   initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
+    //       widget.startFrom?.leadingEdge ??
+    //       0,
+    //   itemCount: _chapters.length,
+    //   itemScrollController: _itemScrollController,
+    //   itemPositionsListener: _itemPositionListener,
+    //   itemBuilder: _buildItem,
+    // );
 
-    Widget scrollableContent = CustomScrollView(
-      slivers: _buildChaptersSliverList(),
+    Widget content = NotificationListener(
+      onNotification: (ScrollNotification scrollInfo) {
+        // print(scrollInfo.metrics.pixels);
+        // if (scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {}
+      },
+      child: CustomScrollView(
+        slivers: _buildChaptersSliverList(),
+      ),
     );
 
     if (widget.headerBuilder != null) {
-      scrollableContent = Column(
+      content = Column(
         children: <Widget>[
           StreamBuilder<EpubChapterViewValue>(
             stream: _actualItem.stream,
             builder: (_, snapshot) => widget.headerBuilder(snapshot.data),
           ),
-          Expanded(child: scrollableContent)
+          Expanded(child: content)
         ],
       );
     }
 
-    return scrollableContent;
+    return content;
   }
 
   Widget _defaultItemBuilder(index) {
@@ -177,37 +183,23 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       final paragraphs = _paragraphBreak(chapter.HtmlContent);
 
       return SliverPadding(
+        key: Key(chapter.hashCode.toString()),
         padding: widget.chapterPadding,
         sliver: SliverList(
-          key: Key(chapter.hashCode.toString()),
           delegate: SliverChildBuilderDelegate(
             (c, i) => _buildParagraph(paragraphs, i),
             childCount: paragraphs.length,
           ),
         ),
       );
-
-      return ScrollablePositionedList.builder(
-        // initialScrollIndex: _epubCfiReader.lastPosition?._itemIndex ??
-        //     widget.startFrom?._itemIndex ??
-        //     0,
-        // initialAlignment: _epubCfiReader.lastPosition?.leadingEdge ??
-        //     widget.startFrom?.leadingEdge ??
-        //     0,
-        itemCount: paragraphs.length,
-        // itemScrollController: _itemScrollController,
-        // itemPositionsListener: _itemPositionListener,
-        itemBuilder: (c, i) => _buildParagraph(paragraphs, i),
-      );
     }).toList();
   }
 
-  Widget _buildParagraph(List<String> paragraphs, int index) {
-    return Html(
-      data: paragraphs[index],
-      defaultTextStyle: widget.textStyle,
-    );
-  }
+  Widget _buildParagraph(List<String> paragraphs, int index) => Html(
+        key: Key('p_$index'),
+        data: paragraphs[index],
+        defaultTextStyle: widget.textStyle,
+      );
 
   List<String> _paragraphBreak(String htmlContent) {
     final regExp = RegExp(
@@ -217,7 +209,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       dotAll: true,
     );
     final matches = regExp.allMatches(htmlContent);
-    // print(matches.length);
 
     return matches.map((match) => match.group(0)).toList();
   }
