@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:epub/epub.dart';
 import 'package:epub_view/src/parser/epub_cfi.dart';
+import 'package:epub_view/src/generator/epub_cfi.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
