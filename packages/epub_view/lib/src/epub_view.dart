@@ -71,7 +71,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   void initState() {
-    _epubCfiReader = EpubCfiReader(widget.epubCfi);
     _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
       [],
       (acc, next) => acc..addAll(next.SubChapters),
@@ -84,7 +83,10 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         return acc..addAll(pList);
       },
     );
-    print(_chapterParargraphCounts);
+    _epubCfiReader = EpubCfiReader(
+      widget.epubCfi,
+      chapterParargraphCounts: _chapterParargraphCounts,
+    );
     _itemPositionListener.itemPositions.addListener(_changeListener);
 
     super.initState();
@@ -306,15 +308,16 @@ class EpubReaderLastPosition {
 }
 
 class EpubCfiReader {
-  EpubCfiReader(this._cfiInput);
+  EpubCfiReader(this.cfiInput, {this.chapterParargraphCounts});
 
-  final String _cfiInput;
+  final String cfiInput;
+  final List<int> chapterParargraphCounts;
   CfiFragment _cfiFragment;
   EpubReaderLastPosition _lastPosition;
 
   EpubReaderLastPosition get lastPosition {
     if (_lastPosition == null) {
-      _cfiFragment = parseCfi(_cfiInput);
+      _cfiFragment = parseCfi(cfiInput);
       _lastPosition = convertToLastPosition(_cfiFragment);
     }
     return _lastPosition;
@@ -329,13 +332,36 @@ class EpubCfiReader {
     if (cfiFragment == null) {
       return null;
     }
-    final int chapter = cfiFragment.path?.localPath?.steps[0]?.stepLength;
 
-    return EpubReaderLastPosition(chapter);
+    final int chapterNumber =
+        cfiFragment.path?.localPath?.steps[0]?.stepLength ?? 1;
+    final int paragraphNumber =
+        cfiFragment.path?.localPath?.steps[1]?.stepLength ?? 1;
+    final int chapterParagraphNumber =
+        _getChapterParagraphNumberBy(chapterNumber: chapterNumber);
+
+    return EpubReaderLastPosition(chapterParagraphNumber + paragraphNumber);
   }
 
   // TODO(Ramil): create epub-cfi generator
   String generateCfi(EpubReaderLastPosition lastPosition) => '';
+
+  int _getChapterParagraphNumberBy({chapterNumber}) {
+    if ((chapterNumber ?? 1) == 1) {
+      return 0;
+    }
+
+    int number = 1;
+    int result = 0;
+    chapterParargraphCounts.forEach((count) {
+      if (chapterNumber > number) {
+        result += count;
+      }
+      number++;
+    });
+
+    return result;
+  }
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {

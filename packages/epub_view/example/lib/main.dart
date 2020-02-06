@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snapshot.hasData) {
               return EpubReaderView(
                 book: snapshot.data,
-                epubCfi: 'epubcfi(/6/176[chap03ref])',
+                epubCfi: 'epubcfi(/6/3[chap03ref]/4[para05])',
                 headerBuilder: (value) => AppBar(
                   title: Text(
                     'Chapter ${value?.chapter?.Title ?? ''}',
