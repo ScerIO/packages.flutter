@@ -27,6 +27,7 @@ class EpubReaderView extends StatefulWidget {
     this.onChange,
     this.startFrom,
     this.chapterPadding = const EdgeInsets.all(8),
+    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
     this.textStyle = _defaultTextStyle,
     Key key,
   })  : itemBuilder = null,
@@ -40,6 +41,7 @@ class EpubReaderView extends StatefulWidget {
     this.onChange,
     this.startFrom,
     this.chapterPadding = const EdgeInsets.all(8),
+    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
     Key key,
   })  : dividerBuilder = null,
         textStyle = null,
@@ -52,6 +54,7 @@ class EpubReaderView extends StatefulWidget {
   final void Function(EpubChapterViewValue value) onChange;
   final EpubReaderLastPosition startFrom;
   final EdgeInsetsGeometry chapterPadding;
+  final EdgeInsetsGeometry paragraphPadding;
   final ChaptersBuilder itemBuilder;
   final TextStyle textStyle;
 
@@ -65,8 +68,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       ItemPositionsListener.create();
   List<EpubChapter> _chapters;
   List<String> _paragraphs;
-  List<int> _chapterParargraphCounts = [];
   EpubCfiReader _epubCfiReader;
+  final List<int> _chapterParargraphCounts = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
@@ -88,7 +91,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       chapterParargraphCounts: _chapterParargraphCounts,
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
-
     super.initState();
   }
 
@@ -104,10 +106,9 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final chapterIndex = _getChapterIndexBy(position: position);
     final value = EpubChapterViewValue(
       chapter: _chapters[chapterIndex],
-      number: chapterIndex + 1,
+      chapterNumber: chapterIndex + 1,
+      paragraphNumber: _getParagraphIndexBy(position: position) + 1,
       position: position,
-      paragraphIndex: _getParagraphIndexBy(position: position),
-      paragraphsCount: _chapterParargraphCounts[chapterIndex],
     );
     _actualItem.sink.add(value);
     widget.onChange?.call(value);
@@ -172,24 +173,24 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   Widget _defaultItemBuilder(index) {
-    Widget _buildDivider(EpubChapter chapter) =>
-        widget.dividerBuilder?.call(chapter) ??
-        Container(
-          height: 56,
-          width: double.infinity,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Color(0x24000000),
-          ),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Chapter ${chapter.Title}',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        );
+    // Widget _buildDivider(EpubChapter chapter) =>
+    //     widget.dividerBuilder?.call(chapter) ??
+    //     Container(
+    //       height: 56,
+    //       width: double.infinity,
+    //       padding: EdgeInsets.all(16),
+    //       decoration: BoxDecoration(
+    //         color: Color(0x24000000),
+    //       ),
+    //       alignment: Alignment.centerLeft,
+    //       child: Text(
+    //         'Chapter ${chapter.Title}',
+    //         style: TextStyle(
+    //           fontSize: 18,
+    //           fontWeight: FontWeight.w500,
+    //         ),
+    //       ),
+    //     );
 
     // final chapter = _chapters[index];
     // final nextChapter =
@@ -199,7 +200,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     return Column(
       children: <Widget>[
         Html(
-          // padding: widget.chapterPadding,
+          padding: widget.paragraphPadding,
           data: _paragraphs[index],
           defaultTextStyle: widget.textStyle,
         ),
@@ -208,32 +209,9 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     );
   }
 
-  List<Widget> _buildChaptersSliverList() {
-    return _chapters.map((chapter) {
-      final paragraphs = _paragraphBreak(chapter.HtmlContent);
-
-      return SliverPadding(
-        key: Key(chapter.hashCode.toString()),
-        padding: widget.chapterPadding,
-        sliver: SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (c, i) => _buildParagraph(paragraphs, i),
-            childCount: paragraphs.length,
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  Widget _buildParagraph(List<String> paragraphs, int index) => Html(
-        key: Key('p_$index'),
-        data: paragraphs[index],
-        defaultTextStyle: widget.textStyle,
-      );
-
   List<String> _paragraphBreak(String htmlContent) {
     final regExp = RegExp(
-      r'<p class=".+?">.+?</p>',
+      r'<p\w*(class=)?"?.*?"?>.+?</p>',
       caseSensitive: false,
       multiLine: true,
       dotAll: true,
@@ -247,17 +225,15 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 class EpubChapterViewValue {
   const EpubChapterViewValue({
     @required this.chapter,
-    @required this.number,
+    @required this.chapterNumber,
+    @required this.paragraphNumber,
     @required this.position,
-    @required this.paragraphIndex,
-    @required this.paragraphsCount,
   });
 
   final EpubChapter chapter;
-  final int number;
+  final int chapterNumber;
+  final int paragraphNumber;
   final ItemPosition position;
-  final int paragraphIndex;
-  final int paragraphsCount;
 
   /// Chapter view in percents
   double get progress => _calcProgress(
