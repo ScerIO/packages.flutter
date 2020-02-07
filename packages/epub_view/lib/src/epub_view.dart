@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:epub/epub.dart';
 import 'package:epub_view/src/parser/epub_cfi.dart';
 import 'package:epub_view/src/generator/epub_cfi.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
@@ -141,6 +142,24 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
+    // print(_chapters[0].HtmlContent);
+    final regExp = RegExp(
+      r'<body\w*(class=)?"?.*?"?>.+?</body>',
+      caseSensitive: false,
+      multiLine: true,
+      dotAll: true,
+    );
+    final matches = regExp.firstMatch(_chapters[0].HtmlContent);
+    // print(matches.group(0));
+    final document = parse(matches.group(0));
+
+    print(
+        document.children[0].children[1].children[0].children[0].children[10]);
+    final currNode =
+        document.children[0].children[1].children[0].children[0].children[10];
+    final steps = EpubCfiGenerator().createCFIElementSteps(currNode, 'html');
+    print(steps);
+
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, index) ??
         _defaultItemBuilder(index);
@@ -212,7 +231,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   List<String> _paragraphBreak(String htmlContent) {
     final regExp = RegExp(
-      r'<p\w*(class=)?"?.*?"?>.+?</p>',
+      r'<p.*?>.+?</p>',
       caseSensitive: false,
       multiLine: true,
       dotAll: true,
