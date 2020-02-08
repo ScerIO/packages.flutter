@@ -1,4 +1,4 @@
-# native_color
+# flutter_color
 
 Flutter package widening a Color class which can be used to create, convert, compare colors and uses in UI. And also for working with editing color
 
@@ -20,11 +20,11 @@ Color(0xFF000000).darker(50)       // -> Color(0xFF808080)
 
 In your flutter project add the dependency:
 
-[![pub package](https://img.shields.io/pub/v/native_color.svg)](https://pub.dartlang.org/packages/native_color)
+[![pub package](https://img.shields.io/pub/v/flutter_color.svg)](https://pub.dartlang.org/packages/flutter_color)
 
 ```yaml
 dependencies:
-  native_color: any
+  flutter_color: any
 ```
 
 For help getting started with Flutter, view the online [documentation](https://flutter.io/).

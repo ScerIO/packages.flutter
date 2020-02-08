@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:native_color/native_color.dart';
+import 'package:flutter_color/flutter_color.dart';
 
 void main() => runApp(MyApp());
 

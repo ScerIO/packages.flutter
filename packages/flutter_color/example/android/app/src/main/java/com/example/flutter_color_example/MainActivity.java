@@ -1,4 +1,4 @@
-package com.example.native_color_example;
+package com.example.flutter_color_example;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
