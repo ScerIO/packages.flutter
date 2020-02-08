@@ -1,3 +1,4 @@
+import 'package:epub/epub.dart';
 import 'package:html/dom.dart';
 
 class EpubCfiGenerator {
@@ -9,21 +10,14 @@ class EpubCfiGenerator {
       ')';
 
   String generatePackageDocumentCFIComponent(
-      contentDocumentName, packageDocument) {
-    // this.validateContentDocumentName(contentDocumentName);
-    // this.validatePackageDocument(packageDocument, contentDocumentName);
+      String idRef, EpubPackage packageDocument) {
+    // this.validatePackageDocument(packageDocument);
 
-    // Get the start node (itemref element) that references the content document
-    // $itemRefStartNode =
-    // $("itemref[idref='" + contentDocumentName + "']", $(packageDocument));
-    // Create the steps up to the top element of the package document
-    // (the "package" element)
-    // final String packageDocCFIComponent =
-    //     createCFIElementSteps($itemRefStartNode, 'package');
+    final pos = getIdRefPosition(idRef, packageDocument);
 
     // Append an !; this assumes that a CFI content document CFI component
     // will be appended at some point
-    // return packageDocCFIComponent + '!';
+    return '/6/$pos[$idRef]!';
   }
 
   String generateElementCFIComponent(Element startElement) {
@@ -84,5 +78,19 @@ class EpubCfiGenerator {
     } else {
       return createCFIElementSteps(parentNode, topLevelElement) + elementStep;
     }
+  }
+
+  int getIdRefPosition(String idRef, EpubPackage packageDocument) {
+    final items = packageDocument.Spine.Items;
+    int index = 0;
+
+    for (var i = 0; i < items.length; i++) {
+      if (idRef == items[i].IdRef) {
+        index = i;
+        break;
+      }
+    }
+
+    return (index + 1) * 2;
   }
 }

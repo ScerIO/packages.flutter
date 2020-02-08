@@ -142,24 +142,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
-    // print(_chapters[0].HtmlContent);
-    final regExp = RegExp(
-      r'<body\w*(class=)?"?.*?"?>.+?</body>',
-      caseSensitive: false,
-      multiLine: true,
-      dotAll: true,
-    );
-    final matches = regExp.firstMatch(_chapters[0].HtmlContent);
-    // print(matches.group(0));
-    final document = parse(matches.group(0));
-
-    print(
-        document.children[0].children[1].children[0].children[0].children[10]);
-    final currNode =
-        document.children[0].children[1].children[0].children[0].children[10];
-    final steps = EpubCfiGenerator().createCFIElementSteps(currNode, 'html');
-    print(steps);
-
+    print(_generateCfiTest());
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, index) ??
         _defaultItemBuilder(index);
@@ -239,6 +222,29 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final matches = regExp.allMatches(htmlContent);
 
     return matches.map((match) => match.group(0)).toList();
+  }
+
+  String _generateCfiTest() {
+    final regExp = RegExp(
+      r'<body\w*(class=)?"?.*?"?>.+?</body>',
+      caseSensitive: false,
+      multiLine: true,
+      dotAll: true,
+    );
+    final matches = regExp.firstMatch(_chapters[2].HtmlContent);
+    final document = parse(matches.group(0));
+    final generator = EpubCfiGenerator();
+    final currNode =
+        document.children[0].children[1].children[0].children[0].children[10];
+    final packageDocumentCFIComponent =
+        generator.generatePackageDocumentCFIComponent(
+            _chapters[2].Anchor, widget.book.Schema.Package);
+    final contentDocumentCFIComponent =
+        generator.generateElementCFIComponent(currNode);
+    final cfi = generator.generateCompleteCFI(
+        packageDocumentCFIComponent, contentDocumentCFIComponent);
+
+    return cfi;
   }
 }
 
