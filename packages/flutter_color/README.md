@@ -13,6 +13,12 @@ CielabColor(36.80, 55.20, -95.61)  // -> Color(0xFF4832F7)
 // Make color darker or lighter
 Color(0xFF000000).lighter(100)     // -> Color(0xFFFFFFFF)
 Color(0xFF000000).darker(50)       // -> Color(0xFF808080)
+
+// Mix with other colors
+Color(0xFFFF0000).mix(Color(0xFF00FF00), .25) // -> Color(0xFFBF3F00)
+
+// Colors conversion
+Color.fromRGBO(255, 255, 255, 1).hexColor // -> '#FFFFFFFF'
 ```
 
 
@@ -50,7 +56,6 @@ assert(CielabColor(36.80, 55.20, -95.61) == Color(0xFF4832F7));
 ```
 
 *Make color darker or lighter*
-Usage dart extension methods
 ```dart
 // [black -> white] lighter by 100 percents
 assert(Color(0xFF000000).lighter(100), Color(0xFFFFFFFF));
