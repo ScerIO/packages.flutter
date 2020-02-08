@@ -1,7 +1,6 @@
 name: flutter_color
 description: Flutter plugin for works with colors schemes like a hex, hsl, xyz and cielab
 version: 1.0.0
-author: Serge Shkurko <sergeshkurko@outlook.com>
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/flutter_color
 
 environment:
