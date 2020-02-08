@@ -14,32 +14,24 @@ class EpubCfiGenerator {
     // this.validatePackageDocument(packageDocument, contentDocumentName);
 
     // Get the start node (itemref element) that references the content document
-    // ignore: lines_longer_than_80_chars
     // $itemRefStartNode =
-    //     $("itemref[idref='" + contentDocumentName + "']", $(packageDocument));
-
-    // ignore: lines_longer_than_80_chars
-    // Create the steps up to the top element of the package document (the "package" element)
-    // ignore: lines_longer_than_80_chars
+    // $("itemref[idref='" + contentDocumentName + "']", $(packageDocument));
+    // Create the steps up to the top element of the package document
+    // (the "package" element)
     // final String packageDocCFIComponent =
     //     createCFIElementSteps($itemRefStartNode, 'package');
 
-    // ignore: lines_longer_than_80_chars
-    // Append an !; this assumes that a CFI content document CFI component will be appended at some point
+    // Append an !; this assumes that a CFI content document CFI component
+    // will be appended at some point
     // return packageDocCFIComponent + '!';
   }
 
   String generateElementCFIComponent(Element startElement) {
-    var contentDocCFI;
-    var $itemRefStartNode;
-    var packageDocCFI;
-
     // this.validateStartElement(startElement);
 
-    // ignore: lines_longer_than_80_chars
-    // Call the recursive method to create all the steps up to the head element of the content document (the "html" element)
-    // ignore: lines_longer_than_80_chars
-    contentDocCFI = createCFIElementSteps(startElement, 'html');
+    // Call the recursive method to create all the steps up to the head element
+    // of the content document (the "html" element)
+    final contentDocCFI = createCFIElementSteps(startElement, 'html');
 
     // Remove the !
     return contentDocCFI.substring(1, contentDocCFI.length);
