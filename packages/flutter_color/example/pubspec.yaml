@@ -1,5 +1,5 @@
-name: native_color_example
-description: Demonstrates how to use the native_color plugin.
+name: flutter_color_example
+description: Demonstrates how to use the flutter_color plugin.
 publish_to: 'none'
 
 environment:
@@ -13,7 +13,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  native_color:
+  flutter_color:
     path: ../
 
 flutter:
