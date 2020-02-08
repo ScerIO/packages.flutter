@@ -1,5 +1,6 @@
 import 'package:epub/epub.dart';
 import 'package:html/dom.dart';
+import 'package:flutter/foundation.dart';
 
 class EpubCfiGenerator {
   String generateCompleteCFI(String packageDocumentCFIComponent,
@@ -11,7 +12,7 @@ class EpubCfiGenerator {
 
   String generatePackageDocumentCFIComponent(
       String idRef, EpubPackage packageDocument) {
-    // this.validatePackageDocument(packageDocument);
+    validatePackageDocument(packageDocument, idRef);
 
     final pos = getIdRefPosition(idRef, packageDocument);
 
@@ -21,7 +22,7 @@ class EpubCfiGenerator {
   }
 
   String generateElementCFIComponent(Element startElement) {
-    // this.validateStartElement(startElement);
+    validateStartElement(startElement);
 
     // Call the recursive method to create all the steps up to the head element
     // of the content document (the "html" element)
@@ -80,9 +81,9 @@ class EpubCfiGenerator {
     }
   }
 
-  int getIdRefPosition(String idRef, EpubPackage packageDocument) {
+  int getIdRefIndex(String idRef, EpubPackage packageDocument) {
     final items = packageDocument.Spine.Items;
-    int index = 0;
+    int index = -1;
 
     for (var i = 0; i < items.length; i++) {
       if (idRef == items[i].IdRef) {
@@ -91,6 +92,32 @@ class EpubCfiGenerator {
       }
     }
 
-    return (index + 1) * 2;
+    return index;
+  }
+
+  int getIdRefPosition(String idRef, EpubPackage packageDocument) =>
+      (getIdRefIndex(idRef, packageDocument) + 1) * 2;
+
+  void validatePackageDocument(EpubPackage packageDocument, String idRef) {
+    // Check that the package document is non-empty
+    // and contains an itemref element for the supplied idref
+    if (packageDocument == null || packageDocument is! EpubPackage) {
+      throw FlutterError(
+          'A package document must be supplied to generate a CFI');
+    } else if (getIdRefIndex(idRef, packageDocument) == -1) {
+      throw FlutterError(
+          'The idref of the content document could not be found in the spine');
+    }
+  }
+
+  void validateStartElement(Element startElement) {
+    if (startElement == null) {
+      throw FlutterError('$startElement: CFI target element is null');
+    }
+
+    if (startElement.nodeType != 1) {
+      throw FlutterError(
+          '$startElement: CFI target element is not an HTML element');
+    }
   }
 }
