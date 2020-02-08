@@ -64,17 +64,6 @@ assert(Color.fromARGB(255, 192, 192, 192).darker(25), Color.fromARGB(255, 128, 1
 ```
 How it works? [Easy :)](https://graphicdesign.stackexchange.com/a/75419)
 
-## Getting Started
-
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.io/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
-
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.io/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
-
 ## Inspired by
 
 [Color dart package](https://pub.dev/packages/color)
