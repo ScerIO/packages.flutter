@@ -36,7 +36,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   EpubChapter _chapter;
-  String _paragraph;
+  int _paragraphNumber;
 
   Future<Uint8List> _loadFromAssets(String assetName) async {
     final bytes = await rootBundle.load(assetName);
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 onChange: (EpubChapterViewValue value) {
                   _chapter = value.chapter;
-                  _paragraph = value.paragraph;
+                  _paragraphNumber = value.paragraphNumber;
                 },
               );
             }
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final cfi = EpubCfiReader().generateCfi(
       book: book,
       chapter: _chapter,
-      paragraph: _paragraph,
+      paragraphNumber: _paragraphNumber,
     );
 
     _scaffoldKey.currentState
