@@ -331,7 +331,6 @@ class EpubCfiReader {
     final document = chapterDocument(chapter);
     final pElements = document.getElementsByTagName('p');
     final pIndex = paragraphNumber > 0 ? paragraphNumber - 1 : 0;
-    print(paragraphNumber);
     final currNode = pElements[pIndex];
 
     final generator = EpubCfiGenerator();
