@@ -82,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   void _showCurrentEpubCfi(context, EpubBook book) {
-    final cfi = EpubCfiReader.generateCfi(
+    final cfi = EpubCfiReader().generateCfi(
       book: book,
       chapter: _chapter,
       paragraph: _paragraph,

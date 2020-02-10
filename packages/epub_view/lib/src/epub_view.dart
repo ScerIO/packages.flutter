@@ -89,8 +89,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         return acc..addAll(pList);
       },
     );
-    _epubCfiReader = EpubCfiReader(
-      widget.epubCfi,
+    _epubCfiReader = EpubCfiReader.parser(
+      cfiInput: widget.epubCfi,
       chapters: _chapters,
       chapterParargraphCounts: _chapterParargraphCounts,
     );
@@ -291,8 +291,13 @@ class EpubReaderLastPosition {
 }
 
 class EpubCfiReader {
-  EpubCfiReader(
-    this.cfiInput, {
+  EpubCfiReader()
+      : cfiInput = null,
+        chapters = [],
+        chapterParargraphCounts = [];
+
+  EpubCfiReader.parser({
+    @required this.cfiInput,
     @required this.chapters,
     @required this.chapterParargraphCounts,
   });
@@ -331,7 +336,7 @@ class EpubCfiReader {
     return EpubReaderLastPosition(chapterParagraphNumber + paragraphNumber);
   }
 
-  static String generateCfi({
+  String generateCfi({
     @required EpubBook book,
     @required EpubChapter chapter,
     String paragraph,
@@ -355,7 +360,7 @@ class EpubCfiReader {
         packageDocumentCFIComponent, contentDocumentCFIComponent);
   }
 
-  static dom.Document _chapterDocument(EpubChapter chapter) {
+  dom.Document _chapterDocument(EpubChapter chapter) {
     if (chapter == null) {
       return null;
     }
