@@ -90,6 +90,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     );
     _epubCfiReader = EpubCfiReader(
       widget.epubCfi,
+      chapters: _chapters,
       chapterParargraphCounts: _chapterParargraphCounts,
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
@@ -310,9 +311,10 @@ class EpubReaderLastPosition {
 }
 
 class EpubCfiReader {
-  EpubCfiReader(this.cfiInput, {this.chapterParargraphCounts});
+  EpubCfiReader(this.cfiInput, {this.chapters, this.chapterParargraphCounts});
 
   final String cfiInput;
+  final List<EpubChapter> chapters;
   final List<int> chapterParargraphCounts;
   CfiFragment _cfiFragment;
   EpubReaderLastPosition _lastPosition;
@@ -331,14 +333,17 @@ class EpubCfiReader {
   }
 
   EpubReaderLastPosition convertToLastPosition(CfiFragment cfiFragment) {
-    if (cfiFragment == null) {
+    if (cfiFragment == null ||
+        cfiFragment.path?.localPath?.steps == null ||
+        cfiFragment.path.localPath.steps.isEmpty) {
       return null;
     }
 
     final int chapterNumber =
-        cfiFragment.path?.localPath?.steps[0]?.stepLength ?? 1;
-    final int paragraphNumber =
-        cfiFragment.path?.localPath?.steps[1]?.stepLength ?? 1;
+        _getChapterNumberBy(cfiStep: cfiFragment.path.localPath.steps[0]);
+    final int paragraphNumber = _getParagraphNumberBy(
+        cfiStep: cfiFragment
+            .path.localPath.steps[cfiFragment.path.localPath.steps.length - 1]);
     final int chapterParagraphNumber =
         _getChapterParagraphNumberBy(chapterNumber: chapterNumber);
 
@@ -348,7 +353,32 @@ class EpubCfiReader {
   // TODO(Ramil): create epub-cfi generator
   String generateCfi(EpubReaderLastPosition lastPosition) => '';
 
-  int _getChapterParagraphNumberBy({chapterNumber}) {
+  int _getChapterNumberBy({CfiStep cfiStep}) {
+    if (cfiStep == null) {
+      return 1;
+    }
+
+    int index = 0;
+    chapters.firstWhere((chapter) {
+      if (chapter.Anchor == cfiStep.idAssertion) {
+        return true;
+      }
+      index++;
+      return false;
+    });
+
+    return index >= chapters.length ? 1 : index + 1;
+  }
+
+  int _getParagraphNumberBy({CfiStep cfiStep}) {
+    if (cfiStep == null) {
+      return 1;
+    }
+
+    return ((cfiStep.stepLength / 2) - 1).toInt();
+  }
+
+  int _getChapterParagraphNumberBy({int chapterNumber}) {
     if ((chapterNumber ?? 1) == 1) {
       return 0;
     }
