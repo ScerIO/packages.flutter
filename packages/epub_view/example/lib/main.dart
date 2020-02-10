@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -33,6 +34,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  EpubChapter _chapter;
+  String _paragraph;
+
   Future<Uint8List> _loadFromAssets(String assetName) async {
     final bytes = await rootBundle.load(assetName);
     return bytes.buffer.asUint8List();
@@ -40,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        key: _scaffoldKey,
         body: FutureBuilder<EpubBook>(
           future: _loadFromAssets('assets/book.epub').then(EpubReader.readBook),
           builder: (_, snapshot) {
@@ -52,7 +58,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   title: Text(
                     'Chapter ${value?.chapter?.Title ?? ''}',
                   ),
+                  actions: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.save_alt),
+                      color: Colors.white,
+                      onPressed: () =>
+                          _showCurrentEpubCfi(context, snapshot.data),
+                    ),
+                  ],
                 ),
+                onChange: (EpubChapterViewValue value) {
+                  _chapter = value.chapter;
+                  _paragraph = value.paragraph;
+                },
               );
             }
 
@@ -62,4 +80,20 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       );
+
+  void _showCurrentEpubCfi(context, EpubBook book) {
+    final cfi = EpubCfiReader.generateCfi(
+      book: book,
+      chapter: _chapter,
+      paragraph: _paragraph,
+    );
+
+    _scaffoldKey.currentState
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(cfi),
+        ),
+      );
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:epub/epub.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:epub_view/src/epub_cfi/generator.dart';
+import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -112,6 +113,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       chapterNumber: chapterIndex + 1,
       paragraphNumber: _getParagraphIndexBy(position: position) + 1,
       position: position,
+      paragraph: _paragraphs[position.index],
     );
     _actualItem.sink.add(value);
     widget.onChange?.call(value);
@@ -143,7 +145,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   Widget build(BuildContext context) {
-    print(_generateCfiTest());
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, index) ??
         _defaultItemBuilder(index);
@@ -224,29 +225,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
     return matches.map((match) => match.group(0)).toList();
   }
-
-  String _generateCfiTest() {
-    final regExp = RegExp(
-      r'<body\w*(class=)?"?.*?"?>.+?</body>',
-      caseSensitive: false,
-      multiLine: true,
-      dotAll: true,
-    );
-    final matches = regExp.firstMatch(_chapters[2].HtmlContent);
-    final document = parse(matches.group(0));
-    final generator = EpubCfiGenerator();
-    final currNode =
-        document.children[0].children[1].children[0].children[0].children[10];
-    final packageDocumentCFIComponent =
-        generator.generatePackageDocumentCFIComponent(
-            _chapters[2].Anchor, widget.book.Schema.Package);
-    final contentDocumentCFIComponent =
-        generator.generateElementCFIComponent(currNode);
-    final cfi = generator.generateCompleteCFI(
-        packageDocumentCFIComponent, contentDocumentCFIComponent);
-
-    return cfi;
-  }
 }
 
 class EpubChapterViewValue {
@@ -255,12 +233,14 @@ class EpubChapterViewValue {
     @required this.chapterNumber,
     @required this.paragraphNumber,
     @required this.position,
+    @required this.paragraph,
   });
 
   final EpubChapter chapter;
   final int chapterNumber;
   final int paragraphNumber;
   final ItemPosition position;
+  final String paragraph;
 
   /// Chapter view in percents
   double get progress => _calcProgress(
@@ -311,7 +291,11 @@ class EpubReaderLastPosition {
 }
 
 class EpubCfiReader {
-  EpubCfiReader(this.cfiInput, {this.chapters, this.chapterParargraphCounts});
+  EpubCfiReader(
+    this.cfiInput, {
+    @required this.chapters,
+    @required this.chapterParargraphCounts,
+  });
 
   final String cfiInput;
   final List<EpubChapter> chapters;
@@ -327,10 +311,8 @@ class EpubCfiReader {
     return _lastPosition;
   }
 
-  CfiFragment parseCfi(String cfiInput) {
-    final parser = EpubCfiParser();
-    return parser.parse(cfiInput, 'fragment');
-  }
+  CfiFragment parseCfi(String cfiInput) =>
+      EpubCfiParser().parse(cfiInput, 'fragment');
 
   EpubReaderLastPosition convertToLastPosition(CfiFragment cfiFragment) {
     if (cfiFragment == null ||
@@ -340,18 +322,54 @@ class EpubCfiReader {
     }
 
     final int chapterNumber =
-        _getChapterNumberBy(cfiStep: cfiFragment.path.localPath.steps[0]);
-    final int paragraphNumber = _getParagraphNumberBy(
-        cfiStep: cfiFragment
-            .path.localPath.steps[cfiFragment.path.localPath.steps.length - 1]);
+        _getChapterNumberBy(cfiStep: cfiFragment.path.localPath.steps.first);
+    final int paragraphNumber =
+        _getParagraphNumberBy(cfiStep: cfiFragment.path.localPath.steps.last);
     final int chapterParagraphNumber =
         _getChapterParagraphNumberBy(chapterNumber: chapterNumber);
 
     return EpubReaderLastPosition(chapterParagraphNumber + paragraphNumber);
   }
 
-  // TODO(Ramil): create epub-cfi generator
-  String generateCfi(EpubReaderLastPosition lastPosition) => '';
+  static String generateCfi({
+    @required EpubBook book,
+    @required EpubChapter chapter,
+    String paragraph,
+  }) {
+    final document = _chapterDocument(chapter);
+    final pElements = document.getElementsByTagName('p');
+    dom.Element currNode = pElements
+        .firstWhere((elm) => elm.outerHtml == paragraph, orElse: () => null);
+    if (currNode == null) {
+      currNode = pElements[0];
+    }
+
+    final generator = EpubCfiGenerator();
+    final packageDocumentCFIComponent =
+        generator.generatePackageDocumentCFIComponent(
+            chapter.Anchor, book.Schema.Package);
+    final contentDocumentCFIComponent =
+        generator.generateElementCFIComponent(currNode);
+
+    return generator.generateCompleteCFI(
+        packageDocumentCFIComponent, contentDocumentCFIComponent);
+  }
+
+  static dom.Document _chapterDocument(EpubChapter chapter) {
+    if (chapter == null) {
+      return null;
+    }
+
+    final regExp = RegExp(
+      r'<body.*?>.+?</body>',
+      caseSensitive: false,
+      multiLine: true,
+      dotAll: true,
+    );
+    final matches = regExp.firstMatch(chapter.HtmlContent);
+
+    return parse(matches.group(0));
+  }
 
   int _getChapterNumberBy({CfiStep cfiStep}) {
     if (cfiStep == null) {
