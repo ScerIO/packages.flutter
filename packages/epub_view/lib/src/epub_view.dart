@@ -110,40 +110,16 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   void _changeListener() {
-    final position = _itemPositionListener.itemPositions.value.last;
-    final chapterIndex = _getChapterIndexBy(position: position);
+    final position = _itemPositionListener.itemPositions.value.first;
+    final chapterIndex = _getChapterIndexBy(positionIndex: position.index);
     final value = EpubChapterViewValue(
       chapter: _chapters[chapterIndex],
       chapterNumber: chapterIndex + 1,
-      paragraphNumber: _getParagraphIndexBy(position: position) + 1,
+      paragraphNumber: _getParagraphIndexBy(positionIndex: position.index) + 1,
       position: position,
     );
     _actualItem.sink.add(value);
     widget.onChange?.call(value);
-  }
-
-  int _getChapterIndexBy({ItemPosition position}) {
-    int sum = 0;
-    final index = _chapterParargraphCounts.indexWhere((count) {
-      sum += count;
-      if (position.index < sum) {
-        return true;
-      }
-      return false;
-    });
-    return index == -1 ? 0 : index;
-  }
-
-  int _getParagraphIndexBy({ItemPosition position}) {
-    int parargraphsCount = 0;
-    int sum = 0;
-    _chapterParargraphCounts.forEach((count) {
-      sum += count;
-      if (position.index >= sum) {
-        parargraphsCount = sum;
-      }
-    });
-    return position.index - parargraphsCount;
   }
 
   @override
@@ -181,29 +157,29 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   Widget _defaultItemBuilder(index) {
-    // Widget _buildDivider(EpubChapter chapter) =>
-    //     widget.dividerBuilder?.call(chapter) ??
-    //     Container(
-    //       height: 56,
-    //       width: double.infinity,
-    //       padding: EdgeInsets.all(16),
-    //       decoration: BoxDecoration(
-    //         color: Color(0x24000000),
-    //       ),
-    //       alignment: Alignment.centerLeft,
-    //       child: Text(
-    //         'Chapter ${chapter.Title}',
-    //         style: TextStyle(
-    //           fontSize: 18,
-    //           fontWeight: FontWeight.w500,
-    //         ),
-    //       ),
-    //     );
+    Widget _buildDivider(EpubChapter chapter) =>
+        widget.dividerBuilder?.call(chapter) ??
+        Container(
+          height: 56,
+          width: double.infinity,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Color(0x24000000),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Chapter ${chapter.Title}',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        );
 
-    // final chapter = _chapters[index];
-    // final nextChapter =
-    //     index + 1 <= _chapters.length - 1 ? _chapters[index + 1] : null;
-    // final parsed = chapter.HtmlContent.replaceAll('<title/>', '');
+    final chapterIndex = _getChapterIndexBy(positionIndex: index);
+    final nextChapter = chapterIndex + 1 <= _chapters.length - 1
+        ? _chapters[chapterIndex + 1]
+        : null;
 
     return Column(
       children: <Widget>[
@@ -212,10 +188,39 @@ class _EpubReaderViewState extends State<EpubReaderView> {
           data: _paragraphs[index],
           defaultTextStyle: widget.textStyle,
         ),
-        // if (nextChapter != null) _buildDivider(nextChapter),
+        if (nextChapter != null && _isLastParagraph(index, chapterIndex))
+          _buildDivider(nextChapter),
       ],
     );
   }
+
+  int _getChapterIndexBy({int positionIndex}) {
+    int sum = 0;
+    final index = _chapterParargraphCounts.indexWhere((count) {
+      sum += count;
+      if (positionIndex < sum) {
+        return true;
+      }
+      return false;
+    });
+    return index == -1 ? 0 : index;
+  }
+
+  int _getParagraphIndexBy({int positionIndex}) {
+    int parargraphsCount = 0;
+    int sum = 0;
+    _chapterParargraphCounts.forEach((count) {
+      sum += count;
+      if (positionIndex >= sum) {
+        parargraphsCount = sum;
+      }
+    });
+    return positionIndex - parargraphsCount;
+  }
+
+  bool _isLastParagraph(int positionIndex, int chapterIndex) =>
+      _getParagraphIndexBy(positionIndex: positionIndex) ==
+      _chapterParargraphCounts[chapterIndex] - 1;
 }
 
 class EpubChapterViewValue {
