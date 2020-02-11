@@ -22,7 +22,7 @@ class EpubCfiGenerator {
     return '/6/$pos[$idRef]!';
   }
 
-  String generateElementCFIComponent(Element startElement) {
+  String generateElementCFIComponent(Node startElement) {
     validateStartElement(startElement);
 
     // Call the recursive method to create all the steps up to the head element
@@ -111,12 +111,12 @@ class EpubCfiGenerator {
     }
   }
 
-  void validateStartElement(Element startElement) {
+  void validateStartElement(Node startElement) {
     if (startElement == null) {
       throw FlutterError('$startElement: CFI target element is null');
     }
 
-    if (startElement.nodeType != 1) {
+    if (startElement.nodeType != Node.ELEMENT_NODE) {
       throw FlutterError(
           '$startElement: CFI target element is not an HTML element');
     }
