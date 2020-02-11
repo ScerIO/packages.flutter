@@ -44,6 +44,7 @@ void main() {
 
     expect(result, null);
   });
+
   test('searchLocalPathForHref success', () async {
     final document =
         EpubCfiReader().chapterDocument(_book.Chapters[0].SubChapters[1]);

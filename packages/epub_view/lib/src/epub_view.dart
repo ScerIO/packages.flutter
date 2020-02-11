@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:epub/epub.dart';
+import 'package:epub_view/src/epub_cfi/interpreter.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:epub_view/src/epub_cfi/generator.dart';
 import 'package:html/dom.dart' as dom;
@@ -94,6 +95,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
       chapters: _chapters,
+      paragraphs: _paragraphs,
       chapterParargraphCounts: _chapterParargraphCounts,
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
@@ -282,16 +284,19 @@ class EpubCfiReader {
   EpubCfiReader()
       : cfiInput = null,
         chapters = [],
+        paragraphs = [],
         chapterParargraphCounts = [];
 
   EpubCfiReader.parser({
     @required this.cfiInput,
     @required this.chapters,
+    @required this.paragraphs,
     @required this.chapterParargraphCounts,
   });
 
   final String cfiInput;
   final List<EpubChapter> chapters;
+  final List<String> paragraphs;
   final List<int> chapterParargraphCounts;
   CfiFragment _cfiFragment;
   EpubReaderLastPosition _lastPosition;
@@ -316,12 +321,15 @@ class EpubCfiReader {
 
     final int chapterNumber =
         _getChapterNumberBy(cfiStep: cfiFragment.path.localPath.steps.first);
-    final int paragraphNumber =
-        _getParagraphNumberBy(cfiStep: cfiFragment.path.localPath.steps.last);
-    final int chapterParagraphNumber =
-        _getChapterParagraphNumberBy(chapterNumber: chapterNumber);
+    final chapter = chapters[chapterNumber - 1];
+    final document = chapterDocument(chapter);
+    final element = EpubCfiInterpreter().searchLocalPathForHref(
+      document.documentElement,
+      cfiFragment.path.localPath,
+    );
+    final int paragraphNumber = _getParagraphNumberBy(element: element);
 
-    return EpubReaderLastPosition(chapterParagraphNumber + paragraphNumber);
+    return EpubReaderLastPosition(paragraphNumber);
   }
 
   String generateCfi({
@@ -378,29 +386,14 @@ class EpubCfiReader {
     return index < chapters.length ? index + 1 : 1;
   }
 
-  int _getParagraphNumberBy({CfiStep cfiStep}) {
-    if (cfiStep == null) {
+  int _getParagraphNumberBy({dom.Element element}) {
+    if (element == null) {
       return 1;
     }
 
-    return ((cfiStep.stepLength / 2) - 1).toInt();
-  }
+    final index = paragraphs.indexOf(element.outerHtml);
 
-  int _getChapterParagraphNumberBy({int chapterNumber}) {
-    if ((chapterNumber ?? 1) == 1) {
-      return 0;
-    }
-
-    int number = 1;
-    int result = 0;
-    chapterParargraphCounts.forEach((count) {
-      if (chapterNumber > number) {
-        result += count;
-      }
-      number++;
-    });
-
-    return result;
+    return index == -1 ? 1 : index + 1;
   }
 }
 
