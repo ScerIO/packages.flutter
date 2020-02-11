@@ -123,15 +123,15 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   int _getChapterIndexBy({ItemPosition position}) {
-    int index = 0;
     int sum = 0;
-    _chapterParargraphCounts.forEach((count) {
+    final index = _chapterParargraphCounts.indexWhere((count) {
       sum += count;
-      if (position.index >= sum) {
-        index++;
+      if (position.index < sum) {
+        return true;
       }
+      return false;
     });
-    return index;
+    return index == -1 ? 0 : index;
   }
 
   int _getParagraphIndexBy({ItemPosition position}) {
@@ -374,16 +374,10 @@ class EpubCfiReader {
       return 1;
     }
 
-    int index = 0;
-    chapters.firstWhere((chapter) {
-      if (chapter.Anchor == cfiStep.idAssertion) {
-        return true;
-      }
-      index++;
-      return false;
-    }, orElse: () => null);
+    final index =
+        chapters.indexWhere((chapter) => chapter.Anchor == cfiStep.idAssertion);
 
-    return index < chapters.length ? index + 1 : 1;
+    return index == -1 ? 1 : index + 1;
   }
 
   int _getParagraphNumberBy({dom.Element element}) {
