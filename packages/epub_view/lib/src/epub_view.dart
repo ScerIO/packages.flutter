@@ -133,15 +133,15 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   int _getParagraphIndexBy({ItemPosition position}) {
-    int result = 0;
+    int parargraphsCount = 0;
     int sum = 0;
     _chapterParargraphCounts.forEach((count) {
       sum += count;
       if (position.index >= sum) {
-        result = sum;
+        parargraphsCount = sum;
       }
     });
-    return position.index - result;
+    return position.index - parargraphsCount;
   }
 
   @override
@@ -244,8 +244,8 @@ class EpubChapterViewValue {
 
 class EpubReaderLastPosition {
   EpubReaderLastPosition(
-    int chapterNumber,
-  )   : _itemIndex = chapterNumber - 1,
+    int paragraphNumber,
+  )   : _itemIndex = paragraphNumber - 1,
         leadingEdge = null,
         trailingEdge = null;
 
@@ -264,9 +264,10 @@ class EpubReaderLastPosition {
     );
   }
 
-  int get chapterNumber => _itemIndex + 1;
   int _itemIndex;
   final double leadingEdge, trailingEdge;
+
+  int get paragraphNumber => _itemIndex + 1;
 
   double get progress => _calcProgress(
         leadingEdge,
@@ -274,7 +275,7 @@ class EpubReaderLastPosition {
       );
 
   @override
-  String toString() => '$chapterNumber:$leadingEdge:$trailingEdge';
+  String toString() => '$paragraphNumber:$leadingEdge:$trailingEdge';
 }
 
 class EpubCfiReader {
@@ -372,9 +373,9 @@ class EpubCfiReader {
       }
       index++;
       return false;
-    });
+    }, orElse: () => null);
 
-    return index >= chapters.length ? 1 : index + 1;
+    return index < chapters.length ? index + 1 : 1;
   }
 
   int _getParagraphNumberBy({CfiStep cfiStep}) {

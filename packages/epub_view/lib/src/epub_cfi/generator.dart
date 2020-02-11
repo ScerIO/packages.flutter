@@ -18,6 +18,7 @@ class EpubCfiGenerator {
 
     // Append an !; this assumes that a CFI content document CFI component
     // will be appended at some point
+    // `/6` - is position of the Spine element in Package
     return '/6/$pos[$idRef]!';
   }
 
