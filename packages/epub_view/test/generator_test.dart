@@ -57,8 +57,7 @@ void main() {
   });
 
   test('generatePackageDocumentCFIComponent success', () async {
-    String result;
-    result = EpubCfiGenerator()
+    final result = EpubCfiGenerator()
         .generatePackageDocumentCFIComponent('id4', _book.Schema.Package);
 
     expect(result, '/6/26[id4]!');
@@ -97,29 +96,27 @@ void main() {
   });
 
   test('generateElementCFIComponent success', () async {
-    String result;
     final document = EpubCfiReader().chapterDocument(_book.Chapters[0]);
     final node = document.getElementsByTagName('p')[3];
 
-    result = EpubCfiGenerator().generateElementCFIComponent(node);
+    final result = EpubCfiGenerator().generateElementCFIComponent(node);
 
     expect(result, '/4/2[id1]/4/2/4');
   });
 
   test('generateCompleteCFI success', () async {
-    String result;
     final document =
         EpubCfiReader().chapterDocument(_book.Chapters[0].SubChapters[1]);
-    final node = document.getElementsByTagName('p')[3];
+    final node = document.getElementsByTagName('p')[2];
 
     final packageDocumentCFIComponent = EpubCfiGenerator()
         .generatePackageDocumentCFIComponent('id3', _book.Schema.Package);
     final contentDocumentCFIComponent =
         EpubCfiGenerator().generateElementCFIComponent(node);
 
-    result = EpubCfiGenerator().generateCompleteCFI(
+    final result = EpubCfiGenerator().generateCompleteCFI(
         packageDocumentCFIComponent, contentDocumentCFIComponent);
 
-    expect(result, 'epubcfi(/6/2[id3]!/4/2/2[id3]/8)');
+    expect(result, 'epubcfi(/6/2[id3]!/4/2/2[id3]/6)');
   });
 }
