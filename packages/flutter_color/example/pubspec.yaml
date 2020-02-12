@@ -1,0 +1,20 @@
+name: flutter_color_example
+description: Demonstrates how to use the flutter_color plugin.
+publish_to: 'none'
+
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_color:
+    path: ../
+
+flutter:
+  uses-material-design: true
