@@ -48,7 +48,7 @@ void main() {
         e.toString(),
         FlutterError(
                 // ignore: lines_longer_than_80_chars
-                'The idref of the content document could not be found in the spine')
+                'The id ref of the content document could not be found in the spine')
             .toString(),
       );
     }

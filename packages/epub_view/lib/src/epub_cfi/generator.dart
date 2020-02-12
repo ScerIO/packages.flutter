@@ -33,26 +33,29 @@ class EpubCfiGenerator {
     return contentDocCFI.substring(1, contentDocCFI.length);
   }
 
-  String createCFIElementSteps(Element currNode, String topLevelElement) {
-    int currNodePosition = 0;
+  String createCFIElementSteps(Element currentNode, String topLevelElement) {
+    int currentNodePosition = 0;
     String elementStep = '';
 
     // Find position of current node in parent list
     int index = 0;
-    currNode.parent.children.forEach((node) {
-      if (node == currNode) {
-        currNodePosition = index;
+    currentNode.parent.children.forEach((node) {
+      if (node == currentNode) {
+        currentNodePosition = index;
       }
       index++;
     });
 
     // Convert position to the CFI even-integer representation
-    final int cfiPosition = (currNodePosition + 1) * 2;
+    final int cfiPosition = (currentNodePosition + 1) * 2;
 
     // Create CFI step with id assertion, if the element has an id
-    if (currNode.attributes.containsKey('id')) {
-      elementStep =
-          '/' + cfiPosition.toString() + '[' + currNode.attributes['id'] + ']';
+    if (currentNode.attributes.containsKey('id')) {
+      elementStep = '/' +
+          cfiPosition.toString() +
+          '[' +
+          currentNode.attributes['id'] +
+          ']';
     } else {
       elementStep = '/' + cfiPosition.toString();
     }
@@ -62,16 +65,16 @@ class EpubCfiGenerator {
     //   Also need to check if the current node is the top-level element.
     //   This can occur if the start node is also the
     //   top level element.
-    final parentNode = currNode.parent;
+    final parentNode = currentNode.parent;
     if (parentNode.localName == topLevelElement ||
-        currNode.localName == topLevelElement) {
+        currentNode.localName == topLevelElement) {
       // If the top level node is a type from which an indirection step, add an
       // indirection step character (!)
       // REFACTORING CANDIDATE: It is possible that this should be changed to:
       // if (topLevelElement = 'package') do
       //   not return an indirection character. Every other type of top-level
       //   element may require an indirection
-      //   step to navigate to, thus requiring that ! is always prepended.
+      //   step to navigate to, thus requiring that ! is always prepend.
       if (topLevelElement == 'html') {
         return '!' + elementStep;
       } else {
@@ -101,13 +104,13 @@ class EpubCfiGenerator {
 
   void validatePackageDocument(EpubPackage packageDocument, String idRef) {
     // Check that the package document is non-empty
-    // and contains an itemref element for the supplied idref
+    // and contains an item ref element for the supplied id ref
     if (packageDocument == null || packageDocument is! EpubPackage) {
       throw FlutterError(
           'A package document must be supplied to generate a CFI');
     } else if (getIdRefIndex(idRef, packageDocument) == -1) {
       throw FlutterError(
-          'The idref of the content document could not be found in the spine');
+          'The id ref of the content document could not be found in the spine');
     }
   }
 
