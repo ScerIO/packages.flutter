@@ -25,6 +25,7 @@ typedef ChaptersBuilder = Widget Function(
 class EpubReaderView extends StatefulWidget {
   const EpubReaderView({
     @required this.book,
+    this.controller,
     this.epubCfi,
     this.headerBuilder,
     this.dividerBuilder,
@@ -40,6 +41,7 @@ class EpubReaderView extends StatefulWidget {
   const EpubReaderView.builder({
     @required this.book,
     @required this.itemBuilder,
+    this.controller,
     this.epubCfi,
     this.headerBuilder,
     this.onChange,
@@ -52,6 +54,7 @@ class EpubReaderView extends StatefulWidget {
         super(key: key);
 
   final EpubBook book;
+  final EpubReaderController controller;
   final String epubCfi;
   final Widget Function(EpubChapterViewValue value) headerBuilder;
   final Widget Function(EpubChapter value) dividerBuilder;
@@ -73,6 +76,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   List<EpubChapter> _chapters;
   List<String> _paragraphs;
   EpubCfiReader _epubCfiReader;
+  EpubChapterViewValue _currentValue;
   final List<int> _chapterParagraphCounts = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
@@ -99,6 +103,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       chapterParagraphCounts: _chapterParagraphCounts,
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
+    widget.controller?._attach(this);
     super.initState();
   }
 
@@ -106,20 +111,21 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   void dispose() {
     _itemPositionListener.itemPositions.removeListener(_changeListener);
     _actualItem.close();
+    widget.controller?._detach();
     super.dispose();
   }
 
   void _changeListener() {
     final position = _itemPositionListener.itemPositions.value.first;
     final chapterIndex = _getChapterIndexBy(positionIndex: position.index);
-    final value = EpubChapterViewValue(
+    _currentValue = EpubChapterViewValue(
       chapter: _chapters[chapterIndex],
       chapterNumber: chapterIndex + 1,
       paragraphNumber: _getParagraphIndexBy(positionIndex: position.index) + 1,
       position: position,
     );
-    _actualItem.sink.add(value);
-    widget.onChange?.call(value);
+    _actualItem.sink.add(_currentValue);
+    widget.onChange?.call(_currentValue);
   }
 
   @override
@@ -393,6 +399,28 @@ class EpubCfiReader {
     final index = paragraphs.indexOf(element.outerHtml);
 
     return index == -1 ? 1 : index + 1;
+  }
+}
+
+class EpubReaderController {
+  _EpubReaderViewState _epubReaderViewState;
+
+  EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
+
+  String generateEpubCfi() => EpubCfiReader().generateCfi(
+        book: _epubReaderViewState?.widget?.book,
+        chapter: _epubReaderViewState?._currentValue?.chapter,
+        paragraphNumber: _epubReaderViewState?._currentValue?.paragraphNumber,
+      );
+
+  void _attach(_EpubReaderViewState epubReaderViewState) {
+    assert(_epubReaderViewState == null);
+    _epubReaderViewState = epubReaderViewState;
+  }
+
+  void _detach() {
+    assert(_epubReaderViewState != null);
+    _epubReaderViewState = null;
   }
 }
 

@@ -108,10 +108,13 @@ class EpubCfiGenerator {
     if (packageDocument == null || packageDocument is! EpubPackage) {
       throw FlutterError(
           'A package document must be supplied to generate a CFI');
-    } else if (getIdRefIndex(idRef, packageDocument) == -1) {
-      throw FlutterError(
-          'The id ref of the content document could not be found in the spine');
     }
+    // Commented, because there may be cases when id is not listed in object!!!
+    // else if (getIdRefIndex(idRef, packageDocument) == -1) {
+    //   throw FlutterError(
+    // ignore: lines_longer_than_80_chars
+    //       'The id ref of the content document could not be found in the spine');
+    // }
   }
 
   void validateStartElement(Node startElement) {

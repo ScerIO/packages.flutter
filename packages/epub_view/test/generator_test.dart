@@ -44,6 +44,9 @@ void main() {
       result = EpubCfiGenerator()
           .generatePackageDocumentCFIComponent('idRef', _book.Schema.Package);
     } catch (e) {
+      // Condition is commented
+      // This error will not be caused, because there is a case
+      // when the id is not in the spine list
       expect(
         e.toString(),
         FlutterError(
@@ -53,7 +56,7 @@ void main() {
       );
     }
 
-    expect(result, null);
+    expect(result, '/6/0[idRef]!');
   });
 
   test('generatePackageDocumentCFIComponent success', () async {
