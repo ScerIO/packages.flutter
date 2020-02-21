@@ -1,4 +1,4 @@
-## 0.2.1
+## 0.3.0
 
 * Added controller to EpubReaderView widget
 
