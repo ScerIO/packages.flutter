@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:epub_view/epub_view.dart';
 
-// .replaceAll(RegExp(r'<head>.*?<\/head>'), '')
-// .replaceAll(RegExp(r'<[^>]*>'), '')
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -35,8 +32,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  EpubChapter _chapter;
-  int _paragraphNumber;
+  final _epubReaderController = EpubReaderController();
 
   Future<Uint8List> _loadFromAssets(String assetName) async {
     final bytes = await rootBundle.load(assetName);
@@ -52,6 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (snapshot.hasData) {
               return EpubReaderView(
                 book: snapshot.data,
+                controller: _epubReaderController,
                 epubCfi:
                     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
                 headerBuilder: (value) => AppBar(
@@ -67,10 +64,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-                onChange: (EpubChapterViewValue value) {
-                  _chapter = value.chapter;
-                  _paragraphNumber = value.paragraphNumber;
-                },
               );
             }
 
@@ -82,11 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   void _showCurrentEpubCfi(context, EpubBook book) {
-    final cfi = EpubCfiReader().generateCfi(
-      book: book,
-      chapter: _chapter,
-      paragraphNumber: _paragraphNumber,
-    );
+    final cfi = _epubReaderController.generateEpubCfi();
 
     _scaffoldKey.currentState
       ..hideCurrentSnackBar()
