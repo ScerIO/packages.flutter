@@ -17,5 +17,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/book.epub
+    - assets/
   uses-material-design: true
