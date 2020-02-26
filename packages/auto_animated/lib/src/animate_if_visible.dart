@@ -167,15 +167,30 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
       );
 
   void _handleScrollController() {
-    _setDirection(widget.controller.offset);
+    _setDirection(
+      widget.controller.offset,
+      widget.controller.position.minScrollExtent,
+      widget.controller.position.maxScrollExtent,
+    );
   }
 
   bool _handleScrollNotifications(ScrollNotification scrollInfo) {
-    _setDirection(scrollInfo.metrics.pixels);
+    _setDirection(
+      scrollInfo.metrics.pixels,
+      scrollInfo.metrics.minScrollExtent,
+      scrollInfo.metrics.maxScrollExtent,
+    );
     return true;
   }
 
-  void _setDirection(double offset) {
+  void _setDirection(
+    double offset,
+    double minScrollExtent,
+    double maxScrollExtent,
+  ) {
+    if (offset < minScrollExtent || offset > maxScrollExtent) {
+      return;
+    }
     if (offset > _lastScrollExtend + 2.5) {
       // to end
       _stack.direction = AnimationDirection.toEnd;

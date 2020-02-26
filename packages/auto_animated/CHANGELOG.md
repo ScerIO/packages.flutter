@@ -1,3 +1,7 @@
+## 2.0.2 
+
+* Fixed show animation for `BouncingScrollPhysics` (scroll under min extend & above max extend)
+
 ## 2.0.1 
 
 * Fix missing import for `LiveOptions` ([issue#23](https://github.com/rbcprolabs/packages.flutter/issues/23))
