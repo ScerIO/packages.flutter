@@ -314,8 +314,12 @@ class EpubCfiReader {
 
   EpubReaderLastPosition get lastPosition {
     if (_lastPosition == null) {
-      _cfiFragment = parseCfi(cfiInput);
-      _lastPosition = convertToLastPosition(_cfiFragment);
+      try {
+        _cfiFragment = parseCfi(cfiInput);
+        _lastPosition = convertToLastPosition(_cfiFragment);
+      } catch (e) {
+        _lastPosition = null;
+      }
     }
     return _lastPosition;
   }

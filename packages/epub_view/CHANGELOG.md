@@ -1,3 +1,7 @@
+## 0.3.1
+
+* Fixed epub-cfi parsing
+
 ## 0.3.0
 
 * Added controller to EpubReaderView widget

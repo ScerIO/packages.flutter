@@ -1,6 +1,7 @@
 name: epub_view_example
 description: Example
 version: 1.0.0+1
+publish_to: 'none'
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -17,5 +18,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/book.epub
+    - assets/
   uses-material-design: true
