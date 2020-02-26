@@ -1,7 +1,6 @@
 name: epub_view
 description: Flutter widget for view EPUB documents on all platforms. Based on dart-epub package.
-version: 0.1.0
-author: Serge Shkurko <sergeshkurko@outlook.com>
+version: 0.3.1
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view
 
 environment:
@@ -11,7 +10,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  meta: ^1.1.8
   epub: ^2.1.0
+  equatable: ^1.0.3
+  html: ^0.14.0+3
   flutter_html: ^0.11.1
   flutter_widgets: ^0.1.7+1
 
