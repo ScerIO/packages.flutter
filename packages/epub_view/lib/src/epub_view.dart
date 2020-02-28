@@ -19,6 +19,7 @@ const _defaultTextStyle = TextStyle(
 typedef ChaptersBuilder = Widget Function(
   BuildContext context,
   List<EpubChapter> chapters,
+  List<String> paragraphs,
   int index,
 );
 
@@ -73,8 +74,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemScrollController _itemScrollController = ItemScrollController();
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
-  List<EpubChapter> _chapters;
-  List<String> _paragraphs;
+  List<EpubChapter> _chapters = [];
+  List<String> _paragraphs = [];
   EpubCfiReader _epubCfiReader;
   EpubChapterViewValue _currentValue;
   final List<int> _chapterParagraphCounts = [];
@@ -82,20 +83,22 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   @override
   void initState() {
-    _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
-      [],
-      (acc, next) => acc..addAll(next.SubChapters),
-    );
-    _paragraphs = _chapters.fold<List<String>>(
-      [],
-      (acc, next) {
-        final document = EpubCfiReader().chapterDocument(next);
-        final pList =
-            document.getElementsByTagName('p').map((elm) => elm.outerHtml);
-        _chapterParagraphCounts.add(pList.length);
-        return acc..addAll(pList);
-      },
-    );
+    if (widget.book != null) {
+      _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
+        [],
+        (acc, next) => acc..addAll(next.SubChapters),
+      );
+      _paragraphs = _chapters.fold<List<String>>(
+        [],
+        (acc, next) {
+          final document = EpubCfiReader().chapterDocument(next);
+          final pList =
+              document.getElementsByTagName('p').map((elm) => elm.outerHtml);
+          _chapterParagraphCounts.add(pList.length);
+          return acc..addAll(pList);
+        },
+      );
+    }
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
       chapters: _chapters,
@@ -116,6 +119,9 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   void _changeListener() {
+    if (_paragraphs.isEmpty) {
+      return;
+    }
     final position = _itemPositionListener.itemPositions.value.first;
     final chapterIndex = _getChapterIndexBy(positionIndex: position.index);
     _currentValue = EpubChapterViewValue(
@@ -131,7 +137,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   @override
   Widget build(BuildContext context) {
     Widget _buildItem(BuildContext context, int index) =>
-        widget.itemBuilder?.call(context, _chapters, index) ??
+        widget.itemBuilder?.call(context, _chapters, _paragraphs, index) ??
         _defaultItemBuilder(index);
 
     Widget content = ScrollablePositionedList.builder(
@@ -163,6 +169,9 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   Widget _defaultItemBuilder(index) {
+    if (_paragraphs.isEmpty) {
+      return Container();
+    }
     Widget _buildDivider(EpubChapter chapter) =>
         widget.dividerBuilder?.call(chapter) ??
         Container(
@@ -352,8 +361,11 @@ class EpubCfiReader {
     @required EpubChapter chapter,
     @required int paragraphNumber,
   }) {
+    if (book == null || chapter == null || paragraphNumber == null) {
+      return null;
+    }
     final document = chapterDocument(chapter);
-    final pElements = document.getElementsByTagName('p');
+    final pElements = document?.getElementsByTagName('p');
     final pIndex = paragraphNumber > 0 ? paragraphNumber - 1 : 0;
     final currentNode = pElements[pIndex];
 

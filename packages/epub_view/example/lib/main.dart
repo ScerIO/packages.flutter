@@ -77,12 +77,14 @@ class _MyHomePageState extends State<MyHomePage> {
   void _showCurrentEpubCfi(context, EpubBook book) {
     final cfi = _epubReaderController.generateEpubCfi();
 
-    _scaffoldKey.currentState
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Text(cfi),
-        ),
-      );
+    if (cfi != null) {
+      _scaffoldKey.currentState
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(cfi),
+          ),
+        );
+    }
   }
 }
