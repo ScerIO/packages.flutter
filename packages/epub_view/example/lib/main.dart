@@ -43,14 +43,15 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) => Scaffold(
         key: _scaffoldKey,
         body: FutureBuilder<EpubBook>(
-          future: _loadFromAssets('assets/book.epub').then(EpubReader.readBook),
+          future:
+              _loadFromAssets('assets/book_3.epub').then(EpubReader.readBook),
           builder: (_, snapshot) {
             if (snapshot.hasData) {
               return EpubReaderView(
                 book: snapshot.data,
                 controller: _epubReaderController,
-                epubCfi:
-                    'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
+                // epubCfi:
+                //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
                 headerBuilder: (value) => AppBar(
                   title: Text(
                     'Chapter ${value?.chapter?.Title ?? ''}',

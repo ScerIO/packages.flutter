@@ -105,6 +105,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       paragraphs: _paragraphs,
       chapterParagraphCounts: _chapterParagraphCounts,
     );
+    print(_chapterParagraphCounts);
     _itemPositionListener.itemPositions.addListener(_changeListener);
     widget.controller?._attach(this);
     super.initState();
@@ -429,6 +430,29 @@ class EpubReaderController {
         paragraphNumber: _epubReaderViewState?._currentValue?.paragraphNumber,
       );
 
+  List<EpubReaderChapter> tableOfContents() {
+    if (_epubReaderViewState?.widget?.book == null) {
+      return [];
+    }
+
+    final chapters = _epubReaderViewState.widget.book.Chapters;
+    final List<EpubReaderChapter> contentsList = [];
+
+    for (final chapter in chapters) {
+      if (chapter.SubChapters.isEmpty) {
+        continue;
+      }
+
+      contentsList.add(EpubReaderChapter(chapter.Title, 0));
+
+      for (final subChapter in chapter.SubChapters) {
+        contentsList.add(EpubReaderSubChapter(subChapter.Title, 0));
+      }
+    }
+
+    return contentsList;
+  }
+
   void _attach(_EpubReaderViewState epubReaderViewState) {
     assert(_epubReaderViewState == null);
     _epubReaderViewState = epubReaderViewState;
@@ -438,6 +462,22 @@ class EpubReaderController {
     assert(_epubReaderViewState != null);
     _epubReaderViewState = null;
   }
+}
+
+class EpubReaderChapter {
+  EpubReaderChapter(this.title, this.startIndex);
+
+  final String title;
+  final int startIndex;
+
+  String get type => this is EpubReaderSubChapter ? 'subchapter' : 'chapter';
+
+  @override
+  String toString() => '$type: {title: $title, startIndex: $startIndex}';
+}
+
+class EpubReaderSubChapter extends EpubReaderChapter {
+  EpubReaderSubChapter(String title, int startIndex) : super(title, startIndex);
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {
