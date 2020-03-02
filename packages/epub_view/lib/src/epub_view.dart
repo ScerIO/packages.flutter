@@ -84,20 +84,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   @override
   void initState() {
     if (widget.book != null) {
-      _chapters = widget.book.Chapters.fold<List<EpubChapter>>(
-        [],
-        (acc, next) => acc..addAll(next.SubChapters),
-      );
-      _paragraphs = _chapters.fold<List<String>>(
-        [],
-        (acc, next) {
-          final document = EpubCfiReader().chapterDocument(next);
-          final pList =
-              document.getElementsByTagName('p').map((elm) => elm.outerHtml);
-          _chapterParagraphCounts.add(pList.length);
-          return acc..addAll(pList);
-        },
-      );
+      _chapters = _parseChapters(widget.book);
+      _paragraphs = _parseParagraphs(_chapters);
     }
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
@@ -105,7 +93,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       paragraphs: _paragraphs,
       chapterParagraphCounts: _chapterParagraphCounts,
     );
-    print(_chapterParagraphCounts);
     _itemPositionListener.itemPositions.addListener(_changeListener);
     widget.controller?._attach(this);
     super.initState();
@@ -208,6 +195,45 @@ class _EpubReaderViewState extends State<EpubReaderView> {
           _buildDivider(nextChapter),
       ],
     );
+  }
+
+  List<EpubChapter> _parseChapters(EpubBook book) {
+    return book.Chapters.fold<List<EpubChapter>>(
+      [],
+      (acc, next) => acc..addAll(next.SubChapters),
+    );
+  }
+
+  List<String> _parseParagraphs(List<EpubChapter> chapters) {
+    String filename = '';
+    final result = chapters.fold<List<String>>(
+      [],
+      (acc, next) {
+        List<String> elmList = [];
+        if (filename != next.ContentFileName) {
+          filename = next.ContentFileName;
+          final document = EpubCfiReader().chapterDocument(next);
+          elmList = document
+              .getElementsByTagName('body')
+              .first
+              .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
+              .map((elm) => elm.outerHtml)
+              .toList();
+          acc.addAll(elmList);
+        }
+        final index =
+            acc.indexWhere((String elm) => elm.contains('id="${next.Anchor}"'));
+        _chapterParagraphCounts.add(index);
+        if (acc[index].startsWith('<span')) {
+          acc.removeAt(index);
+        }
+        if (acc[index + 1].startsWith('<span')) {
+          acc.removeAt(index + 1);
+        }
+        return acc;
+      },
+    )..removeWhere((elm) => elm.startsWith('<span'));
+    return result;
   }
 
   int _getChapterIndexBy({int positionIndex}) {
@@ -478,6 +504,13 @@ class EpubReaderChapter {
 
 class EpubReaderSubChapter extends EpubReaderChapter {
   EpubReaderSubChapter(String title, int startIndex) : super(title, startIndex);
+}
+
+class EpubReaderContentFile {
+  EpubReaderContentFile(this.filename, this.elements);
+
+  String filename;
+  List<String> elements;
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {
