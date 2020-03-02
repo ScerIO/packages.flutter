@@ -194,12 +194,11 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     );
   }
 
-  List<EpubChapter> _parseChapters(EpubBook book) {
-    return book.Chapters.fold<List<EpubChapter>>(
-      [],
-      (acc, next) => acc..addAll(next.SubChapters),
-    );
-  }
+  List<EpubChapter> _parseChapters(EpubBook book) =>
+      book.Chapters.fold<List<EpubChapter>>(
+        [],
+        (acc, next) => acc..addAll(next.SubChapters),
+      );
 
   List<String> _parseParagraphs(List<EpubChapter> chapters) {
     String filename = '';
