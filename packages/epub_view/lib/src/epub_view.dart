@@ -78,7 +78,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   List<String> _paragraphs = [];
   EpubCfiReader _epubCfiReader;
   EpubChapterViewValue _currentValue;
-  final List<int> _chapterParagraphCounts = [];
+  final List<int> _chapterIndexes = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
@@ -91,7 +91,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       cfiInput: widget.epubCfi,
       chapters: _chapters,
       paragraphs: _paragraphs,
-      chapterParagraphCounts: _chapterParagraphCounts,
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
     widget.controller?._attach(this);
@@ -113,7 +112,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     final position = _itemPositionListener.itemPositions.value.first;
     final chapterIndex = _getChapterIndexBy(positionIndex: position.index);
     _currentValue = EpubChapterViewValue(
-      chapter: _chapters[chapterIndex],
+      chapter: chapterIndex >= 0 ? _chapters[chapterIndex] : null,
       chapterNumber: chapterIndex + 1,
       paragraphNumber: _getParagraphIndexBy(positionIndex: position.index) + 1,
       position: position,
@@ -180,19 +179,17 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         );
 
     final chapterIndex = _getChapterIndexBy(positionIndex: index);
-    final nextChapter = chapterIndex + 1 <= _chapters.length - 1
-        ? _chapters[chapterIndex + 1]
-        : null;
 
     return Column(
       children: <Widget>[
+        if (chapterIndex >= 0 &&
+            _getParagraphIndexBy(positionIndex: index) == 0)
+          _buildDivider(_chapters[chapterIndex]),
         Html(
           padding: widget.paragraphPadding,
           data: _paragraphs[index],
           defaultTextStyle: widget.textStyle,
         ),
-        if (nextChapter != null && _isLastParagraph(index, chapterIndex))
-          _buildDivider(nextChapter),
       ],
     );
   }
@@ -218,12 +215,13 @@ class _EpubReaderViewState extends State<EpubReaderView> {
               .first
               .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
               .map((elm) => elm.outerHtml)
-              .toList();
+              .toList()
+                ..removeWhere((elm) => elm.endsWith('>&nbsp;</p>'));
           acc.addAll(elmList);
         }
         final index =
             acc.indexWhere((String elm) => elm.contains('id="${next.Anchor}"'));
-        _chapterParagraphCounts.add(index);
+        _chapterIndexes.add(index);
         if (acc[index].startsWith('<span')) {
           acc.removeAt(index);
         }
@@ -233,36 +231,32 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         return acc;
       },
     )..removeWhere((elm) => elm.startsWith('<span'));
+
     return result;
   }
 
   int _getChapterIndexBy({int positionIndex}) {
-    int sum = 0;
-    final index = _chapterParagraphCounts.indexWhere((count) {
-      sum += count;
-      if (positionIndex < sum) {
-        return true;
-      }
-      return false;
-    });
-    return index == -1 ? 0 : index;
+    final index = positionIndex >= _chapterIndexes.last
+        ? _chapterIndexes.length
+        : _chapterIndexes.indexWhere((chapterIndex) {
+            if (positionIndex < chapterIndex) {
+              return true;
+            }
+            return false;
+          });
+
+    return index - 1;
   }
 
   int _getParagraphIndexBy({int positionIndex}) {
-    int paragraphsCount = 0;
-    int sum = 0;
-    _chapterParagraphCounts.forEach((count) {
-      sum += count;
-      if (positionIndex >= sum) {
-        paragraphsCount = sum;
-      }
-    });
-    return positionIndex - paragraphsCount;
-  }
+    final index = _getChapterIndexBy(positionIndex: positionIndex);
 
-  bool _isLastParagraph(int positionIndex, int chapterIndex) =>
-      _getParagraphIndexBy(positionIndex: positionIndex) ==
-      _chapterParagraphCounts[chapterIndex] - 1;
+    if (index == -1) {
+      return positionIndex;
+    }
+
+    return positionIndex - _chapterIndexes[index];
+  }
 }
 
 class EpubChapterViewValue {
@@ -331,20 +325,17 @@ class EpubCfiReader {
   EpubCfiReader()
       : cfiInput = null,
         chapters = [],
-        paragraphs = [],
-        chapterParagraphCounts = [];
+        paragraphs = [];
 
   EpubCfiReader.parser({
     @required this.cfiInput,
     @required this.chapters,
     @required this.paragraphs,
-    @required this.chapterParagraphCounts,
   });
 
   final String cfiInput;
   final List<EpubChapter> chapters;
   final List<String> paragraphs;
-  final List<int> chapterParagraphCounts;
   CfiFragment _cfiFragment;
   EpubReaderLastPosition _lastPosition;
 
