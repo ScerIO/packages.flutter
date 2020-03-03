@@ -51,6 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 book: snapshot.data,
                 controller: _epubReaderController,
                 excludeHeaders: true,
+                // startFrom: EpubReaderLastPosition.fromString('52:0:0'),
+                epubCfi: 'epubcfi(/6/0[chapter-2-60]!/4/2/18)',
                 // epubCfi:
                 //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
                 headerBuilder: (value) => AppBar(

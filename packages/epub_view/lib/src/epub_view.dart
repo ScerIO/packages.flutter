@@ -213,13 +213,10 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         if (filename != next.ContentFileName) {
           filename = next.ContentFileName;
           final document = EpubCfiReader().chapterDocument(next);
-          elmList = document
-              .getElementsByTagName('body')
-              .first
-              .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
+          elmList = EpubCfiReader()
+              .convertDocumentToElements(document)
               .map((elm) => elm.outerHtml)
-              .toList()
-                ..removeWhere((elm) => elm.endsWith('>&nbsp;</p>'));
+              .toList();
           acc.addAll(elmList);
         }
         final index =
@@ -346,7 +343,9 @@ class EpubCfiReader {
     if (_lastPosition == null) {
       try {
         _cfiFragment = parseCfi(cfiInput);
+        print(_cfiFragment);
         _lastPosition = convertToLastPosition(_cfiFragment);
+        print(_lastPosition);
       } catch (e) {
         _lastPosition = null;
       }
@@ -386,9 +385,12 @@ class EpubCfiReader {
       return null;
     }
     final document = chapterDocument(chapter);
-    final pElements = document?.getElementsByTagName('p');
-    final pIndex = paragraphNumber > 0 ? paragraphNumber - 1 : 0;
-    final currentNode = pElements[pIndex];
+    if (document == null) {
+      return null;
+    }
+    final elmList = EpubCfiReader().convertDocumentToElements(document);
+    final index = paragraphNumber > 0 ? paragraphNumber - 1 : 0;
+    final currentNode = elmList[index];
 
     final generator = EpubCfiGenerator();
     final packageDocumentCFIComponent =
@@ -415,6 +417,14 @@ class EpubCfiReader {
     final matches = regExp.firstMatch(chapter.HtmlContent);
 
     return parse(matches.group(0));
+  }
+
+  List<dom.Element> convertDocumentToElements(dom.Document document) {
+    return document
+        .getElementsByTagName('body')
+        .first
+        .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
+          ..removeWhere((elm) => elm.outerHtml.endsWith('>&nbsp;</p>'));
   }
 
   int _getChapterNumberBy({CfiStep cfiStep}) {
