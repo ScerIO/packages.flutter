@@ -53,10 +53,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _epubReaderController,
                 excludeHeaders: true,
                 // startFrom: EpubReaderLastPosition.fromString('52:0:0'),
-                epubCfi:
-                    'epubcfi(/6/6[chapter-2]!/4/2/134)', // book_3.epub Chapter 2 paragraph 6
                 // epubCfi:
                 //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
+                // epubCfi:
+                //     'epubcfi(/6/6[chapter-2]!/4/2/1612)', // book_2.epub Chapter 16 paragraph 3
+                epubCfi:
+                    'epubcfi(/6/6[chapter-2]!/4/2/134)', // book_3.epub Chapter 2 paragraph 6
                 headerBuilder: (value) => AppBar(
                   title: Text(
                     'Chapter: ${value?.chapter?.Title ?? ''}',
