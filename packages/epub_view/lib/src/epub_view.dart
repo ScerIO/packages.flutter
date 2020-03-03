@@ -109,7 +109,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   void _changeListener() {
-    if (_paragraphs.isEmpty) {
+    if (_paragraphs.isEmpty ||
+        _itemPositionListener.itemPositions.value.isEmpty) {
       return;
     }
     final position = _itemPositionListener.itemPositions.value.first;
@@ -200,7 +201,17 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   List<EpubChapter> _parseChapters(EpubBook book) =>
       book.Chapters.fold<List<EpubChapter>>(
         [],
-        (acc, next) => acc..addAll(next.SubChapters),
+        (acc, next) {
+          if ((next.Anchor ?? '').isNotEmpty) {
+            acc.add(next);
+          }
+          for (final sub in next.SubChapters) {
+            if ((sub.Anchor ?? '').isNotEmpty) {
+              acc.add(sub);
+            }
+          }
+          return acc;
+        },
       );
 
   List<dom.Element> _parseParagraphs(List<EpubChapter> chapters) {
@@ -447,6 +458,24 @@ class EpubReaderController {
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
 
+  void jumpTo({@required int index, double alignment = 0}) =>
+      _epubReaderViewState?._itemScrollController?.jumpTo(
+        index: index,
+        alignment: alignment,
+      );
+
+  Future<void> scrollTo(
+          {@required int index,
+          double alignment = 0,
+          Duration duration = const Duration(milliseconds: 250),
+          Curve curve = Curves.linear}) =>
+      _epubReaderViewState?._itemScrollController?.scrollTo(
+        index: index,
+        duration: duration,
+        alignment: alignment,
+        curve: curve,
+      );
+
   String generateEpubCfi() => _epubReaderViewState?._epubCfiReader?.generateCfi(
         book: _epubReaderViewState?.widget?.book,
         chapter: _epubReaderViewState?._currentValue?.chapter,
@@ -457,24 +486,31 @@ class EpubReaderController {
     if (_epubReaderViewState?.widget?.book == null) {
       return [];
     }
-
-    final chapters = _epubReaderViewState.widget.book.Chapters;
-    final List<EpubReaderChapter> contentsList = [];
-
-    for (final chapter in chapters) {
-      if (chapter.SubChapters.isEmpty) {
-        continue;
-      }
-
-      contentsList.add(EpubReaderChapter(chapter.Title, 0));
-
-      for (final subChapter in chapter.SubChapters) {
-        contentsList.add(EpubReaderSubChapter(subChapter.Title, 0));
-      }
-    }
-
-    return contentsList;
+    int index = -1;
+    return _epubReaderViewState.widget.book.Chapters
+        .fold<List<EpubReaderChapter>>(
+      [],
+      (acc, next) {
+        if ((next.Anchor ?? '').isNotEmpty) {
+          index += 1;
+          acc.add(EpubReaderChapter(next.Title, _getChapterStartIndex(index)));
+        }
+        for (final subChapter in next.SubChapters) {
+          if ((subChapter.Anchor ?? '').isNotEmpty) {
+            index += 1;
+            acc.add(EpubReaderSubChapter(
+                subChapter.Title, _getChapterStartIndex(index)));
+          }
+        }
+        return acc;
+      },
+    );
   }
+
+  int _getChapterStartIndex(int index) =>
+      index < _epubReaderViewState._chapterIndexes.length
+          ? _epubReaderViewState._chapterIndexes[index]
+          : 0;
 
   void _attach(_EpubReaderViewState epubReaderViewState) {
     assert(_epubReaderViewState == null);

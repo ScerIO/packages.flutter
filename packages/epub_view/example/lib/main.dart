@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -62,10 +63,14 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   actions: <Widget>[
                     IconButton(
+                      icon: Icon(Icons.touch_app),
+                      color: Colors.white,
+                      onPressed: () => _scrollToChapter(context),
+                    ),
+                    IconButton(
                       icon: Icon(Icons.save_alt),
                       color: Colors.white,
-                      onPressed: () =>
-                          _showCurrentEpubCfi(context, snapshot.data),
+                      onPressed: () => _showCurrentEpubCfi(context),
                     ),
                   ],
                 ),
@@ -79,9 +84,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 
-  void _showCurrentEpubCfi(context, EpubBook book) {
+  void _showCurrentEpubCfi(context) {
     final cfi = _epubReaderController.generateEpubCfi();
-    print(cfi);
+
     if (cfi != null) {
       _scaffoldKey.currentState
         ..hideCurrentSnackBar()
@@ -91,5 +96,19 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         );
     }
+  }
+
+  void _scrollToChapter(context) {
+    final toc = _epubReaderController.tableOfContents();
+    final randomChapterIndex = Random().nextInt(toc.length);
+    _epubReaderController.scrollTo(index: toc[randomChapterIndex].startIndex);
+
+    _scaffoldKey.currentState
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(toc[randomChapterIndex].title ?? ''),
+        ),
+      );
   }
 }
