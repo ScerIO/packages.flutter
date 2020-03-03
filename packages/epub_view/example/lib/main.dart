@@ -55,7 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
                 headerBuilder: (value) => AppBar(
                   title: Text(
-                    'Chapter ${value?.chapter?.Title ?? ''}',
+                    'Chapter: ${value?.chapter?.Title ?? ''}',
                   ),
                   actions: <Widget>[
                     IconButton(
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _showCurrentEpubCfi(context, EpubBook book) {
     final cfi = _epubReaderController.generateEpubCfi();
-
+    print(cfi);
     if (cfi != null) {
       _scaffoldKey.currentState
         ..hideCurrentSnackBar()

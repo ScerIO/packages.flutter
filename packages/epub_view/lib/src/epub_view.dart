@@ -174,10 +174,10 @@ class _EpubReaderViewState extends State<EpubReaderView> {
           ),
           alignment: Alignment.centerLeft,
           child: Text(
-            'Chapter ${chapter.Title}',
+            chapter.Title ?? '',
             style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w500,
+              fontSize: 22,
+              fontWeight: FontWeight.w600,
             ),
           ),
         );
@@ -234,9 +234,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         return acc;
       },
     );
-    if (widget.excludeHeaders) {
-      result.removeWhere((elm) => elm.startsWith('<h'));
-    }
 
     return result;
   }
