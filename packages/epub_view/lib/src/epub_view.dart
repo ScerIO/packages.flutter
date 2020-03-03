@@ -28,6 +28,7 @@ class EpubReaderView extends StatefulWidget {
     @required this.book,
     this.controller,
     this.epubCfi,
+    this.excludeHeaders = false,
     this.headerBuilder,
     this.dividerBuilder,
     this.onChange,
@@ -44,6 +45,7 @@ class EpubReaderView extends StatefulWidget {
     @required this.itemBuilder,
     this.controller,
     this.epubCfi,
+    this.excludeHeaders = false,
     this.headerBuilder,
     this.onChange,
     this.startFrom,
@@ -57,6 +59,7 @@ class EpubReaderView extends StatefulWidget {
   final EpubBook book;
   final EpubReaderController controller;
   final String epubCfi;
+  final bool excludeHeaders;
   final Widget Function(EpubChapterViewValue value) headerBuilder;
   final Widget Function(EpubChapter value) dividerBuilder;
   final void Function(EpubChapterViewValue value) onChange;
@@ -87,6 +90,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       _chapters = _parseChapters(widget.book);
       _paragraphs = _parseParagraphs(_chapters);
     }
+    print(_chapterIndexes);
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
       chapters: _chapters,
@@ -221,15 +225,18 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         final index =
             acc.indexWhere((String elm) => elm.contains('id="${next.Anchor}"'));
         _chapterIndexes.add(index);
-        if (acc[index].startsWith('<span')) {
-          acc.removeAt(index);
-        }
         if (acc[index + 1].startsWith('<span')) {
           acc.removeAt(index + 1);
         }
+        if (acc[index].startsWith('<span') || widget.excludeHeaders) {
+          acc.removeAt(index);
+        }
         return acc;
       },
-    )..removeWhere((elm) => elm.startsWith('<span'));
+    );
+    if (widget.excludeHeaders) {
+      result.removeWhere((elm) => elm.startsWith('<h'));
+    }
 
     return result;
   }
