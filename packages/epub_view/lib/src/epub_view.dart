@@ -19,7 +19,7 @@ const _defaultTextStyle = TextStyle(
 typedef ChaptersBuilder = Widget Function(
   BuildContext context,
   List<EpubChapter> chapters,
-  List<String> paragraphs,
+  List<dom.Element> paragraphs,
   int index,
 );
 
@@ -78,7 +78,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   final ItemPositionsListener _itemPositionListener =
       ItemPositionsListener.create();
   List<EpubChapter> _chapters = [];
-  List<String> _paragraphs = [];
+  List<dom.Element> _paragraphs = [];
   EpubCfiReader _epubCfiReader;
   EpubChapterViewValue _currentValue;
   final List<int> _chapterIndexes = [];
@@ -90,7 +90,6 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       _chapters = _parseChapters(widget.book);
       _paragraphs = _parseParagraphs(_chapters);
     }
-    print(_chapterIndexes);
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
       chapters: _chapters,
@@ -191,7 +190,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
           _buildDivider(_chapters[chapterIndex]),
         Html(
           padding: widget.paragraphPadding,
-          data: _paragraphs[index],
+          data: _paragraphs[index].outerHtml,
           defaultTextStyle: widget.textStyle,
         ),
       ],
@@ -204,28 +203,25 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         (acc, next) => acc..addAll(next.SubChapters),
       );
 
-  List<String> _parseParagraphs(List<EpubChapter> chapters) {
+  List<dom.Element> _parseParagraphs(List<EpubChapter> chapters) {
     String filename = '';
-    final result = chapters.fold<List<String>>(
+    final result = chapters.fold<List<dom.Element>>(
       [],
       (acc, next) {
-        List<String> elmList = [];
+        List<dom.Element> elmList = [];
         if (filename != next.ContentFileName) {
           filename = next.ContentFileName;
           final document = EpubCfiReader().chapterDocument(next);
-          elmList = EpubCfiReader()
-              .convertDocumentToElements(document)
-              .map((elm) => elm.outerHtml)
-              .toList();
+          elmList = EpubCfiReader().convertDocumentToElements(document);
           acc.addAll(elmList);
         }
-        final index =
-            acc.indexWhere((String elm) => elm.contains('id="${next.Anchor}"'));
+        final index = acc
+            .indexWhere((elm) => elm.outerHtml.contains('id="${next.Anchor}"'));
         _chapterIndexes.add(index);
-        if (acc[index + 1].startsWith('<span')) {
+        if (acc[index + 1].localName == 'span') {
           acc.removeAt(index + 1);
         }
-        if (acc[index].startsWith('<span') || widget.excludeHeaders) {
+        if (acc[index].localName == 'span' || widget.excludeHeaders) {
           acc.removeAt(index);
         }
         return acc;
@@ -335,7 +331,7 @@ class EpubCfiReader {
 
   final String cfiInput;
   final List<EpubChapter> chapters;
-  final List<String> paragraphs;
+  final List<dom.Element> paragraphs;
   CfiFragment _cfiFragment;
   EpubReaderLastPosition _lastPosition;
 
@@ -343,9 +339,7 @@ class EpubCfiReader {
     if (_lastPosition == null) {
       try {
         _cfiFragment = parseCfi(cfiInput);
-        print(_cfiFragment);
         _lastPosition = convertToLastPosition(_cfiFragment);
-        print(_lastPosition);
       } catch (e) {
         _lastPosition = null;
       }
@@ -379,18 +373,17 @@ class EpubCfiReader {
   String generateCfi({
     @required EpubBook book,
     @required EpubChapter chapter,
-    @required int paragraphNumber,
+    @required int paragraphIndex,
   }) {
-    if (book == null || chapter == null || paragraphNumber == null) {
+    if (book == null || chapter == null || paragraphIndex == null) {
       return null;
     }
     final document = chapterDocument(chapter);
     if (document == null) {
       return null;
     }
-    final elmList = EpubCfiReader().convertDocumentToElements(document);
-    final index = paragraphNumber > 0 ? paragraphNumber - 1 : 0;
-    final currentNode = elmList[index];
+
+    final currentNode = paragraphs[paragraphIndex];
 
     final generator = EpubCfiGenerator();
     final packageDocumentCFIComponent =
@@ -419,13 +412,12 @@ class EpubCfiReader {
     return parse(matches.group(0));
   }
 
-  List<dom.Element> convertDocumentToElements(dom.Document document) {
-    return document
-        .getElementsByTagName('body')
-        .first
-        .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
-          ..removeWhere((elm) => elm.outerHtml.endsWith('>&nbsp;</p>'));
-  }
+  List<dom.Element> convertDocumentToElements(dom.Document document) => document
+      .getElementsByTagName('body')
+      .first
+      .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
+        ..removeWhere((elm) => elm.text.isEmpty)
+        ..removeWhere((elm) => elm.outerHtml.endsWith('>&nbsp;</p>'));
 
   int _getChapterNumberBy({CfiStep cfiStep}) {
     if (cfiStep == null) {
@@ -443,7 +435,8 @@ class EpubCfiReader {
       return 1;
     }
 
-    final index = paragraphs.indexOf(element.outerHtml);
+    final index =
+        paragraphs.indexWhere((elm) => elm.outerHtml == element.outerHtml);
 
     return index == -1 ? 1 : index + 1;
   }
@@ -454,10 +447,10 @@ class EpubReaderController {
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
 
-  String generateEpubCfi() => EpubCfiReader().generateCfi(
+  String generateEpubCfi() => _epubReaderViewState?._epubCfiReader?.generateCfi(
         book: _epubReaderViewState?.widget?.book,
         chapter: _epubReaderViewState?._currentValue?.chapter,
-        paragraphNumber: _epubReaderViewState?._currentValue?.paragraphNumber,
+        paragraphIndex: _epubReaderViewState?._currentValue?.position?.index,
       );
 
   List<EpubReaderChapter> tableOfContents() {

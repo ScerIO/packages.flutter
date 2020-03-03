@@ -14,12 +14,15 @@ class EpubCfiGenerator {
       String idRef, EpubPackage packageDocument) {
     validatePackageDocument(packageDocument, idRef);
 
-    final pos = getIdRefPosition(idRef, packageDocument);
+    final index = getIdRefIndex(idRef, packageDocument);
+    final pos = getIdRefPosition(index);
+    final spineIdRef =
+        index >= 0 ? packageDocument.Spine.Items[index].IdRef : idRef;
 
     // Append an !; this assumes that a CFI content document CFI component
     // will be appended at some point
     // `/6` - is position of the Spine element in Package
-    return '/6/$pos[$idRef]!';
+    return '/6/$pos[$spineIdRef]!';
   }
 
   String generateElementCFIComponent(Node startElement) {
@@ -88,19 +91,22 @@ class EpubCfiGenerator {
   int getIdRefIndex(String idRef, EpubPackage packageDocument) {
     final items = packageDocument.Spine.Items;
     int index = -1;
+    int partIndex = -1;
 
     for (var i = 0; i < items.length; i++) {
       if (idRef == items[i].IdRef) {
         index = i;
         break;
       }
+      if (idRef.contains(items[i].IdRef)) {
+        partIndex = i;
+      }
     }
 
-    return index;
+    return index >= 0 ? index : partIndex;
   }
 
-  int getIdRefPosition(String idRef, EpubPackage packageDocument) =>
-      (getIdRefIndex(idRef, packageDocument) + 1) * 2;
+  int getIdRefPosition(int idRefIndex) => (idRefIndex + 1) * 2;
 
   void validatePackageDocument(EpubPackage packageDocument, String idRef) {
     // Check that the package document is non-empty
