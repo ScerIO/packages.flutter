@@ -494,6 +494,7 @@ class EpubCfiReader {
 
 class EpubReaderController {
   _EpubReaderViewState _epubReaderViewState;
+  List<EpubReaderChapter> _cacheTableOfContents;
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
 
@@ -523,12 +524,18 @@ class EpubReaderController {
       );
 
   List<EpubReaderChapter> tableOfContents() {
+    if (_cacheTableOfContents != null) {
+      return _cacheTableOfContents;
+    }
+
     if (_epubReaderViewState?.widget?.book == null) {
       return [];
     }
+
     int index = -1;
-    return _epubReaderViewState.widget.book.Chapters
-        .fold<List<EpubReaderChapter>>(
+
+    return _cacheTableOfContents =
+        _epubReaderViewState.widget.book.Chapters.fold<List<EpubReaderChapter>>(
       [],
       (acc, next) {
         if ((next.Anchor ?? '').isNotEmpty) {
