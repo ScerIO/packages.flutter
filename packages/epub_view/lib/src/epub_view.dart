@@ -4,6 +4,7 @@ import 'package:epub/epub.dart';
 import 'package:epub_view/src/epub_cfi/interpreter.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:epub_view/src/epub_cfi/generator.dart';
+import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:flutter/widgets.dart';
@@ -30,6 +31,7 @@ class EpubReaderView extends StatefulWidget {
     this.controller,
     this.epubCfi,
     this.excludeHeaders = false,
+    this.loader,
     this.headerBuilder,
     this.dividerBuilder,
     this.onChange,
@@ -47,6 +49,7 @@ class EpubReaderView extends StatefulWidget {
     this.controller,
     this.epubCfi,
     this.excludeHeaders = false,
+    this.loader,
     this.headerBuilder,
     this.onChange,
     this.startFrom,
@@ -61,6 +64,7 @@ class EpubReaderView extends StatefulWidget {
   final EpubReaderController controller;
   final String epubCfi;
   final bool excludeHeaders;
+  final Widget loader;
   final Widget Function(EpubChapterViewValue value) headerBuilder;
   final Widget Function(EpubChapter value) dividerBuilder;
   final void Function(EpubChapterViewValue value) onChange;
@@ -75,28 +79,21 @@ class EpubReaderView extends StatefulWidget {
 }
 
 class _EpubReaderViewState extends State<EpubReaderView> {
-  final ItemScrollController _itemScrollController = ItemScrollController();
-  final ItemPositionsListener _itemPositionListener =
-      ItemPositionsListener.create();
+  ItemScrollController _itemScrollController;
+  ItemPositionsListener _itemPositionListener;
   List<EpubChapter> _chapters = [];
   List<dom.Element> _paragraphs = [];
   EpubCfiReader _epubCfiReader;
   EpubChapterViewValue _currentValue;
+  bool _inited = false;
+
   final List<int> _chapterIndexes = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
   void initState() {
-    if (widget.book != null) {
-      _chapters = _parseChapters(widget.book);
-      _paragraphs = _parseParagraphs(_chapters);
-    }
-    _epubCfiReader = EpubCfiReader.parser(
-      cfiInput: widget.epubCfi,
-      chapters: _chapters,
-      paragraphs: _paragraphs,
-    );
-    _itemPositionListener.itemPositions.addListener(_changeListener);
+    _itemScrollController = ItemScrollController();
+    _itemPositionListener = ItemPositionsListener.create();
     widget.controller?._attach(this);
     super.initState();
   }
@@ -107,6 +104,26 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     _actualItem.close();
     widget.controller?._detach();
     super.dispose();
+  }
+
+  Future<bool> _init() async {
+    if (_inited) {
+      return true;
+    }
+
+    if (widget.book != null) {
+      _chapters = _parseChapters(widget.book);
+      _paragraphs = _parseParagraphs(_chapters);
+    }
+    _epubCfiReader = EpubCfiReader.parser(
+      cfiInput: widget.epubCfi,
+      chapters: _chapters,
+      paragraphs: _paragraphs,
+    );
+    _itemPositionListener.itemPositions.addListener(_changeListener);
+    _inited = true;
+
+    return true;
   }
 
   void _changeListener() {
@@ -130,7 +147,20 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => FutureBuilder<bool>(
+        future: _init(),
+        builder: (_, snapshot) {
+          if (snapshot.hasData) {
+            return _buildMain();
+          }
+          return widget.loader ??
+              Center(
+                child: CircularProgressIndicator(),
+              );
+        },
+      );
+
+  Widget _buildMain() {
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, _paragraphs, index) ??
         _defaultItemBuilder(index);
