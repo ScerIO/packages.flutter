@@ -11,6 +11,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
 export 'package:epub/epub.dart';
 
+const MIN_TRAILING_EDGE = 0.55;
 const _defaultTextStyle = TextStyle(
   height: 1.25,
   fontSize: 16,
@@ -118,7 +119,10 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     _currentValue = EpubChapterViewValue(
       chapter: chapterIndex >= 0 ? _chapters[chapterIndex] : null,
       chapterNumber: chapterIndex + 1,
-      paragraphNumber: _getParagraphIndexBy(positionIndex: position.index) + 1,
+      paragraphNumber: _getParagraphIndexBy(
+              positionIndex: position.index,
+              trailingEdge: position.itemTrailingEdge) +
+          1,
       position: position,
     );
     _actualItem.sink.add(_currentValue);
@@ -255,14 +259,19 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     return index - 1;
   }
 
-  int _getParagraphIndexBy({int positionIndex}) {
-    final index = _getChapterIndexBy(positionIndex: positionIndex);
-
-    if (index == -1) {
-      return positionIndex;
+  int _getParagraphIndexBy({@required int positionIndex, double trailingEdge}) {
+    int posIndex = positionIndex;
+    if (trailingEdge != null && trailingEdge < MIN_TRAILING_EDGE) {
+      posIndex += 1;
     }
 
-    return positionIndex - _chapterIndexes[index];
+    final index = _getChapterIndexBy(positionIndex: posIndex);
+
+    if (index == -1) {
+      return posIndex;
+    }
+
+    return posIndex - _chapterIndexes[index];
   }
 }
 
@@ -479,7 +488,8 @@ class EpubReaderController {
   String generateEpubCfi() => _epubReaderViewState?._epubCfiReader?.generateCfi(
         book: _epubReaderViewState?.widget?.book,
         chapter: _epubReaderViewState?._currentValue?.chapter,
-        paragraphIndex: _epubReaderViewState?._currentValue?.position?.index,
+        paragraphIndex:
+            (_epubReaderViewState?._currentValue?.paragraphNumber ?? 0) - 1,
       );
 
   List<EpubReaderChapter> tableOfContents() {
