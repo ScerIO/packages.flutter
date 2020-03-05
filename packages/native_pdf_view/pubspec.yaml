@@ -12,7 +12,8 @@ dependencies:
     sdk: flutter
   extended_image: ^0.7.1
   synchronized: ^2.2.0
-  native_pdf_renderer: ^1.8.1
+  native_pdf_renderer: 
+    path: ../native_pdf_renderer
 
 dev_dependencies:
   flutter_test:

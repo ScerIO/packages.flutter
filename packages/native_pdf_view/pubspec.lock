@@ -133,9 +133,9 @@ packages:
   native_pdf_renderer:
     dependency: "direct main"
     description:
-      name: native_pdf_renderer
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "../native_pdf_renderer"
+      relative: true
+    source: path
     version: "1.8.1"
   path:
     dependency: transitive
