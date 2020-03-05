@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+import 'package:synchronized/synchronized.dart';
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
 export 'package:extended_image/extended_image.dart';
 
@@ -10,6 +11,8 @@ typedef PDFViewPageBuilder = Widget Function(
 );
 
 typedef PDFViewPageRenderer = Future<PDFPageImage> Function(PDFPage page);
+
+final Lock _lock = Lock();
 
 /// Widget for viewing PDF documents
 class PDFView extends StatefulWidget {
@@ -138,26 +141,27 @@ class _PDFViewState extends State<PDFView> {
     super.dispose();
   }
 
-  Future<PDFPageImage> _getPageImage(int pageIndex) async {
-    if (_pages[pageIndex] != null) {
-      return _pages[pageIndex];
-    }
+  Future<PDFPageImage> _getPageImage(int pageIndex) =>
+      _lock.synchronized<PDFPageImage>(() async {
+        if (_pages[pageIndex] != null) {
+          return _pages[pageIndex];
+        }
 
-    final page = await widget.document.getPage(pageIndex + 1);
+        final page = await widget.document.getPage(pageIndex + 1);
 
-    try {
-      _pages[pageIndex] = await page.render(
-        width: page.width * 2,
-        height: page.height * 2,
-        format: PDFPageFormat.JPEG,
-        backgroundColor: '#ffffff',
-      );
-    } finally {
-      await page.close();
-    }
+        try {
+          _pages[pageIndex] = await page.render(
+            width: page.width * 2,
+            height: page.height * 2,
+            format: PDFPageFormat.JPEG,
+            backgroundColor: '#ffffff',
+          );
+        } finally {
+          await page.close();
+        }
 
-    return _pages[pageIndex];
-  }
+        return _pages[pageIndex];
+      });
 
   @override
   Widget build(BuildContext context) => ExtendedImageGesturePageView.builder(

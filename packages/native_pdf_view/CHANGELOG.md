@@ -1,3 +1,9 @@
+## 2.2.0
+
+* Set minimal flutter version to 1.10
+* Upgrade packages
+* Fixed bugs with crashes [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14), [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)
+
 ## 2.1.1
 
 * Target sdk version for android upped to 28

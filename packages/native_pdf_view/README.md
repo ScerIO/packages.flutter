@@ -61,7 +61,7 @@ PDFView(
     width: page.width * 2,
     height: page.height * 2,
     format: PDFPageFormat.JPEG,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF',
   ),
 );
 ```
