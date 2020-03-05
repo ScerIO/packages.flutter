@@ -63,6 +63,9 @@ class PDFPageImage {
       );
     }
 
+    backgroundColor ??=
+        (format == PDFPageFormat.JPEG) ? '#FFFFFF' : '#00FFFFFF';
+
     final obj = await _channel.invokeMethod('render', {
       'pageId': pageId,
       'width': width,

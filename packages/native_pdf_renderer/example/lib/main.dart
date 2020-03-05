@@ -29,7 +29,7 @@ class ExampleApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    final storage = PagesStorage();
+    final storage = Map<int, PDFPageImage>();
 
     return MaterialApp(
       title: 'PDF View example',
@@ -87,10 +87,6 @@ class ExampleApp extends StatelessWidget {
   }
 }
 
-class PagesStorage {
-  final Map<int, PDFPageImage> pages = {};
-}
-
 class ImageLoader extends StatelessWidget {
   ImageLoader({
     @required this.storage,
@@ -99,7 +95,7 @@ class ImageLoader extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final PagesStorage storage;
+  final Map<int, PDFPageImage> storage;
   final PDFDocument document;
   final int pageNumber;
 
@@ -125,18 +121,17 @@ class ImageLoader extends StatelessWidget {
       );
 
   Future<PDFPageImage> _renderPage() async {
-    if (storage.pages.containsKey(pageNumber)) {
-      return storage.pages[pageNumber];
+    if (storage.containsKey(pageNumber)) {
+      return storage[pageNumber];
     }
     final page = await document.getPage(pageNumber);
     final pageImage = await page.render(
       width: page.width * 2,
       height: page.height * 2,
-      format: PDFPageFormat.JPEG,
-      backgroundColor: '#ffffff',
+      format: PDFPageFormat.PNG,
     );
     await page.close();
-    storage.pages[pageNumber] = pageImage;
+    storage[pageNumber] = pageImage;
     return pageImage;
   }
 }

@@ -1,3 +1,7 @@
+## 1.8.1
+
+* Fixed ios render crash [issue#29](https://github.com/rbcprolabs/packages.flutter/issues/29)
+
 ## 1.8.0
 
 * Set minimal flutter version to 1.10
