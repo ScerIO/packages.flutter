@@ -2,7 +2,7 @@
 
 [![Build Status](https://api.cirrus-ci.com/github/rbcprolabs/packages.flutter.svg)](https://cirrus-ci.com/github/rbcprolabs/packages.flutter/master)
 
-## Available plugins
+## Available packages and plugins 
 
 | Plugin | Source code |
 |---|---|

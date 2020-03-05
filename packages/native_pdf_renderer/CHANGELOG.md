@@ -1,3 +1,9 @@
+## 1.8.0
+
+* Set minimal flutter version to 1.10
+* Update synchronized package
+* Fixed android build [issue#34](https://github.com/rbcprolabs/packages.flutter/issues/34)
+
 ## 1.7.0
 
 * Fixed PDF crop on Android ([pull#25](https://github.com/rbcprolabs/packages.flutter/pull/25)) 

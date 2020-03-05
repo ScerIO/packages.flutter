@@ -2,8 +2,8 @@ group 'io.scer.native_pdf_renderer'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     ext.kotlin_version = '1.3.21'
