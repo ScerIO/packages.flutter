@@ -13,6 +13,7 @@ import 'package:flutter_widgets/flutter_widgets.dart';
 export 'package:epub/epub.dart';
 
 const MIN_TRAILING_EDGE = 0.55;
+const MIN_LEADING_EDGE = -0.05;
 const _defaultTextStyle = TextStyle(
   height: 1.25,
   fontSize: 16,
@@ -133,14 +134,19 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     }
     final position = _itemPositionListener.itemPositions.value.first;
     final chapterIndex = _getChapterIndexBy(
-        positionIndex: position.index, trailingEdge: position.itemTrailingEdge);
+      positionIndex: position.index,
+      trailingEdge: position.itemTrailingEdge,
+      leadingEdge: position.itemLeadingEdge,
+    );
+    final paragraphIndex = _getParagraphIndexBy(
+      positionIndex: position.index,
+      trailingEdge: position.itemTrailingEdge,
+      leadingEdge: position.itemLeadingEdge,
+    );
     _currentValue = EpubChapterViewValue(
       chapter: chapterIndex >= 0 ? _chapters[chapterIndex] : null,
       chapterNumber: chapterIndex + 1,
-      paragraphNumber: _getParagraphIndexBy(
-              positionIndex: position.index,
-              trailingEdge: position.itemTrailingEdge) +
-          1,
+      paragraphNumber: paragraphIndex + 1,
       position: position,
     );
     _actualItem.sink.add(_currentValue);
@@ -277,9 +283,13 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     return result;
   }
 
-  int _getChapterIndexBy({@required int positionIndex, double trailingEdge}) {
+  int _getChapterIndexBy(
+      {@required int positionIndex, double trailingEdge, double leadingEdge}) {
     final posIndex = _getAbsParagraphIndexBy(
-        positionIndex: positionIndex, trailingEdge: trailingEdge);
+      positionIndex: positionIndex,
+      trailingEdge: trailingEdge,
+      leadingEdge: leadingEdge,
+    );
     final index = posIndex >= _chapterIndexes.last
         ? _chapterIndexes.length
         : _chapterIndexes.indexWhere((chapterIndex) {
@@ -292,9 +302,13 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     return index - 1;
   }
 
-  int _getParagraphIndexBy({@required int positionIndex, double trailingEdge}) {
+  int _getParagraphIndexBy(
+      {@required int positionIndex, double trailingEdge, double leadingEdge}) {
     final posIndex = _getAbsParagraphIndexBy(
-        positionIndex: positionIndex, trailingEdge: trailingEdge);
+      positionIndex: positionIndex,
+      trailingEdge: trailingEdge,
+      leadingEdge: leadingEdge,
+    );
 
     final index = _getChapterIndexBy(positionIndex: posIndex);
 
@@ -306,9 +320,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   int _getAbsParagraphIndexBy(
-      {@required int positionIndex, double trailingEdge}) {
+      {@required int positionIndex, double trailingEdge, double leadingEdge}) {
     int posIndex = positionIndex;
-    if (trailingEdge != null && trailingEdge < MIN_TRAILING_EDGE) {
+    if (trailingEdge != null &&
+        leadingEdge != null &&
+        trailingEdge < MIN_TRAILING_EDGE &&
+        leadingEdge < MIN_LEADING_EDGE) {
       posIndex += 1;
     }
 
@@ -535,6 +552,8 @@ class EpubReaderController {
               _epubReaderViewState?._currentValue?.position?.index ?? 0,
           trailingEdge:
               _epubReaderViewState?._currentValue?.position?.itemTrailingEdge,
+          leadingEdge:
+              _epubReaderViewState?._currentValue?.position?.itemLeadingEdge,
         ),
       );
 
