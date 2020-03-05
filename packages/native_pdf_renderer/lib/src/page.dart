@@ -3,6 +3,7 @@ import 'package:extension/enum.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
+import 'package:synchronized/synchronized.dart';
 import 'document.dart';
 import 'page_image.dart';
 
@@ -60,9 +61,13 @@ class PDFPage {
     @required this.pageNumber,
     @required this.width,
     @required this.height,
-  });
+    @required Lock lock,
+  }) : _lock = lock;
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+
+  final Lock _lock;
+
   final PDFDocument document;
 
   /// Page unique id. Needed for rendering and closing page.
@@ -97,37 +102,38 @@ class PDFPage {
     // ignore: deprecated_member_use_from_same_package
     @Deprecated('Use cropRect instead') PDFCropDef crop,
     Rect cropRect,
-  }) {
-    if (document.isClosed) {
-      throw PdfDocumentAlreadyClosedException();
-    } else if (isClosed) {
-      throw PdfPageAlreadyClosedException();
-    }
+  }) =>
+      _lock.synchronized<PDFPageImage>(() async {
+        if (document.isClosed) {
+          throw PdfDocumentAlreadyClosedException();
+        } else if (isClosed) {
+          throw PdfPageAlreadyClosedException();
+        }
 
-    final rect = cropRect ?? crop?.rect;
+        final rect = cropRect ?? crop?.rect;
 
-    return PDFPageImage.render(
-      pageId: id,
-      pageNumber: pageNumber,
-      width: width,
-      height: height,
-      format: format,
-      backgroundColor: backgroundColor,
-      crop: rect,
-    );
-  }
+        return PDFPageImage.render(
+          pageId: id,
+          pageNumber: pageNumber,
+          width: width,
+          height: height,
+          format: format,
+          backgroundColor: backgroundColor,
+          crop: rect,
+        );
+      });
 
   /// Before open another page it is necessary to close the previous.
   ///
   /// The android platform does not allow parallel rendering.
-  Future<void> close() {
-    if (isClosed) {
-      throw PdfPageAlreadyClosedException();
-    } else {
-      isClosed = true;
-    }
-    return _channel.invokeMethod('close.page', id);
-  }
+  Future<void> close() => _lock.synchronized(() async {
+        if (isClosed) {
+          throw PdfPageAlreadyClosedException();
+        } else {
+          isClosed = true;
+        }
+        return _channel.invokeMethod('close.page', id);
+      });
 
   @override
   bool operator ==(Object other) =>

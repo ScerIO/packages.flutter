@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
+import 'package:synchronized/synchronized.dart';
 import 'package:meta/meta.dart';
 import 'page.dart';
 
@@ -14,6 +15,8 @@ class PDFDocument {
   });
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+
+  final Lock _lock = Lock();
 
   /// Needed for toString method
   /// Contains a method for opening a document (file, data or asset)
@@ -32,14 +35,14 @@ class PDFDocument {
 
   /// After you finish working with the document,
   /// you should close it to avoid memory leak.
-  Future<void> close() {
-    if (isClosed) {
-      throw PdfDocumentAlreadyClosedException();
-    } else {
-      isClosed = true;
-    }
-    return _channel.invokeMethod('close.document', id);
-  }
+  Future<void> close() => _lock.synchronized(() async {
+        if (isClosed) {
+          throw PdfDocumentAlreadyClosedException();
+        } else {
+          isClosed = true;
+        }
+        return _channel.invokeMethod('close.document', id);
+      });
 
   static PDFDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
       PDFDocument._(
@@ -77,26 +80,29 @@ class PDFDocument {
 
   /// Get page object. The first page is 1.
   Future<PDFPage> getPage(int pageNumber) async {
-    if (isClosed) {
-      throw PdfDocumentAlreadyClosedException();
-    }
     if (pageNumber < 1 || pageNumber > pagesCount) {
       throw PdfPageNotFoundException();
     }
-    final obj = await _channel.invokeMethod<Map<dynamic, dynamic>>(
-      'open.page',
-      {
-        'documentId': id,
-        'page': pageNumber,
-      },
-    );
-    return PDFPage(
-      document: this,
-      id: obj['id'] as String,
-      pageNumber: pageNumber,
-      width: obj['width'] as int,
-      height: obj['height'] as int,
-    );
+    return _lock.synchronized<PDFPage>(() async {
+      if (isClosed) {
+        throw PdfDocumentAlreadyClosedException();
+      }
+      final obj = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        'open.page',
+        {
+          'documentId': id,
+          'page': pageNumber,
+        },
+      );
+      return PDFPage(
+        document: this,
+        id: obj['id'] as String,
+        pageNumber: pageNumber,
+        width: obj['width'] as int,
+        height: obj['height'] as int,
+        lock: _lock,
+      );
+    });
   }
 
   @override
