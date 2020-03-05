@@ -132,7 +132,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       return;
     }
     final position = _itemPositionListener.itemPositions.value.first;
-    final chapterIndex = _getChapterIndexBy(positionIndex: position.index);
+    final chapterIndex = _getChapterIndexBy(
+        positionIndex: position.index, trailingEdge: position.itemTrailingEdge);
     _currentValue = EpubChapterViewValue(
       chapter: chapterIndex >= 0 ? _chapters[chapterIndex] : null,
       chapterNumber: chapterIndex + 1,
@@ -276,11 +277,13 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     return result;
   }
 
-  int _getChapterIndexBy({int positionIndex}) {
-    final index = positionIndex >= _chapterIndexes.last
+  int _getChapterIndexBy({@required int positionIndex, double trailingEdge}) {
+    final posIndex = _getAbsParagraphIndexBy(
+        positionIndex: positionIndex, trailingEdge: trailingEdge);
+    final index = posIndex >= _chapterIndexes.last
         ? _chapterIndexes.length
         : _chapterIndexes.indexWhere((chapterIndex) {
-            if (positionIndex < chapterIndex) {
+            if (posIndex < chapterIndex) {
               return true;
             }
             return false;
@@ -290,10 +293,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   }
 
   int _getParagraphIndexBy({@required int positionIndex, double trailingEdge}) {
-    int posIndex = positionIndex;
-    if (trailingEdge != null && trailingEdge < MIN_TRAILING_EDGE) {
-      posIndex += 1;
-    }
+    final posIndex = _getAbsParagraphIndexBy(
+        positionIndex: positionIndex, trailingEdge: trailingEdge);
 
     final index = _getChapterIndexBy(positionIndex: posIndex);
 
@@ -302,6 +303,16 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     }
 
     return posIndex - _chapterIndexes[index];
+  }
+
+  int _getAbsParagraphIndexBy(
+      {@required int positionIndex, double trailingEdge}) {
+    int posIndex = positionIndex;
+    if (trailingEdge != null && trailingEdge < MIN_TRAILING_EDGE) {
+      posIndex += 1;
+    }
+
+    return posIndex;
   }
 }
 
@@ -519,8 +530,12 @@ class EpubReaderController {
   String generateEpubCfi() => _epubReaderViewState?._epubCfiReader?.generateCfi(
         book: _epubReaderViewState?.widget?.book,
         chapter: _epubReaderViewState?._currentValue?.chapter,
-        paragraphIndex:
-            (_epubReaderViewState?._currentValue?.paragraphNumber ?? 0) - 1,
+        paragraphIndex: _epubReaderViewState?._getAbsParagraphIndexBy(
+          positionIndex:
+              _epubReaderViewState?._currentValue?.position?.index ?? 0,
+          trailingEdge:
+              _epubReaderViewState?._currentValue?.position?.itemTrailingEdge,
+        ),
       );
 
   List<EpubReaderChapter> tableOfContents() {

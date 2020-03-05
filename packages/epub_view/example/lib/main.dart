@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // epubCfi:
                 //     'epubcfi(/6/6[chapter-2]!/4/2/1612)', // book_2.epub Chapter 16 paragraph 3
                 epubCfi:
-                    'epubcfi(/6/6[chapter-2]!/4/2/134)', // book_3.epub Chapter 2 paragraph 6
+                    'epubcfi(/6/6[chapter-2]!/4/2/218)', // book_3.epub Chapter 2 paragraph 6
                 headerBuilder: (value) => AppBar(
                   title: Text(
                     'Chapter: ${value?.chapter?.Title ?? ''}',
