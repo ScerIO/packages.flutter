@@ -43,13 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         key: _scaffoldKey,
-        body: FutureBuilder<EpubBook>(
-          future:
-              _loadFromAssets('assets/book_3.epub').then(EpubReader.readBook),
+        body: FutureBuilder<Uint8List>(
+          future: _loadFromAssets(
+              'assets/book_2.epub'), // .then(EpubReader.readBook),
           builder: (_, snapshot) {
             if (snapshot.hasData) {
-              return EpubReaderView(
-                book: snapshot.data,
+              return EpubReaderView.fromBytes(
+                bookData: snapshot.data,
                 controller: _epubReaderController,
                 excludeHeaders: true,
                 // startFrom: EpubReaderLastPosition.fromString('52:0:0'),

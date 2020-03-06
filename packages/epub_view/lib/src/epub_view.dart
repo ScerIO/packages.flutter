@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:epub/epub.dart';
 import 'package:epub_view/src/epub_cfi/interpreter.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:epub_view/src/epub_cfi/generator.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
@@ -41,7 +43,26 @@ class EpubReaderView extends StatefulWidget {
     this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
     this.textStyle = _defaultTextStyle,
     Key key,
-  })  : itemBuilder = null,
+  })  : bookData = null,
+        itemBuilder = null,
+        super(key: key);
+
+  const EpubReaderView.fromBytes({
+    @required this.bookData,
+    this.controller,
+    this.epubCfi,
+    this.excludeHeaders = false,
+    this.loader,
+    this.headerBuilder,
+    this.dividerBuilder,
+    this.onChange,
+    this.startFrom,
+    this.chapterPadding = const EdgeInsets.all(8),
+    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
+    this.textStyle = _defaultTextStyle,
+    Key key,
+  })  : book = null,
+        itemBuilder = null,
         super(key: key);
 
   const EpubReaderView.builder({
@@ -57,11 +78,13 @@ class EpubReaderView extends StatefulWidget {
     this.chapterPadding = const EdgeInsets.all(8),
     this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
     Key key,
-  })  : dividerBuilder = null,
+  })  : bookData = null,
+        dividerBuilder = null,
         textStyle = null,
         super(key: key);
 
   final EpubBook book;
+  final Uint8List bookData;
   final EpubReaderController controller;
   final String epubCfi;
   final bool excludeHeaders;
@@ -80,6 +103,7 @@ class EpubReaderView extends StatefulWidget {
 }
 
 class _EpubReaderViewState extends State<EpubReaderView> {
+  EpubBook _book;
   ItemScrollController _itemScrollController;
   ItemPositionsListener _itemPositionListener;
   List<EpubChapter> _chapters = [];
@@ -88,11 +112,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   EpubChapterViewValue _currentValue;
   bool _inited = false;
 
-  final List<int> _chapterIndexes = [];
+  List<int> _chapterIndexes = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
 
   @override
   void initState() {
+    _book = widget.book;
     _itemScrollController = ItemScrollController();
     _itemPositionListener = ItemPositionsListener.create();
     widget.controller?._attach(this);
@@ -107,15 +132,76 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     super.dispose();
   }
 
+  static Future<EpubBook> readEpubBook(Uint8List book) async =>
+      EpubReader.readBook(book);
+
+  static List<EpubChapter> parseChapters(EpubBook epubBook) =>
+      epubBook.Chapters.fold<List<EpubChapter>>(
+        [],
+        (acc, next) {
+          if ((next.Anchor ?? '').isNotEmpty) {
+            acc.add(next);
+          }
+          for (final sub in next.SubChapters) {
+            if ((sub.Anchor ?? '').isNotEmpty) {
+              acc.add(sub);
+            }
+          }
+          return acc;
+        },
+      );
+
+  static List<dynamic> parseParagraphs(List<dynamic> params) {
+    String filename = '';
+    final chapters = params[0];
+    final excludeHeaders = params[1];
+    final List<int> chapterIndexes = [];
+    final result = chapters.fold<List<dom.Element>>(
+      [],
+      (acc, next) {
+        List<dom.Element> elmList = [];
+        if (filename != next.ContentFileName) {
+          filename = next.ContentFileName;
+          final document = EpubCfiReader().chapterDocument(next);
+          elmList = EpubCfiReader().convertDocumentToElements(document);
+          acc.addAll(elmList);
+        }
+        final index = acc
+            .indexWhere((elm) => elm.outerHtml.contains('id="${next.Anchor}"'));
+        chapterIndexes.add(index);
+        if (acc[index + 1].localName == 'span') {
+          acc.removeAt(index + 1);
+        }
+        if (acc[index].localName == 'span' || excludeHeaders) {
+          acc.removeAt(index);
+        }
+        return acc;
+      },
+    );
+
+    return [result, chapterIndexes];
+  }
+
   Future<bool> _init() async {
     if (_inited) {
       return true;
     }
 
-    if (widget.book != null) {
-      _chapters = _parseChapters(widget.book);
-      _paragraphs = _parseParagraphs(_chapters);
+    if (_book == null && widget.bookData != null) {
+      _book = await compute(readEpubBook, widget.bookData);
+      // _book = await EpubReader.readBook(widget.bookData);
     }
+
+    if (_book != null) {
+      _chapters = await compute(parseChapters, _book);
+      final result =
+          await compute(parseParagraphs, [_chapters, widget.excludeHeaders]);
+      _paragraphs = result[0];
+      _chapterIndexes = result[1];
+      // _chapters = _parseChapters(_book);
+      // _paragraphs = _parseParagraphs(_chapters);
+    }
+
     _epubCfiReader = EpubCfiReader.parser(
       cfiInput: widget.epubCfi,
       chapters: _chapters,
@@ -569,7 +655,7 @@ class EpubReaderController {
     int index = -1;
 
     return _cacheTableOfContents =
-        _epubReaderViewState.widget.book.Chapters.fold<List<EpubReaderChapter>>(
+        _epubReaderViewState._book.Chapters.fold<List<EpubReaderChapter>>(
       [],
       (acc, next) {
         if ((next.Anchor ?? '').isNotEmpty) {
