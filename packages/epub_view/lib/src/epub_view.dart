@@ -28,6 +28,23 @@ typedef ChaptersBuilder = Widget Function(
   int index,
 );
 
+class ParseParams {
+  const ParseParams(this.bookData, this.excludeHeaders);
+
+  final Uint8List bookData;
+  final bool excludeHeaders;
+}
+
+class ParseResult {
+  const ParseResult(
+      this.epubBook, this.chapters, this.paragraphs, this.chapterIndexes);
+
+  final EpubBook epubBook;
+  final List<EpubChapter> chapters;
+  final List<dom.Element> paragraphs;
+  final List<int> chapterIndexes;
+}
+
 class EpubReaderView extends StatefulWidget {
   const EpubReaderView({
     @required this.book,
@@ -132,8 +149,14 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     super.dispose();
   }
 
-  static Future<EpubBook> readEpubBook(Uint8List book) async =>
-      EpubReader.readBook(book);
+  static Future<ParseResult> parseBook(ParseParams params) async {
+    final epubBook = await EpubReader.readBook(params.bookData);
+    final chapters = parseChapters(epubBook);
+    final result = parseParagraphs(chapters, params.excludeHeaders);
+
+    return ParseResult(epubBook, chapters, result[0] as List<dom.Element>,
+        result[1] as List<int>);
+  }
 
   static List<EpubChapter> parseChapters(EpubBook epubBook) =>
       epubBook.Chapters.fold<List<EpubChapter>>(
@@ -151,12 +174,12 @@ class _EpubReaderViewState extends State<EpubReaderView> {
         },
       );
 
-  static List<dynamic> parseParagraphs(List<dynamic> params) {
+  // ignore: lines_longer_than_80_chars
+  static List<dynamic> parseParagraphs(
+      List<EpubChapter> chapters, bool excludeHeaders) {
     String filename = '';
-    final chapters = params[0];
-    final excludeHeaders = params[1];
     final List<int> chapterIndexes = [];
-    final result = chapters.fold<List<dom.Element>>(
+    final paragraphs = chapters.fold<List<dom.Element>>(
       [],
       (acc, next) {
         List<dom.Element> elmList = [];
@@ -179,7 +202,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       },
     );
 
-    return [result, chapterIndexes];
+    return [paragraphs, chapterIndexes];
   }
 
   Future<bool> _init() async {
@@ -187,19 +210,16 @@ class _EpubReaderViewState extends State<EpubReaderView> {
       return true;
     }
 
-    if (_book == null && widget.bookData != null) {
-      _book = await compute(readEpubBook, widget.bookData);
-      // _book = await EpubReader.readBook(widget.bookData);
-    }
-
     if (_book != null) {
-      _chapters = await compute(parseChapters, _book);
-      final result =
-          await compute(parseParagraphs, [_chapters, widget.excludeHeaders]);
-      _paragraphs = result[0];
-      _chapterIndexes = result[1];
-      // _chapters = _parseChapters(_book);
-      // _paragraphs = _parseParagraphs(_chapters);
+      _chapters = _parseChapters(_book);
+      _paragraphs = _parseParagraphs(_chapters);
+    } else if (widget.bookData != null) {
+      final result = await compute(
+          parseBook, ParseParams(widget.bookData, widget.excludeHeaders));
+      _book = result.epubBook;
+      _chapters = result.chapters;
+      _paragraphs = result.paragraphs;
+      _chapterIndexes = result.chapterIndexes;
     }
 
     _epubCfiReader = EpubCfiReader.parser(
@@ -631,7 +651,7 @@ class EpubReaderController {
       );
 
   String generateEpubCfi() => _epubReaderViewState?._epubCfiReader?.generateCfi(
-        book: _epubReaderViewState?.widget?.book,
+        book: _epubReaderViewState?._book,
         chapter: _epubReaderViewState?._currentValue?.chapter,
         paragraphIndex: _epubReaderViewState?._getAbsParagraphIndexBy(
           positionIndex:
@@ -648,7 +668,7 @@ class EpubReaderController {
       return _cacheTableOfContents;
     }
 
-    if (_epubReaderViewState?.widget?.book == null) {
+    if (_epubReaderViewState?._book == null) {
       return [];
     }
 

@@ -44,8 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) => Scaffold(
         key: _scaffoldKey,
         body: FutureBuilder<Uint8List>(
-          future: _loadFromAssets(
-              'assets/book_2.epub'), // .then(EpubReader.readBook),
+          future: _loadFromAssets('assets/book_3.epub'),
           builder: (_, snapshot) {
             if (snapshot.hasData) {
               return EpubReaderView.fromBytes(
