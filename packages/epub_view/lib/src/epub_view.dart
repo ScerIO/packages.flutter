@@ -131,7 +131,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   List<int> _chapterIndexes = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
-  final StreamController<bool> _bookLoaded = StreamController();
+  final StreamController<bool> _bookLoaded = StreamController.broadcast();
 
   @override
   void initState() {
@@ -635,7 +635,8 @@ class EpubReaderController {
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
 
-  StreamController<bool> get bookLoaded => _epubReaderViewState?._bookLoaded;
+  Stream<bool> get bookLoadedStream =>
+      _epubReaderViewState?._bookLoaded?.stream;
 
   bool get isBookLoaded => _epubReaderViewState?._inited;
 
