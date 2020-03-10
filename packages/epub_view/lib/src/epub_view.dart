@@ -131,6 +131,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
 
   List<int> _chapterIndexes = [];
   final StreamController<EpubChapterViewValue> _actualItem = StreamController();
+  final StreamController<bool> _bookLoaded = StreamController();
 
   @override
   void initState() {
@@ -145,6 +146,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   void dispose() {
     _itemPositionListener.itemPositions.removeListener(_changeListener);
     _actualItem.close();
+    _bookLoaded.close();
     widget.controller?._detach();
     super.dispose();
   }
@@ -229,6 +231,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     );
     _itemPositionListener.itemPositions.addListener(_changeListener);
     _inited = true;
+    _bookLoaded.sink.add(true);
 
     return true;
   }
@@ -631,6 +634,10 @@ class EpubReaderController {
   List<EpubReaderChapter> _cacheTableOfContents;
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
+
+  StreamController<bool> get bookLoaded => _epubReaderViewState?._bookLoaded;
+
+  bool get isBookLoaded => _epubReaderViewState?._inited;
 
   void jumpTo({@required int index, double alignment = 0}) =>
       _epubReaderViewState?._itemScrollController?.jumpTo(
