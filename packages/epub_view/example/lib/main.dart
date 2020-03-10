@@ -35,6 +35,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _epubReaderController = EpubReaderController();
 
+  @override
+  void initState() {
+    _epubReaderController.bookLoadedStream.listen((v) => print('isLoaded: $v'));
+    super.initState();
+  }
+
   Future<Uint8List> _loadFromAssets(String assetName) async {
     final bytes = await rootBundle.load(assetName);
     return bytes.buffer.asUint8List();
