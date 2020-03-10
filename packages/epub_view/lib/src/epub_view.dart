@@ -632,7 +632,8 @@ class EpubReaderController {
   _EpubReaderViewState _epubReaderViewState;
   List<EpubReaderChapter> _cacheTableOfContents;
 
-  final StreamController<bool> _streamController = StreamController<bool>();
+  final StreamController<bool> _streamController =
+      StreamController<bool>.broadcast();
 
   EpubChapterViewValue get currentValue => _epubReaderViewState?._currentValue;
 
