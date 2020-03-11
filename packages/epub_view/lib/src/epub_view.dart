@@ -51,6 +51,7 @@ class EpubReaderView extends StatefulWidget {
     this.controller,
     this.epubCfi,
     this.excludeHeaders = false,
+    this.loaderSwitchDuration,
     this.loader,
     this.headerBuilder,
     this.dividerBuilder,
@@ -69,6 +70,7 @@ class EpubReaderView extends StatefulWidget {
     this.controller,
     this.epubCfi,
     this.excludeHeaders = false,
+    this.loaderSwitchDuration,
     this.loader,
     this.headerBuilder,
     this.dividerBuilder,
@@ -88,6 +90,7 @@ class EpubReaderView extends StatefulWidget {
     this.controller,
     this.epubCfi,
     this.excludeHeaders = false,
+    this.loaderSwitchDuration,
     this.loader,
     this.headerBuilder,
     this.onChange,
@@ -105,6 +108,7 @@ class EpubReaderView extends StatefulWidget {
   final EpubReaderController controller;
   final String epubCfi;
   final bool excludeHeaders;
+  final Duration loaderSwitchDuration;
   final Widget loader;
   final Widget Function(EpubChapterViewValue value) headerBuilder;
   final Widget Function(EpubChapter value) dividerBuilder;
@@ -265,13 +269,18 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   Widget build(BuildContext context) => FutureBuilder<bool>(
         future: _init(),
         builder: (_, snapshot) {
+          Widget result =
+              widget.loader ?? Center(child: CircularProgressIndicator());
           if (snapshot.hasData) {
-            return _buildMain();
+            result = _buildMain();
           }
-          return widget.loader ??
-              Center(
-                child: CircularProgressIndicator(),
-              );
+          return AnimatedSwitcher(
+            duration:
+                widget.loaderSwitchDuration ?? Duration(milliseconds: 500),
+            transitionBuilder: (Widget child, Animation<double> animation) =>
+                FadeTransition(child: child, opacity: animation),
+            child: result,
+          );
         },
       );
 
