@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
@@ -34,6 +35,12 @@ class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _epubReaderController = EpubReaderController();
 
+  @override
+  void initState() {
+    _epubReaderController.bookLoadedStream.listen((v) => print('isLoaded: $v'));
+    super.initState();
+  }
+
   Future<Uint8List> _loadFromAssets(String assetName) async {
     final bytes = await rootBundle.load(assetName);
     return bytes.buffer.asUint8List();
@@ -42,25 +49,35 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) => Scaffold(
         key: _scaffoldKey,
-        body: FutureBuilder<EpubBook>(
-          future: _loadFromAssets('assets/book.epub').then(EpubReader.readBook),
+        body: FutureBuilder<Uint8List>(
+          future: _loadFromAssets('assets/book_3.epub'),
           builder: (_, snapshot) {
             if (snapshot.hasData) {
-              return EpubReaderView(
-                book: snapshot.data,
+              return EpubReaderView.fromBytes(
+                bookData: snapshot.data,
                 controller: _epubReaderController,
+                excludeHeaders: true,
+                // startFrom: EpubReaderLastPosition.fromString('52:0:0'),
+                // epubCfi:
+                //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
+                // epubCfi:
+                //     'epubcfi(/6/6[chapter-2]!/4/2/1612)', // book_2.epub Chapter 16 paragraph 3
                 epubCfi:
-                    'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // Chapter 3 paragraph 10
+                    'epubcfi(/6/6[chapter-2]!/4/2/218)', // book_3.epub Chapter 2 paragraph 6
                 headerBuilder: (value) => AppBar(
                   title: Text(
-                    'Chapter ${value?.chapter?.Title ?? ''}',
+                    'Chapter: ${value?.chapter?.Title ?? ''}',
                   ),
                   actions: <Widget>[
                     IconButton(
+                      icon: Icon(Icons.touch_app),
+                      color: Colors.white,
+                      onPressed: () => _scrollToChapter(context),
+                    ),
+                    IconButton(
                       icon: Icon(Icons.save_alt),
                       color: Colors.white,
-                      onPressed: () =>
-                          _showCurrentEpubCfi(context, snapshot.data),
+                      onPressed: () => _showCurrentEpubCfi(context),
                     ),
                   ],
                 ),
@@ -74,14 +91,30 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 
-  void _showCurrentEpubCfi(context, EpubBook book) {
+  void _showCurrentEpubCfi(context) {
     final cfi = _epubReaderController.generateEpubCfi();
+
+    if (cfi != null) {
+      _scaffoldKey.currentState
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(cfi),
+          ),
+        );
+    }
+  }
+
+  void _scrollToChapter(context) {
+    final toc = _epubReaderController.tableOfContents();
+    final randomChapterIndex = Random().nextInt(toc.length);
+    _epubReaderController.scrollTo(index: toc[randomChapterIndex].startIndex);
 
     _scaffoldKey.currentState
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text(cfi),
+          content: Text(toc[randomChapterIndex].title ?? ''),
         ),
       );
   }
