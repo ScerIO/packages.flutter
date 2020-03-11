@@ -1,3 +1,9 @@
+## 0.4.0
+
+* Added more versatility of epub parser
+* Added table of contents
+* Parser and loader optimization - move the procedure to the background
+
 ## 0.3.1
 
 * Fixed epub-cfi parsing
