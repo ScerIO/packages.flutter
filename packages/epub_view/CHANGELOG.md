@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fixed epub-reader controller attaching
+
 ## 0.4.0
 
 * Added more versatility of epub parser

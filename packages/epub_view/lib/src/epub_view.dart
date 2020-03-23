@@ -718,7 +718,9 @@ class EpubReaderController {
           : 0;
 
   void _attach(_EpubReaderViewState epubReaderViewState) {
-    assert(_epubReaderViewState == null);
+    if (_epubReaderViewState != null) {
+      return;
+    }
     _epubReaderViewState = epubReaderViewState;
     _epubReaderViewState._bookLoaded.stream.listen((bool value) {
       _streamController.sink.add(value);
@@ -726,7 +728,6 @@ class EpubReaderController {
   }
 
   void _detach() {
-    assert(_epubReaderViewState != null);
     _epubReaderViewState = null;
   }
 }
