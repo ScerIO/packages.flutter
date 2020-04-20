@@ -93,6 +93,10 @@ class EpubCfiGenerator {
     int index = -1;
     int partIndex = -1;
 
+    if (idRef == null) {
+      return 0;
+    }
+
     for (var i = 0; i < items.length; i++) {
       if (idRef == items[i].IdRef) {
         index = i;

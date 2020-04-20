@@ -1,3 +1,7 @@
+## 0.4.2
+
+* Fixed opening some epub files (w/o id paragraph in *.ncx)
+
 ## 0.4.1
 
 * Fixed epub-reader controller attaching
