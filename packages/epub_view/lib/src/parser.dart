@@ -12,7 +12,11 @@ List<EpubChapter> parseChapters(EpubBook epubBook) =>
       },
     );
 
-List<dynamic> parseParagraphs(List<EpubChapter> chapters, bool excludeHeaders) {
+List<dynamic> parseParagraphs(
+  List<EpubChapter> chapters,
+  EpubContent content,
+  bool excludeHeaders,
+) {
   String filename = '';
   final List<int> chapterIndexes = [];
   final paragraphs = chapters.fold<List<dom.Element>>(
@@ -35,8 +39,13 @@ List<dynamic> parseParagraphs(List<EpubChapter> chapters, bool excludeHeaders) {
             'id="${next.Anchor}"',
           ),
         );
+        if (index == -1) {
+          chapterIndexes.add(acc.length - elmList.length);
+          return acc;
+        }
         chapterIndexes.add(index);
-        if (acc[index + 1].localName == 'span') {
+
+        if (acc.length > index + 1 && acc[index + 1].localName == 'span') {
           acc.removeAt(index + 1);
         }
         if (acc[index].localName == 'span' || excludeHeaders) {

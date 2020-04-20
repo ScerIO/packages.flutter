@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Added support for tables and images
+
 ## 0.4.2
 
 * Fixed opening some epub files (w/o id paragraph in *.ncx)

@@ -1,19 +1,18 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:epub/epub.dart';
+import 'package:epub/epub.dart' hide Image;
 import 'package:epub_view/src/epub_cfi/interpreter.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:epub_view/src/epub_cfi/generator.dart';
 import 'package:epub_view/src/parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/style.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:flutter/widgets.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widgets/flutter_widgets.dart';
-export 'package:epub/epub.dart';
 
 const MIN_TRAILING_EDGE = 0.55;
 const MIN_LEADING_EDGE = -0.05;
@@ -159,7 +158,8 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   static Future<ParseResult> parseBook(ParseParams params) async {
     final epubBook = await EpubReader.readBook(params.bookData);
     final chapters = parseChapters(epubBook);
-    final result = parseParagraphs(chapters, params.excludeHeaders);
+    final result =
+        parseParagraphs(chapters, epubBook.Content, params.excludeHeaders);
 
     return ParseResult(epubBook, chapters, result[0] as List<dom.Element>,
         result[1] as List<int>);
@@ -172,7 +172,7 @@ class _EpubReaderViewState extends State<EpubReaderView> {
     if (_book != null) {
       _chapters = parseChapters(_book);
       final parseParagraphsResult =
-          parseParagraphs(_chapters, widget.excludeHeaders);
+          parseParagraphs(_chapters, _book.Content, widget.excludeHeaders);
 
       _paragraphs = parseParagraphsResult[0];
       _chapterIndexes.addAll(parseParagraphsResult[1]);
@@ -306,9 +306,22 @@ class _EpubReaderViewState extends State<EpubReaderView> {
             _getParagraphIndexBy(positionIndex: index) == 0)
           _buildDivider(_chapters[chapterIndex]),
         Html(
-          padding: widget.paragraphPadding,
           data: _paragraphs[index].outerHtml,
-          defaultTextStyle: widget.textStyle,
+          style: {
+            'html': Style(
+              padding: widget.paragraphPadding,
+            ).merge(Style.fromTextStyle(widget.textStyle)),
+          },
+          customRender: {
+            'img': (context, child, attributes, node) {
+              final url = attributes['src'].replaceAll('../', '');
+              return Image(
+                image: MemoryImage(
+                  Uint8List.fromList(_book.Content.Images[url].Content),
+                ),
+              );
+            }
+          },
         ),
       ],
     );
@@ -530,12 +543,20 @@ class EpubCfiReader {
     return parse(matches.group(0));
   }
 
-  List<dom.Element> convertDocumentToElements(dom.Document document) => document
-      .getElementsByTagName('body')
-      .first
-      .querySelectorAll('h2,h3,h4,h5,h6,p,span[id]')
-        ..removeWhere((elm) => elm.text.isEmpty)
-        ..removeWhere((elm) => elm.outerHtml.endsWith('>&nbsp;</p>'));
+  List<dom.Element> convertDocumentToElements(dom.Document document) {
+    final children = document.getElementsByTagName('body').first.children;
+    return _removeDiv(children);
+  }
+
+  List<dom.Element> _removeDiv(List<dom.Element> children) {
+    if (children.length == 1 && children[0].localName == 'div') {
+      children
+        ..addAll(children[0].children)
+        ..remove(children[0]);
+    }
+
+    return children;
+  }
 
   int _getChapterNumberBy({CfiStep cfiStep}) {
     if (cfiStep == null) {
