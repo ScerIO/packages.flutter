@@ -87,7 +87,7 @@ class EpubCfiInterpreter {
     final int targetNodeIndex = ((cfiStepValue / 2) - 1).toInt();
     final int numElements = currentNode.children.length;
 
-    if (targetNodeIndex >= numElements) {
+    if (targetNodeIndex > numElements) {
       throw RangeError.range(targetNodeIndex, 0, numElements - 1);
     }
 
