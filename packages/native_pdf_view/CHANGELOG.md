@@ -1,3 +1,7 @@
+## 2.3.0-dev.1
+
+* Fix build error on high flutter sdk(> 1.16.0)
+
 ## 2.2.0
 
 * Set minimal flutter version to 1.10
