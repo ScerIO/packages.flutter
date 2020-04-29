@@ -198,7 +198,9 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
 
   void _changeLoadingState(_PdfViewLoadingState state) {
     if (state == _PdfViewLoadingState.success) {
-      widget.onDocumentLoaded(widget.controller._document);
+      widget.onDocumentLoaded?.call(widget.controller._document);
+    } else if (state == _PdfViewLoadingState.error) {
+      widget.onDocumentError?.call(_loadingError);
     }
     setState(() {
       _loadingState = state;

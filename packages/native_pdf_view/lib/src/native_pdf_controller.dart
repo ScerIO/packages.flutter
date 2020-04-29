@@ -88,7 +88,7 @@ class PdfController {
       return null;
     }
     _pdfViewState._changeLoadingState(_PdfViewLoadingState.loading);
-    return _loadDocument(document);
+    return _loadDocument(documentFuture);
   }
 
   Future<void> _loadDocument(Future<PdfDocument> documentFuture) async {
