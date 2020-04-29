@@ -1,3 +1,14 @@
+## 0.6.0
+
+* Removed `excludeHeaders`, `headerBuilder`, `startFrom` (use for replacement `epubCfi`)
+* Added `onExternalLinkPressed(String href)` for open external links
+* Added support for document hyperlinks
+* Added model `Paragraph` contains dom element & associated chapter index
+* Changed attribute paragraphs for `ChaptersBuilder` from `List<dom.Element> paragraphs` to `List<Paragraph> paragraphs`
+* Added widgets: `EpubReaderTableOfContents`, `EpubActualChapter`
+* In controller added `currentValueStream`, `tableOfContentsStream`, `gotoEpubCfi(cfiString)`
+* Refactoring
+
 ## 0.5.0
 
 * Added support for tables and images

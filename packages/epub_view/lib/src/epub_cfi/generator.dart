@@ -1,23 +1,22 @@
 import 'package:epub/epub.dart';
+import 'package:epub_view/src/utils.dart';
 import 'package:html/dom.dart';
 import 'package:flutter/foundation.dart';
 
 class EpubCfiGenerator {
-  String generateCompleteCFI(String packageDocumentCFIComponent,
-          String contentDocumentCFIComponent) =>
-      'epubcfi(' +
-      packageDocumentCFIComponent +
-      contentDocumentCFIComponent +
-      ')';
+  const EpubCfiGenerator();
+
+  String generateCompleteCFI(List<String> entries) =>
+      'epubcfi(${entries.join()})';
 
   String generatePackageDocumentCFIComponent(
-      String idRef, EpubPackage packageDocument) {
-    validatePackageDocument(packageDocument, idRef);
+      EpubChapter chapter, EpubPackage packageDocument) {
+    validatePackageDocument(packageDocument, chapter.Anchor);
 
-    final index = getIdRefIndex(idRef, packageDocument);
+    final index = getIdRefIndex(chapter, packageDocument);
     final pos = getIdRefPosition(index);
     final spineIdRef =
-        index >= 0 ? packageDocument.Spine.Items[index].IdRef : idRef;
+        index >= 0 ? packageDocument.Spine.Items[index].IdRef : chapter.Anchor;
 
     // Append an !; this assumes that a CFI content document CFI component
     // will be appended at some point
@@ -88,21 +87,23 @@ class EpubCfiGenerator {
     }
   }
 
-  int getIdRefIndex(String idRef, EpubPackage packageDocument) {
+  int getIdRefIndex(EpubChapter chapter, EpubPackage packageDocument) {
     final items = packageDocument.Spine.Items;
     int index = -1;
     int partIndex = -1;
+    String edRef = chapter.Anchor;
 
-    if (idRef == null) {
-      return 0;
+    if (chapter.Anchor == null) {
+      // filename w/o extension
+      edRef = fileNameAsChapterName(chapter.ContentFileName);
     }
 
     for (var i = 0; i < items.length; i++) {
-      if (idRef == items[i].IdRef) {
+      if (edRef == items[i].IdRef) {
         index = i;
         break;
       }
-      if (idRef.contains(items[i].IdRef)) {
+      if (edRef.contains(items[i].IdRef)) {
         partIndex = i;
       }
     }

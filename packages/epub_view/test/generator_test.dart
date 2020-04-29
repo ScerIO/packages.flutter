@@ -25,8 +25,8 @@ void main() {
   test('generatePackageDocumentCFIComponent packageDocument failed', () async {
     String result;
     try {
-      result =
-          EpubCfiGenerator().generatePackageDocumentCFIComponent('idRef', null);
+      result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
+          EpubChapter()..Anchor = 'idRef', null);
     } catch (e) {
       expect(
         e.toString(),
@@ -41,8 +41,8 @@ void main() {
   test('generatePackageDocumentCFIComponent idRef failed', () async {
     String result;
     try {
-      result = EpubCfiGenerator()
-          .generatePackageDocumentCFIComponent('idRef', _book.Schema.Package);
+      result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
+          EpubChapter()..Anchor = 'idRef', _book.Schema.Package);
     } catch (e) {
       // Condition is commented
       // This error will not be caused, because there is a case
@@ -60,11 +60,18 @@ void main() {
   });
 
   test('generatePackageDocumentCFIComponent success', () async {
-    final result = EpubCfiGenerator()
-        .generatePackageDocumentCFIComponent('id4', _book.Schema.Package);
+    final result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
+        EpubChapter()..Anchor = 'id4', _book.Schema.Package);
 
     expect(result, '/6/26[id4]!');
   });
+
+  // test('generatePackageDocumentCFIComponent filename', () async {
+  //   final result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
+  //       EpubChapter()..ContentFileName = 'html/Chapter01.xml', _book.Schema.Package);
+
+  //   expect(result, '/6/26[Chapter01]!');
+  // });
 
   test('generateElementCFIComponent failed - startElement is null', () async {
     String result;
@@ -113,12 +120,13 @@ void main() {
     final node = document.getElementsByTagName('p')[2];
 
     final packageDocumentCFIComponent = EpubCfiGenerator()
-        .generatePackageDocumentCFIComponent('id3', _book.Schema.Package);
+        .generatePackageDocumentCFIComponent(
+            EpubChapter()..Anchor = 'id3', _book.Schema.Package);
     final contentDocumentCFIComponent =
         EpubCfiGenerator().generateElementCFIComponent(node);
 
     final result = EpubCfiGenerator().generateCompleteCFI(
-        packageDocumentCFIComponent, contentDocumentCFIComponent);
+        [packageDocumentCFIComponent, contentDocumentCFIComponent]);
 
     expect(result, 'epubcfi(/6/2[id3]!/4/2/2[id3]/6)');
   });

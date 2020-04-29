@@ -1,3 +1,13 @@
+## 2.0.0
+
+* Added more docs in readme
+* Removed deprecated `PDFCropDef`, instead use `Rect`
+* Renames:
+  1. `PdfDocument` -> `PdfDocument`, 
+  2. `PdfPage` -> `PdfPage`, 
+  3. `PdfPageFormat` -> `PdfPageFormat`, 
+  4. `PdfPageImage` -> `PdfPageImage`
+
 ## 1.8.1
 
 * Fixed ios render crash [issue#29](https://github.com/rbcprolabs/packages.flutter/issues/29)

@@ -1,17 +1,10 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data' show Uint8List;
-
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
-import 'page.dart';
+part of 'page.dart';
 
 /// Object containing a rendered image
-/// in a pre-selected format in [render] method
-/// of [PDFPage]
-class PDFPageImage {
-  const PDFPageImage._({
+/// in a pre-selected format in [_render] method
+/// of [PdfPage]
+class PdfPageImage {
+  const PdfPageImage._({
     @required this.id,
     @required this.pageNumber,
     @required this.width,
@@ -23,7 +16,7 @@ class PDFPageImage {
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
 
   /// Page unique id. Needed for rendering and closing page.
-  /// Generated when opening page.
+  /// Generated when render page.
   final String id;
 
   /// Page number. The first page is 1.
@@ -39,32 +32,32 @@ class PDFPageImage {
   final Uint8List bytes;
 
   /// Target compression format
-  final PDFPageFormat format;
+  final PdfPageFormat format;
 
   /// Render a full image of specified PDF file.
   ///
   /// [width], [height] specify resolution to render in pixels.
   /// As default PNG uses transparent background. For change it you can set
   /// [backgroundColor] property like a hex string ('#000000')
-  /// [format] - image type, all types can be seen here [PDFPageFormat]
+  /// [format] - image type, all types can be seen here [PdfPageFormat]
   /// [crop] - render only the necessary part of the image
-  static Future<PDFPageImage> render({
+  static Future<PdfPageImage> _render({
     @required String pageId,
     @required int pageNumber,
     @required int width,
     @required int height,
-    @required PDFPageFormat format,
+    @required PdfPageFormat format,
     @required String backgroundColor,
     @required Rect crop,
   }) async {
-    if (format == PDFPageFormat.WEBP && Platform.isIOS) {
+    if (format == PdfPageFormat.WEBP && Platform.isIOS) {
       throw PdfNotSupportException(
         'PDF Renderer on IOS platform does not support WEBP format',
       );
     }
 
     backgroundColor ??=
-        (format == PDFPageFormat.JPEG) ? '#FFFFFF' : '#00FFFFFF';
+        (format == PdfPageFormat.JPEG) ? '#FFFFFF' : '#00FFFFFF';
 
     final obj = await _channel.invokeMethod('render', {
       'pageId': pageId,
@@ -86,7 +79,7 @@ class PDFPageImage {
     final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
     final pixels = obj['data'] as Uint8List;
 
-    return PDFPageImage._(
+    return PdfPageImage._(
       id: pageId,
       pageNumber: pageNumber,
       width: retWidth,
@@ -98,7 +91,7 @@ class PDFPageImage {
 
   @override
   bool operator ==(Object other) =>
-      other is PDFPageImage && other.bytes.lengthInBytes == bytes.lengthInBytes;
+      other is PdfPageImage && other.bytes.lengthInBytes == bytes.lengthInBytes;
 
   @override
   int get hashCode => identityHashCode(id) ^ pageNumber;

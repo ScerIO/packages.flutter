@@ -1,3 +1,27 @@
+## 3.1.0-dev.1
+
+* Fix build error on high flutter sdk(> 1.16.0)
+
+## 3.0.0
+
+* Added more docs & examples in readme
+* Fixed [issue#54](https://github.com/rbcprolabs/packages.flutter/issues/54), [issue#39](https://github.com/rbcprolabs/packages.flutter/issues/39)
+* `render` property work fixed
+* Renamed `PDFView` to `PdfView`
+* Removed constructor `PDFView.builder`, `builder` property now available in `PdfView` constructor
+* Added double tap animation, a
+* Added third step for  double tap
+* Added `PdfController`, document loading now happens through it
+* Property `controller` now requires `PdfController` instead `PageController` (methods and properties 
+from `PageController` saved in `PdfController`)
+* `loader` property replaced to `documentLoader` and `pageLoader`
+* Added properties:
+  1. onDocumentLoaded(PdfDocument document) - calls on document loaded
+  2. onDocumentError(Exception error) - calls on loading document error
+  3. Widget errorBuilder(Exception error) - show document loading error in PdfView
+* In `PDFViewPageBuilder` (`builder` property) added `animationController` argument for animate double tap
+* Updated `[extended_image]` package
+
 ## 2.3.0-dev.1
 
 * Fix build error on high flutter sdk(> 1.16.0)

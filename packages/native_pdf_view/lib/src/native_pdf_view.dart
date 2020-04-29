@@ -1,87 +1,105 @@
 import 'package:flutter/widgets.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+import 'package:native_pdf_view/src/utils.dart';
 import 'package:synchronized/synchronized.dart';
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
 export 'package:extended_image/extended_image.dart';
 
+part 'native_pdf_controller.dart';
+
 typedef PDFViewPageBuilder = Widget Function(
-  PDFPageImage pageImage,
+  /// Page image model
+  PdfPageImage pageImage,
+
+  /// true if page now showed
   bool isCurrentIndex,
+
+  /// onDoubleTap Animation
+  AnimationController animationController,
 );
 
-typedef PDFViewPageRenderer = Future<PDFPageImage> Function(PDFPage page);
+typedef PDFViewPageRenderer = Future<PdfPageImage> Function(PdfPage page);
 
 final Lock _lock = Lock();
 
 /// Widget for viewing PDF documents
-class PDFView extends StatefulWidget {
-  const PDFView({
-    @required this.document,
-    this.controller,
+class PdfView extends StatefulWidget {
+  const PdfView({
+    @required this.controller,
     this.onPageChanged,
-    this.loader = const SizedBox(),
-    this.scrollDirection = Axis.horizontal,
+    this.onDocumentLoaded,
+    this.onDocumentError,
+    this.documentLoader,
+    this.pageLoader,
+    this.pageBuilder = _pageBuilder,
+    this.errorBuilder,
     this.renderer = _render,
-    Key key,
-  })  : assert(document != null),
-        builder = _pageBuilder,
-        super(key: key);
-
-  const PDFView.builder({
-    @required this.document,
-    @required this.builder,
-    this.controller,
-    this.onPageChanged,
-    this.loader = const SizedBox(),
     this.scrollDirection = Axis.horizontal,
-    this.renderer = _render,
     Key key,
-  })  : assert(document != null),
+  })  : assert(controller != null),
+        assert(renderer != null),
         super(key: key);
-
-  /// The document to be displayed
-  final PDFDocument document;
-
-  /// Widget showing pdf page loading
-  final Widget loader;
-
-  /// Page turning direction
-  final Axis scrollDirection;
-
-  /// Page builder. Available in PDFView.builder
-  final PDFViewPageBuilder builder;
-
-  /// Custom PdfRenderer options
-  final PDFViewPageRenderer renderer;
 
   /// Page management
-  final PageController controller;
+  final PdfController controller;
 
   /// Called whenever the page in the center of the viewport changes
   final void Function(int page) onPageChanged;
 
+  /// Called when a document is loaded
+  final void Function(PdfDocument document) onDocumentLoaded;
+
+  /// Called when a document loading error
+  final void Function(Exception error) onDocumentError;
+
+  /// Widget showing when pdf document loading
+  final Widget documentLoader;
+
+  /// Widget showing when pdf page loading
+  final Widget pageLoader;
+
+  /// Page builder
+  final PDFViewPageBuilder pageBuilder;
+
+  /// Show document loading error message inside [PdfView]
+  final Widget Function(Exception error) errorBuilder;
+
+  /// Custom PdfRenderer options
+  final PDFViewPageRenderer renderer;
+
+  /// Page turning direction
+  final Axis scrollDirection;
+
   /// Default PdfRenderer options
-  static Future<PDFPageImage> _render(PDFPage page) => page.render(
+  static Future<PdfPageImage> _render(PdfPage page) => page.render(
         width: page.width * 2,
         height: page.height * 2,
-        format: PDFPageFormat.JPEG,
+        format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
       );
 
-  static const List<double> _doubleTapScales = <double>[1.0, 2.0];
+  static const List<double> _doubleTapScales = <double>[1.0, 2.0, 3.0];
 
   /// Default page builder
-  static Widget _pageBuilder(PDFPageImage pageImage, bool isCurrentIndex) {
+  static Widget _pageBuilder(
+    PdfPageImage pageImage,
+    bool isCurrentIndex,
+    AnimationController animationController,
+  ) {
+    Animation<double> _doubleTapAnimation;
+    void Function() _animationListener;
+
     Widget image = ExtendedImage.memory(
       pageImage.bytes,
+      key: Key(pageImage.hashCode.toString()),
       fit: BoxFit.fitWidth,
       mode: ExtendedImageMode.gesture,
       initGestureConfigHandler: (_) => GestureConfig(
         minScale: 1,
+        maxScale: 3.0,
         animationMinScale: .75,
-        maxScale: 2,
-        animationMaxScale: 2.5,
+        animationMaxScale: 3.0,
         speed: 1,
         inertialSpeed: 100,
         inPageView: true,
@@ -89,22 +107,37 @@ class PDFView extends StatefulWidget {
         cacheGesture: false,
       ),
       onDoubleTap: (ExtendedImageGestureState state) {
-        ///you can use define pointerDownPosition as you can,
-        ///default value is double tap pointer down position.
         final pointerDownPosition = state.pointerDownPosition;
         final begin = state.gestureDetails.totalScale;
         double end;
 
+        _doubleTapAnimation?.removeListener(_animationListener);
+
+        animationController
+          ..stop()
+          ..reset();
+
         if (begin == _doubleTapScales[0]) {
           end = _doubleTapScales[1];
         } else {
-          end = _doubleTapScales[0];
+          if (begin == _doubleTapScales[1]) {
+            end = _doubleTapScales[2];
+          } else {
+            end = _doubleTapScales[0];
+          }
         }
 
-        state.handleDoubleTap(
-          scale: end,
-          doubleTapPosition: pointerDownPosition,
-        );
+        _animationListener = () {
+          //print(_animation.value);
+          state.handleDoubleTap(
+              scale: _doubleTapAnimation.value,
+              doubleTapPosition: pointerDownPosition);
+        };
+        _doubleTapAnimation = animationController
+            .drive(Tween<double>(begin: begin, end: end))
+              ..addListener(_animationListener);
+
+        animationController.forward();
       },
     );
     if (isCurrentIndex) {
@@ -117,45 +150,45 @@ class PDFView extends StatefulWidget {
   }
 
   @override
-  _PDFViewState createState() => _PDFViewState();
+  _PdfViewState createState() => _PdfViewState();
 }
 
-class _PDFViewState extends State<PDFView> {
-  final Map<int, PDFPageImage> _pages = {};
-  PageController _pageController;
-  int _currentIndex = 0;
+class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
+  final Map<int, PdfPageImage> _pages = {};
+  _PdfViewLoadingState _loadingState;
+  Exception _loadingError;
+  int _currentIndex;
+  AnimationController _animationController;
 
   @override
   void initState() {
-    if (widget.controller != null) {
-      _currentIndex = widget.controller.initialPage;
-    } else {
-      _pageController = PageController(initialPage: 0);
-    }
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _loadingState = _PdfViewLoadingState.loading;
+    widget.controller._attach(this);
+    _currentIndex = widget.controller._pageController.initialPage ?? 0;
     super.initState();
   }
 
   @override
   void dispose() {
-    _pageController?.dispose();
+    widget.controller._detach();
+    _animationController.dispose();
     super.dispose();
   }
 
-  Future<PDFPageImage> _getPageImage(int pageIndex) =>
-      _lock.synchronized<PDFPageImage>(() async {
+  Future<PdfPageImage> _getPageImage(int pageIndex) =>
+      _lock.synchronized<PdfPageImage>(() async {
         if (_pages[pageIndex] != null) {
           return _pages[pageIndex];
         }
 
-        final page = await widget.document.getPage(pageIndex + 1);
+        final page = await widget.controller._document.getPage(pageIndex + 1);
 
         try {
-          _pages[pageIndex] = await page.render(
-            width: page.width * 2,
-            height: page.height * 2,
-            format: PDFPageFormat.JPEG,
-            backgroundColor: '#ffffff',
-          );
+          _pages[pageIndex] = await widget.renderer(page);
         } finally {
           await page.close();
         }
@@ -163,25 +196,88 @@ class _PDFViewState extends State<PDFView> {
         return _pages[pageIndex];
       });
 
-  @override
-  Widget build(BuildContext context) => ExtendedImageGesturePageView.builder(
+  void _changeLoadingState(_PdfViewLoadingState state) {
+    if (state == _PdfViewLoadingState.success) {
+      widget.onDocumentLoaded(widget.controller._document);
+    }
+    setState(() {
+      _loadingState = state;
+    });
+  }
+
+  Widget _buildLoaded() => ExtendedImageGesturePageView.builder(
         itemBuilder: (BuildContext context, int index) =>
-            FutureBuilder<PDFPageImage>(
+            FutureBuilder<PdfPageImage>(
           future: _getPageImage(index),
           builder: (_, snapshot) {
             if (snapshot.hasData) {
-              return widget.builder(_pages[index], index == _currentIndex);
+              return KeyedSubtree(
+                key: Key('$runtimeType.page.'
+                    '${widget.controller._document.hashCode}.'
+                    '${_pages[index].pageNumber}'),
+                child: widget.pageBuilder(
+                  _pages[index],
+                  index == _currentIndex,
+                  _animationController,
+                ),
+              );
             }
 
-            return widget.loader;
+            return KeyedSubtree(
+              key: Key('$runtimeType.page.loading'),
+              child: widget.pageLoader ?? SizedBox(),
+            );
           },
         ),
-        itemCount: widget.document.pagesCount,
+        itemCount: widget.controller._document.pagesCount,
         onPageChanged: (int index) {
           _currentIndex = index;
           widget.onPageChanged?.call(index + 1);
         },
-        controller: widget.controller ?? _pageController,
+        controller: widget.controller?._pageController,
         scrollDirection: widget.scrollDirection,
       );
+
+  @override
+  Widget build(BuildContext context) {
+    Widget content;
+
+    switch (_loadingState) {
+      case _PdfViewLoadingState.loading:
+        content = KeyedSubtree(
+          key: Key('$runtimeType.root.loading'),
+          child: widget.documentLoader ?? SizedBox(),
+        );
+        break;
+      case _PdfViewLoadingState.error:
+        content = KeyedSubtree(
+          key: Key('$runtimeType.root.error'),
+          child: Padding(
+            padding: EdgeInsets.all(32),
+            child: widget.errorBuilder.call(_loadingError) ??
+                Center(child: Text(_loadingError.toString())),
+          ),
+        );
+        break;
+      case _PdfViewLoadingState.success:
+        content = KeyedSubtree(
+          key: Key('$runtimeType.root.success'),
+          child: _buildLoaded(),
+        );
+        break;
+    }
+
+    return AnimatedSwitcher(
+      duration: Duration(seconds: 1),
+      transitionBuilder: (child, animation) =>
+          FadeTransition(opacity: animation, child: child),
+      child: content,
+    );
+  }
+}
+
+enum _PdfViewLoadingState {
+  loading,
+  error,
+  success,
 }

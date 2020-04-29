@@ -7,8 +7,8 @@ import 'package:meta/meta.dart';
 import 'page.dart';
 
 /// PDF page image renderer
-class PDFDocument {
-  PDFDocument._({
+class PdfDocument {
+  PdfDocument._({
     @required this.sourceName,
     @required this.id,
     @required this.pagesCount,
@@ -44,15 +44,15 @@ class PDFDocument {
         return _channel.invokeMethod('close.document', id);
       });
 
-  static PDFDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
-      PDFDocument._(
+  static PdfDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
+      PdfDocument._(
         sourceName: sourceName,
         id: obj['id'] as String,
         pagesCount: obj['pagesCount'] as int,
       );
 
   /// Open PDF document from filesystem path
-  static Future<PDFDocument> openFile(String filePath) async => _open(
+  static Future<PdfDocument> openFile(String filePath) async => _open(
         await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.file',
           filePath,
@@ -61,7 +61,7 @@ class PDFDocument {
       );
 
   /// Open PDF document from application assets
-  static Future<PDFDocument> openAsset(String name) async => _open(
+  static Future<PdfDocument> openAsset(String name) async => _open(
         await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
           name,
@@ -70,7 +70,7 @@ class PDFDocument {
       );
 
   /// Open PDF file from memory (Uint8List)
-  static Future<PDFDocument> openData(Uint8List data) async => _open(
+  static Future<PdfDocument> openData(Uint8List data) async => _open(
         await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
           data,
@@ -79,11 +79,11 @@ class PDFDocument {
       );
 
   /// Get page object. The first page is 1.
-  Future<PDFPage> getPage(int pageNumber) async {
+  Future<PdfPage> getPage(int pageNumber) async {
     if (pageNumber < 1 || pageNumber > pagesCount) {
       throw PdfPageNotFoundException();
     }
-    return _lock.synchronized<PDFPage>(() async {
+    return _lock.synchronized<PdfPage>(() async {
       if (isClosed) {
         throw PdfDocumentAlreadyClosedException();
       }
@@ -94,7 +94,7 @@ class PDFDocument {
           'page': pageNumber,
         },
       );
-      return PDFPage(
+      return PdfPage(
         document: this,
         id: obj['id'] as String,
         pageNumber: pageNumber,
@@ -106,7 +106,7 @@ class PDFDocument {
   }
 
   @override
-  bool operator ==(Object other) => other is PDFDocument && other.id == id;
+  bool operator ==(Object other) => other is PdfDocument && other.id == id;
 
   @override
   int get hashCode => identityHashCode(id);
