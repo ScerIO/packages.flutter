@@ -11,7 +11,7 @@ final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final List<MethodCall> log = <MethodCall>[];
-  PDFDocument document;
+  PdfDocument document;
 
   setUpAll(() async {
     MethodChannel('io.scer.pdf.renderer')
@@ -59,7 +59,7 @@ void main() {
 
   group('Open document', () {
     test('from file path', () async {
-      final document = await PDFDocument.openFile(_testFilePath);
+      final document = await PdfDocument.openFile(_testFilePath);
       expect(log, <Matcher>[
         isMethodCall(
           'open.document.file',
@@ -70,7 +70,7 @@ void main() {
     });
 
     test('from asset', () async {
-      final document = await PDFDocument.openAsset(_testAssetPath);
+      final document = await PdfDocument.openAsset(_testAssetPath);
       expect(log, <Matcher>[
         isMethodCall(
           'open.document.asset',
@@ -83,7 +83,7 @@ void main() {
     });
 
     test('from data', () async {
-      document = await PDFDocument.openData(_testData);
+      document = await PdfDocument.openData(_testData);
       expect(log, <Matcher>[
         isMethodCall(
           'open.document.data',
@@ -95,7 +95,7 @@ void main() {
   });
 
   group('Page', () {
-    PDFPage page;
+    PdfPage page;
 
     test('open', () async {
       // page number 0 - not available
@@ -132,7 +132,7 @@ void main() {
       final pageImage = await page.render(
         width: width,
         height: height,
-        format: PDFPageFormat.JPEG,
+        format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
       );
 
@@ -143,7 +143,7 @@ void main() {
             'pageId': page.id,
             'width': width,
             'height': height,
-            'format': PDFPageFormat.JPEG.value,
+            'format': PdfPageFormat.JPEG.value,
             'backgroundColor': '#ffffff',
             'crop': false,
             'crop_x': null,
@@ -155,7 +155,7 @@ void main() {
       ]);
 
       expect(pageImage.bytes, _testData);
-      expect(pageImage.format, PDFPageFormat.JPEG);
+      expect(pageImage.format, PdfPageFormat.JPEG);
       expect(pageImage.width, width);
       expect(pageImage.height, height);
       expect(pageImage.pageNumber, page.pageNumber);

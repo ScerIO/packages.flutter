@@ -8,9 +8,9 @@ import 'package:native_pdf_renderer_example/has_support.dart';
 void main() => runApp(ExampleApp());
 
 class ExampleApp extends StatelessWidget {
-  Future<PDFDocument> _getDocument() async {
+  Future<PdfDocument> _getDocument() async {
     if (await hasSupport()) {
-      return PDFDocument.openAsset('assets/sample.pdf');
+      return PdfDocument.openAsset('assets/sample.pdf');
     } else {
       throw Exception(
         'PDF Rendering does not '
@@ -29,7 +29,7 @@ class ExampleApp extends StatelessWidget {
       systemNavigationBarIconBrightness: Brightness.dark,
     ));
 
-    final storage = Map<int, PDFPageImage>();
+    final storage = Map<int, PdfPageImage>();
 
     return MaterialApp(
       title: 'PDF View example',
@@ -37,7 +37,7 @@ class ExampleApp extends StatelessWidget {
       home: Scaffold(
         body: FutureBuilder(
           future: _getDocument(),
-          builder: (context, AsyncSnapshot<PDFDocument> snapshot) {
+          builder: (context, AsyncSnapshot<PdfDocument> snapshot) {
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(),
@@ -95,14 +95,14 @@ class ImageLoader extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final Map<int, PDFPageImage> storage;
-  final PDFDocument document;
+  final Map<int, PdfPageImage> storage;
+  final PdfDocument document;
   final int pageNumber;
 
   @override
   Widget build(BuildContext context) => FutureBuilder(
         future: _renderPage(),
-        builder: (context, AsyncSnapshot<PDFPageImage> snapshot) {
+        builder: (context, AsyncSnapshot<PdfPageImage> snapshot) {
           if (snapshot.hasError) {
             return Center(
               child: Text('Error'),
@@ -120,7 +120,7 @@ class ImageLoader extends StatelessWidget {
         },
       );
 
-  Future<PDFPageImage> _renderPage() async {
+  Future<PdfPageImage> _renderPage() async {
     if (storage.containsKey(pageNumber)) {
       return storage[pageNumber];
     }
@@ -128,7 +128,7 @@ class ImageLoader extends StatelessWidget {
     final pageImage = await page.render(
       width: page.width * 2,
       height: page.height * 2,
-      format: PDFPageFormat.PNG,
+      format: PdfPageFormat.PNG,
     );
     await page.close();
     storage[pageNumber] = pageImage;
