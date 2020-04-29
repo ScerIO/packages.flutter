@@ -1,3 +1,7 @@
+## 3.0.1
+
+* Fixed issues: [issue#57](https://github.com/rbcprolabs/packages.flutter/issues/57), [issue#55](https://github.com/rbcprolabs/packages.flutter/issues/55) 
+
 ## 3.0.0
 
 * Added more docs & examples in readme
