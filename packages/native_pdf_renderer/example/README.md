@@ -7,13 +7,13 @@ import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
 void main() async {
   try {
-    final document = await PDFDocument.openAsset('assets/sample.pdf');
+    final document = await PdfDocument.openAsset('assets/sample.pdf');
 
     // Or open from data:
-    // final document = await PDFDocument.openData(<Uint8List>);
+    // final document = await PdfDocument.openData(<Uint8List>);
 
     // Or open from file path:
-    // final document = await PDFDocument.openFile('absolute/path/to/file');
+    // final document = await PdfDocument.openFile('absolute/path/to/file');
 
 
     final page = await document.getPage(1); // Not index! Page number starts from 1

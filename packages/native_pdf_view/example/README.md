@@ -17,9 +17,9 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
 
 
-  Future<PDFDocument> _getDocument() async {
+  Future<PdfDocument> _getDocument() async {
     if (await _hasSupportPdfRendering()) {
-      return PDFDocument.openAsset('assets/sample.pdf');
+      return PdfDocument.openAsset('assets/sample.pdf');
     } else {
       throw Exception(
         'PDF Rendering does not '
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(primaryColor: Colors.white),
         home: Scaffold(
           appBar: AppBar(title: Text('PDFView example')),
-          body: FutureBuilder<PDFDocument>(
+          body: FutureBuilder<PdfDocument>(
             future: _getDocument(),
             builder: (_, snapshot) {
               if (snapshot.hasData) {
