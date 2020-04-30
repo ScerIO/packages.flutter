@@ -1,6 +1,18 @@
+## 3.1.0
+
+* Added `pageSnapping`, `physics` [issue#58](https://github.com/rbcprolabs/packages.flutter/issues/58)
+
+## 3.1.0-dev.2
+
+* Adapted 3.0.1 for flutter sdk > 1.16.0
+
 ## 3.0.1
 
 * Fixed issues: [issue#57](https://github.com/rbcprolabs/packages.flutter/issues/57), [issue#55](https://github.com/rbcprolabs/packages.flutter/issues/55) 
+
+## 3.1.0-dev.1
+
+* Fix build error on high flutter sdk (> 1.16.0)
 
 ## 3.0.0
 
@@ -21,6 +33,10 @@ from `PageController` saved in `PdfController`)
   3. Widget errorBuilder(Exception error) - show document loading error in PdfView
 * In `PDFViewPageBuilder` (`builder` property) added `animationController` argument for animate double tap
 * Updated `[extended_image]` package
+
+## 2.3.0-dev.1
+
+* Fix build error on high flutter sdk (> 1.16.0)
 
 ## 2.2.0
 
