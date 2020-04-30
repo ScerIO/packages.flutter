@@ -102,7 +102,7 @@ class PdfView extends StatefulWidget {
     Widget image = ExtendedImage.memory(
       pageImage.bytes,
       key: Key(pageImage.hashCode.toString()),
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.contain,
       mode: ExtendedImageMode.gesture,
       initGestureConfigHandler: (_) => GestureConfig(
         minScale: 1,
