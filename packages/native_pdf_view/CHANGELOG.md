@@ -1,3 +1,12 @@
+## 3.2.0-dev.1
+
+* Adapted 3.1.0 for flutter sdk > 1.16.0
+
+## 3.1.0
+
+* Added `pageSnapping`, `physics` [issue#58](https://github.com/rbcprolabs/packages.flutter/issues/58)
+* Fixed `errorBuilder`
+
 ## 3.1.0-dev.2
 
 * Adapted 3.0.1 for flutter sdk > 1.16.0
