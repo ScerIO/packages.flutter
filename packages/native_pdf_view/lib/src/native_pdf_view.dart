@@ -267,7 +267,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
           key: Key('$runtimeType.root.error'),
           child: Padding(
             padding: EdgeInsets.all(32),
-            child: widget.errorBuilder.call(_loadingError) ??
+            child: widget.errorBuilder?.call(_loadingError) ??
                 Center(child: Text(_loadingError.toString())),
           ),
         );
