@@ -128,8 +128,8 @@ final pageImage = page.render(
 ```
 
 **Close page:**
-<br/>
-Before open new page android asks to close the past. <br/>
+<br>
+Before open new page android asks to close the past. <br>
 If this is not done, the application may crash with an error
 ```dart
 page.close();
