@@ -31,7 +31,7 @@ class EpubReaderTableOfContents extends StatelessWidget {
             content = ListView.builder(
               key: Key('$runtimeType.content'),
               itemBuilder: (context, index) =>
-                  itemBuilder.call(context, index, toc[index], toc.length) ??
+                  itemBuilder?.call(context, index, toc[index], toc.length) ??
                   ListTile(
                     title: Text(toc[index].title.trim()),
                     onTap: () =>
