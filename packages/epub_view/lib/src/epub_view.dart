@@ -118,9 +118,9 @@ class _EpubReaderViewState extends State<EpubReaderView> {
   bool _initialized = false;
 
   List<int> _chapterIndexes = [];
-  final StreamController<EpubChapterViewValue> _actualChapter =
-      StreamController();
-  final StreamController<bool> _bookLoaded = StreamController();
+  final BehaviorSubject<EpubChapterViewValue> _actualChapter =
+      BehaviorSubject();
+  final BehaviorSubject<bool> _bookLoaded = BehaviorSubject();
 
   @override
   void initState() {

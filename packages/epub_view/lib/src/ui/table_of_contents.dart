@@ -5,11 +5,13 @@ import 'package:flutter/widgets.dart';
 class EpubReaderTableOfContents extends StatelessWidget {
   const EpubReaderTableOfContents({
     @required this.controller,
+    this.padding,
     this.itemBuilder,
     this.loader,
     Key key,
   }) : super(key: key);
 
+  final EdgeInsetsGeometry padding;
   final EpubReaderController controller;
 
   final Widget Function(
@@ -29,6 +31,7 @@ class EpubReaderTableOfContents extends StatelessWidget {
           if (snapshot.hasData) {
             final toc = snapshot.data;
             content = ListView.builder(
+              padding: padding,
               key: Key('$runtimeType.content'),
               itemBuilder: (context, index) =>
                   itemBuilder?.call(context, index, toc[index], toc.length) ??

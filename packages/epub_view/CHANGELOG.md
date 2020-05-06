@@ -1,6 +1,7 @@
 ## 0.7.0
 
 * Expose chapter & items length into `EpubReaderTableOfContents` builder
+* Added padding property in `EpubReaderTableOfContents`
 
 ## 0.6.0
 
