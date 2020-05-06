@@ -11,7 +11,13 @@ class EpubReaderTableOfContents extends StatelessWidget {
   }) : super(key: key);
 
   final EpubReaderController controller;
-  final IndexedWidgetBuilder itemBuilder;
+
+  final Widget Function(
+    BuildContext context,
+    int index,
+    EpubReaderChapter chapter,
+    int itemCount,
+  ) itemBuilder;
   final Widget loader;
 
   @override
@@ -24,12 +30,13 @@ class EpubReaderTableOfContents extends StatelessWidget {
             final toc = snapshot.data;
             content = ListView.builder(
               key: Key('$runtimeType.content'),
-              itemBuilder: itemBuilder ??
-                  (_, index) => ListTile(
-                        title: Text(toc[index].title),
-                        onTap: () =>
-                            controller.scrollTo(index: toc[index].startIndex),
-                      ),
+              itemBuilder: (context, index) =>
+                  itemBuilder.call(context, index, toc[index], toc.length) ??
+                  ListTile(
+                    title: Text(toc[index].title.trim()),
+                    onTap: () =>
+                        controller.scrollTo(index: toc[index].startIndex),
+                  ),
               itemCount: toc.length,
             );
           } else {

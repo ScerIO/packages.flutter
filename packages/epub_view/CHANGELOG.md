@@ -1,3 +1,7 @@
+## 0.7.0
+
+* Expose chapter & items length into `EpubReaderTableOfContents` builder
+
 ## 0.6.0
 
 * Removed `excludeHeaders`, `headerBuilder`, `startFrom` (use for replacement `epubCfi`)
