@@ -1,3 +1,7 @@
+## 2.1.1
+
+* Update package `extension`
+
 ## 2.1.0
 
 * Set minimal flutter version to 1.17.0
