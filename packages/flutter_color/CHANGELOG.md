@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Set minimal flutter version to 1.17.0
+
 ## 1.1.0
 
 * Added `Color.mix(otherColor, mixPercent)` helper

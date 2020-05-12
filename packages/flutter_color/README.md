@@ -21,7 +21,6 @@ Color(0xFFFF0000).mix(Color(0xFF00FF00), .25) // -> Color(0xFFBF3F00)
 Color.fromRGBO(255, 255, 255, 1).hexColor // -> '#FFFFFFFF'
 ```
 
-
 ## Getting Started
 
 In your flutter project add the dependency:
@@ -32,8 +31,6 @@ In your flutter project add the dependency:
 dependencies:
   flutter_color: any
 ```
-
-For help getting started with Flutter, view the online [documentation](https://flutter.io/).
 
 ## Examples
 

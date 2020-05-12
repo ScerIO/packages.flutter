@@ -1,10 +1,21 @@
-# flutter_epub
+# epub_view
 
 Flutter widget for view EPUB documents on all platforms. Based on [epub](https://pub.dev/packages/epub) package. Render with flutter widgets (not native view)
 
 ## Showcase
 
 <img width="50%" src="https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/epub_view/example/media/example.gif?raw=true" />
+
+## Getting Started
+
+In your flutter project add the dependency:
+
+[![pub package](https://img.shields.io/pub/v/epub_view.svg)](https://pub.dartlang.org/packages/epub_view)
+
+```yaml
+dependencies:
+  epub_view: any
+```
 
 ## Usage example:
 ```dart

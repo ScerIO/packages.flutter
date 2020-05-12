@@ -75,7 +75,7 @@ class ExampleApp extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'Swipe to right',
-                  style: Theme.of(context).textTheme.title,
+                  style: Theme.of(context).textTheme.headline6,
                 ),
                 Icon(Icons.keyboard_arrow_right),
               ],

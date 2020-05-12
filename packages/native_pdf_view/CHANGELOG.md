@@ -1,3 +1,7 @@
+## 3.2.0
+
+* Set minimal flutter version to 1.17.0
+
 ## 3.2.0-dev.1
 
 * Adapted 3.1.0 for flutter sdk > 1.16.0

@@ -17,8 +17,6 @@ dependencies:
   auto_animated: any
 ```
 
-For help getting started with Flutter, view the online [documentation](https://flutter.io/).
-
 ## Api overview
 
 List

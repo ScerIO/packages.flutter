@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Set minimal flutter version to 1.17.0
+
 ## 2.0.1
 
 * Fixed [issue#60](https://github.com/rbcprolabs/packages.flutter/issues/60)
