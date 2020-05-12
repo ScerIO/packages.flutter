@@ -1,3 +1,8 @@
+## 2.1.0
+
+* Replaced package `flutter_widgets` to `visibility_detector`
+* Set minimal flutter version to 1.17.0
+
 ## 2.0.2 
 
 * Fixed show animation for `BouncingScrollPhysics` (scroll under min extend & above max extend)

@@ -1,6 +1,6 @@
-import 'package:auto_animated/src/animate_if_visible.dart';
 import 'package:flutter/widgets.dart';
 
+import 'animate_if_visible.dart';
 import 'helpers/callbacks.dart';
 import 'helpers/options.dart';
 import 'helpers/utils.dart' as utils;
