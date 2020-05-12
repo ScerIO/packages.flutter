@@ -40,7 +40,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _epubReaderController.bookLoadedStream.listen((v) => print('isLoaded: $v'));
     _loadedBook =
         _loadFromAssets('assets/New-Findings-on-Shirdi-Sai-Baba.epub');
-    // _loadedBook = _loadFromAssets('assets/book_3.epub');
     super.initState();
   }
 
@@ -56,7 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
           title: EpubActualChapter(
             controller: _epubReaderController,
             builder: (chapterValue) => Text(
-              'Chapter ${chapterValue?.chapter?.Title ?? ''}',
+              'Chapter ${chapterValue?.chapter?.Title?.trim() ?? ''}'
+                  .replaceAll('\n', ''),
               textAlign: TextAlign.start,
             ),
           ),

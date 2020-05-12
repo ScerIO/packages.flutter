@@ -1,3 +1,9 @@
+## 0.8.0
+
+* Replaced package `flutter_widgets` to `scrollable_positioned_list`
+* Upgrade `flutter_html` dependency
+* Set minimal flutter version to 1.17.0
+
 ## 0.7.0
 
 * Expose chapter & items length into `EpubReaderTableOfContents` builder

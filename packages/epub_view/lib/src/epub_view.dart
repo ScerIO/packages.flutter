@@ -8,7 +8,7 @@ import 'package:flutter_html/style.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
 import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_widgets/flutter_widgets.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'epub_cfi/generator.dart';
