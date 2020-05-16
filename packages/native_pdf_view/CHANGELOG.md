@@ -1,4 +1,4 @@
-## 3.2.0
+## 3.2.1
 
 * Fixed [issue#65](https://github.com/rbcprolabs/packages.flutter/issues/65) `PdfController.jumpToPage`
 
