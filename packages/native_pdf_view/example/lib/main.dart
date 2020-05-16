@@ -33,13 +33,24 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: Text('PdfView example'),
             actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.navigate_before),
+                onPressed: () {
+                  _pdfController.jumpToPage(_pdfController.page -1);
+                },
+              ),
               Container(
-                margin: EdgeInsets.only(right: 16),
                 alignment: Alignment.center,
                 child: Text(
                   '$_actualPageNumber/$_allPagesCount',
                   style: TextStyle(fontSize: 22),
                 ),
+              ),
+              IconButton(
+                icon: Icon(Icons.navigate_next),
+                onPressed: () {
+                  _pdfController.jumpToPage(_pdfController.page + 1);
+                },
               ),
             ],
           ),

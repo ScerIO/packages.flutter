@@ -1,5 +1,9 @@
 ## 3.2.0
 
+* Fixed [issue#65](https://github.com/rbcprolabs/packages.flutter/issues/65) `PdfController.jumpToPage`
+
+## 3.2.0
+
 * Set minimal flutter version to 1.17.0
 
 ## 3.2.0-dev.1

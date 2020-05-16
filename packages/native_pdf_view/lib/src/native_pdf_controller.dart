@@ -27,7 +27,7 @@ class PdfController {
   PdfDocument _document;
 
   /// Actual showed page
-  int get page => (_pdfViewState?._currentIndex ?? -1) + 1;
+  int get page => (_pdfViewState?._currentIndex ?? 0) + 1;
 
   /// Count of all pages in document
   int get pagesCount => _document?.pagesCount;
@@ -37,7 +37,7 @@ class PdfController {
   /// Jumps the page position from its current value to the given value,
   /// without animation, and without checking if the new value is in range.
   void jumpToPage(int page) =>
-      _pageController.jumpToPage(_pageController.page.round() - 1);
+      _pageController.jumpToPage(page - 1);
 
   /// Animates the controlled [PdfView] from the current page to the given page.
   ///
