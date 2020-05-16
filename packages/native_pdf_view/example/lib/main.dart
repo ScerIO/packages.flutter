@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Icon(Icons.navigate_before),
                 onPressed: () {
-                  _pdfController.jumpToPage(_pdfController.page -1);
+                  _pdfController.jumpToPage(_pdfController.page - 1);
                 },
               ),
               Container(
