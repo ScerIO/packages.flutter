@@ -211,7 +211,7 @@ PdfView.builder(
 
 ## Rendering additional info
 
-### rendering on Web
+### Rendering on Web
 This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 
 ### Rendering on Android devices
