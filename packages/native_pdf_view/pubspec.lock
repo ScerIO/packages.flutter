@@ -169,7 +169,7 @@ packages:
       path: "../native_pdf_renderer"
       relative: true
     source: path
-    version: "2.2.0"
+    version: "2.3.0"
   path:
     dependency: transitive
     description:
