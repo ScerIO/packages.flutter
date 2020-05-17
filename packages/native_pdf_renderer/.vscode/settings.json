@@ -6,7 +6,10 @@
         "**/.factorypath": true
     },
     "cSpell.words": [
+        "Uint",
         "WEBP",
-        "scer"
+        "pdfjs",
+        "scer",
+        "uuid"
     ]
 }

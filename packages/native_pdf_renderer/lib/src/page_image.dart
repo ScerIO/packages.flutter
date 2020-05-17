@@ -77,7 +77,7 @@ class PdfPageImage {
     }
 
     final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
-    final pixels = obj['data'] as Uint8List;
+    final pixels = Uint8List.fromList(obj['data']);
 
     return PdfPageImage._(
       id: pageId,

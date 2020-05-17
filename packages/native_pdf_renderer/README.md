@@ -1,10 +1,8 @@
 # PDF Renderer
 
-`Flutter` Plugin to render PDF pages as images on both **Android 5.0+** and **iOS 11.0+** devices.
+`Flutter` Plugin to render PDF pages as images on **Web**, **Android 5.0+** and **iOS 11.0+** devices.
 
 **We also support the package for easy display PDF documents [native_pdf_view](https://pub.dev/packages/native_pdf_view)**
-
-For IOS need set swift version to 5 ([instruction](https://stackoverflow.com/questions/46338588/xcode-9-swift-language-version-swift-version/46339401#46339401), [issue](https://github.com/rbcprolabs/packages.flutter/issues/3))
 
 ## Getting Started
 In your flutter project add the dependency:
@@ -14,6 +12,14 @@ In your flutter project add the dependency:
 ```yaml
 dependencies:
   native_pdf_renderer: any
+```
+
+For web add lines in index.html:
+```html
+<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>
+<script type="text/javascript">
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
+</script>
 ```
 
 ## Usage example
@@ -60,13 +66,13 @@ void main() async {
 
 **Document open:**
 ```dart
-// From assets
+// From assets (Android, Ios, Web)
 PdfDocument.openAsset('assets/sample.pdf')
 
-// From file
+// From file (Android, Ios)
 PdfDocument.openFile('path/to/file/on/device')
 
-// From data
+// From data (Android, Ios, Web)
 PdfDocument.openData(uint8Data)
 ```
 
@@ -100,14 +106,17 @@ final pageImage = page.render(
 
   // Rendered image compression format, also can be PNG, WEBP*
   // Optional, default: PdfPageFormat.PNG
+  // Web not supported
   format: PdfPageFormat.JPEG,
 
   // Image background fill color for JPEG
   // Optional, default '#ffffff'
+  // Web not supported
   backgroundColor: '#ffffff',
 
   // Crop rect in image for render
   // Optional, default null
+  // Web not supported
   cropRect: Rect.fromLTRB(left, top, right, bottom),
 );
 ```
@@ -121,7 +130,7 @@ final pageImage = page.render(
 | width      | Width of the rendered area in pixels, int                                          | -                 |
 | height     | Height of the rendered area in pixels, int                                         | -                 |
 | bytes      | Rendered image result, Uint8List                                                   | -                 |
-| format     | Rendered image compression format                                                  | PdfPageFormat.PNG |
+| format     | Rendered image compression format, for web always PNG                              | PdfPageFormat.PNG |
 
 ```dart
 
@@ -135,16 +144,15 @@ If this is not done, the application may crash with an error
 page.close();
 ```
 
-
-
 \* __PdfPageFormat.WEBP support only on android__
 
 ## Rendering additional info
 
-### Rendering PDF files on Android devices
-This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer) to render
-the pages of PDF files and provides a widget called `PdfRenderer` to display the PDF page you like.
+### rendering on Web
+This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 
-### Rendering PDF files on IOS devices
-This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit) to render
-the pages of PDF files and provides a widget called `PDFKit` to display the PDF page you like.
+### Rendering on Android devices
+This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
+
+### Rendering on IOS devices
+This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit)

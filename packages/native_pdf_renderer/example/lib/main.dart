@@ -3,7 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
-import 'package:native_pdf_renderer_example/has_support.dart';
+// ignore: uri_does_not_exist
+import 'has_support_stub.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.html) 'has_support_browser.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.io) 'has_support_io.dart';
 
 void main() => runApp(ExampleApp());
 

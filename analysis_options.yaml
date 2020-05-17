@@ -1,6 +1,7 @@
 analyzer:
   exclude:
     - '**/*.g.dart'
+    - '**/generated_plugin_registrant.dart'
   strong-mode:
     implicit-casts: true
     implicit-dynamic: true

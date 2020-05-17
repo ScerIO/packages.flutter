@@ -1,3 +1,7 @@
+## 2.2.0
+
+* Web supported!
+
 ## 2.1.1
 
 * Update package `extension`
