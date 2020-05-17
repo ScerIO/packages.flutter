@@ -1,6 +1,6 @@
 # native_pdf_view
 
-`Flutter` Plugin to render PDF and show a PDF file on both **Android 5.0+** and **iOS 11.0+** devices.
+`Flutter` Plugin to render PDF and show a PDF file on **Web**, **Android 5.0+** and **iOS 11.0+** devices.
 
 ## Showcase
 
@@ -17,6 +17,14 @@ In your flutter project add the dependency:
 ```yaml
 dependencies:
   native_pdf_view: any
+```
+
+For web add lines in index.html before importing main.dart.js:
+```html
+<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>
+<script type="text/javascript">
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
+</script>
 ```
 
 ## Usage example
@@ -201,10 +209,13 @@ PdfView.builder(
 );
 ```
 
-## Rendering PDF files on Android devices
-This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer) to render
-the pages of PDF files and provides a widget called `PdfRenderer` to display the PDF page you like.
+## Rendering additional info
 
-## Rendering PDF files on IOS devices
-This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit) to render
-the pages of PDF files and provides a widget called `PDFKit` to display the PDF page you like.
+### rendering on Web
+This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
+
+### Rendering on Android devices
+This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
+
+### Rendering on IOS devices
+This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit)

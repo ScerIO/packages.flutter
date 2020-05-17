@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 
-/// `PdfRenderer` on android requires android 5.0+
-/// `PDFKit` om ios requires ios 11+
 Future<bool> hasSupport() async {
   final deviceInfo = DeviceInfoPlugin();
   bool hasSupport = false;

@@ -1,8 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
-import 'package:native_pdf_view/src/utils.dart';
 import 'package:synchronized/synchronized.dart';
+
+// ignore: uri_does_not_exist
+import 'has_support/stub.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.html) 'has_support/browser.dart'
+    // ignore: uri_does_not_exist
+    if (dart.library.io) 'has_support/io.dart';
+
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
 export 'package:extended_image/extended_image.dart';
 
