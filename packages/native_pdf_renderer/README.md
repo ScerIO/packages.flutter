@@ -1,6 +1,6 @@
 # PDF Renderer
 
-`Flutter` Plugin to render PDF pages as images on **Web**, **Android 5.0+** and **iOS 11.0+** devices.
+`Flutter` Plugin to render PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+** and **iOS 11.0+**.
 
 **We also support the package for easy display PDF documents [native_pdf_view](https://pub.dev/packages/native_pdf_view)**
 
@@ -66,13 +66,13 @@ void main() async {
 
 **Document open:**
 ```dart
-// From assets (Android, Ios, Web)
+// From assets (Android, Ios, MacOs, Web)
 PdfDocument.openAsset('assets/sample.pdf')
 
-// From file (Android, Ios)
+// From file (Android, Ios, MacOs)
 PdfDocument.openFile('path/to/file/on/device')
 
-// From data (Android, Ios, Web)
+// From data (Android, Ios, MacOs, Web)
 PdfDocument.openData(uint8Data)
 ```
 
@@ -148,11 +148,11 @@ page.close();
 
 ## Rendering additional info
 
-### Rendering on Web
+### On Web
 This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 
-### Rendering on Android devices
+### On Android
 This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
 
-### Rendering on IOS devices
+### On Ios & MacOs
 This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit)

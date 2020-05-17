@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 
 Future<bool> hasSupport() async {
+  if (Platform.isMacOS) {
+    return true;
+  }
   final deviceInfo = DeviceInfoPlugin();
   bool hasSupport = false;
   if (Platform.isIOS) {

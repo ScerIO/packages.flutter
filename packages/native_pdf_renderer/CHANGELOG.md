@@ -1,3 +1,7 @@
+## 2.3.0
+
+* MacOs supported!
+
 ## 2.2.0
 
 * Web supported!

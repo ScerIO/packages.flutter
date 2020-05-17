@@ -41,7 +41,7 @@ class Page {
         }
     }
 
-    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
+    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: NSColor) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
         let stride = width * 4
         var tempData = Data(repeating: 0, count: stride * height)
@@ -58,20 +58,20 @@ class Page {
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
-                var image = UIImage(cgImage: context!.makeImage()!)
+                var bitmapRep = NSBitmapImageRep(cgImage: context!.makeImage()!)
 
                 if (crop != nil){
                     // Perform cropping in Core Graphics
-                    let cutImageRef: CGImage = (image.cgImage?.cropping(to:crop!))!
-                    image = UIImage(cgImage: cutImageRef)
+                    let cutImageRef: CGImage = (bitmapRep.cgImage?.cropping(to:crop!))!
+                    bitmapRep = NSBitmapImageRep(cgImage: cutImageRef)
                 }
 
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
-                        data = image.jpegData(compressionQuality: 1.0) as Data?
+                        data = bitmapRep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [:]) as Data?
                         break;
                     case CompressFormat.PNG:
-                        data = image.pngData() as Data?
+                        data = bitmapRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:]) as Data?
                         break;
                 }
 

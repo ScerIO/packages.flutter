@@ -1,8 +1,24 @@
-import Flutter
-import UIKit
+/*
+ * Copyright (C) 2017, David PHAM-VAN <dev.nfet.net@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import FlutterMacOS
+import Foundation
 import CoreGraphics
 
-public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
+public class NativePdfRendererPlugin: NSObject, FlutterPlugin {
     static let invalid = NSNumber(value: -1)
     let dispQueue = DispatchQueue(label: "io.scer.pdf.renderer")
 
@@ -11,8 +27,8 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
-            name: "io.scer.pdf.renderer", binaryMessenger: registrar.messenger())
-        let instance = SwiftNativePDFRendererPlugin()
+            name: "io.scer.pdf.renderer", binaryMessenger: registrar.messenger)
+        let instance = NativePdfRendererPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
@@ -83,9 +99,11 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
     }
 
     func openAssetDocument(name: String) -> CGPDFDocument? {
-        guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
-            return nil
-        }
+        let path = Bundle.main.bundlePath + "/Contents/Frameworks/App.framework/Resources/flutter_assets/" + name;
+
+//        guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
+//            return nil
+//        }
         return openFileDocument(pdfFilePath: path)
     }
 
@@ -145,7 +163,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
                     height: height,
                     crop: cropZone,
                     compressFormat: CompressFormat(rawValue: compressFormat)!,
-                    backgroundColor: UIColor(hexString: backgroundColor)
+                    backgroundColor: NSColor(hexString: backgroundColor)
                 ) {
                     results = [
                         "width": Int32(data.width),
