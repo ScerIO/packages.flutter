@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
@@ -48,6 +51,7 @@ class PdfView extends StatefulWidget {
     Key key,
   })  : assert(pageSnapping != null),
         assert(controller != null),
+        assert(scrollDirection != null),
         assert(renderer != null),
         super(key: key);
 
@@ -223,39 +227,51 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
     });
   }
 
-  Widget _buildLoaded() => ExtendedImageGesturePageView.builder(
-        itemBuilder: (BuildContext context, int index) =>
-            FutureBuilder<PdfPageImage>(
-          future: _getPageImage(index),
-          builder: (_, snapshot) {
-            if (snapshot.hasData) {
-              return KeyedSubtree(
-                key: Key('$runtimeType.page.'
-                    '${widget.controller._document.hashCode}.'
-                    '${_pages[index].pageNumber}'),
-                child: widget.pageBuilder(
-                  _pages[index],
-                  index == _currentIndex,
-                  _animationController,
-                ),
-              );
-            }
-
-            return KeyedSubtree(
-              key: Key('$runtimeType.page.loading'),
-              child: widget.pageLoader ?? SizedBox(),
+  Widget _buildLoaded() => Listener(
+        onPointerSignal: (PointerSignalEvent event) {
+          if (event is PointerScrollEvent && !widget.pageSnapping) {
+            widget.controller._pageController.animateTo(
+              widget.controller._pageController.offset +
+                  (event.scrollDelta.dy * window.devicePixelRatio),
+              duration: Duration(milliseconds: 75),
+              curve: Curves.ease,
             );
-          },
-        ),
-        itemCount: widget.controller._document.pagesCount,
-        onPageChanged: (int index) {
-          _currentIndex = index;
-          widget.onPageChanged?.call(index + 1);
+          }
         },
-        controller: widget.controller?._pageController,
-        scrollDirection: widget.scrollDirection,
-        pageSnapping: widget.pageSnapping,
-        physics: widget.physics,
+        child: ExtendedImageGesturePageView.builder(
+          itemBuilder: (BuildContext context, int index) =>
+              FutureBuilder<PdfPageImage>(
+            future: _getPageImage(index),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                return KeyedSubtree(
+                  key: Key('$runtimeType.page.'
+                      '${widget.controller._document.hashCode}.'
+                      '${_pages[index].pageNumber}'),
+                  child: widget.pageBuilder(
+                    _pages[index],
+                    index == _currentIndex,
+                    _animationController,
+                  ),
+                );
+              }
+
+              return KeyedSubtree(
+                key: Key('$runtimeType.page.loading'),
+                child: widget.pageLoader ?? SizedBox(),
+              );
+            },
+          ),
+          itemCount: widget.controller._document.pagesCount,
+          onPageChanged: (int index) {
+            _currentIndex = index;
+            widget.onPageChanged?.call(index + 1);
+          },
+          controller: widget.controller?._pageController,
+          scrollDirection: widget.scrollDirection,
+          pageSnapping: widget.pageSnapping,
+          physics: widget.physics,
+        ),
       );
 
   @override

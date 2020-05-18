@@ -1,3 +1,7 @@
+## 3.5.0
+
+* Scroll with mouse wheel for web [issue#69](https://github.com/rbcprolabs/packages.flutter/issues/69)
+
 ## 3.4.0
 
 * MacOs supported!

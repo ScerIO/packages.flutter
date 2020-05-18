@@ -36,7 +36,10 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Icon(Icons.navigate_before),
                 onPressed: () {
-                  _pdfController.jumpToPage(_pdfController.page - 1);
+                  _pdfController.previousPage(
+                    curve: Curves.ease,
+                    duration: Duration(milliseconds: 100),
+                  );
                 },
               ),
               Container(
@@ -49,7 +52,10 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Icon(Icons.navigate_next),
                 onPressed: () {
-                  _pdfController.jumpToPage(_pdfController.page + 1);
+                  _pdfController.nextPage(
+                    curve: Curves.ease,
+                    duration: Duration(milliseconds: 100),
+                  );
                 },
               ),
             ],
