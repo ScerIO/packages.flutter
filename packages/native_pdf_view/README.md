@@ -63,8 +63,10 @@ Widget pdfView() => PdfView(
 | pageLoader       | Widget showing when pdf page loading                                                                           | SizedBox()                                                                                              |
 | builder          | Callback called to render a widget for each page. See [custom page builder](#custom-page-builder)              | Default builder                                                                                         |
 | errorBuilder     | Show document loading error message inside  `PdfView`                                                          | Centered error text                                                                                     |
-| renderer         | Custom PdfRenderer library options.  See [custom renderer options](#custom-renderer-options)                   | width: page.width * 2,<br>height: page.height * 2,<br>format: PdfPageFormat.JPEG,<br>backgroundColor: '#ffffff', |
-| scrollDirection  | Page turning direction                                                                                         | Axis . horizontal                                                                                       |                                                                                |
+| renderer         | Custom PdfRenderer library options.  See [custom renderer options](#custom-renderer-options)                   | width: page.width * 2<br>height: page.height * 2<br>format: PdfPageFormat.JPEG<br>backgroundColor: '#ffffff' |
+| scrollDirection  | Page turning direction                                                                                         | Axis.horizontal                                                                                       |                                                                                |
+| physics          | How the widgets should respond to user input                                                                   | -                                                                                                       |
+| pageSnapping     | Set to false for mouse wheel scroll on web                                                                     | true                                                                                                    |
 
 ## Additional examples
 
