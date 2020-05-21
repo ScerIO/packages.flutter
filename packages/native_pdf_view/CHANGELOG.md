@@ -1,3 +1,7 @@
+## 3.5.1
+
+* Update dependency `extended_image`
+
 ## 3.5.0+1
 
 * Docs improvement
