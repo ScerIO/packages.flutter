@@ -389,7 +389,7 @@ class _EpubViewState extends State<EpubView> {
     );
   }
 
-  Widget _buildMain() {
+  Widget _buildLoaded() {
     Widget _buildItem(BuildContext context, int index) =>
         widget.itemBuilder?.call(context, _chapters, _paragraphs, index) ??
         _defaultItemBuilder(index);
@@ -402,24 +402,6 @@ class _EpubViewState extends State<EpubView> {
       itemBuilder: _buildItem,
     );
   }
-
-  Widget _buildLoaded() => FutureBuilder<bool>(
-        future: _init(),
-        builder: (_, snapshot) {
-          Widget result =
-              widget.loader ?? Center(child: CircularProgressIndicator());
-          if (snapshot.hasData) {
-            result = _buildMain();
-          }
-          return AnimatedSwitcher(
-            duration:
-                widget.loaderSwitchDuration ?? Duration(milliseconds: 500),
-            transitionBuilder: (Widget child, Animation<double> animation) =>
-                FadeTransition(child: child, opacity: animation),
-            child: result,
-          );
-        },
-      );
 
   @override
   Widget build(BuildContext context) {
