@@ -106,7 +106,7 @@ class PdfController {
     } catch (error) {
       _pdfViewState
         .._loadingError = error
-        .._changeLoadingState(_PdfViewLoadingState.success);
+        .._changeLoadingState(_PdfViewLoadingState.error);
     }
   }
 

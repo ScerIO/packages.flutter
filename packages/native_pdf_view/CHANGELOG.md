@@ -1,3 +1,7 @@
+## 3.5.2
+
+* Fixed error handle [issue#71](https://github.com/rbcprolabs/packages.flutter/issues/71)
+
 ## 3.5.1
 
 * Update dependency `extended_image`
