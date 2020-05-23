@@ -1,3 +1,17 @@
+## 1.0.0
+
+* Rename `EpubReaderView` -> `EpubView`
+* Rename `EpubReaderController` -> `EpubReaderController`
+* Removed constructors `EpubReaderView.fromBytes` (pass data to controller), `EpubReaderView.builder` (builder available in default constructor)
+* Documents load from controller by pass Future<Uint8List> or Uint8List
+* Property `controller` now requires `EpubReaderController`
+* Added properties:
+  1. onDocumentLoaded(EpubBook document) - calls on document loaded
+  2. onDocumentError(Exception error) - calls on loading document error
+  3. Widget errorBuilder(Exception error) - show document loading error in EpubViexs
+* Added MacOS support
+* For web support see [flutter_html issue#300](https://github.com/Sub6Resources/flutter_html/issues/300)
+
 ## 0.8.0
 
 * Replaced package `flutter_widgets` to `scrollable_positioned_list`

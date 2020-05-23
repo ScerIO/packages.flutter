@@ -12,18 +12,18 @@ class EpubReaderTableOfContents extends StatelessWidget {
   }) : super(key: key);
 
   final EdgeInsetsGeometry padding;
-  final EpubReaderController controller;
+  final EpubController controller;
 
   final Widget Function(
     BuildContext context,
     int index,
-    EpubReaderChapter chapter,
+    EpubViewChapter chapter,
     int itemCount,
   ) itemBuilder;
   final Widget loader;
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<List<EpubReaderChapter>>(
+  Widget build(BuildContext context) => StreamBuilder<List<EpubViewChapter>>(
         stream: controller.tableOfContentsStream,
         builder: (_, snapshot) {
           Widget content;

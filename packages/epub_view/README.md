@@ -1,6 +1,8 @@
 # epub_view
 
-Flutter widget for view EPUB documents on all platforms. Based on [epub](https://pub.dev/packages/epub) package. Render with flutter widgets (not native view)
+Flutter widget for view EPUB documents on all platforms. Based on [epub](https://pub.dev/packages/epub) package. Render with flutter widgets (not native view) on **Web**, **MacOs**, **Android** and **iOS**
+
+for Web a bug is noticed, see [flutter_html issue#300](https://github.com/Sub6Resources/flutter_html/issues/300)
 
 ## Showcase
 
@@ -30,13 +32,16 @@ Future<Uint8List> _loadFromAssets(String assetName) async {
   return bytes.buffer.asUint8List();
 }
 
-EpubReaderController _epubReaderController;
-Future<Uint8List> _bookContent;
+EpubController _epubController;
 
 @override
 void initState() {
-  _epubReaderController = EpubReaderController();
-  _bookContent = _loadFromAssets('assets/book.epub');
+  _epubController = EpubController(
+    // Future<Uint8List>
+    data: _loadFromAssets('assets/book.epub'),
+    // or pure Uint8List
+    // document: EpubReader.readBook(data),
+  );
   super.initState();
 }
 
@@ -45,7 +50,7 @@ Widget build(BuildContext context) => Scaffold(
   appBar: AppBar(
     // Show actual chapter name
     title: EpubActualChapter(
-      controller: _epubReaderController,
+      controller: _epubController,
       builder: (chapterValue) => Text(
         'Chapter ${chapterValue.chapter.Title ?? ''}',
         textAlign: TextAlign.start,
@@ -55,24 +60,12 @@ Widget build(BuildContext context) => Scaffold(
   // Show table of contents
   drawer: Drawer(
     child: EpubReaderTableOfContents(
-      controller: _epubReaderController,
+      controller: _epubController,
     ),
   ),
   // Show epub document
-  body: FutureBuilder<Uint8List>(
-    future: _bookContent,
-    builder: (_, snapshot) {
-      if (snapshot.hasData) {
-        return EpubReaderView.fromBytes(
-          controller: _epubReaderController,
-          bookData: snapshot.data,
-        );
-      }
-
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    },
+  body: EpubView(
+    controller: _epubController,
   ),
 );
 ```
@@ -80,22 +73,21 @@ Widget build(BuildContext context) => Scaffold(
 ## How start from last view position?
 This method allows you to keep the exact reading position even inside the chapter:
 ```dart
+_epubController = EpubController(
+  // initialize with epub cfi string for open book from last position
+  epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
+);
+
 // Attach controller
-EpubReaderView(
-  controller: _epubReaderController,
+EpubView(
+  controller: _epubController,
 );
 
 // Get epub cfi string
 // for example output - epubcfi(/6/6[chapter-2]!/4/2/1612)
-final cfi = _epubReaderController.generateEpubCfi();
-
-// next step usage cfi string on next initialization:
-EpubReaderView(
-  controller: _epubReaderController,
-  epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
-);
+final cfi = _epubController.generateEpubCfi();
 
 // or usage controller for navigate
-_epubReaderController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
+_epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
 ```
 

@@ -13,7 +13,7 @@ class EpubActualChapter extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  final EpubReaderController controller;
+  final EpubController controller;
   final ChapterBuilder builder;
   final Widget loader;
   final Alignment animationAlignment;

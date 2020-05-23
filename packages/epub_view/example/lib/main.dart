@@ -32,14 +32,19 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _epubReaderController = EpubReaderController();
-  Future<Uint8List> _loadedBook;
+  EpubController _epubReaderController;
 
   @override
   void initState() {
-    _epubReaderController.bookLoadedStream.listen((v) => print('isLoaded: $v'));
-    _loadedBook =
+    final loadedBook =
         _loadFromAssets('assets/New-Findings-on-Shirdi-Sai-Baba.epub');
+    _epubReaderController = EpubController(
+      data: loadedBook,
+      // epubCfi:
+      //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
+      // epubCfi:
+      //     'epubcfi(/6/6[chapter-2]!/4/2/1612)', // book_2.epub Chapter 16 paragraph 3
+    );
     super.initState();
   }
 
@@ -55,8 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           title: EpubActualChapter(
             controller: _epubReaderController,
             builder: (chapterValue) => Text(
-              'Chapter ${chapterValue?.chapter?.Title?.trim() ?? ''}'
-                  .replaceAll('\n', ''),
+              (chapterValue?.chapter?.Title?.trim() ?? '').replaceAll('\n', ''),
               textAlign: TextAlign.start,
             ),
           ),
@@ -71,25 +75,12 @@ class _MyHomePageState extends State<MyHomePage> {
         drawer: Drawer(
           child: EpubReaderTableOfContents(controller: _epubReaderController),
         ),
-        body: FutureBuilder<Uint8List>(
-          future: _loadedBook,
-          builder: (_, snapshot) {
-            if (snapshot.hasData) {
-              return EpubReaderView.fromBytes(
-                bookData: snapshot.data,
-                controller: _epubReaderController,
-                // epubCfi:
-                //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
-                // epubCfi:
-                //     'epubcfi(/6/6[chapter-2]!/4/2/1612)', // book_2.epub Chapter 16 paragraph 3
-                dividerBuilder: (_) => Divider(),
-              );
-            }
-
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+        body: EpubView(
+          controller: _epubReaderController,
+          onDocumentLoaded: (document) {
+            print('isLoaded: $document');
           },
+          dividerBuilder: (_) => Divider(),
         ),
       );
 
