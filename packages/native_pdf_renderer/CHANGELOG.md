@@ -1,3 +1,7 @@
+## 2.3.1
+
+* Fixed [issue#50](https://github.com/rbcprolabs/packages.flutter/issues/50)
+
 ## 2.3.0
 
 * MacOs supported!

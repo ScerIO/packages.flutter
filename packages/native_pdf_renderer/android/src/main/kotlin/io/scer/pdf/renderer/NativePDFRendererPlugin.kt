@@ -58,6 +58,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Can't open file", null)
         } catch (e: CreateRendererException) {
             result.error("PDF_RENDER", "Can't create PDF renderer", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
@@ -76,6 +78,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Can't open file", null)
         } catch (e: CreateRendererException) {
             result.error("PDF_RENDER", "Can't create PDF renderer", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
@@ -94,6 +98,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Can't open file", null)
         } catch (e: CreateRendererException) {
             result.error("PDF_RENDER", "Can't create PDF renderer", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
@@ -106,6 +112,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Need call arguments: id!", null)
         } catch (e: RepositoryItemNotFoundException) {
             result.error("PDF_RENDER", "Document not exist in documents repository", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
@@ -118,6 +126,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Need call arguments: id!", null)
         } catch (e: RepositoryItemNotFoundException) {
             result.error("PDF_RENDER", "Page not exist in pages repository", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
@@ -133,6 +143,8 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
             result.error("PDF_RENDER", "Need call arguments: documentId & page!", null)
         } catch (e: RepositoryItemNotFoundException) {
             result.error("PDF_RENDER", "Document not exist in documents", null)
+        } catch (e: Exception) {
+            result.error("PDF_RENDER", "Unknown error", null)
         }
     }
 
