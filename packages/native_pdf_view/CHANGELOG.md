@@ -1,3 +1,9 @@
+## 3.6.0
+
+* Fixed `errorBuilder` (usage object as type instead Exception)
+* Added option `loaderSwitchDuration`
+* Fixed readme
+
 ## 3.5.2
 
 * Fixed error handle [issue#71](https://github.com/rbcprolabs/packages.flutter/issues/71)

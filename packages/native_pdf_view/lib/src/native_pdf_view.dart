@@ -48,12 +48,16 @@ class PdfView extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.pageSnapping = true,
     this.physics,
+    this.loaderSwitchDuration = const Duration(seconds: 1),
     Key key,
   })  : assert(pageSnapping != null),
         assert(controller != null),
         assert(scrollDirection != null),
         assert(renderer != null),
         super(key: key);
+
+  ///
+  final Duration loaderSwitchDuration;
 
   /// Page management
   final PdfController controller;
@@ -65,7 +69,7 @@ class PdfView extends StatefulWidget {
   final void Function(PdfDocument document) onDocumentLoaded;
 
   /// Called when a document loading error
-  final void Function(Exception error) onDocumentError;
+  final void Function(Object error) onDocumentError;
 
   /// Widget showing when pdf document loading
   final Widget documentLoader;
@@ -304,7 +308,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
     }
 
     return AnimatedSwitcher(
-      duration: Duration(seconds: 1),
+      duration: widget.loaderSwitchDuration,
       transitionBuilder: (child, animation) =>
           FadeTransition(opacity: animation, child: child),
       child: content,

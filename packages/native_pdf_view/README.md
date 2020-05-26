@@ -136,10 +136,10 @@ PdfView(
 
 ### Custom page builder:
 ```dart
-PdfView.builder(
+PdfView(
   controller: pdfController,
   document: snapshot.data,
-  builder: (
+  pageBuilder: (
     PdfPageImage pageImage, 
     bool isCurrentIndex, 
     AnimationController animationController,
