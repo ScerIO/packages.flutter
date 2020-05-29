@@ -21,8 +21,8 @@ class Page {
 
   int get number => page.pageNumber;
 
-  int get width => _viewport.width;
-  int get height => _viewport.height;
+  int get width => _viewport.width.toInt();
+  int get height => _viewport.height.toInt();
 
   Map<String, dynamic> get infoMap => {
         'documentId': documentId,
