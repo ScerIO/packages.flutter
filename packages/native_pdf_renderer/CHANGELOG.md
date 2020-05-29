@@ -1,3 +1,8 @@
+## 2.3.2
+
+* Fixed [issue#74](https://github.com/rbcprolabs/packages.flutter/issues/74), min ios version now 2 instead 11
+* Fixed [issue#76](https://github.com/rbcprolabs/packages.flutter/issues/76), page width & height exception on web
+
 ## 2.3.1
 
 * Fixed [issue#50](https://github.com/rbcprolabs/packages.flutter/issues/50)
