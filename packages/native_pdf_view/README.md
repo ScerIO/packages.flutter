@@ -1,6 +1,6 @@
 # native_pdf_view
 
-`Flutter` Plugin to render PDF and show a PDF file on **Web**, **MacOs 10.11+**, **Android 5.0+** and **iOS 11.0+**.
+`Flutter` Plugin to render PDF and show a PDF file on **Web**, **MacOs 10.11+**, **Android 5.0+** and **iOS**.
 
 ## Showcase
 
@@ -220,4 +220,4 @@ This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
 
 ### On Ios & MacOs
-This plugin uses the IOS native [PDFKit](https://developer.apple.com/documentation/pdfkit)
+This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)

@@ -70,7 +70,7 @@ packages:
       name: extended_image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.0"
+    version: "0.9.0"
   extended_image_library:
     dependency: transitive
     description:
@@ -155,7 +155,7 @@ packages:
       path: "../native_pdf_renderer"
       relative: true
     source: path
-    version: "2.3.0"
+    version: "2.3.2"
   path:
     dependency: transitive
     description:
