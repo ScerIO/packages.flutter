@@ -83,9 +83,6 @@ class PdfController {
 
   /// Load document
   Future<void> loadDocument(Future<PdfDocument> documentFuture) {
-    if (_pdfViewState != null) {
-      return null;
-    }
     _pdfViewState._changeLoadingState(_PdfViewLoadingState.loading);
     return _loadDocument(documentFuture);
   }

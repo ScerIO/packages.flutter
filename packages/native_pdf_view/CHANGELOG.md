@@ -1,3 +1,7 @@
+## 3.6.2
+
+* Fixed [issue#78](https://github.com/rbcprolabs/packages.flutter/issues/78), loadDocument in PdfController not working
+
 ## 3.6.1
 
 * Fixed [issue#74](https://github.com/rbcprolabs/packages.flutter/issues/74), min ios version now 2 instead 11
