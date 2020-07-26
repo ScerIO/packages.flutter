@@ -21,3 +21,4 @@ flutter:
 
   assets:
     - assets/sample.pdf
+    - assets/dummy.pdf

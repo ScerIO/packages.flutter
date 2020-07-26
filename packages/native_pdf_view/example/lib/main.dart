@@ -10,6 +10,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _actualPageNumber = 1, _allPagesCount = 0;
+  bool isSampleDoc = true;
   PdfController _pdfController;
 
   @override
@@ -58,6 +59,19 @@ class _MyAppState extends State<MyApp> {
                   );
                 },
               ),
+              IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  if (isSampleDoc) {
+                    _pdfController.loadDocument(
+                        PdfDocument.openAsset('assets/dummy.pdf'));
+                  } else {
+                    _pdfController.loadDocument(
+                        PdfDocument.openAsset('assets/sample.pdf'));
+                  }
+                  isSampleDoc = !isSampleDoc;
+                },
+              )
             ],
           ),
           body: PdfView(
@@ -66,6 +80,7 @@ class _MyAppState extends State<MyApp> {
             controller: _pdfController,
             onDocumentLoaded: (document) {
               setState(() {
+                _actualPageNumber = 1;
                 _allPagesCount = document.pagesCount;
               });
             },

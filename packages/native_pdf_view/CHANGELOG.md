@@ -1,3 +1,8 @@
+## 3.7.0
+
+* Added `initialPage` in `PdfController.loadDocument` method [issue#89](https://github.com/rbcprolabs/packages.flutter/issues/89)
+* Fixed crash when switching between pdf [issue#93](https://github.com/rbcprolabs/packages.flutter/issues/93)
+
 ## 3.6.2
 
 * Fixed [issue#78](https://github.com/rbcprolabs/packages.flutter/issues/78), loadDocument in PdfController not working

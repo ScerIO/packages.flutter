@@ -87,17 +87,23 @@ class PdfController {
     return _loadDocument(documentFuture);
   }
 
-  Future<void> _loadDocument(Future<PdfDocument> documentFuture) async {
+  Future<void> _loadDocument(
+    Future<PdfDocument> documentFuture, {
+    int initialPage = 1,
+  }) async {
     assert(_pdfViewState != null);
+
     if (!await hasSupport()) {
       _pdfViewState
         .._loadingError = Exception(
             'This device does not support the display of PDF documents')
-        .._changeLoadingState(_PdfViewLoadingState.success);
+        .._changeLoadingState(_PdfViewLoadingState.error);
       return;
     }
 
     try {
+      _reInitPageController(initialPage);
+
       _document = await documentFuture;
       _pdfViewState._changeLoadingState(_PdfViewLoadingState.success);
     } catch (error) {
@@ -107,15 +113,20 @@ class PdfController {
     }
   }
 
+  void _reInitPageController(int initialPage) {
+    _pageController?.dispose();
+    _pageController = PageController(
+      initialPage: initialPage - 1,
+      viewportFraction: viewportFraction,
+    );
+  }
+
   void _attach(_PdfViewState pdfViewState) {
     if (_pdfViewState != null) {
       return;
     }
 
-    _pageController = PageController(
-      initialPage: initialPage - 1,
-      viewportFraction: viewportFraction,
-    );
+    _reInitPageController(initialPage);
 
     _pdfViewState = pdfViewState;
 
@@ -128,5 +139,7 @@ class PdfController {
     _pdfViewState = null;
   }
 
-  void dispose() {}
+  void dispose() {
+    _pageController?.dispose();
+  }
 }
