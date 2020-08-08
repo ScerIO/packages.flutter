@@ -1,3 +1,8 @@
+## 1.1.0
+
+* Flutter 1.20 capability support
+* Upgrade dependencies
+
 ## 1.0.0
 
 * Rename `EpubReaderView` -> `EpubView`
