@@ -1,3 +1,7 @@
+## 3.8.0
+
+* Upgrade dependencies
+
 ## 3.7.0
 
 * Added `initialPage` in `PdfController.loadDocument` method [issue#89](https://github.com/rbcprolabs/packages.flutter/issues/89)
