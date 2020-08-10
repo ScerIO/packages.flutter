@@ -88,9 +88,8 @@ class PdfController {
   }
 
   Future<void> _loadDocument(
-    Future<PdfDocument> documentFuture, {
-    int initialPage = 1,
-  }) async {
+    Future<PdfDocument> documentFuture,
+  ) async {
     assert(_pdfViewState != null);
 
     if (!await hasSupport()) {
