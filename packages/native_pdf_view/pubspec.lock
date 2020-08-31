@@ -173,9 +173,11 @@ packages:
   native_pdf_renderer:
     dependency: "direct main"
     description:
-      path: "../native_pdf_renderer"
-      relative: true
-    source: path
+      path: "packages/native_pdf_renderer"
+      ref: HEAD
+      resolved-ref: f32108a4ed89fbadb6679ea70569fb0d6a018de4
+      url: "git@github.com:manabie-com/packages.flutter.git"
+    source: git
     version: "2.3.2"
   path:
     dependency: transitive

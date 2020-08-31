@@ -14,7 +14,10 @@ dependencies:
   synchronized: ^2.2.0+2
   device_info: ^0.4.2+4
   native_pdf_renderer: 
-    path: ../native_pdf_renderer
+    git: 
+      url: git@github.com:manabie-com/packages.flutter.git
+      path: packages/native_pdf_renderer
+    version: ^2.3.2
 
 dev_dependencies:
   flutter_test:
