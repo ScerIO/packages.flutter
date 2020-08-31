@@ -12,7 +12,7 @@ class _MyAppState extends State<MyApp> {
   int _actualPageNumber = 1, _allPagesCount = 0;
   bool isSampleDoc = true;
   PdfController _pdfController;
-
+  bool disableScroll = false;
   @override
   void initState() {
     _pdfController = PdfController(
@@ -78,6 +78,9 @@ class _MyAppState extends State<MyApp> {
             documentLoader: Center(child: CircularProgressIndicator()),
             pageLoader: Center(child: CircularProgressIndicator()),
             controller: _pdfController,
+            physics: disableScroll ? NeverScrollableScrollPhysics() : null,
+            scrollDirection: Axis.vertical,
+            pageSnapping: false,
             onDocumentLoaded: (document) {
               setState(() {
                 _actualPageNumber = 1;
@@ -87,6 +90,14 @@ class _MyAppState extends State<MyApp> {
             onPageChanged: (page) {
               setState(() {
                 _actualPageNumber = page;
+              });
+            },
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            label: Text('Disable scroll'),
+            onPressed: () {
+              setState(() {
+                disableScroll = !disableScroll;
               });
             },
           ),

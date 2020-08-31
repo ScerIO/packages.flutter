@@ -244,7 +244,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
             );
           }
         },
-        child: ExtendedImageGesturePageView.builder(
+        child: PageView.builder(
           itemBuilder: (BuildContext context, int index) =>
               FutureBuilder<PdfPageImage>(
             future: _getPageImage(index),
