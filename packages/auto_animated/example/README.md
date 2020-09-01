@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
                   showItemDuration: Duration(seconds: 1),
                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
                   scrollDirection: Axis.horizontal,
-                  itemsCount: 10,
+                  itemCount: 10,
                   itemBuilder: _buildAnimatedItem,
                 ),
               ),
