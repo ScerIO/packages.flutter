@@ -11,18 +11,17 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.1.8
-  epub: ^2.1.0
-  equatable: ^1.2.3
+  # epub: ^2.1.0
+  epub:
+    git:
+      url: git@github.com:orthros/dart-epub.git
+      ref: dev
+  equatable: ^1.2.5
   html: ^0.14.0+3
-  flutter_html: ^1.0.0
+  flutter_html: ^1.0.2
   scrollable_positioned_list: ^0.1.7
   rxdart: ^0.24.1
 
-dependency_overrides:
-  # flutter_html usages flutter_svg, DiagnosticableMixin problem
-  flutter_svg: ^0.18.0
-  # epub depends on 2.6.0
-  xml: ^4.2.0
 
 dev_dependencies:
   flutter_test:
