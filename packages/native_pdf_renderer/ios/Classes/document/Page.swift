@@ -28,6 +28,18 @@ class Page {
             return Int(boxRect.height)
         }
     }
+    
+    var rotationAngle: Int32 {
+        get {
+            return renderer.rotationAngle
+        }
+    }
+
+    var isLandscape: Bool {
+        get {
+            return Bool(rotationAngle == 90 || rotationAngle == 270)
+        }
+    }
 
     var infoMap: [String: Any] {
         get {
@@ -43,18 +55,24 @@ class Page {
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
-        let stride = width * 4
-        var tempData = Data(repeating: 0, count: stride * height)
+        let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
+        let stride = Int(bitmapSize.width * 4)
+        var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
         var data: Data?
         var success = false
         let sx = CGFloat(width) / pdfBBox.width
         let sy = CGFloat(height) / pdfBBox.height
+        let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
+        let ty = CGFloat(0)
+        let angle = CGFloat(renderer.rotationAngle) * CGFloat.pi / 180;
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
-            let context = CGContext(data: rawPtr, width: width, height: height, bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 context!.scaleBy(x: sx, y: sy)
+                context!.translateBy(x: tx, y: ty)
+                context!.rotate(by: -angle)
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
