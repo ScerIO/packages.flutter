@@ -10,12 +10,12 @@ class ExampleApp extends StatelessWidget {
   Future<PdfDocument> _getDocument() async {
     if (await hasSupport()) {
       return PdfDocument.openAsset('assets/sample.pdf');
-    } else {
-      throw Exception(
-        'PDF Rendering does not '
-        'support on the system of this version',
-      );
     }
+
+    throw Exception(
+      'PDF Rendering does not '
+      'support on the system of this version',
+    );
   }
 
   @override
