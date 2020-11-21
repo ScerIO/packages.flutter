@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   extended_image: ^1.0.0
   synchronized: ^2.2.0+2
-  device_info: ^0.4.2+4
+  device_info: ^1.0.0
   native_pdf_renderer: 
     path: ../native_pdf_renderer
 
