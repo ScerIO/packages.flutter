@@ -55,27 +55,27 @@ class _MyAppState extends State<MyApp> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.list),
                 backgroundColor: Colors.white,
-                title: Text('List'),
+                label: 'List',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.grid_on),
                 backgroundColor: Colors.white,
-                title: Text('Grid'),
+                label: 'Grid',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.view_day),
                 backgroundColor: Colors.white,
-                title: Text('Sliver'),
+                label: 'Sliver',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.remove_red_eye),
                 backgroundColor: Colors.white,
-                title: Text('On visibility'),
+                label: 'On visibility',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.check_circle),
                 backgroundColor: Colors.white,
-                title: Text('IconButton'),
+                label: 'IconButton',
               ),
             ],
             currentIndex: _selectedIndex,
