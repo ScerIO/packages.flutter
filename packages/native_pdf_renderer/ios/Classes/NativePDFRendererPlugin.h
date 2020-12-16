@@ -1,4 +1,4 @@
 #import <Flutter/Flutter.h>
 
-@interface NativePDFRendererPlugin : NSObject <FlutterPlugin>
+@interface NativePdfRendererPlugin : NSObject <FlutterPlugin>
 @end

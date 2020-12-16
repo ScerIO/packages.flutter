@@ -24,10 +24,10 @@ import java.io.FileNotFoundException
 import java.io.IOException
 
 /**
- * NativePDFRendererPlugin
+ * NativePdfRendererPlugin
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHandler {
+class NativePdfRendererPlugin(private val registrar: Registrar) : MethodCallHandler {
     private val documents = DocumentRepository()
     private val pages = PageRepository()
 
@@ -211,7 +211,7 @@ class NativePDFRendererPlugin(private val registrar: Registrar) : MethodCallHand
         @JvmStatic
         fun registerWith(registrar: Registrar) {
             val channel = MethodChannel(registrar.messenger(), "io.scer.pdf.renderer")
-            channel.setMethodCallHandler(NativePDFRendererPlugin(registrar))
+            channel.setMethodCallHandler(NativePdfRendererPlugin(registrar))
         }
     }
 
