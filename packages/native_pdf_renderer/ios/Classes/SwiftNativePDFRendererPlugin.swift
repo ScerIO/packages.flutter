@@ -35,8 +35,12 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        let renderer = openDataDocument(data: data.data)
-        result(documents.register(renderer: renderer!).infoMap as NSDictionary)
+        guard let renderer = openDataDocument(data: data.data) else {
+            return result(FlutterError(code: "RENDER_ERROR",
+                                       message: "Invalid PDF format",
+                                       details: nil))
+        }
+        result(documents.register(renderer: renderer).infoMap as NSDictionary)
     }
 
     func openDocumentFileHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
@@ -45,8 +49,12 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        let renderer = openFileDocument(pdfFilePath: pdfFilePath)
-        result(documents.register(renderer: renderer!).infoMap as NSDictionary)
+        guard let renderer = openFileDocument(pdfFilePath: pdfFilePath)  else {
+            return result(FlutterError(code: "RENDER_ERROR",
+                                       message: "Invalid PDF format",
+                                       details: nil))
+        }
+        result(documents.register(renderer: renderer).infoMap as NSDictionary)
     }
 
     func openDocumentAssetHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
@@ -55,8 +63,12 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        let renderer = openAssetDocument(name: name)
-        result(documents.register(renderer: renderer!).infoMap as NSDictionary)
+        guard let renderer = openAssetDocument(name: name)  else {
+            return result(FlutterError(code: "RENDER_ERROR",
+                                       message: "Invalid PDF format",
+                                       details: nil))
+        }
+        result(documents.register(renderer: renderer).infoMap as NSDictionary)
     }
 
     func closeDocumentHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
