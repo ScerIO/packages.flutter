@@ -7,11 +7,10 @@ Future<bool> hasSupport() async {
   if (Platform.isMacOS || Platform.isIOS) {
     return true;
   }
-  final deviceInfo = DeviceInfoPlugin();
-  bool hasSupport = false;
   if (Platform.isAndroid) {
+    final deviceInfo = DeviceInfoPlugin();
     final androidInfo = await deviceInfo.androidInfo;
-    hasSupport = androidInfo.version.sdkInt >= 21;
+    return androidInfo.version.sdkInt >= 21;
   }
-  return hasSupport;
+  return false;
 }

@@ -1,3 +1,7 @@
+## 3.9.0
+
+* Upgrade dependencies
+
 ## 3.8.0
 
 * Upgrade dependencies

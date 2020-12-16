@@ -9,7 +9,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  device_info: ^0.4.1+4
   native_pdf_renderer:
     path: ../
 

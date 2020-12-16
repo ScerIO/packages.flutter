@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
+  device_info: ^1.0.0
   uuid: ^2.2.2
   image: ^2.1.19
   js: ^0.6.2
@@ -28,12 +29,12 @@ flutter:
   plugin:
     platforms:
       android:
+        pluginClass: NativePdfRendererPlugin
         package: io.scer.pdf.renderer
-        pluginClass: NativePDFRendererPlugin
       ios:
-        pluginClass: NativePDFRendererPlugin
+        pluginClass: NativePdfRendererPlugin
       macos:
         pluginClass: NativePdfRendererPlugin
       web:
-        fileName: src/web/native_pdf_renderer_plugin.dart
         pluginClass: NativePdfRendererPlugin
+        fileName: src/web/native_pdf_renderer_plugin.dart

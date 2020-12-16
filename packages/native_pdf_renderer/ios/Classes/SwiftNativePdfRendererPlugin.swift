@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import CoreGraphics
 
-public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
+public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
     static let invalid = NSNumber(value: -1)
     let dispQueue = DispatchQueue(label: "io.scer.pdf.renderer")
 
@@ -12,7 +12,7 @@ public class SwiftNativePDFRendererPlugin: NSObject, FlutterPlugin {
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
             name: "io.scer.pdf.renderer", binaryMessenger: registrar.messenger())
-        let instance = SwiftNativePDFRendererPlugin()
+        let instance = SwiftNativePdfRendererPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
 
