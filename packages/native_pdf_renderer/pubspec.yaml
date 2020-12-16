@@ -29,12 +29,12 @@ flutter:
   plugin:
     platforms:
       android:
-        package: io.scer.pdf.renderer
         pluginClass: NativePdfRendererPlugin
+        package: io.scer.pdf.renderer
       ios:
         pluginClass: NativePdfRendererPlugin
       macos:
         pluginClass: NativePdfRendererPlugin
       web:
-        fileName: src/web/native_pdf_renderer_plugin.dart
         pluginClass: NativePdfRendererPlugin
+        fileName: src/web/native_pdf_renderer_plugin.dart
