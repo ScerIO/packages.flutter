@@ -1,3 +1,7 @@
+## 1.2.0+1
+
+* Update example native part
+
 ## 1.2.0
 
 * Set minimal flutter version to 1.17.0
