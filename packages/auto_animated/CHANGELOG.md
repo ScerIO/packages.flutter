@@ -1,3 +1,7 @@
+## 2.2.0
+
+* Set minimal dart version to 2.8.0
+
 ## 2.1.0
 
 * Replaced package `flutter_widgets` to `visibility_detector`
