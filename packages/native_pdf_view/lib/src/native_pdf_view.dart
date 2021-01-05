@@ -37,6 +37,7 @@ class PdfView extends StatefulWidget {
     this.pageLoader,
     this.pageBuilder = _pageBuilder,
     this.errorBuilder,
+    this.errorPadding = const EdgeInsets.all(32),
     this.renderer = _render,
     this.scrollDirection = Axis.horizontal,
     this.pageSnapping = true,
@@ -75,6 +76,9 @@ class PdfView extends StatefulWidget {
 
   /// Show document loading error message inside [PdfView]
   final Widget Function(Exception error) errorBuilder;
+
+  /// padding for error message widget
+  final EdgeInsets errorPadding;
 
   /// Custom PdfRenderer options
   final PDFViewPageRenderer renderer;
@@ -288,7 +292,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         content = KeyedSubtree(
           key: Key('$runtimeType.root.error'),
           child: Padding(
-            padding: EdgeInsets.all(32),
+            padding: widget.errorPadding,
             child: widget.errorBuilder?.call(_loadingError) ??
                 Center(child: Text(_loadingError.toString())),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
 
+enum DocumentType { DUMMY, SAMPLE, ERROR }
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -10,7 +12,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _actualPageNumber = 1, _allPagesCount = 0;
-  bool isSampleDoc = true;
+  DocumentType documentType;
   PdfController _pdfController;
 
   @override
@@ -62,19 +64,39 @@ class _MyAppState extends State<MyApp> {
               IconButton(
                 icon: Icon(Icons.refresh),
                 onPressed: () {
-                  if (isSampleDoc) {
+                  if (documentType == DocumentType.DUMMY) {
                     _pdfController.loadDocument(
                         PdfDocument.openAsset('assets/dummy.pdf'));
-                  } else {
+                    documentType = DocumentType.SAMPLE;
+                  } else if (documentType == DocumentType.SAMPLE) {
                     _pdfController.loadDocument(
                         PdfDocument.openAsset('assets/sample.pdf'));
+                    documentType = DocumentType.ERROR;
+                  } else {
+                    _pdfController
+                        .loadDocument(PdfDocument.openAsset('xxxxxx'));
+                    documentType = DocumentType.DUMMY;
                   }
-                  isSampleDoc = !isSampleDoc;
                 },
               )
             ],
           ),
           body: PdfView(
+            errorBuilder: (e) => Container(
+              color: Colors.red[200],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Text(
+                    "Error",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            errorPadding: const EdgeInsets.all(16),
             documentLoader: Center(child: CircularProgressIndicator()),
             pageLoader: Center(child: CircularProgressIndicator()),
             controller: _pdfController,
