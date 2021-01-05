@@ -90,7 +90,7 @@ class _MyAppState extends State<MyApp> {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    "Error",
+                    'Error',
                     textAlign: TextAlign.center,
                   ),
                 ],
