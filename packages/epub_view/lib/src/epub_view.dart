@@ -82,7 +82,7 @@ class EpubView extends StatefulWidget {
 }
 
 class _EpubViewState extends State<EpubView> {
-  _EpubViewLoadingState _loadingState;
+  _EpubViewLoadingState _loadingState = _EpubViewLoadingState.loading;
   Exception _loadingError;
   ItemScrollController _itemScrollController;
   ItemPositionsListener _itemPositionListener;
