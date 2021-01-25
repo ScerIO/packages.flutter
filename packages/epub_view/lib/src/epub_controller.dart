@@ -130,6 +130,7 @@ class EpubController {
   }) async {
     _epubViewState._initialized = false;
     try {
+      _epubViewState._changeLoadingState(_EpubViewLoadingState.loading);
       if (documentFuture != null) {
         _document = await documentFuture;
       } else {
