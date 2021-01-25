@@ -33,7 +33,7 @@ class NativePdfRendererPlugin(private val registrar: Registrar) : MethodCallHand
 
     override fun onMethodCall(call: MethodCall, rawResult: Result) {
         val result = MethodResultWrapper(rawResult)
-        when(call.method) {
+        when (call.method) {
             "open.document.data" -> openDocumentDataHandler(call, result)
             "open.document.file" -> openDocumentFileHandler(call, result)
             "open.document.asset" -> openDocumentAssetHandler(call, result)
@@ -166,9 +166,19 @@ class NativePdfRendererPlugin(private val registrar: Registrar) : MethodCallHand
                 val cropH = if (crop) call.argument<Int>("crop_height")!! else 0;
                 val cropW = if (crop) call.argument<Int>("crop_width")!! else 0;
 
+                val quality = call.argument<Int>("quality") ?: 100
+
                 val page = pages.get(pageId)
 
-                val results = page.render(width, height, color, format, crop, cropX, cropY, cropW, cropH).toMap
+                val tempOutFileExtension = when (format) {
+                    0 -> "jpg"
+                    1 -> "png"
+                    2 -> "webp"
+                    else -> "jpg"
+                }
+                val tempOutFile = File(registrar.context().cacheDir, "$randomFilename.$tempOutFileExtension")
+
+                val results = page.render(width, height, color, format, crop, cropX, cropY, cropW, cropH, quality).toMap
                 result.success(results)
 
             } catch (e: Exception) {
@@ -186,7 +196,7 @@ class NativePdfRendererPlugin(private val registrar: Registrar) : MethodCallHand
         return openFileDocument(tempDataFile)
     }
 
-    private fun openAssetDocument(assetPath: String): Pair<ParcelFileDescriptor, PdfRenderer>?{
+    private fun openAssetDocument(assetPath: String): Pair<ParcelFileDescriptor, PdfRenderer>? {
         val fullAssetPath = registrar.lookupKeyForAsset(assetPath)
         val tempAssetFile = File(registrar.context().cacheDir, "$randomFilename.pdf")
         if (!tempAssetFile.exists()) {
