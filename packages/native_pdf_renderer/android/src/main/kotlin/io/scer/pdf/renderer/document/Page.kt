@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
 import io.scer.pdf.renderer.utils.toByteArray
+import io.scer.pdf.renderer.utils.toFile
 import java.io.File
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)

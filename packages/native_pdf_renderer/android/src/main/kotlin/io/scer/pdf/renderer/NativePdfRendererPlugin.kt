@@ -178,7 +178,7 @@ class NativePdfRendererPlugin(private val registrar: Registrar) : MethodCallHand
                 }
                 val tempOutFile = File(registrar.context().cacheDir, "$randomFilename.$tempOutFileExtension")
 
-                val results = page.render(width, height, color, format, crop, cropX, cropY, cropW, cropH, quality).toMap
+                val results = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality).toMap
                 result.success(results)
 
             } catch (e: Exception) {
