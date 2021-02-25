@@ -15,7 +15,7 @@ class NativePdfRendererPlugin {
     final MethodChannel channel = MethodChannel(
       'io.scer.pdf.renderer',
       const StandardMethodCodec(),
-      registrar.messenger,
+      registrar,
     );
     final instance = NativePdfRendererPlugin();
     channel.setMethodCallHandler(instance.onMethodCall);
@@ -37,6 +37,8 @@ class NativePdfRendererPlugin {
         return closePageHandler(call);
       case 'render':
         return renderHandler(call);
+      case 'getAnnotations':
+        return getAnnotationsHandler(call);
       default:
         throw PlatformException(
           code: 'Unimplemented',
@@ -48,7 +50,10 @@ class NativePdfRendererPlugin {
 
   Future<Map<String, dynamic>> openDocumentDataHandler(MethodCall call) async {
     final documentData = Uint8List.fromList(call.arguments);
-    final documentLoader = PdfJs.getDocument(Settings()..data = documentData);
+    final documentLoader = PdfJs.getDocument(Settings()
+      ..data = documentData
+      ..cMapUrl = '//cdn.jsdelivr.net/npm/pdfjs-dist@2.0.288/cmaps/'
+      ..cMapPacked = true);
     final document = await promiseToFuture<PdfJsDoc>(documentLoader.promise);
 
     return _documents.register(document).infoMap;
@@ -101,5 +106,17 @@ class NativePdfRendererPlugin {
     );
 
     return result.toMap;
+  }
+
+  Future<List<Map<String, dynamic>>> getAnnotationsHandler(
+    MethodCall call,
+  ) async {
+    final String pageId = call.arguments['pageId'];
+    final page = _pages.get(pageId).page;
+    final annotations = await promiseToFuture<List>(page.getAnnotations());
+    return annotations
+        .cast<PdfJsAnnotation>()
+        .map((e) => e.toMapWithNomalizeRect(page.view))
+        .toList();
   }
 }

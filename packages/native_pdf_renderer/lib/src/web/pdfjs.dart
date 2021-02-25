@@ -20,6 +20,7 @@
 library pdf.js;
 
 import 'dart:html';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
@@ -36,6 +37,8 @@ class Settings {
   external set scale(double value);
   external set canvasContext(CanvasRenderingContext2D value);
   external set viewport(PdfJsViewport value);
+  external set cMapUrl(String value);
+  external set cMapPacked(bool value);
 }
 
 @anonymous
@@ -55,6 +58,7 @@ class PdfJsDoc {
 @JS()
 class PdfJsPage {
   external PdfJsViewport getViewport(Settings data);
+  external Future<List<PdfJsAnnotation>> getAnnotations();
   external PdfJsRender render(Settings data);
   external int get pageNumber;
   external List<num> get view;
@@ -71,4 +75,34 @@ class PdfJsViewport {
 @JS()
 class PdfJsRender {
   external Future<void> get promise;
+}
+
+@anonymous
+@JS()
+class PdfJsAnnotation {
+  external String get subtype;
+  external List<num> get rect;
+  external int get annotationFlags;
+  external List<num> get color;
+  external num get borderWidth;
+  external bool get hasAppearance;
+  external String get url;
+}
+
+extension PdfJsAnnotationEx on PdfJsAnnotation {
+  List<num> normalizeRect(List<num> visibleRect) {
+    num verticalFit(num rect) => visibleRect[3] - rect + visibleRect[1];
+    return [
+      min(rect[0], rect[2]),
+      min(verticalFit(rect[1]), verticalFit(rect[3])),
+      max(rect[0], rect[2]),
+      max(verticalFit(rect[1]), verticalFit(rect[3])),
+    ];
+  }
+
+  Map<String, dynamic> toMapWithNomalizeRect(List<num> visibleRect) => {
+        'subtype': subtype,
+        'rect': normalizeRect(visibleRect),
+        'url': url,
+      };
 }

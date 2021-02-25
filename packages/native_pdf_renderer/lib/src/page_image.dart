@@ -11,6 +11,7 @@ class PdfPageImage {
     @required this.height,
     @required this.bytes,
     @required this.format,
+    this.annotations,
   });
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
@@ -33,6 +34,8 @@ class PdfPageImage {
 
   /// Target compression format
   final PdfPageFormat format;
+
+  final List<PdfAnnotation> annotations;
 
   /// Render a full image of specified PDF file.
   ///
@@ -79,6 +82,10 @@ class PdfPageImage {
     final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
     final pixels = Uint8List.fromList(obj['data']);
 
+    final annotations = await _channel.invokeMethod<List>('getAnnotations', {
+      'pageId': pageId,
+    });
+
     return PdfPageImage._(
       id: pageId,
       pageNumber: pageNumber,
@@ -86,6 +93,10 @@ class PdfPageImage {
       height: retHeight,
       bytes: pixels,
       format: format,
+      annotations: annotations
+          ?.cast<Map<dynamic, dynamic>>()
+          ?.map(PdfAnnotation.fromJson)
+          ?.toList(),
     );
   }
 
@@ -102,7 +113,28 @@ class PdfPageImage {
       'page: $pageNumber,  '
       'width: $width, '
       'height: $height, '
+      'annotations: $annotations, '
       'bytesLength: ${bytes.lengthInBytes}}';
+}
+
+class PdfAnnotation {
+  const PdfAnnotation({
+    this.rect,
+    this.url,
+    this.subtype,
+  });
+  final Rect rect;
+  final String url;
+  final String subtype;
+
+  static PdfAnnotation fromJson(Map<dynamic, dynamic> json) {
+    final rect = (json['rect'] as List).cast<num>();
+    return PdfAnnotation(
+      rect: Rect.fromLTRB(rect[0], rect[1], rect[2], rect[3]),
+      url: json['url'],
+      subtype: json['subtype'],
+    );
+  }
 }
 
 class PdfNotSupportException implements Exception {
