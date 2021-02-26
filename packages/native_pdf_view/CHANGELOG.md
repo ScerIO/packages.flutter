@@ -1,3 +1,8 @@
+## 3.9.1
+
+* Fixed [issue#119](https://github.com/rbcprolabs/packages.flutter/issues/119), Initial page isn't working 
+* Update dependency `extended_image`
+
 ## 3.9.0
 
 * Upgrade dependencies

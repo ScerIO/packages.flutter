@@ -131,7 +131,7 @@ class PdfController {
     _pdfViewState = pdfViewState;
 
     if (_document == null) {
-      _loadDocument(document);
+      _loadDocument(document, initialPage: initialPage);
     }
   }
 
