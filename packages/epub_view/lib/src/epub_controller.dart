@@ -145,7 +145,7 @@ class EpubController {
       _epubViewState._changeLoadingState(_EpubViewLoadingState.success);
     } catch (error) {
       _epubViewState
-        .._loadingError = error
+        .._loadingError = error is Exception ? error : Exception('An unexpected error occurred')
         .._changeLoadingState(_EpubViewLoadingState.error);
     }
   }
