@@ -124,14 +124,18 @@ class EpubCfiReader {
     if (chapter == null) {
       return null;
     }
-
+    var html = chapter.HtmlContent;
+    html = html.replaceAllMapped(RegExp(r'<\s*([^\s>]+)([^>]*)\/\s*>'),
+            (match) {
+          return '<${match.group(1)}${match.group(2)}></${match.group(1)}>';
+        });
     final regExp = RegExp(
       r'<body.*?>.+?</body>',
       caseSensitive: false,
       multiLine: true,
       dotAll: true,
     );
-    final matches = regExp.firstMatch(chapter.HtmlContent);
+    final matches = regExp.firstMatch(html);
 
     return parse(matches.group(0));
   }
