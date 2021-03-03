@@ -17,8 +17,8 @@ class DocumentRepository extends Repository<Document> {
   }
 
   @override
-  void close(String id) {
-    get(id).close();
+  void close(String? id) {
+    get(id)!.close();
     super.close(id);
   }
 }

@@ -71,30 +71,30 @@ class NativePdfRendererPlugin {
   }
 
   Future<Map<String, dynamic>> openPageHandler(MethodCall call) async {
-    final String documentId = call.arguments['documentId'];
-    final int pageNumber = call.arguments['page'];
-    final page = await _documents.get(documentId).openPage(pageNumber);
+    final String? documentId = call.arguments['documentId'];
+    final int? pageNumber = call.arguments['page'];
+    final page = await _documents.get(documentId)!.openPage(pageNumber);
     return _pages.register(documentId, page).infoMap;
   }
 
   Future<bool> closeDocumentHandler(MethodCall call) async {
-    final String id = call.arguments;
+    final String? id = call.arguments;
     _documents.close(id);
     return true;
   }
 
   Future<bool> closePageHandler(MethodCall call) async {
-    final String id = call.arguments;
+    final String? id = call.arguments;
     _pages.close(id);
     return true;
   }
 
   Future<Map<String, dynamic>> renderHandler(MethodCall call) async {
-    final String pageId = call.arguments['pageId'];
+    final String? pageId = call.arguments['pageId'];
     final int width = call.arguments['width'];
-    final int height = call.arguments['height'];
+    final int? height = call.arguments['height'];
 
-    final page = _pages.get(pageId);
+    final page = _pages.get(pageId)!;
     final result = await page.render(
       width: width,
       height: height,
