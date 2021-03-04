@@ -124,11 +124,10 @@ class EpubCfiReader {
     if (chapter == null) {
       return null;
     }
-    var html = chapter.HtmlContent;
-    html = html.replaceAllMapped(RegExp(r'<\s*([^\s>]+)([^>]*)\/\s*>'),
-            (match) {
-          return '<${match.group(1)}${match.group(2)}></${match.group(1)}>';
-        });
+    final html = chapter.HtmlContent.replaceAllMapped(
+        RegExp(r'<\s*([^\s>]+)([^>]*)\/\s*>'), (match) {
+      return '<${match.group(1)}${match.group(2)}></${match.group(1)}>';
+    });
     final regExp = RegExp(
       r'<body.*?>.+?</body>',
       caseSensitive: false,
