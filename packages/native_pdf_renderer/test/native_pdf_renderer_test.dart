@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
@@ -11,7 +11,7 @@ final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final List<MethodCall> log = <MethodCall>[];
-  PdfDocument document;
+  PdfDocument? document;
 
   setUpAll(() async {
     MethodChannel('io.scer.pdf.renderer')
@@ -90,21 +90,21 @@ void main() {
           arguments: _testData,
         ),
       ]);
-      expect(document.pagesCount, 3);
+      expect(document!.pagesCount, 3);
     });
   });
 
   group('Page', () {
-    PdfPage page;
+    late PdfPage page;
 
     test('open', () async {
       // page number 0 - not available
       expect(
-        document.getPage(0),
+        document!.getPage(0),
         throwsA(isInstanceOf<PdfPageNotFoundException>()),
       );
 
-      page = await document.getPage(3);
+      page = await document!.getPage(3);
       expect(log, <Matcher>[
         isMethodCall(
           'open.page',
@@ -122,19 +122,19 @@ void main() {
 
       // page number 4 more than the document
       expect(
-        document.getPage(4),
+        document!.getPage(4),
         throwsA(isInstanceOf<PdfPageNotFoundException>()),
       );
     });
 
     test('render', () async {
-      final width = page.width * 2, height = page.height * 2;
-      final pageImage = await page.render(
+      final width = page.width! * 2, height = page.height! * 2;
+      final pageImage = await (page.render(
         width: width,
         height: height,
         format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
-      );
+      ) as FutureOr<PdfPageImage>);
 
       expect(log, <Matcher>[
         isMethodCall(
@@ -176,14 +176,14 @@ void main() {
   });
 
   test('Close document', () async {
-    await document.close();
-    expect(document.isClosed, isTrue);
+    await document!.close();
+    expect(document!.isClosed, isTrue);
     expect(
-      document.close,
+      document!.close,
       throwsA(isInstanceOf<PdfDocumentAlreadyClosedException>()),
     );
     expect(
-      document.getPage(1),
+      document!.getPage(1),
       throwsA(isInstanceOf<PdfDocumentAlreadyClosedException>()),
     );
   });

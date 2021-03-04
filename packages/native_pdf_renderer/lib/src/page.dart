@@ -26,12 +26,12 @@ class PdfPageFormat extends Enum<int> {
 /// which contains a method [render] for rendering into an image
 class PdfPage {
   PdfPage({
-    @required this.document,
-    @required this.id,
-    @required this.pageNumber,
-    @required this.width,
-    @required this.height,
-    @required Lock lock,
+    required this.document,
+    required this.id,
+    required this.pageNumber,
+    required this.width,
+    required this.height,
+    required Lock lock,
   }) : _lock = lock;
 
   static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
@@ -42,17 +42,17 @@ class PdfPage {
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when opening page.
-  final String id;
+  final String? id;
 
   /// Page number in document.
   /// Starts from 1.
   final int pageNumber;
 
   /// Page source width in pixels
-  final int width;
+  final int? width;
 
   /// Page source height in pixels
-  final int height;
+  final int? height;
 
   /// Is the page closed
   bool isClosed = false;
@@ -64,14 +64,14 @@ class PdfPage {
   /// [backgroundColor] property like a hex string ('#FFFFFF')
   /// [format] - image type, all types can be seen here [PdfPageFormat]
   /// [cropRect] - render only the necessary part of the image
-  Future<PdfPageImage> render({
-    @required int width,
-    @required int height,
+  Future<PdfPageImage?> render({
+    required int width,
+    required int height,
     PdfPageFormat format = PdfPageFormat.PNG,
-    String backgroundColor,
-    Rect cropRect,
+    String? backgroundColor,
+    Rect? cropRect,
   }) =>
-      _lock.synchronized<PdfPageImage>(() async {
+      _lock.synchronized<PdfPageImage?>(() async {
         if (document.isClosed) {
           throw PdfDocumentAlreadyClosedException();
         } else if (isClosed) {
