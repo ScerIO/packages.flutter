@@ -5,7 +5,6 @@ import 'dart:js' as js;
 import 'dart:js_util';
 import 'dart:typed_data';
 
-import 'package:meta/meta.dart';
 import 'package:native_pdf_renderer/src/web/pdfjs.dart';
 
 class Page {
@@ -36,11 +35,12 @@ class Page {
 
   Future<Data> render({
     required int width,
-    int? height,
+    required int height,
   }) async {
     final html.CanvasElement canvas =
         js.context['document'].createElement('canvas');
-    final html.CanvasRenderingContext2D? context = canvas.getContext('2d') as html.CanvasRenderingContext2D?;
+    final html.CanvasRenderingContext2D? context =
+        canvas.getContext('2d') as html.CanvasRenderingContext2D?;
 
     final viewport =
         page.getViewport(Settings()..scale = width / _viewport.width);

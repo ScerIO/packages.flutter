@@ -1,22 +1,22 @@
 PODS:
   - FlutterMacOS (1.0.0)
-  - native_pdf_renderer (1.0.0):
+  - native_pdf_renderer (0.0.1):
     - FlutterMacOS
 
 DEPENDENCIES:
-  - FlutterMacOS (from `Flutter/ephemeral/.symlinks/flutter/darwin-x64`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
   - native_pdf_renderer (from `Flutter/ephemeral/.symlinks/plugins/native_pdf_renderer/macos`)
 
 EXTERNAL SOURCES:
   FlutterMacOS:
-    :path: Flutter/ephemeral/.symlinks/flutter/darwin-x64
+    :path: Flutter/ephemeral
   native_pdf_renderer:
     :path: Flutter/ephemeral/.symlinks/plugins/native_pdf_renderer/macos
 
 SPEC CHECKSUMS:
-  FlutterMacOS: 15bea8a44d2fa024068daa0140371c020b4b6ff9
-  native_pdf_renderer: 0e3a64a04d5f25be6d1d5c86288f68b407a6c57a
+  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
+  native_pdf_renderer: dc72346b3bce0ba03e5b7b832ef875fd55bf5e3c
 
-PODFILE CHECKSUM: d8ba9b3e9e93c62c74a660b46c6fcb09f03991a7
+PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   native_pdf_renderer:
     path: ../
 

@@ -5,7 +5,6 @@ import 'dart:typed_data' show Uint8List;
 import 'package:extension/enum.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'document.dart';
 
@@ -34,7 +33,8 @@ class PdfPage {
     required Lock lock,
   }) : _lock = lock;
 
-  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel =
+      MethodChannel('io.scer.native_pdf_renderer');
 
   final Lock _lock;
 
@@ -42,17 +42,17 @@ class PdfPage {
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when opening page.
-  final String? id;
+  final String id;
 
   /// Page number in document.
   /// Starts from 1.
   final int pageNumber;
 
   /// Page source width in pixels
-  final int? width;
+  final int width;
 
   /// Page source height in pixels
-  final int? height;
+  final int height;
 
   /// Is the page closed
   bool isClosed = false;

@@ -1,0 +1,28 @@
+PODS:
+  - device_info (0.0.1):
+    - Flutter
+  - Flutter (1.0.0)
+  - native_pdf_renderer (1.2.0):
+    - Flutter
+
+DEPENDENCIES:
+  - device_info (from `.symlinks/plugins/device_info/ios`)
+  - Flutter (from `Flutter`)
+  - native_pdf_renderer (from `.symlinks/plugins/native_pdf_renderer/ios`)
+
+EXTERNAL SOURCES:
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
+  Flutter:
+    :path: Flutter
+  native_pdf_renderer:
+    :path: ".symlinks/plugins/native_pdf_renderer/ios"
+
+SPEC CHECKSUMS:
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  native_pdf_renderer: 0e545bf94fb341e0fe7508bf72d4c1c42c30aa02
+
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
+
+COCOAPODS: 1.10.1

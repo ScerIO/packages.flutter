@@ -3,7 +3,6 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:meta/meta.dart';
 import 'page.dart';
 
 /// PDF page image renderer
@@ -14,7 +13,8 @@ class PdfDocument {
     required this.pagesCount,
   });
 
-  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel =
+      MethodChannel('io.scer.native_pdf_renderer');
 
   final Lock _lock = Lock();
 
@@ -24,11 +24,11 @@ class PdfDocument {
 
   /// Document unique id.
   /// Generated when opening document.
-  final String? id;
+  final String id;
 
   /// All pages count in document.
   /// Starts from 1.
-  final int? pagesCount;
+  final int pagesCount;
 
   /// Is the document closed
   bool isClosed = false;
@@ -47,59 +47,59 @@ class PdfDocument {
   static PdfDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
       PdfDocument._(
         sourceName: sourceName,
-        id: obj['id'] as String?,
-        pagesCount: obj['pagesCount'] as int?,
+        id: obj['id'] as String,
+        pagesCount: obj['pagesCount'] as int,
       );
 
   /// Open PDF document from filesystem path
   static Future<PdfDocument> openFile(String filePath) async => _open(
-        await (_channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.file',
           filePath,
-        ) as FutureOr<Map<dynamic, dynamic>>),
+        ))!,
         'file:$filePath',
       );
 
   /// Open PDF document from application assets
   static Future<PdfDocument> openAsset(String name) async => _open(
-        await (_channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
           name,
-        ) as FutureOr<Map<dynamic, dynamic>>),
+        ))!,
         'asset:$name',
       );
 
   /// Open PDF file from memory (Uint8List)
   static Future<PdfDocument> openData(Uint8List data) async => _open(
-        await (_channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
           data,
-        ) as FutureOr<Map<dynamic, dynamic>>),
+        ))!,
         'memory:$data',
       );
 
   /// Get page object. The first page is 1.
   Future<PdfPage> getPage(int pageNumber) async {
-    if (pageNumber < 1 || pageNumber > pagesCount!) {
+    if (pageNumber < 1 || pageNumber > pagesCount) {
       throw PdfPageNotFoundException();
     }
     return _lock.synchronized<PdfPage>(() async {
       if (isClosed) {
         throw PdfDocumentAlreadyClosedException();
       }
-      final obj = await (_channel.invokeMethod<Map<dynamic, dynamic>>(
+      final obj = (await _channel.invokeMethod<Map<dynamic, dynamic>>(
         'open.page',
         {
           'documentId': id,
           'page': pageNumber,
         },
-      ) as FutureOr<Map<dynamic, dynamic>>);
+      ))!;
       return PdfPage(
         document: this,
-        id: obj['id'] as String?,
+        id: obj['id'] as String,
         pageNumber: pageNumber,
-        width: obj['width'] as int?,
-        height: obj['height'] as int?,
+        width: obj['width'] as int,
+        height: obj['height'] as int,
         lock: _lock,
       );
     });

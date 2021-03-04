@@ -1,10 +1,10 @@
-package io.scer.pdf.renderer.resources
+package io.scer.native_pdf_renderer.resources
 
 import android.annotation.TargetApi
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
-import io.scer.pdf.renderer.document.Page
-import io.scer.pdf.renderer.utils.randomID
+import io.scer.native_pdf_renderer.document.Page
+import io.scer.native_pdf_renderer.utils.randomID
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class PageRepository : Repository<Page>() {

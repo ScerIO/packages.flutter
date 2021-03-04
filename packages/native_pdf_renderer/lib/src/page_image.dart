@@ -13,7 +13,8 @@ class PdfPageImage {
     required this.format,
   });
 
-  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel =
+      MethodChannel('io.scer.native_pdf_renderer');
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when render page.
@@ -66,10 +67,10 @@ class PdfPageImage {
       'format': format.value,
       'backgroundColor': backgroundColor,
       'crop': crop != null,
-      'crop_x': crop?.left?.toInt(),
-      'crop_y': crop?.top?.toInt(),
-      'crop_height': crop?.height?.toInt(),
-      'crop_width': crop?.width?.toInt(),
+      'crop_x': crop?.left.toInt(),
+      'crop_y': crop?.top.toInt(),
+      'crop_height': crop?.height.toInt(),
+      'crop_width': crop?.width.toInt(),
     });
 
     if (!(obj is Map<dynamic, dynamic>)) {

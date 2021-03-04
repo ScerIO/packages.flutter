@@ -13,9 +13,9 @@ class NativePdfRendererPlugin {
 
   static void registerWith(Registrar registrar) {
     final MethodChannel channel = MethodChannel(
-      'io.scer.pdf.renderer',
+      'io.scer.native_pdf_renderer',
       const StandardMethodCodec(),
-      registrar.messenger,
+      registrar,
     );
     final instance = NativePdfRendererPlugin();
     channel.setMethodCallHandler(instance.onMethodCall);
@@ -92,7 +92,7 @@ class NativePdfRendererPlugin {
   Future<Map<String, dynamic>> renderHandler(MethodCall call) async {
     final String? pageId = call.arguments['pageId'];
     final int width = call.arguments['width'];
-    final int? height = call.arguments['height'];
+    final int height = call.arguments['height'];
 
     final page = _pages.get(pageId)!;
     final result = await page.render(

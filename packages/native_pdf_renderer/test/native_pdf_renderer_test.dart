@@ -1,5 +1,5 @@
-import 'dart:typed_data';
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
@@ -14,7 +14,7 @@ void main() {
   PdfDocument? document;
 
   setUpAll(() async {
-    MethodChannel('io.scer.pdf.renderer')
+    MethodChannel('io.scer.native_pdf_renderer')
         .setMockMethodCallHandler((MethodCall methodCall) async {
       log.add(methodCall);
       switch (methodCall.method) {
@@ -128,13 +128,13 @@ void main() {
     });
 
     test('render', () async {
-      final width = page.width! * 2, height = page.height! * 2;
-      final pageImage = await (page.render(
+      final width = page.width * 2, height = page.height * 2;
+      final pageImage = (await page.render(
         width: width,
         height: height,
         format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
-      ) as FutureOr<PdfPageImage>);
+      ))!;
 
       expect(log, <Matcher>[
         isMethodCall(
@@ -169,7 +169,7 @@ void main() {
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
       expect(
-        page.render,
+        page.render(width: 1, height: 1),
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
     });
