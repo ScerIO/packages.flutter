@@ -61,7 +61,7 @@ extension ColorHelper on Color {
   ///
   /// Values for `t` are usually obtained from an [Animation<double>], such as
   /// an AnimationController.
-  Color mix(Color another, double amount) => Color.lerp(this, another, amount);
+  Color? mix(Color another, double amount) => Color.lerp(this, another, amount);
 
   /// Convert color to hex string
   String get asHexString => '#' + value.toRadixString(16).toUpperCase();

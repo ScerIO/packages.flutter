@@ -3,8 +3,8 @@ import 'dart:ui' show Color;
 
 class XyzColor extends Color {
   /// An immutable 32 bit color value in ARGB format.
-  XyzColor(this.x, this.y, this.z, {double opacity = 1})
-      : super(getColorFromXyz(x, y, z, opacity));
+  XyzColor(this.x, this.y, this.z, {double? opacity = 1})
+      : super(getColorFromXyz(x, y, z, opacity!));
 
   final double x, y, z;
 
@@ -27,17 +27,17 @@ class XyzColor extends Color {
       } else {
         rgb[key] = value * 12.92;
       }
-      resultRgb[key] = (rgb[key] * 255).toInt();
+      resultRgb[key] = (rgb[key]! * 255).toInt();
     });
 
     return ((((opacity * 0xff ~/ 1) & 0xff) << 24) |
-            ((resultRgb['r'] & 0xff) << 16) |
-            ((resultRgb['g'] & 0xff) << 8) |
-            ((resultRgb['b'] & 0xff) << 0)) &
+            ((resultRgb['r']! & 0xff) << 16) |
+            ((resultRgb['g']! & 0xff) << 8) |
+            ((resultRgb['b']! & 0xff) << 0)) &
         0xFFFFFFFF;
   }
 
   Map<String, num> toMap() => {'x': x, 'y': y, 'z': z};
 
-  double operator [](String key) => toMap()[key];
+  double? operator [](String key) => toMap()[key] as double?;
 }
