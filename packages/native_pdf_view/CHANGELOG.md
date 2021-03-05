@@ -1,3 +1,11 @@
+## 4.0.0
+
+* Null safety migration & Flutter v2 capability
+* Added `PdfPageImageProvider`
+* Package `[extended_image]` replaced by `[photo_view]`
+* Break changes at `pageBuilder` callback (`PDFViewPageBuilder`)
+* Added `<BoxDecoration> backgroundDecoration` property at `PdfView`
+
 ## 3.9.1
 
 * Fixed [issue#119](https://github.com/rbcprolabs/packages.flutter/issues/119), Initial page isn't working 

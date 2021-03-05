@@ -3,12 +3,10 @@ part of 'native_pdf_view.dart';
 /// Pages control
 class PdfController {
   PdfController({
-    @required this.document,
+    required this.document,
     this.initialPage = 1,
     this.viewportFraction = 1.0,
-  })  : assert(initialPage != null),
-        assert(viewportFraction != null),
-        assert(viewportFraction > 0.0);
+  }) : assert(viewportFraction > 0.0);
 
   /// Document future for showing in [PdfView]
   Future<PdfDocument> document;
@@ -22,21 +20,21 @@ class PdfController {
   /// direction.
   final double viewportFraction;
 
-  _PdfViewState _pdfViewState;
-  PageController _pageController;
-  PdfDocument _document;
+  _PdfViewState? _pdfViewState;
+  PageController? _pageController;
+  PdfDocument? _document;
 
   /// Actual showed page
-  int get page => (_pdfViewState?._currentIndex ?? 0) + 1;
+  int get page => (_pdfViewState!._currentIndex) + 1;
 
   /// Count of all pages in document
-  int get pagesCount => _document?.pagesCount;
+  int get pagesCount => _document!.pagesCount;
 
   /// Changes which page is displayed in the controlled [PdfView].
   ///
   /// Jumps the page position from its current value to the given value,
   /// without animation, and without checking if the new value is in range.
-  void jumpToPage(int page) => _pageController.jumpToPage(page - 1);
+  void jumpToPage(int page) => _pageController!.jumpToPage(page - 1);
 
   /// Animates the controlled [PdfView] from the current page to the given page.
   ///
@@ -46,10 +44,10 @@ class PdfController {
   /// The `duration` and `curve` arguments must not be null.
   Future<void> animateToPage(
     int page, {
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) =>
-      _pageController.animateToPage(
+      _pageController!.animateToPage(
         page - 1,
         duration: duration,
         curve: curve,
@@ -62,10 +60,10 @@ class PdfController {
   ///
   /// The `duration` and `curve` arguments must not be null.
   Future<void> nextPage({
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) =>
-      _pageController.animateToPage(_pageController.page.round() + 1,
+      _pageController!.animateToPage(_pageController!.page!.round() + 1,
           duration: duration, curve: curve);
 
   /// Animates the controlled [PdfView] to the previous page.
@@ -75,15 +73,15 @@ class PdfController {
   ///
   /// The `duration` and `curve` arguments must not be null.
   Future<void> previousPage({
-    @required Duration duration,
-    @required Curve curve,
+    required Duration duration,
+    required Curve curve,
   }) =>
-      _pageController.animateToPage(_pageController.page.round() - 1,
+      _pageController!.animateToPage(_pageController!.page!.round() - 1,
           duration: duration, curve: curve);
 
   /// Load document
   Future<void> loadDocument(Future<PdfDocument> documentFuture) {
-    _pdfViewState._changeLoadingState(_PdfViewLoadingState.loading);
+    _pdfViewState!._changeLoadingState(_PdfViewLoadingState.loading);
     return _loadDocument(documentFuture);
   }
 
@@ -94,7 +92,7 @@ class PdfController {
     assert(_pdfViewState != null);
 
     if (!await hasSupport()) {
-      _pdfViewState
+      _pdfViewState!
         .._loadingError = Exception(
             'This device does not support the display of PDF documents')
         .._changeLoadingState(_PdfViewLoadingState.error);
@@ -105,10 +103,11 @@ class PdfController {
       _reInitPageController(initialPage);
 
       _document = await documentFuture;
-      _pdfViewState._changeLoadingState(_PdfViewLoadingState.success);
+      _pdfViewState!._changeLoadingState(_PdfViewLoadingState.success);
     } catch (error) {
-      _pdfViewState
-        .._loadingError = error
+      _pdfViewState!
+        .._loadingError =
+            error is Exception ? error : Exception('Unknown error')
         .._changeLoadingState(_PdfViewLoadingState.error);
     }
   }
