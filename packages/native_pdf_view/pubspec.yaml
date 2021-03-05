@@ -13,8 +13,8 @@ dependencies:
   photo_view:
     git: https://github.com/DevNico/photo_view.git
   synchronized: ^3.0.0
-  native_pdf_renderer: 
-    path: ../native_pdf_renderer
+  native_pdf_renderer: ^3.0.0
+    # path: ../native_pdf_renderer
 
 
 dev_dependencies:
