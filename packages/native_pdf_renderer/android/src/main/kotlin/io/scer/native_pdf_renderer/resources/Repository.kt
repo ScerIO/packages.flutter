@@ -1,4 +1,4 @@
-package io.scer.pdf.renderer.resources
+package io.scer.native_pdf_renderer.resources
 
 import java.lang.Exception
 

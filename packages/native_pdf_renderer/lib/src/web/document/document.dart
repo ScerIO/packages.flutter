@@ -1,12 +1,11 @@
 import 'dart:js_util';
 
-import 'package:meta/meta.dart';
 import 'package:native_pdf_renderer/src/web/pdfjs.dart';
 
 class Document {
   Document({
-    @required this.id,
-    @required this.document,
+    required this.id,
+    required this.document,
   });
 
   final String id;
@@ -21,6 +20,6 @@ class Document {
 
   void close() {}
 
-  Future<PdfJsPage> openPage(int pageNumber) =>
+  Future<PdfJsPage> openPage(int? pageNumber) =>
       promiseToFuture<PdfJsPage>(document.getPage(pageNumber));
 }

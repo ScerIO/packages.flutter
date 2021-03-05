@@ -1,10 +1,10 @@
-package io.scer.pdf.renderer.document
+package io.scer.native_pdf_renderer.document
 
 import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
-import io.scer.pdf.renderer.utils.toByteArray
+import io.scer.native_pdf_renderer.utils.toByteArray
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class Page (

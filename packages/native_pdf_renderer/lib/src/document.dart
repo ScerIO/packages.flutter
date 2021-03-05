@@ -3,18 +3,18 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
 import 'package:synchronized/synchronized.dart';
-import 'package:meta/meta.dart';
 import 'page.dart';
 
 /// PDF page image renderer
 class PdfDocument {
   PdfDocument._({
-    @required this.sourceName,
-    @required this.id,
-    @required this.pagesCount,
+    required this.sourceName,
+    required this.id,
+    required this.pagesCount,
   });
 
-  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel =
+      MethodChannel('io.scer.native_pdf_renderer');
 
   final Lock _lock = Lock();
 
@@ -53,28 +53,28 @@ class PdfDocument {
 
   /// Open PDF document from filesystem path
   static Future<PdfDocument> openFile(String filePath) async => _open(
-        await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.file',
           filePath,
-        ),
+        ))!,
         'file:$filePath',
       );
 
   /// Open PDF document from application assets
   static Future<PdfDocument> openAsset(String name) async => _open(
-        await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
           name,
-        ),
+        ))!,
         'asset:$name',
       );
 
   /// Open PDF file from memory (Uint8List)
   static Future<PdfDocument> openData(Uint8List data) async => _open(
-        await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
           data,
-        ),
+        ))!,
         'memory:$data',
       );
 
@@ -87,13 +87,13 @@ class PdfDocument {
       if (isClosed) {
         throw PdfDocumentAlreadyClosedException();
       }
-      final obj = await _channel.invokeMethod<Map<dynamic, dynamic>>(
+      final obj = (await _channel.invokeMethod<Map<dynamic, dynamic>>(
         'open.page',
         {
           'documentId': id,
           'page': pageNumber,
         },
-      );
+      ))!;
       return PdfPage(
         document: this,
         id: obj['id'] as String,

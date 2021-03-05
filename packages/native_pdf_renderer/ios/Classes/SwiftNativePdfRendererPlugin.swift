@@ -4,14 +4,14 @@ import CoreGraphics
 
 public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
     static let invalid = NSNumber(value: -1)
-    let dispQueue = DispatchQueue(label: "io.scer.pdf.renderer")
+    let dispQueue = DispatchQueue(label: "io.scer.native_pdf_renderer")
 
     let documents = DocumentRepository()
     let pages = PageRepository()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
-            name: "io.scer.pdf.renderer", binaryMessenger: registrar.messenger())
+            name: "io.scer.native_pdf_renderer", binaryMessenger: registrar.messenger())
         let instance = SwiftNativePdfRendererPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
