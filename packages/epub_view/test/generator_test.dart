@@ -26,7 +26,7 @@ void main() {
     String? result;
     try {
       result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
-          EpubChapter()..Anchor = 'idRef', EpubPackage());
+          EpubChapter()..Anchor = 'idRef', null);
     } catch (e) {
       expect(
         e.toString(),
@@ -76,7 +76,7 @@ void main() {
   test('generateElementCFIComponent failed - startElement is null', () async {
     String? result;
     try {
-      result = EpubCfiGenerator().generateElementCFIComponent(Document());
+      result = EpubCfiGenerator().generateElementCFIComponent(null);
     } catch (e) {
       expect(
         e.toString(),

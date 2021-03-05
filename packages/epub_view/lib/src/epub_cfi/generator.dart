@@ -10,10 +10,10 @@ class EpubCfiGenerator {
       'epubcfi(${entries.join()})';
 
   String generatePackageDocumentCFIComponent(
-      EpubChapter chapter, EpubPackage packageDocument) {
+      EpubChapter chapter, EpubPackage? packageDocument) {
     validatePackageDocument(packageDocument, chapter.Anchor);
 
-    final index = getIdRefIndex(chapter, packageDocument);
+    final index = getIdRefIndex(chapter, packageDocument!);
     final pos = getIdRefPosition(index);
     final spineIdRef = index >= 0
         ? packageDocument.Spine!.Items![index].IdRef
@@ -25,7 +25,7 @@ class EpubCfiGenerator {
     return '/6/$pos[$spineIdRef]!';
   }
 
-  String generateElementCFIComponent(Node startElement) {
+  String generateElementCFIComponent(Node? startElement) {
     validateStartElement(startElement);
 
     // Call the recursive method to create all the steps up to the head element
@@ -115,7 +115,7 @@ class EpubCfiGenerator {
 
   int getIdRefPosition(int idRefIndex) => (idRefIndex + 1) * 2;
 
-  void validatePackageDocument(EpubPackage packageDocument, String? idRef) {
+  void validatePackageDocument(EpubPackage? packageDocument, String? idRef) {
     // Check that the package document is non-empty
     // and contains an item ref element for the supplied id ref
     if (packageDocument == null || packageDocument is! EpubPackage) {
@@ -130,7 +130,7 @@ class EpubCfiGenerator {
     // }
   }
 
-  void validateStartElement(Node startElement) {
+  void validateStartElement(Node? startElement) {
     if (startElement == null) {
       throw FlutterError('$startElement: CFI target element is null');
     }

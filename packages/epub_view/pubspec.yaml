@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   # epub: ^2.1.0
-  epubx: 3.0.0-dev.1
+  epubx: 3.0.0-dev.2
   equatable: ^2.0.0
   html: ^0.15.0
   # flutter_html: ^1.3.0
