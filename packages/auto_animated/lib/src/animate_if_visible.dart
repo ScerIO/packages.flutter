@@ -15,17 +15,13 @@ typedef AutoAnimatedBuilder = Widget Function(
 
 class AnimateIfVisible extends StatefulWidget {
   const AnimateIfVisible({
-    @required Key key,
-    @required this.builder,
+    required Key key,
+    required this.builder,
     this.delay = Duration.zero,
     this.duration = const Duration(milliseconds: 250),
     this.reAnimateOnVisibility = false,
     this.visibleFraction = 0.025,
-  })  : assert(delay != null),
-        assert(duration != null),
-        assert(visibleFraction != null &&
-            visibleFraction > 0 &&
-            visibleFraction < 1),
+  })  : assert(visibleFraction > 0 && visibleFraction < 1),
         super(key: key);
 
   final AutoAnimatedBuilder builder;
@@ -48,13 +44,13 @@ class AnimateIfVisible extends StatefulWidget {
 
 class _AnimateIfVisibleState extends State<AnimateIfVisible>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
-  _VisibilityStackProvider _wrapper;
+  late AnimationController _controller;
+  _VisibilityStackProvider? _wrapper;
 
   @override
   void initState() {
     _wrapper = _VisibilityStackProvider.of(context);
-    final itemAlreadyShowed = _wrapper.stack.isAlreadyAnimated(widget.key) &&
+    final itemAlreadyShowed = _wrapper!.stack!.isAlreadyAnimated(widget.key) &&
         !widget.reAnimateOnVisibility;
 
     _controller = AnimationController(
@@ -73,7 +69,7 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
 
   @override
   Widget build(BuildContext context) => VisibilityDetector(
-        key: widget.key,
+        key: widget.key!,
         child: widget.builder(
           context,
           _controller.view,
@@ -86,7 +82,7 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
         !_controller.isCompleted) {
       Future.delayed(widget.delay, () {
         if (_wrapper != null) {
-          _wrapper.stack.add(widget.key, () {
+          _wrapper!.stack!.add(widget.key, () {
             if (mounted) {
               _controller.forward();
             }
@@ -108,16 +104,14 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
 
 class AnimateIfVisibleWrapper extends StatefulWidget {
   const AnimateIfVisibleWrapper({
-    @required this.child,
+    required this.child,
     this.delay = Duration.zero,
     this.showItemInterval = const Duration(milliseconds: 150),
     this.controller,
-    Key key,
-  })  : assert(delay != null),
-        assert(showItemInterval != null),
-        super(key: key);
+    Key? key,
+  }) : super(key: key);
 
-  final ScrollController controller;
+  final ScrollController? controller;
   final Widget child;
   final Duration delay, showItemInterval;
 
@@ -127,7 +121,7 @@ class AnimateIfVisibleWrapper extends StatefulWidget {
 }
 
 class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
-  VisibilityStack _stack;
+  VisibilityStack? _stack;
   double _lastScrollExtend = 0;
 
   @override
@@ -136,15 +130,15 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
       delay: widget.delay,
       showItemInterval: widget.showItemInterval,
     );
-    if (widget.controller != null && widget.controller.hasClients) {
-      widget.controller.addListener(_handleScrollController);
+    if (widget.controller != null && widget.controller!.hasClients) {
+      widget.controller!.addListener(_handleScrollController);
     }
     super.initState();
   }
 
   @override
   void dispose() {
-    _stack.dispose();
+    _stack!.dispose();
     widget.controller?.removeListener(_handleScrollController);
     super.dispose();
   }
@@ -152,7 +146,7 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
   @override
   void didUpdateWidget(AnimateIfVisibleWrapper oldWidget) {
     if (oldWidget.showItemInterval != widget.showItemInterval) {
-      _stack.showItemInterval = widget.showItemInterval;
+      _stack!.showItemInterval = widget.showItemInterval;
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -168,9 +162,9 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
 
   void _handleScrollController() {
     _setDirection(
-      widget.controller.offset,
-      widget.controller.position.minScrollExtent,
-      widget.controller.position.maxScrollExtent,
+      widget.controller!.offset,
+      widget.controller!.position.minScrollExtent,
+      widget.controller!.position.maxScrollExtent,
     );
   }
 
@@ -193,10 +187,10 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
     }
     if (offset > _lastScrollExtend + 2.5) {
       // to end
-      _stack.direction = AnimationDirection.toEnd;
+      _stack!.direction = AnimationDirection.toEnd;
     } else if (offset < _lastScrollExtend - 2.5) {
       // to start
-      _stack.direction = AnimationDirection.toStart;
+      _stack!.direction = AnimationDirection.toStart;
     }
     _lastScrollExtend = offset;
   }
@@ -204,17 +198,16 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
 
 class _VisibilityStackProvider extends InheritedWidget {
   _VisibilityStackProvider({
-    @required Widget child,
-    @required this.stack,
-    Key key,
-  })  : assert(child != null),
-        super(key: key, child: child);
+    required Widget child,
+    required this.stack,
+    Key? key,
+  }) : super(key: key, child: child);
 
-  final VisibilityStack stack;
+  final VisibilityStack? stack;
 
-  static _VisibilityStackProvider of(BuildContext context) => context
+  static _VisibilityStackProvider? of(BuildContext context) => context
       .getElementForInheritedWidgetOfExactType<_VisibilityStackProvider>()
-      ?.widget;
+      ?.widget as _VisibilityStackProvider?;
 
   @override
   bool updateShouldNotify(_VisibilityStackProvider oldWidget) =>

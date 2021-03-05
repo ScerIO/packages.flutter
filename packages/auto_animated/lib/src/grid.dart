@@ -9,9 +9,9 @@ const Duration _kDuration = Duration(milliseconds: 250);
 
 class LiveGrid extends StatefulWidget {
   const LiveGrid({
-    @required this.itemBuilder,
-    @required this.gridDelegate,
-    @required this.itemCount,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    required this.itemCount,
     this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
@@ -27,16 +27,15 @@ class LiveGrid extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    Key key,
-  })  : assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+    Key? key,
+  })  : assert(itemCount >= 0),
         super(key: key);
 
   LiveGrid.options({
-    @required this.itemBuilder,
-    @required this.gridDelegate,
-    @required this.itemCount,
-    @required LiveOptions options,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    required this.itemCount,
+    required LiveOptions options,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.controller,
@@ -47,14 +46,13 @@ class LiveGrid extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    Key key,
+    Key? key,
   })  : delay = options.delay,
         showItemInterval = options.showItemInterval,
         showItemDuration = options.showItemDuration,
         visibleFraction = options.visibleFraction,
         reAnimateOnVisibility = options.reAnimateOnVisibility,
-        assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+        assert(itemCount >= 0),
         super(key: key);
 
   /// Start animation after (default zero)
@@ -120,7 +118,7 @@ class LiveGrid extends StatefulWidget {
   /// [ScrollController.keepScrollOffset]). It can be used to read the current
   /// scroll position (see [ScrollController.offset]), or change it (see
   /// [ScrollController.animateTo]).
-  final ScrollController controller;
+  final ScrollController? controller;
 
   /// Whether this is the primary scroll view associated with the parent
   /// [PrimaryScrollController].
@@ -130,7 +128,7 @@ class LiveGrid extends StatefulWidget {
   ///
   /// Defaults to true when [scrollDirection] is [Axis.vertical] and
   /// [controller] is null.
-  final bool primary;
+  final bool? primary;
 
   /// How the scroll view should respond to user input.
   ///
@@ -138,7 +136,7 @@ class LiveGrid extends StatefulWidget {
   /// user stops dragging the scroll view.
   ///
   /// Defaults to matching platform conventions.
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// Whether the extent of the scroll view in the [scrollDirection] should be
   /// determined by the contents being viewed.
@@ -157,7 +155,7 @@ class LiveGrid extends StatefulWidget {
   final bool shrinkWrap;
 
   /// The amount of space by which to inset the children.
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   /// A delegate that controls the layout of the children within the [GridView].
   ///

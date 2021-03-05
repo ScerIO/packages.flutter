@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart' hide Stack;
 class _Animatable {
   _Animatable(this.key, this.callback);
 
-  final Key key;
+  final Key? key;
   final VoidCallback callback;
 }
 
@@ -16,8 +16,8 @@ class _DirectionStack {
 
 class VisibilityStack {
   VisibilityStack({
-    @required this.delay,
-    @required this.showItemInterval,
+    required this.delay,
+    required this.showItemInterval,
   });
 
   Duration delay, showItemInterval;
@@ -28,7 +28,7 @@ class VisibilityStack {
   };
 
   _DirectionStack _stack = _DirectionStack([], AnimationDirection.toEnd);
-  final Map<Key, bool> _alreadyAnimated = {};
+  final Map<Key?, bool> _alreadyAnimated = {};
 
   AnimationDirection _direction = AnimationDirection.toEnd;
   AnimationDirection get direction => _direction;
@@ -44,7 +44,7 @@ class VisibilityStack {
     _direction = direction;
   }
 
-  void add(Key key, VoidCallback callback) {
+  void add(Key? key, VoidCallback callback) {
     _stack.items.add(_Animatable(key, callback));
 
     _alreadyAnimated[key] = false;
@@ -64,16 +64,14 @@ class VisibilityStack {
       animatable = stack.items.last;
       stack.items.removeLast();
     }
-    if (animatable != null) {
-      animatable.callback();
-      _alreadyAnimated[animatable.key] = true;
-    }
+    animatable.callback();
+    _alreadyAnimated[animatable.key] = true;
   }
 
-  bool isAlreadyAnimated(Key key) => _alreadyAnimated[key] ?? false;
+  bool isAlreadyAnimated(Key? key) => _alreadyAnimated[key] ?? false;
 
   void animate(_DirectionStack stack, Duration showItemInterval) {
-    if (_isAnimatedTo[stack.direction]) {
+    if (_isAnimatedTo[stack.direction]!) {
       return;
     }
     _isAnimatedTo[stack.direction] = true;
