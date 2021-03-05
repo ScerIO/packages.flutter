@@ -4,7 +4,7 @@ import 'package:epub_view/src/epub_cfi/parser.dart';
 void main() {
   test('fragment parse - empty', () async {
     final parser = EpubCfiParser();
-    CfiResult result;
+    CfiResult? result;
     try {
       result = parser.parse('', 'fragment');
     } catch (e) {
@@ -16,7 +16,7 @@ void main() {
 
   test('fragment parse - null', () async {
     final parser = EpubCfiParser();
-    CfiResult result;
+    CfiResult? result;
     try {
       result = parser.parse(null, null);
     } catch (e) {
@@ -310,7 +310,7 @@ void main() {
 
   test('fragment parse - error at the beginning', () async {
     final parser = EpubCfiParser();
-    CfiResult result;
+    CfiResult? result;
     try {
       result = parser.parse(
           'epubcfi(q/6/14[chap05ref]!/4[body01]/10/2/1:3)', 'fragment');
@@ -323,7 +323,7 @@ void main() {
 
   test('fragment parse - error in the middle', () async {
     final parser = EpubCfiParser();
-    CfiResult result;
+    CfiResult? result;
     try {
       result = parser.parse(
           'epubcfi(/6/14q[chap05ref]!/4[body01]/10/2/1:3)', 'fragment');
@@ -345,7 +345,7 @@ void main() {
 
   test('fragment parse - error at the end', () async {
     final parser = EpubCfiParser();
-    CfiResult result;
+    CfiResult? result;
     try {
       result = parser.parse(
           'epubcfi(/6/14[chap05ref]!/4[body01]/10/2/1:3)q', 'fragment');

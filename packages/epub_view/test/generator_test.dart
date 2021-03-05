@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:epub/epub.dart';
+import 'package:epubx/epubx.dart';
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,17 +16,17 @@ Future<Uint8List> _loadTestBook() async {
 }
 
 void main() {
-  EpubBook _book;
+  late EpubBook _book;
 
   setUp(() async {
     _book = await _loadTestBook().then(EpubReader.readBook);
   });
 
   test('generatePackageDocumentCFIComponent packageDocument failed', () async {
-    String result;
+    String? result;
     try {
       result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
-          EpubChapter()..Anchor = 'idRef', null);
+          EpubChapter()..Anchor = 'idRef', EpubPackage());
     } catch (e) {
       expect(
         e.toString(),
@@ -39,10 +39,10 @@ void main() {
   });
 
   test('generatePackageDocumentCFIComponent idRef failed', () async {
-    String result;
+    String? result;
     try {
       result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
-          EpubChapter()..Anchor = 'idRef', _book.Schema.Package);
+          EpubChapter()..Anchor = 'idRef', _book.Schema!.Package!);
     } catch (e) {
       // Condition is commented
       // This error will not be caused, because there is a case
@@ -61,7 +61,7 @@ void main() {
 
   test('generatePackageDocumentCFIComponent success', () async {
     final result = EpubCfiGenerator().generatePackageDocumentCFIComponent(
-        EpubChapter()..Anchor = 'id4', _book.Schema.Package);
+        EpubChapter()..Anchor = 'id4', _book.Schema!.Package!);
 
     expect(result, '/6/26[id4]!');
   });
@@ -74,9 +74,9 @@ void main() {
   // });
 
   test('generateElementCFIComponent failed - startElement is null', () async {
-    String result;
+    String? result;
     try {
-      result = EpubCfiGenerator().generateElementCFIComponent(null);
+      result = EpubCfiGenerator().generateElementCFIComponent(Document());
     } catch (e) {
       expect(
         e.toString(),
@@ -89,7 +89,7 @@ void main() {
 
   test('generateElementCFIComponent failed - startElement has wrong type',
       () async {
-    String result;
+    String? result;
     try {
       result =
           EpubCfiGenerator().generateElementCFIComponent(Comment('comment'));
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('generateElementCFIComponent success', () async {
-    final document = EpubCfiReader().chapterDocument(_book.Chapters[0]);
+    final document = EpubCfiReader().chapterDocument(_book.Chapters![0]);
     final node = document.getElementsByTagName('p')[3];
 
     final result = EpubCfiGenerator().generateElementCFIComponent(node);
@@ -116,12 +116,12 @@ void main() {
 
   test('generateCompleteCFI success', () async {
     final document =
-        EpubCfiReader().chapterDocument(_book.Chapters[0].SubChapters[1]);
+        EpubCfiReader().chapterDocument(_book.Chapters![0].SubChapters![1]);
     final node = document.getElementsByTagName('p')[2];
 
     final packageDocumentCFIComponent = EpubCfiGenerator()
         .generatePackageDocumentCFIComponent(
-            EpubChapter()..Anchor = 'id3', _book.Schema.Package);
+            EpubChapter()..Anchor = 'id3', _book.Schema!.Package!);
     final contentDocumentCFIComponent =
         EpubCfiGenerator().generateElementCFIComponent(node);
 

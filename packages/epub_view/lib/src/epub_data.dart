@@ -2,13 +2,13 @@ part of 'epub_view.dart';
 
 class EpubChapterViewValue {
   const EpubChapterViewValue({
-    @required this.chapter,
-    @required this.chapterNumber,
-    @required this.paragraphNumber,
-    @required this.position,
+    required this.chapter,
+    required this.chapterNumber,
+    required this.paragraphNumber,
+    required this.position,
   });
 
-  final EpubChapter chapter;
+  final EpubChapter? chapter;
   final int chapterNumber;
   final int paragraphNumber;
   final ItemPosition position;

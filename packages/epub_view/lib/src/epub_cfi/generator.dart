@@ -1,4 +1,4 @@
-import 'package:epub/epub.dart';
+import 'package:epubx/epubx.dart';
 import 'package:epub_view/src/utils.dart';
 import 'package:html/dom.dart';
 import 'package:flutter/foundation.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 class EpubCfiGenerator {
   const EpubCfiGenerator();
 
-  String generateCompleteCFI(List<String> entries) =>
+  String generateCompleteCFI(List<String?> entries) =>
       'epubcfi(${entries.join()})';
 
   String generatePackageDocumentCFIComponent(
@@ -15,8 +15,9 @@ class EpubCfiGenerator {
 
     final index = getIdRefIndex(chapter, packageDocument);
     final pos = getIdRefPosition(index);
-    final spineIdRef =
-        index >= 0 ? packageDocument.Spine.Items[index].IdRef : chapter.Anchor;
+    final spineIdRef = index >= 0
+        ? packageDocument.Spine!.Items![index].IdRef
+        : chapter.Anchor;
 
     // Append an !; this assumes that a CFI content document CFI component
     // will be appended at some point
@@ -29,7 +30,8 @@ class EpubCfiGenerator {
 
     // Call the recursive method to create all the steps up to the head element
     // of the content document (the "html" element)
-    final contentDocCFI = createCFIElementSteps(startElement, 'html');
+    final contentDocCFI =
+        createCFIElementSteps(startElement as Element, 'html');
 
     // Remove the !
     return contentDocCFI.substring(1, contentDocCFI.length);
@@ -41,7 +43,7 @@ class EpubCfiGenerator {
 
     // Find position of current node in parent list
     int index = 0;
-    currentNode.parent.children.forEach((node) {
+    currentNode.parent!.children.forEach((node) {
       if (node == currentNode) {
         currentNodePosition = index;
       }
@@ -56,7 +58,7 @@ class EpubCfiGenerator {
       elementStep = '/' +
           cfiPosition.toString() +
           '[' +
-          currentNode.attributes['id'] +
+          currentNode.attributes['id']! +
           ']';
     } else {
       elementStep = '/' + cfiPosition.toString();
@@ -67,7 +69,7 @@ class EpubCfiGenerator {
     //   Also need to check if the current node is the top-level element.
     //   This can occur if the start node is also the
     //   top level element.
-    final parentNode = currentNode.parent;
+    final parentNode = currentNode.parent!;
     if (parentNode.localName == topLevelElement ||
         currentNode.localName == topLevelElement) {
       // If the top level node is a type from which an indirection step, add an
@@ -88,14 +90,14 @@ class EpubCfiGenerator {
   }
 
   int getIdRefIndex(EpubChapter chapter, EpubPackage packageDocument) {
-    final items = packageDocument.Spine.Items;
+    final items = packageDocument.Spine!.Items!;
     int index = -1;
     int partIndex = -1;
-    String edRef = chapter.Anchor;
+    String? edRef = chapter.Anchor;
 
     if (chapter.Anchor == null) {
       // filename w/o extension
-      edRef = fileNameAsChapterName(chapter.ContentFileName);
+      edRef = fileNameAsChapterName(chapter.ContentFileName!);
     }
 
     for (var i = 0; i < items.length; i++) {
@@ -103,7 +105,7 @@ class EpubCfiGenerator {
         index = i;
         break;
       }
-      if (edRef.contains(items[i].IdRef)) {
+      if (edRef!.contains(items[i].IdRef!)) {
         partIndex = i;
       }
     }
@@ -113,7 +115,7 @@ class EpubCfiGenerator {
 
   int getIdRefPosition(int idRefIndex) => (idRefIndex + 1) * 2;
 
-  void validatePackageDocument(EpubPackage packageDocument, String idRef) {
+  void validatePackageDocument(EpubPackage packageDocument, String? idRef) {
     // Check that the package document is non-empty
     // and contains an item ref element for the supplied id ref
     if (packageDocument == null || packageDocument is! EpubPackage) {

@@ -10,40 +10,40 @@ class EpubController {
           'Need to pass document or data for initialize',
         );
 
-  Future<EpubBook> document;
-  Future<Uint8List> data;
-  final String epubCfi;
+  Future<EpubBook>? document;
+  Future<Uint8List>? data;
+  final String? epubCfi;
 
-  _EpubViewState _epubViewState;
-  List<EpubViewChapter> _cacheTableOfContents;
+  _EpubViewState? _epubViewState;
+  List<EpubViewChapter>? _cacheTableOfContents;
 
-  final BehaviorSubject<EpubChapterViewValue> _valueStreamController =
-      BehaviorSubject<EpubChapterViewValue>();
+  final BehaviorSubject<EpubChapterViewValue?> _valueStreamController =
+      BehaviorSubject<EpubChapterViewValue?>();
 
-  final BehaviorSubject<List<EpubViewChapter>>
+  final BehaviorSubject<List<EpubViewChapter>?>
       _tableOfContentsStreamController =
-      BehaviorSubject<List<EpubViewChapter>>();
+      BehaviorSubject<List<EpubViewChapter>?>();
 
-  EpubBook _document;
+  EpubBook? _document;
 
-  EpubChapterViewValue get currentValue => _epubViewState?._currentValue;
+  EpubChapterViewValue? get currentValue => _epubViewState?._currentValue;
 
-  bool get isBookLoaded => _epubViewState?._initialized;
+  bool? get isBookLoaded => _epubViewState?._initialized;
 
-  Stream<EpubChapterViewValue> get currentValueStream =>
+  Stream<EpubChapterViewValue?> get currentValueStream =>
       _valueStreamController.stream;
 
-  Stream<List<EpubViewChapter>> get tableOfContentsStream =>
+  Stream<List<EpubViewChapter>?> get tableOfContentsStream =>
       _tableOfContentsStreamController.stream;
 
-  void jumpTo({@required int index, double alignment = 0}) =>
+  void jumpTo({required int index, double alignment = 0}) =>
       _epubViewState?._itemScrollController?.jumpTo(
         index: index,
         alignment: alignment,
       );
 
-  Future<void> scrollTo({
-    @required int index,
+  Future<void>? scrollTo({
+    required int index,
     Duration duration = const Duration(milliseconds: 250),
     double alignment = 0,
     Curve curve = Curves.linear,
@@ -69,18 +69,18 @@ class EpubController {
     );
   }
 
-  String generateEpubCfi() => _epubViewState?._epubCfiReader?.generateCfi(
+  String? generateEpubCfi() => _epubViewState?._epubCfiReader?.generateCfi(
         book: _document,
         chapter: _epubViewState?._currentValue?.chapter,
         paragraphIndex: _epubViewState?._getAbsParagraphIndexBy(
-          positionIndex: _epubViewState?._currentValue?.position?.index ?? 0,
+          positionIndex: _epubViewState?._currentValue?.position.index ?? 0,
           trailingEdge:
-              _epubViewState?._currentValue?.position?.itemTrailingEdge,
-          leadingEdge: _epubViewState?._currentValue?.position?.itemLeadingEdge,
+              _epubViewState?._currentValue?.position.itemTrailingEdge,
+          leadingEdge: _epubViewState?._currentValue?.position.itemLeadingEdge,
         ),
       );
 
-  List<EpubViewChapter> tableOfContents() {
+  List<EpubViewChapter>? tableOfContents() {
     if (_cacheTableOfContents != null) {
       return _cacheTableOfContents;
     }
@@ -92,12 +92,12 @@ class EpubController {
     int index = -1;
 
     return _cacheTableOfContents =
-        _document.Chapters.fold<List<EpubViewChapter>>(
+        _document!.Chapters!.fold<List<EpubViewChapter>>(
       [],
       (acc, next) {
         index += 1;
         acc.add(EpubViewChapter(next.Title, _getChapterStartIndex(index)));
-        for (final subChapter in next.SubChapters) {
+        for (final subChapter in next.SubChapters!) {
           index += 1;
           acc.add(EpubViewSubChapter(
               subChapter.Title, _getChapterStartIndex(index)));
@@ -108,13 +108,13 @@ class EpubController {
   }
 
   int _getChapterStartIndex(int index) =>
-      index < _epubViewState._chapterIndexes.length
-          ? _epubViewState._chapterIndexes[index]
+      index < _epubViewState!._chapterIndexes.length
+          ? _epubViewState!._chapterIndexes[index]
           : 0;
 
   Future<void> loadDocument({
-    Future<EpubBook> document,
-    Future<Uint8List> data,
+    Future<EpubBook>? document,
+    Future<Uint8List>? data,
   }) {
     this.document = document;
     this.data = data;
@@ -125,26 +125,26 @@ class EpubController {
   }
 
   Future<void> _loadDocument({
-    Future<EpubBook> documentFuture,
-    Future<Uint8List> dataFuture,
+    Future<EpubBook>? documentFuture,
+    Future<Uint8List>? dataFuture,
   }) async {
-    _epubViewState._initialized = false;
+    _epubViewState!._initialized = false;
     try {
-      _epubViewState._changeLoadingState(_EpubViewLoadingState.loading);
+      _epubViewState!._changeLoadingState(_EpubViewLoadingState.loading);
       if (documentFuture != null) {
         _document = await documentFuture;
       } else {
-        final data = await dataFuture;
+        final data = await dataFuture!;
         _document = await EpubReader.readBook(data);
       }
-      await _epubViewState._init();
-      _epubViewState._actualChapter.stream.listen((chapter) {
+      await _epubViewState!._init();
+      _epubViewState!._actualChapter.stream.listen((chapter) {
         _valueStreamController.sink.add(chapter);
       });
       _tableOfContentsStreamController.sink.add(tableOfContents());
-      _epubViewState._changeLoadingState(_EpubViewLoadingState.success);
+      _epubViewState!._changeLoadingState(_EpubViewLoadingState.success);
     } catch (error) {
-      _epubViewState
+      _epubViewState!
         .._loadingError = error is Exception
             ? error
             : Exception('An unexpected error occurred')
@@ -170,7 +170,7 @@ class EpubController {
 class EpubViewChapter {
   EpubViewChapter(this.title, this.startIndex);
 
-  final String title;
+  final String? title;
   final int startIndex;
 
   String get type => this is EpubViewSubChapter ? 'subchapter' : 'chapter';
@@ -180,7 +180,7 @@ class EpubViewChapter {
 }
 
 class EpubViewSubChapter extends EpubViewChapter {
-  EpubViewSubChapter(String title, int startIndex) : super(title, startIndex);
+  EpubViewSubChapter(String? title, int startIndex) : super(title, startIndex);
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {

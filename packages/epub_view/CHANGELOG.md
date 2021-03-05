@@ -1,3 +1,8 @@
+## 2.0.0
+
+* Null-safety migration & Flutter v2 capability
+* Upgrade dependencies
+
 ## 1.1.0
 
 * Flutter 1.20 capability support

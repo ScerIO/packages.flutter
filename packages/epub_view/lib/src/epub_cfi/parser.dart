@@ -2,15 +2,14 @@ import 'dart:math';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
 
 class EpubCfiParser {
   final int reportFailures = 0;
   int rightmostFailuresPos = 0;
   List<String> rightmostFailuresExpected = [];
   int pos = 0;
-  String input;
-  String startRule;
+  late String input;
+  String? startRule;
 
   /*
    * ECMA-262, 5th ed., 7.8.4: All characters may appear literally in a
@@ -33,10 +32,10 @@ class EpubCfiParser {
           .replaceAll(RegExp(r'\f'), '\\f') // form feed
           .replaceAll(RegExp(r'\r'), '\\r') // carriage return
           .replaceAllMapped(RegExp(r'[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]'),
-              (Match m) => Uri.encodeFull(m[0])) +
+              (Match m) => Uri.encodeFull(m[0]!)) +
       '"';
 
-  dynamic parse(String _input, String _startRule) {
+  dynamic parse(String? _input, String? _startRule) {
     input = _input ?? '';
     startRule = _startRule;
 
@@ -69,14 +68,14 @@ class EpubCfiParser {
     };
 
     if (startRule != null) {
-      if (parseFunctions[startRule] == null) {
-        throw FlutterError('Invalid rule name: ' + quote(startRule) + '.');
+      if (parseFunctions[startRule!] == null) {
+        throw FlutterError('Invalid rule name: ' + quote(startRule!) + '.');
       }
     } else {
       startRule = 'fragment';
     }
 
-    final result = parseFunctions[startRule]();
+    final result = parseFunctions[startRule!]!();
 
     /*
        * The parser is now in one of the following three states:
@@ -119,7 +118,7 @@ class EpubCfiParser {
     return result;
   }
 
-  CfiFragment _parseFragment() {
+  CfiFragment? _parseFragment() {
     dynamic result0, result1, result2;
     int pos0, pos1;
 
@@ -177,9 +176,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiRange _parseRange() {
+  CfiRange? _parseRange() {
     dynamic result0, result1, result2, result3, result5;
-    String result4;
+    String? result4;
     int pos0, pos1;
 
     pos0 = pos;
@@ -246,10 +245,10 @@ class EpubCfiParser {
     }
     if (result0 != null) {
       result0 = ((int offset,
-              CfiStep stepVal,
-              CfiLocalPath localPathVal,
-              CfiLocalPath rangeLocalPath1Val,
-              CfiLocalPath rangeLocalPath2Val) =>
+              CfiStep? stepVal,
+              CfiLocalPath? localPathVal,
+              CfiLocalPath? rangeLocalPath1Val,
+              CfiLocalPath? rangeLocalPath2Val) =>
           CfiRange(
             type: 'range',
             path: stepVal,
@@ -264,7 +263,7 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiPath _parsePath() {
+  CfiPath? _parsePath() {
     dynamic result0, result1;
     final int pos0 = pos, pos1 = pos;
 
@@ -282,12 +281,12 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 =
-          ((int offset, CfiStep stepVal, CfiLocalPath localPathVal) => CfiPath(
-                type: 'path',
-                path: stepVal,
-                localPath: localPathVal,
-              ))(pos0, result0[0], result0[1]);
+      result0 = ((int offset, CfiStep? stepVal, CfiLocalPath? localPathVal) =>
+          CfiPath(
+            type: 'path',
+            path: stepVal,
+            localPath: localPathVal,
+          ))(pos0, result0[0], result0[1]);
     }
     if (result0 == null) {
       pos = pos0;
@@ -297,9 +296,9 @@ class EpubCfiParser {
 
   CfiLocalPath _parseLocalPath() {
     dynamic result0;
-    CfiStep result1;
-    CfiTerminus result2;
-    List<CfiStep> result3;
+    CfiStep? result1;
+    CfiTerminus? result2;
+    List<CfiStep>? result3;
 
     final int pos0 = pos, pos1 = pos;
 
@@ -338,7 +337,7 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((int offset, List<CfiStep> localPathStepVal, termStepVal) =>
+      result0 = ((int offset, List<CfiStep>? localPathStepVal, termStepVal) =>
               CfiLocalPath(steps: localPathStepVal, termStep: termStepVal))(
           pos0, result0[0], result0[1]);
     }
@@ -348,9 +347,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiStep _parseIndexStep() {
+  CfiStep? _parseIndexStep() {
     dynamic result0, result1, result2;
-    String result3, result4;
+    String? result3, result4;
     final int pos0 = pos, pos1 = pos;
     int pos2;
 
@@ -430,9 +429,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiStep _parseIndirectionStep() {
+  CfiStep? _parseIndirectionStep() {
     dynamic result0, result1, result2;
-    String result3, result4;
+    String? result3, result4;
     final int pos0 = pos, pos1 = pos;
     int pos2;
 
@@ -512,9 +511,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiTerminus _parseTerminus() {
+  CfiTerminus? _parseTerminus() {
     dynamic result0, result1, result2, result3;
-    String result4;
+    String? result4;
     final int pos0 = pos, pos1 = pos;
     int pos2;
 
@@ -597,8 +596,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseIdAssertion() {
-    String result0;
+  String? _parseIdAssertion() {
+    String? result0;
     final int pos0 = pos;
 
     result0 = _parseValue();
@@ -635,7 +634,7 @@ class EpubCfiParser {
       pos = pos1;
     }
     if (result0 != null) {
-      result0 = ((int offset, CfiCsv csvVal, CfiParameter paramVal) =>
+      result0 = ((int offset, CfiCsv? csvVal, CfiParameter? paramVal) =>
           CfiTextLocationAssertion(
             type: 'textLocationAssertion',
             csv: csvVal,
@@ -648,9 +647,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  CfiParameter _parseParameter() {
+  CfiParameter? _parseParameter() {
     dynamic result0;
-    String result1, result2, result3;
+    String? result1, result2, result3;
     final int pos0 = pos, pos1 = pos;
 
     if (input.codeUnitAt(pos) == 59) {
@@ -709,7 +708,7 @@ class EpubCfiParser {
 
   CfiCsv _parseCsv() {
     dynamic result0;
-    String result1, result2;
+    String? result1, result2;
     final int pos0 = pos, pos1 = pos;
 
     result0 = _parseValue();
@@ -759,9 +758,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseValueNoSpace() {
+  String? _parseValueNoSpace() {
     dynamic result0;
-    String result1;
+    String? result1;
     final int pos0 = pos;
 
     result1 = _parseEscapedSpecialChars();
@@ -769,7 +768,7 @@ class EpubCfiParser {
       result1 = _parseCharacter();
     }
     if (result1 != null) {
-      result0 = List<String>();
+      result0 = <String>[];
       while (result1 != null) {
         result0.add(result1);
         result1 = _parseEscapedSpecialChars();
@@ -789,9 +788,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseValue() {
+  String? _parseValue() {
     dynamic result0;
-    String result1;
+    String? result1;
     final int pos0 = pos;
 
     result1 = _parseEscapedSpecialChars();
@@ -802,7 +801,7 @@ class EpubCfiParser {
       }
     }
     if (result1 != null) {
-      result0 = List<String>();
+      result0 = <String>[];
       while (result1 != null) {
         result0.add(result1);
         result1 = _parseEscapedSpecialChars();
@@ -825,9 +824,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseEscapedSpecialChars() {
+  String? _parseEscapedSpecialChars() {
     dynamic result0;
-    String result1;
+    String? result1;
     int pos0, pos1;
 
     pos0 = pos;
@@ -934,9 +933,9 @@ class EpubCfiParser {
     return result0;
   }
 
-  Map<String, dynamic> _parseNumber() {
+  Map<String, dynamic>? _parseNumber() {
     dynamic result0, result1, result2;
-    String result3;
+    String? result3;
     int pos0, pos1, pos2;
 
     pos0 = pos;
@@ -1068,10 +1067,10 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseInteger() {
+  String? _parseInteger() {
     dynamic result0;
     List<String> result1;
-    String result2;
+    String? result2;
     int pos1;
     final int pos0 = pos;
 
@@ -1145,8 +1144,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseSpace() {
-    String result0;
+  String? _parseSpace() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 32) {
@@ -1167,8 +1166,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseCircumflex() {
-    String result0;
+  String? _parseCircumflex() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 94) {
@@ -1189,8 +1188,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseDoubleQuote() {
-    String result0;
+  String? _parseDoubleQuote() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 34) {
@@ -1211,8 +1210,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseSquareBracket() {
-    String result0;
+  String? _parseSquareBracket() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 91) {
@@ -1244,8 +1243,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseParentheses() {
-    String result0;
+  String? _parseParentheses() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 40) {
@@ -1277,8 +1276,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseComma() {
-    String result0;
+  String? _parseComma() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 44) {
@@ -1299,8 +1298,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseSemicolon() {
-    String result0;
+  String? _parseSemicolon() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 59) {
@@ -1321,8 +1320,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseEqual() {
-    String result0;
+  String? _parseEqual() {
+    String? result0;
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 61) {
@@ -1343,8 +1342,8 @@ class EpubCfiParser {
     return result0;
   }
 
-  String _parseCharacter() {
-    String result0;
+  String? _parseCharacter() {
+    String? result0;
     final int pos0 = pos;
 
     if (RegExp(r'^[a-z]').hasMatch(input[pos])) {
@@ -1440,7 +1439,7 @@ class EpubCfiParser {
   List<String> _cleanupExpected(List<String> expected) {
     expected.sort();
 
-    String lastExpected;
+    String? lastExpected;
     final List<String> cleanExpected = [];
     for (int i = 0; i < expected.length; i++) {
       if (expected[i] != lastExpected) {
@@ -1516,133 +1515,133 @@ class EpubCfiParser {
 abstract class CfiResult extends Equatable {}
 
 class CfiFragment extends CfiResult {
-  CfiFragment({@required this.type, @required this.range, @required this.path});
+  CfiFragment({required this.type, required this.range, required this.path});
 
   final String type;
-  final CfiRange range;
-  final CfiPath path;
+  final CfiRange? range;
+  final CfiPath? path;
 
   @override
-  List<Object> get props => [type, range, path];
+  List<Object?> get props => [type, range, path];
 }
 
 class CfiRange extends CfiResult {
   CfiRange({
-    @required this.type,
-    @required this.path,
-    @required this.localPath,
-    @required this.range1,
-    @required this.range2,
+    required this.type,
+    required this.path,
+    required this.localPath,
+    required this.range1,
+    required this.range2,
   });
 
   final String type;
-  final CfiStep path;
-  final CfiLocalPath localPath;
-  final CfiLocalPath range1;
-  final CfiLocalPath range2;
+  final CfiStep? path;
+  final CfiLocalPath? localPath;
+  final CfiLocalPath? range1;
+  final CfiLocalPath? range2;
 
   @override
-  List<Object> get props => [type, path, localPath, range1, range2];
+  List<Object?> get props => [type, path, localPath, range1, range2];
 }
 
 class CfiPath extends CfiResult {
-  CfiPath({@required this.type, @required this.path, @required this.localPath});
+  CfiPath({required this.type, required this.path, required this.localPath});
 
   final String type;
-  final CfiStep path;
-  final CfiLocalPath localPath;
+  final CfiStep? path;
+  final CfiLocalPath? localPath;
 
   @override
-  List<Object> get props => [type, path, localPath];
+  List<Object?> get props => [type, path, localPath];
 }
 
 class CfiLocalPath extends CfiResult {
-  CfiLocalPath({@required this.steps, @required this.termStep});
+  CfiLocalPath({required this.steps, required this.termStep});
 
-  final List<CfiStep> steps;
-  final CfiTerminus termStep;
+  final List<CfiStep>? steps;
+  final CfiTerminus? termStep;
 
   @override
-  List<Object> get props => [steps, termStep];
+  List<Object?> get props => [steps, termStep];
 }
 
 class CfiStep extends CfiResult {
   CfiStep({
-    @required this.type,
-    @required this.stepLength,
-    @required this.idAssertion,
+    required this.type,
+    required this.stepLength,
+    required this.idAssertion,
   });
 
   final String type;
   final int stepLength;
-  final String idAssertion;
+  final String? idAssertion;
 
   @override
-  List<Object> get props => [type, stepLength, idAssertion];
+  List<Object?> get props => [type, stepLength, idAssertion];
 }
 
 class CfiTerminus extends CfiResult {
   CfiTerminus({
-    @required this.type,
-    @required this.offsetValue,
-    @required this.textAssertion,
+    required this.type,
+    required this.offsetValue,
+    required this.textAssertion,
   });
 
   final String type;
-  final int offsetValue;
-  final CfiTextLocationAssertion textAssertion;
+  final int? offsetValue;
+  final CfiTextLocationAssertion? textAssertion;
 
   @override
-  List<Object> get props => [type, offsetValue, textAssertion];
+  List<Object?> get props => [type, offsetValue, textAssertion];
 }
 
 class CfiTextLocationAssertion extends CfiResult {
   CfiTextLocationAssertion({
-    @required this.type,
-    @required this.csv,
-    @required this.parameter,
+    required this.type,
+    required this.csv,
+    required this.parameter,
   });
 
   final String type;
-  final CfiCsv csv;
-  final CfiParameter parameter;
+  final CfiCsv? csv;
+  final CfiParameter? parameter;
 
   @override
-  List<Object> get props => [type, csv, parameter];
+  List<Object?> get props => [type, csv, parameter];
 }
 
 class CfiParameter extends CfiResult {
   CfiParameter({
-    @required this.type,
-    @required this.lHSValue,
-    @required this.rHSValue,
+    required this.type,
+    required this.lHSValue,
+    required this.rHSValue,
   });
 
   final String type;
-  final String lHSValue;
-  final String rHSValue;
+  final String? lHSValue;
+  final String? rHSValue;
 
   @override
-  List<Object> get props => [type, lHSValue, rHSValue];
+  List<Object?> get props => [type, lHSValue, rHSValue];
 }
 
 class CfiCsv extends CfiResult {
   CfiCsv({
-    @required this.type,
-    @required this.preAssertion,
-    @required this.postAssertion,
+    required this.type,
+    required this.preAssertion,
+    required this.postAssertion,
   });
 
   final String type;
-  final String preAssertion;
-  final String postAssertion;
+  final String? preAssertion;
+  final String? postAssertion;
 
   @override
-  List<Object> get props => [type, preAssertion, postAssertion];
+  List<Object?> get props => [type, preAssertion, postAssertion];
 }
 
 class ErrorPosition {
-  ErrorPosition({@required this.line, @required this.column});
+  ErrorPosition({required this.line, required this.column});
 
   final int line;
   final int column;
@@ -1658,7 +1657,7 @@ class CfiSyntaxException extends Equatable implements Exception {
   );
 
   final List<String> expected;
-  final String found;
+  final String? found;
   final int offset;
   final int line;
   final int column;
@@ -1681,7 +1680,7 @@ class CfiSyntaxException extends Equatable implements Exception {
     }
 
     foundHumanized =
-        (found ?? '').isNotEmpty ? EpubCfiParser.quote(found) : 'end of input';
+        (found ?? '').isNotEmpty ? EpubCfiParser.quote(found!) : 'end of input';
 
     // ignore: lines_longer_than_80_chars
     return 'Expected $expectedHumanized but $foundHumanized found (line: $line col: $column).';
@@ -1689,12 +1688,12 @@ class CfiSyntaxException extends Equatable implements Exception {
 
   @override
   String toString() {
-    if ((expected ?? []).isEmpty) {
+    if (expected.isEmpty) {
       return 'CfiSyntaxException';
     }
     return _buildMessage();
   }
 
   @override
-  List<Object> get props => [expected, found, offset, line, column];
+  List<Object?> get props => [expected, found, offset, line, column];
 }

@@ -4,14 +4,14 @@ import 'package:flutter/widgets.dart';
 
 class EpubReaderTableOfContents extends StatelessWidget {
   const EpubReaderTableOfContents({
-    @required this.controller,
+    required this.controller,
     this.padding,
     this.itemBuilder,
     this.loader,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
   final EpubController controller;
 
   final Widget Function(
@@ -19,24 +19,24 @@ class EpubReaderTableOfContents extends StatelessWidget {
     int index,
     EpubViewChapter chapter,
     int itemCount,
-  ) itemBuilder;
-  final Widget loader;
+  )? itemBuilder;
+  final Widget? loader;
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<List<EpubViewChapter>>(
+  Widget build(BuildContext context) => StreamBuilder<List<EpubViewChapter>?>(
         stream: controller.tableOfContentsStream,
         builder: (_, snapshot) {
           Widget content;
 
           if (snapshot.hasData) {
-            final toc = snapshot.data;
+            final toc = snapshot.data!;
             content = ListView.builder(
               padding: padding,
               key: Key('$runtimeType.content'),
               itemBuilder: (context, index) =>
                   itemBuilder?.call(context, index, toc[index], toc.length) ??
                   ListTile(
-                    title: Text(toc[index].title.trim()),
+                    title: Text(toc[index].title!.trim()),
                     onTap: () =>
                         controller.scrollTo(index: toc[index].startIndex),
                   ),
