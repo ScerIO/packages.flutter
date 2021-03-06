@@ -1,0 +1,34 @@
+{
+  "actionMenuOpen": "Open",
+  "@actionMenuOpen": {
+    "type": "text"
+  },
+  "actionMenuCopy": "Copy",
+  "@actionMenuCopy": {
+    "type": "text"
+  },
+  "actionMenuCut": "Cut",
+  "@actionMenuCut": {
+    "type": "text"
+  },
+  "actionMenuDelete": "Delete",
+  "@actionMenuDelete": {
+    "type": "text"
+  },
+  "actionCopyHere": "Copy here",
+  "@actionCopyHere": {
+    "type": "text"
+  },
+  "actionMoveHere": "Move here",
+  "@actionMoveHere": {
+    "type": "text"
+  },
+  "empty": "Empty",
+  "@empty": {
+    "type": "text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "type": "text"
+  }
+}

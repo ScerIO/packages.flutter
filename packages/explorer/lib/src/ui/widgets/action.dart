@@ -2,22 +2,12 @@ import 'dart:async';
 
 import 'package:explorer/src/data/models/state.dart';
 import 'package:explorer/src/explorer.dart';
+import 'package:explorer/src/i18n/localization.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-const _defaultTranslate = {
-  'cancel': 'Cancel',
-  'copy_here': 'Copy here',
-  'move_here': 'Move here',
-};
-
 class ExplorerActionView extends StatefulWidget {
-  const ExplorerActionView({Key key, this.translate = _defaultTranslate})
-      : super(key: key);
-
-  final Map<String, String> translate;
-
   @override
   _ExplorerActionViewState createState() => _ExplorerActionViewState();
 }
@@ -58,6 +48,8 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final i18n = ExplorerLocalizations.of(context);
+
     return StreamBuilder<ExplorerAction>(
       initialData: ExplorerActionEmpty(),
       stream: _controller.actionStream,
@@ -74,7 +66,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
               children: [
                 if (snapshot.data is ExplorerActionCopy)
                   TextButton(
-                    child: Text(widget.translate['copy_here']),
+                    child: Text(i18n.actionCopyHere),
                     onPressed: () {
                       _controller.copyEntriesConfirm(
                         (snapshot.data as ExplorerActionCopy).from,
@@ -83,7 +75,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
                   ),
                 if (snapshot.data is ExplorerActionMove)
                   TextButton(
-                    child: Text(widget.translate['move_here']),
+                    child: Text(i18n.actionMoveHere),
                     onPressed: () {
                       _controller.moveEntriesConfirm(
                         (snapshot.data as ExplorerActionMove).from,
@@ -94,7 +86,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
                 VerticalDivider(indent: 8, endIndent: 8),
                 SizedBox(width: 16),
                 TextButton(
-                  child: Text(widget.translate['cancel']),
+                  child: Text(i18n.cancel),
                   onPressed: _controller.cancelAction,
                 ),
               ],

@@ -1,0 +1,6 @@
+action:
+  open: Open
+  copy: Copy
+  cut: Cut
+  delete: Delete
+  empty: Empty

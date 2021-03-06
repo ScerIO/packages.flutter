@@ -2,6 +2,7 @@ import 'package:auto_animated/auto_animated.dart';
 import 'package:explorer/src/data/models/entry.dart';
 import 'package:explorer/src/data/models/state.dart';
 import 'package:explorer/src/explorer.dart';
+import 'package:explorer/src/i18n/localization.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,22 +10,7 @@ import 'package:sliver_tools/sliver_tools.dart';
 
 import 'entry.dart';
 
-const _defaultTranslate = {
-  'open': 'Open',
-  'copy': 'Copy',
-  'cut': 'Cut',
-  'delete': 'delete',
-  'empty': 'Empty',
-};
-
 class ExplorerFilesGridView extends StatefulWidget {
-  const ExplorerFilesGridView({
-    Key key,
-    this.translate = _defaultTranslate,
-  }) : super(key: key);
-
-  final Map<String, String> translate;
-
   @override
   _ExplorerFilesGridViewState createState() => _ExplorerFilesGridViewState();
 }
@@ -48,6 +34,8 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
       );
 
   Future<void> _showContextMenu(RelativeRect position, Entry entry) async {
+    final i18n = ExplorerLocalizations.of(context);
+
     final result = await showMenu(
       context: context,
       position: position,
@@ -58,7 +46,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
             children: <Widget>[
               Icon(Icons.launch),
               SizedBox(width: 16),
-              Text(widget.translate['open']),
+              Text(i18n.actionMenuOpen),
             ],
           ),
         ),
@@ -69,7 +57,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
             children: <Widget>[
               Icon(Icons.content_copy),
               SizedBox(width: 16),
-              Text(widget.translate['copy']),
+              Text(i18n.actionMenuCopy),
             ],
           ),
         ),
@@ -80,7 +68,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
             children: <Widget>[
               Icon(Icons.content_cut),
               SizedBox(width: 16),
-              Text(widget.translate['cut']),
+              Text(i18n.actionMenuCut),
             ],
           ),
         ),
@@ -91,7 +79,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
             children: <Widget>[
               Icon(Icons.delete),
               SizedBox(width: 16),
-              Text(widget.translate['delete']),
+              Text(i18n.actionMenuDelete),
             ],
           ),
         ),
@@ -111,6 +99,8 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final i18n = ExplorerLocalizations.of(context);
+
     var crossAxisCount = 3;
     if (size.width >= 800 && size.width < 1000) {
       crossAxisCount = 4;
@@ -130,7 +120,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
           children: <Widget>[
             if (entries.isEmpty)
               SliverFillRemaining(
-                child: Center(child: Text(widget.translate['empty'])),
+                child: Center(child: Text(i18n.empty)),
               ),
             LiveSliverGrid(
               controller: ControllerProvider.of(context).scrollController,
