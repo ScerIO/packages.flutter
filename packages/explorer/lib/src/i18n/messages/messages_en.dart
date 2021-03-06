@@ -28,6 +28,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionMenuOpen" : MessageLookupByLibrary.simpleMessage("Open"),
     "actionMoveHere" : MessageLookupByLibrary.simpleMessage("Move here"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "empty" : MessageLookupByLibrary.simpleMessage("Empty")
+    "create" : MessageLookupByLibrary.simpleMessage("Create"),
+    "empty" : MessageLookupByLibrary.simpleMessage("Empty"),
+    "fileName" : MessageLookupByLibrary.simpleMessage("File name"),
+    "folderName" : MessageLookupByLibrary.simpleMessage("Folder name"),
+    "newFile" : MessageLookupByLibrary.simpleMessage("New file"),
+    "newFolder" : MessageLookupByLibrary.simpleMessage("New folder"),
+    "uploadFiles" : MessageLookupByLibrary.simpleMessage("Upload files")
   };
 }

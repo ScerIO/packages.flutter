@@ -1,31 +1,17 @@
+import 'package:explorer/src/i18n/localization.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:explorer/src/ui/widgets/breadcrumbs.dart';
 import 'package:explorer/src/ui/widgets/fixed_sliver_persistent_header_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-const _defaultTranslate = {
-  'cancel': 'Cancel',
-  'create': 'Create',
-  'folder_name': 'Folder name',
-  'file_name': 'File name',
-  'new_folder': 'New folder',
-  'new_file': 'New file',
-  'upload_files': 'Upload files',
-};
-
 class ExplorerToolbar extends StatelessWidget {
-  const ExplorerToolbar({
-    Key key,
-    this.translate = _defaultTranslate,
-  }) : super(key: key);
-
-  final Map<String, String> translate;
-
   Future<String> openModal(BuildContext context, String labelText) async =>
       showDialog<String>(
         context: context,
         builder: (context) {
+          final i18n = ExplorerLocalizations.of(context);
+
           String result;
           return AlertDialog(
             contentPadding: const EdgeInsets.all(16.0),
@@ -44,13 +30,13 @@ class ExplorerToolbar extends StatelessWidget {
             ),
             actions: <Widget>[
               TextButton(
-                child: Text(translate['cancel']),
+                child: Text(i18n.cancel),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
               TextButton(
-                child: Text(translate['create']),
+                child: Text(i18n.create),
                 onPressed: () {
                   Navigator.of(context).pop(result);
                 },
@@ -63,6 +49,7 @@ class ExplorerToolbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _controller = ControllerProvider.of(context).explorerController;
+    final i18n = ExplorerLocalizations.of(context);
 
     final safeTopPadding = MediaQuery.of(context).padding.top;
     return SliverPersistentHeader(
@@ -91,12 +78,12 @@ class ExplorerToolbar extends StatelessWidget {
                         icon: Icon(Icons.add),
                         onSelected: (String value) async {
                           if (value == 'directory') {
-                            final folderName = await openModal(
-                                context, translate['folder_name']);
+                            final folderName =
+                                await openModal(context, i18n.folderName);
                             _controller.newDirectory(folderName);
                           } else if (value == 'file') {
-                            final fileName = await openModal(
-                                context, translate['file_name']);
+                            final fileName =
+                                await openModal(context, i18n.fileName);
                             _controller.newFile(fileName);
                           } else if (value == 'upload') {
                             _controller.uploadLocalFiles();
@@ -111,7 +98,7 @@ class ExplorerToolbar extends StatelessWidget {
                               children: <Widget>[
                                 Icon(Icons.create_new_folder),
                                 SizedBox(width: 16),
-                                Text(translate['new_folder']),
+                                Text(i18n.newFolder),
                               ],
                             ),
                           ),
@@ -122,7 +109,7 @@ class ExplorerToolbar extends StatelessWidget {
                               children: <Widget>[
                                 Icon(Icons.note_add),
                                 SizedBox(width: 16),
-                                Text(translate['new_file']),
+                                Text(i18n.newFile),
                               ],
                             ),
                           ),
@@ -133,7 +120,7 @@ class ExplorerToolbar extends StatelessWidget {
                               children: <Widget>[
                                 Icon(Icons.upload_file),
                                 SizedBox(width: 16),
-                                Text(translate['upload_files']),
+                                Text(i18n.uploadFiles),
                               ],
                             ),
                             enabled: _controller.uploadFiles != null,

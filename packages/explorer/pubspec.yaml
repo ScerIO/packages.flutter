@@ -1,6 +1,6 @@
 name: explorer
 description: Universal explorer UI for navigate files, ftp, etc
-version: 1.1.0
+version: 1.1.1
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/explorer
 
 environment:
@@ -23,15 +23,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.11.5
   intl_translation: ^0.17.10+1
 
 dependency_overrides:
-  build_runner: ^1.11.5
-  analyzer: ^1.1.0 
-  args: ^2.0.0
   intl: ^0.17.0 
-  io: ^1.0.0
 
 scripts:
-  i18n: flutter pub run easy_localization:generate -s assets/locales -f keys -O lib/src/i18n -o locale_keys.g.dart
+  i18n_to_arb: flutter pub run intl_translation:extract_to_arb --output-dir=locales lib/src/i18n/string_resources.dart
+  i18n_from_arb: flutter pub run intl_translation:generate_from_arb lib/src/i18n/string_resources.dart locales/*.arb --output-dir=lib/src/i18n/messages

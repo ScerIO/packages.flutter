@@ -28,6 +28,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "actionMenuOpen" : MessageLookupByLibrary.simpleMessage("Открыть"),
     "actionMoveHere" : MessageLookupByLibrary.simpleMessage("Вставить сюда"),
     "cancel" : MessageLookupByLibrary.simpleMessage("Отменить"),
-    "empty" : MessageLookupByLibrary.simpleMessage("Пусто")
+    "create" : MessageLookupByLibrary.simpleMessage("Создать"),
+    "empty" : MessageLookupByLibrary.simpleMessage("Пусто"),
+    "fileName" : MessageLookupByLibrary.simpleMessage("Имя файла"),
+    "folderName" : MessageLookupByLibrary.simpleMessage("Имя папки"),
+    "newFile" : MessageLookupByLibrary.simpleMessage("Новый файл"),
+    "newFolder" : MessageLookupByLibrary.simpleMessage("Новая папка"),
+    "uploadFiles" : MessageLookupByLibrary.simpleMessage("Выгрузить файлы")
   };
 }
