@@ -1,4 +1,8 @@
-## [1.1.0]
+## [1.1.2]
+
+* Fixed bread crumbs in windows
+
+## [1.1.1]
 
 * Append i18n
 

@@ -121,7 +121,11 @@ class ExplorerController {
   Future<void> refresh() => go(currentPath);
 
   List<PathBreadCrumb> get breadCrumbs {
-    final names = currentPath.replaceFirst(entryPath, '').split('/')
+    var delimiter = '/';
+    if (UniversalPlatform.isWindows) {
+      delimiter = '\\';
+    }
+    final names = currentPath.replaceFirst(entryPath, '').split(delimiter)
       ..removeWhere((element) => element?.isEmpty);
     final crumbs = <PathBreadCrumb>[
       PathBreadCrumb(path: entryPath),
