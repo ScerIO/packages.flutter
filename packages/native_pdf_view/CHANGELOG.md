@@ -5,6 +5,8 @@
 * Package `[extended_image]` replaced by `[photo_view]`
 * Break changes at `pageBuilder` callback (`PDFViewPageBuilder`)
 * Added `<BoxDecoration> backgroundDecoration` property at `PdfView`
+* Added optional `initialPage` property in `PdfController.loadDocument()`
+* Temporarily disabled `pageSnapping` option
 
 ## 3.9.1
 

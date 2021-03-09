@@ -159,12 +159,10 @@ packages:
   photo_view:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "146bff67896b476b26db9d3e67edbac23775d808"
-      url: "https://github.com/DevNico/photo_view.git"
-    source: git
-    version: "1.0.0-nullsafety.0"
+      name: photo_view
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.11.1"
   plugin_platform_interface:
     dependency: transitive
     description:
