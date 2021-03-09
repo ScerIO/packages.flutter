@@ -47,6 +47,9 @@ class EpubCfiReader {
         _getChapterIndexBy(cfiStep: cfiFragment.path!.localPath!.steps!.first)!;
     final chapter = chapters[chapterIndex];
     final document = chapterDocument(chapter);
+    if (document == null) {
+      return null;
+    }
     final element = EpubCfiInterpreter().searchLocalPathForHref(
       document.documentElement,
       cfiFragment.path!.localPath!,
@@ -120,7 +123,7 @@ class EpubCfiReader {
     ]);
   }
 
-  dom.Document chapterDocument(EpubChapter chapter) {
+  dom.Document? chapterDocument(EpubChapter chapter) {
     // if (chapter == null) {
     //   return null;
     // }

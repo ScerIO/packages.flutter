@@ -215,10 +215,6 @@ class _EpubViewState extends State<EpubView> {
           additional: ['/4/2'],
         );
 
-        if (widget.controller == null) {
-          throw Exception();
-        }
-
         _gotoEpubCfi(cfi);
       }
       return;

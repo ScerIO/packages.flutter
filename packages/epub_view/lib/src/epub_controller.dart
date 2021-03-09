@@ -153,7 +153,6 @@ class EpubController {
   }
 
   void _attach(_EpubViewState epubReaderViewState) {
-    assert(epubReaderViewState != null);
     _epubViewState = epubReaderViewState;
 
     _loadDocument(

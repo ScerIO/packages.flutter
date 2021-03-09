@@ -31,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
   EpubController _epubReaderController;
 
   @override
@@ -55,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        key: _scaffoldKey,
         appBar: AppBar(
           title: EpubActualChapter(
             controller: _epubReaderController,
@@ -88,19 +86,17 @@ class _MyHomePageState extends State<MyHomePage> {
     final cfi = _epubReaderController.generateEpubCfi();
 
     if (cfi != null) {
-      _scaffoldKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text(cfi),
-            action: SnackBarAction(
-              label: 'GO',
-              onPressed: () {
-                _epubReaderController.gotoEpubCfi(cfi);
-              },
-            ),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(cfi),
+          action: SnackBarAction(
+            label: 'GO',
+            onPressed: () {
+              _epubReaderController.gotoEpubCfi(cfi);
+            },
           ),
-        );
+        ),
+      );
     }
   }
 }
