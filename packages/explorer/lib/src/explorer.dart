@@ -23,8 +23,13 @@ class Explorer extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
+  /// Explorer controller
   final ExplorerController controller;
+
+  /// Main UI builder
   final ExplorerBuilder builder;
+
+  /// Additional builder for bottom bar
   final WidgetBuilder bottomBarBuilder;
 
   @override

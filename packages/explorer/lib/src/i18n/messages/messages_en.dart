@@ -20,20 +20,20 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "actionCopyHere" : MessageLookupByLibrary.simpleMessage("Copy here"),
-    "actionMenuCopy" : MessageLookupByLibrary.simpleMessage("Copy"),
-    "actionMenuCut" : MessageLookupByLibrary.simpleMessage("Cut"),
-    "actionMenuDelete" : MessageLookupByLibrary.simpleMessage("Delete"),
-    "actionMenuOpen" : MessageLookupByLibrary.simpleMessage("Open"),
-    "actionMoveHere" : MessageLookupByLibrary.simpleMessage("Move here"),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),
-    "create" : MessageLookupByLibrary.simpleMessage("Create"),
-    "empty" : MessageLookupByLibrary.simpleMessage("Empty"),
-    "fileName" : MessageLookupByLibrary.simpleMessage("File name"),
-    "folderName" : MessageLookupByLibrary.simpleMessage("Folder name"),
-    "newFile" : MessageLookupByLibrary.simpleMessage("New file"),
-    "newFolder" : MessageLookupByLibrary.simpleMessage("New folder"),
-    "uploadFiles" : MessageLookupByLibrary.simpleMessage("Upload files")
-  };
+  static _notInlinedMessages(_) => <String, Function>{
+        "actionCopyHere": MessageLookupByLibrary.simpleMessage("Copy here"),
+        "actionMenuCopy": MessageLookupByLibrary.simpleMessage("Copy"),
+        "actionMenuCut": MessageLookupByLibrary.simpleMessage("Cut"),
+        "actionMenuDelete": MessageLookupByLibrary.simpleMessage("Delete"),
+        "actionMenuOpen": MessageLookupByLibrary.simpleMessage("Open"),
+        "actionMoveHere": MessageLookupByLibrary.simpleMessage("Move here"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "create": MessageLookupByLibrary.simpleMessage("Create"),
+        "empty": MessageLookupByLibrary.simpleMessage("Empty"),
+        "fileName": MessageLookupByLibrary.simpleMessage("File name"),
+        "folderName": MessageLookupByLibrary.simpleMessage("Folder name"),
+        "newFile": MessageLookupByLibrary.simpleMessage("New file"),
+        "newFolder": MessageLookupByLibrary.simpleMessage("New folder"),
+        "uploadFiles": MessageLookupByLibrary.simpleMessage("Upload files")
+      };
 }

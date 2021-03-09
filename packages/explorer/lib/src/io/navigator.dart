@@ -5,14 +5,17 @@ import 'package:path/path.dart' as p;
 import 'package:explorer/src/data/models/entry.dart';
 import 'package:explorer/src/data/navigator.dart';
 
+/// Provider for exploring the IO File System
 class IoNavigatorExplorer extends NavigatorExplorer {
   IoNavigatorExplorer({
     this.entryPath = '/',
   }) : currentPath = entryPath;
 
+  /// Explorer starts path
   @override
   final String entryPath;
 
+  /// Explorer actual path
   @override
   String currentPath;
 

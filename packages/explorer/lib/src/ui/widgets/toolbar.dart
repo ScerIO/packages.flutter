@@ -5,6 +5,7 @@ import 'package:explorer/src/ui/widgets/fixed_sliver_persistent_header_delegate.
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+/// Toolbar view for explorer builder
 class ExplorerToolbar extends StatelessWidget {
   Future<String> openModal(BuildContext context, String labelText) async =>
       showDialog<String>(

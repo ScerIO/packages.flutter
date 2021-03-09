@@ -12,7 +12,7 @@ In your flutter project add the dependency:
 
 ```yaml
 dependencies:
-  flutter_color: any
+  explorer: any
 ```
 
 ## Examples

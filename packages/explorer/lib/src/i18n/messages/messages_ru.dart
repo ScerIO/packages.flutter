@@ -20,20 +20,21 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
   final messages = _notInlinedMessages(_notInlinedMessages);
-  static _notInlinedMessages(_) => <String, Function> {
-    "actionCopyHere" : MessageLookupByLibrary.simpleMessage("Копировать сюда"),
-    "actionMenuCopy" : MessageLookupByLibrary.simpleMessage("Копировать"),
-    "actionMenuCut" : MessageLookupByLibrary.simpleMessage("Вырезать"),
-    "actionMenuDelete" : MessageLookupByLibrary.simpleMessage("Удалить"),
-    "actionMenuOpen" : MessageLookupByLibrary.simpleMessage("Открыть"),
-    "actionMoveHere" : MessageLookupByLibrary.simpleMessage("Вставить сюда"),
-    "cancel" : MessageLookupByLibrary.simpleMessage("Отменить"),
-    "create" : MessageLookupByLibrary.simpleMessage("Создать"),
-    "empty" : MessageLookupByLibrary.simpleMessage("Пусто"),
-    "fileName" : MessageLookupByLibrary.simpleMessage("Имя файла"),
-    "folderName" : MessageLookupByLibrary.simpleMessage("Имя папки"),
-    "newFile" : MessageLookupByLibrary.simpleMessage("Новый файл"),
-    "newFolder" : MessageLookupByLibrary.simpleMessage("Новая папка"),
-    "uploadFiles" : MessageLookupByLibrary.simpleMessage("Выгрузить файлы")
-  };
+  static _notInlinedMessages(_) => <String, Function>{
+        "actionCopyHere":
+            MessageLookupByLibrary.simpleMessage("Копировать сюда"),
+        "actionMenuCopy": MessageLookupByLibrary.simpleMessage("Копировать"),
+        "actionMenuCut": MessageLookupByLibrary.simpleMessage("Вырезать"),
+        "actionMenuDelete": MessageLookupByLibrary.simpleMessage("Удалить"),
+        "actionMenuOpen": MessageLookupByLibrary.simpleMessage("Открыть"),
+        "actionMoveHere": MessageLookupByLibrary.simpleMessage("Вставить сюда"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Отменить"),
+        "create": MessageLookupByLibrary.simpleMessage("Создать"),
+        "empty": MessageLookupByLibrary.simpleMessage("Пусто"),
+        "fileName": MessageLookupByLibrary.simpleMessage("Имя файла"),
+        "folderName": MessageLookupByLibrary.simpleMessage("Имя папки"),
+        "newFile": MessageLookupByLibrary.simpleMessage("Новый файл"),
+        "newFolder": MessageLookupByLibrary.simpleMessage("Новая папка"),
+        "uploadFiles": MessageLookupByLibrary.simpleMessage("Выгрузить файлы")
+      };
 }

@@ -7,6 +7,7 @@ import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+/// Available actions view for explorer builder
 class ExplorerActionView extends StatefulWidget {
   @override
   _ExplorerActionViewState createState() => _ExplorerActionViewState();

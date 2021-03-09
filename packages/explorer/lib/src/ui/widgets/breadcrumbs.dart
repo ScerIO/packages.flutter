@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 
+/// Location (path) breadcrumbs view for explorer builder
 class ExplorerBreadCrumbs extends StatefulWidget {
   @override
   _ExplorerBreadCrumbsState createState() => _ExplorerBreadCrumbsState();
