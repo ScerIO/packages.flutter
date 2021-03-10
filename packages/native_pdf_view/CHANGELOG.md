@@ -1,3 +1,7 @@
+## 4.0.1
+
+* Fixed [issue#170](https://github.com/rbcprolabs/packages.flutter/issues/170), 4.0.0 not works
+
 ## 4.0.0
 
 * Null safety migration & Flutter v2 capability

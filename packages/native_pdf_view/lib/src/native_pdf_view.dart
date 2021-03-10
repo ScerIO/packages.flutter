@@ -20,7 +20,7 @@ typedef PDFViewPageBuilder = PhotoViewGalleryPageOptions Function(
   PdfDocument document,
 );
 
-typedef PDFViewPageRenderer = Future<PdfPageImage> Function(PdfPage page);
+typedef PDFViewPageRenderer = Future<PdfPageImage?> Function(PdfPage page);
 
 final Lock _lock = Lock();
 
@@ -87,12 +87,12 @@ class PdfView extends StatefulWidget {
   final ScrollPhysics? physics;
 
   /// Default PdfRenderer options
-  static Future<PdfPageImage> _render(PdfPage page) => page.render(
+  static Future<PdfPageImage?> _render(PdfPage page) => page.render(
         width: page.width * 2,
         height: page.height * 2,
         format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
-      ) as Future<PdfPageImage>;
+      );
 
   /// Default page builder
   static PhotoViewGalleryPageOptions _pageBuilder(
@@ -117,7 +117,7 @@ class PdfView extends StatefulWidget {
 }
 
 class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
-  final Map<int, PdfPageImage> _pages = {};
+  final Map<int, PdfPageImage?> _pages = {};
   late _PdfViewLoadingState _loadingState;
   Exception? _loadingError;
   late int _currentIndex;
