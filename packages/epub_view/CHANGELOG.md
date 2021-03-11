@@ -1,3 +1,13 @@
+## 2.1.0
+### Changed
+* Removed data property from `EpubController`, now `EpubReader.readBook` can receive futures
+```diff
+EpubController(
+-  data: _loadFromAssets('assets/book.epub'),
++  document: EpubReader.readBook(_loadFromAssets('assets/book.epub'))
+);
+```
+
 ## 2.0.0
 
 * Null-safety migration & Flutter v2 capability
