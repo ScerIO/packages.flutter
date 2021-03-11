@@ -8,6 +8,8 @@
 // ignore_for_file:argument_type_not_assignable, invalid_assignment
 // ignore_for_file:prefer_single_quotes, prefer_generic_function_type_aliases
 // ignore_for_file:comment_references
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: always_put_control_body_on_new_line
 
 import 'dart:async';
 

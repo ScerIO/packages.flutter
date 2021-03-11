@@ -1,8 +1,14 @@
 # explorer
 
-Universal explorer UI for navigate files, ftp, etc
+Universal flexibility explorer UI for navigate files, ftp, etc.
 
 Support custom providers and any platforms
+
+## Showcase
+
+| Context menu              | Actions                    | New & Upload                 |
+| ---                       | ---                        | ---                          |
+|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/explorer/example/media/1.0/context.jpg?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/explorer/example/media/1.0/actions.jpg?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/explorer/example/media/1.0/new.jpg?raw=true)  |
 
 ## Getting Started
 
@@ -15,14 +21,64 @@ dependencies:
   explorer: any
 ```
 
+import
+```dart
+/// Main import
+import 'package:explorer/explorer.dart';
+
+/// Import for [IoExplorerProvider]. 
+/// Does work only IO (NOT WORK ON WEB)
+import 'package:explorer/explorer_io.dart';
+```
+
+## Api overview
+
+### ExplorerController
+| Parameter  | Description                                                                                        | Required | Default |
+|------------|----------------------------------------------------------------------------------------------------|----------|---------|
+| provider   | An entity responsible for navigating the file structure of any type, ex. IoExplorerProvider for io | [x]      | -       |
+
+### Explorer
+| Parameter        | Description                                                                       | Required | Default |
+|------------------|-----------------------------------------------------------------------------------|----------|---------|
+| controller       | ExplorerController initialized instance                                           | [x]      | -       |
+| builder          | Builder callback for fully customize UI                                           | [x]      | -       |
+| bottomBarBuilder | Additional builder for bottom bar                                                 | [ ]      | -       |
+| uploadFiles      | Callback called on tap upload files action, (action show only if callback exist!) | [ ]      | -       |
+| filePressed      | Callback called file pressed                                                      | [ ]      | -       |
+
+### ExplorerToolbar
+
+_Top toolbar with breadcrumbs & actions_
+
+### ExplorerActionView
+_Action view with actual command (Copy / move here etc.)_
+
+### ExplorerFilesGridView
+_Show files as grid_
+
 ## Examples
 
+### Simple example
+_See full at [example dir](/example/lib/main.dart)_
 ```dart
+/// Initialize controller in initState
 _controller = ExplorerController(
-  navigator: IoNavigatorExplorer(
-    entryPath: _server.serverDirectory,
+  provider: IoExplorerProvider(
+    entryPath: '/path/to/entry', // For IO explorer pass some entry path
   ),
-  uploadFiles: uploadFiles,
+)
+
+Explorer(
+  controller: _controller,
+
+  // Customize UI by Explorer & you own widgets!
+  builder: (_) => [
+    ExplorerToolbar(),
+    ExplorerActionView(),
+    ExplorerFilesGridView(),
+  ],
+  // Callback called on file at explorer pressed
   filePressed: (file) {
     if (file.size > 200000) {
       final snackBar =
@@ -32,29 +88,34 @@ _controller = ExplorerController(
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
       return;
     }
-    if (file.extension.contains(RegExp(r'^(phar|dat)$'))) {
-      final snackBar = SnackBar(
-          content: Text('Can\'t open files with extensions: ' +
-              ' phar|dat'));
-
-      // Find the Scaffold in the widget tree and use it to show a SnackBar.
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return;
-    }
-
-    Navigator.of(context).pushNamed(
-      EditorScreen.routeName,
-      arguments: EditorScreenArguments(property: file),
-    );
-  },
+  }
 )
+```
 
-Explorer(
-  controller: _controller,
-  builder: (_) => [
-    ExplorerToolbar(translate: toolbarTranslate),
-    ExplorerActionView(translate: _actionTranslate),
-    ExplorerFilesGridView(translate: filesTranslate),
-  ],
-)
+### Custom provider
+_You need implement `ExplorerProvider` and pass result to `ExplorerController` as provider. You can make any provider: ftp, rest api, etc._
+
+```dart
+abstract class ExplorerProvider {
+  /// Explorer starts path
+  String get entryPath;
+
+  /// Explorer actual path
+  String get currentPath;
+
+  /// Navigate to specific path
+  Future<List<Entry>> go(String path);
+
+  /// Create new directory at [currentPath]
+  Future<ExplorerDirectory> newDirectory(String name);
+
+  /// Create new file at [currentPath]
+  Future<ExplorerFile> newFile(String name);
+
+  /// Recursive remove file or dir at [currentPath]
+  Future<void> remove(Entry name);
+
+  /// Copy file or dir
+  Future<void> copy(Entry from, Entry to);
+}
 ```

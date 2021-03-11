@@ -124,7 +124,7 @@ class ExplorerToolbar extends StatelessWidget {
                                 Text(i18n.uploadFiles),
                               ],
                             ),
-                            enabled: _controller.uploadFiles != null,
+                            enabled: _controller.hasUploadFilesCallback,
                           ),
                         ],
                       ),

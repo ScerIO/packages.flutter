@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:explorer/explorer_io.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:explorer/explorer.dart';
+import 'package:explorer/explorer_io.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,22 +28,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   ExplorerController _controller;
+
   @override
   void initState() {
     _controller = ExplorerController(
-      navigator: IoNavigatorExplorer(
+      provider: IoExplorerProvider(
         entryPath: widget.appDocDir.path,
       ),
-      filePressed: (file) {
-        if (file.size > 200000) {
-          final snackBar =
-              SnackBar(content: Text('Can\'t open files with size > 200kb'));
-
-          // Find the Scaffold in the widget tree and use it to show a SnackBar.
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          return;
-        }
-      },
     );
 
     super.initState();
@@ -53,6 +44,17 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  void filePressed(ExplorerFile file) {
+    if (file.size > 200000) {
+      final snackBar =
+          SnackBar(content: Text('Can\'t open files with size > 200kb'));
+
+      // Find the Scaffold in the widget tree and use it to show a SnackBar.
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return;
+    }
   }
 
   @override
@@ -74,6 +76,7 @@ class _MyAppState extends State<MyApp> {
               ExplorerActionView(),
               ExplorerFilesGridView(),
             ],
+            filePressed: filePressed,
           ),
         ),
       );

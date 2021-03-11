@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:explorer/src/data/navigator.dart';
+import 'package:explorer/src/data/provider.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,8 @@ class Explorer extends StatefulWidget {
     @required this.controller,
     @required this.builder,
     this.bottomBarBuilder,
+    this.filePressed,
+    this.uploadFiles,
     Key key,
   }) : super(key: key);
 
@@ -31,6 +33,10 @@ class Explorer extends StatefulWidget {
 
   /// Additional builder for bottom bar
   final WidgetBuilder bottomBarBuilder;
+
+  final Future<List<Entry>> Function() uploadFiles;
+
+  final void Function(ExplorerFile) filePressed;
 
   @override
   _ExplorerState createState() => _ExplorerState();

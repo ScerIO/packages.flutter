@@ -2,22 +2,22 @@ part of '../explorer.dart';
 
 class ExplorerController {
   ExplorerController({
-    @required this.navigator,
-    this.filePressed,
-    this.uploadFiles,
+    @required this.provider,
   });
 
-  final Future<List<Entry>> Function() uploadFiles;
-  final NavigatorExplorer navigator;
-  final void Function(ExplorerFile) filePressed;
+  /// An entity responsible for navigating the file
+  /// structure of any type, ex. IoExplorerProvider for io
+  final ExplorerProvider provider;
+
+  _ExplorerState _explorerState;
 
   // _ExplorerState _explorerState;
   final StreamController<ExplorerState> _files =
       StreamController<ExplorerState>.broadcast();
   Stream<ExplorerState> get stream => _files.stream;
 
-  String get entryPath => navigator.entryPath;
-  String get currentPath => navigator.currentPath;
+  String get entryPath => provider.entryPath;
+  String get currentPath => provider.currentPath;
 
   final StreamController<ExplorerAction> _actions =
       StreamController<ExplorerAction>.broadcast();
@@ -25,10 +25,10 @@ class ExplorerController {
 
   void _attach(_ExplorerState _explorerState) {
     assert(_explorerState != null);
-    // this._explorerState = _explorerState;
-    navigator.go(navigator.entryPath).then((entries) {
+    this._explorerState = _explorerState;
+    provider.go(provider.entryPath).then((entries) {
       _files.add(ExplorerState(
-        path: navigator.currentPath,
+        path: provider.currentPath,
         entries: entries,
       ));
     });
@@ -36,7 +36,7 @@ class ExplorerController {
   }
 
   void _detach() {
-    // _explorerState = null;
+    _explorerState = null;
   }
 
   void dispose() {
@@ -44,12 +44,14 @@ class ExplorerController {
     _actions?.close();
   }
 
+  bool get hasUploadFilesCallback => _explorerState.widget.uploadFiles != null;
+
   Future<void> uploadLocalFiles() async {
-    if (uploadFiles == null) {
+    if (_explorerState.widget.uploadFiles == null) {
       return;
     }
 
-    final entries = await uploadFiles();
+    final entries = await _explorerState.widget.uploadFiles();
     for (final entry in entries) {
       await copy(entry, Entry(path: p.join(currentPath, entry.name)));
     }
@@ -85,36 +87,36 @@ class ExplorerController {
     _actions.add(ExplorerActionEmpty());
   }
 
-  Future<void> copy(Entry from, Entry to) async => navigator.copy(from, to);
+  Future<void> copy(Entry from, Entry to) async => provider.copy(from, to);
 
   Future<void> goEntry(Entry entry) async {
     if (entry is ExplorerDirectory) {
       return go(entry.path);
     } else {
-      filePressed(entry);
+      _explorerState.widget.filePressed(entry);
     }
   }
 
   Future<void> go(String path) async {
-    final entries = await navigator.go(path);
+    final entries = await provider.go(path);
     _files.add(ExplorerState(
-      path: navigator.currentPath,
+      path: provider.currentPath,
       entries: entries,
     ));
   }
 
   Future<void> newDirectory(String name) async {
-    await navigator.newDirectory(name);
+    await provider.newDirectory(name);
     return refresh();
   }
 
   Future<void> newFile(String name) async {
-    await navigator.newFile(name);
+    await provider.newFile(name);
     return refresh();
   }
 
   Future<void> remove(Entry entry) async {
-    await navigator.remove(entry);
+    await provider.remove(entry);
     return refresh();
   }
 

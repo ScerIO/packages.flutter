@@ -1,6 +1,6 @@
 import 'models/entry.dart';
 
-abstract class NavigatorExplorer {
+abstract class ExplorerProvider {
   /// Explorer starts path
   String get entryPath;
 

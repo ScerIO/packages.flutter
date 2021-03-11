@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:io/io.dart';
 import 'package:path/path.dart' as p;
 import 'package:explorer/src/data/models/entry.dart';
-import 'package:explorer/src/data/navigator.dart';
+import 'package:explorer/src/data/provider.dart';
 
 /// Provider for exploring the IO File System
-class IoNavigatorExplorer extends NavigatorExplorer {
-  IoNavigatorExplorer({
+class IoExplorerProvider extends ExplorerProvider {
+  IoExplorerProvider({
     this.entryPath = '/',
   }) : currentPath = entryPath;
 
