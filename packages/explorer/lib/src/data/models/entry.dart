@@ -1,8 +1,7 @@
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
 class Entry {
-  Entry({@required this.path}) : name = p.basename(path);
+  Entry({required this.path}) : name = p.basename(path);
 
   /// Entry name
   final String name;
@@ -16,18 +15,18 @@ class Entry {
 
 class ExplorerFile extends Entry {
   ExplorerFile({
-    @required String path,
+    required String path,
     this.size,
   })  : extension = p.extension(path).replaceFirst('.', ''),
         super(path: path);
 
   /// Size in bytes, optional
-  final int size;
+  final int? size;
 
   /// Entry extension (available for files)
   final String extension;
 }
 
 class ExplorerDirectory extends Entry {
-  ExplorerDirectory({@required String path}) : super(path: path);
+  ExplorerDirectory({required String path}) : super(path: path);
 }

@@ -15,14 +15,14 @@ class ExplorerBreadCrumbs extends StatefulWidget {
 
 class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
     with SingleTickerProviderStateMixin {
-  ExplorerController _controller;
-  AnimationController _animationController;
-  ScrollController _scrollController;
-  StreamSubscription<ExplorerState> _subscription;
+  late ExplorerController _controller;
+  late AnimationController _animationController;
+  ScrollController? _scrollController;
+  StreamSubscription<ExplorerState>? _subscription;
 
   @override
   void initState() {
-    _controller = ControllerProvider.of(context).explorerController;
+    _controller = ControllerProvider.of(context)!.explorerController;
     _scrollController = ScrollController();
 
     _animationController = AnimationController(
@@ -44,7 +44,7 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
   @override
   void dispose() {
     _animationController.dispose();
-    _scrollController.dispose();
+    _scrollController!.dispose();
     _subscription?.cancel();
     super.dispose();
   }
@@ -61,10 +61,10 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
       initialData: _initialData,
       stream: _controller.stream,
       builder: (_, snapshot) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController
-                .jumpTo(_scrollController.position.maxScrollExtent);
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          if (_scrollController!.hasClients) {
+            _scrollController!
+                .jumpTo(_scrollController!.position.maxScrollExtent);
           }
         });
 

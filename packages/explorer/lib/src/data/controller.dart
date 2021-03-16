@@ -2,14 +2,14 @@ part of '../explorer.dart';
 
 class ExplorerController {
   ExplorerController({
-    @required this.provider,
+    required this.provider,
   });
 
   /// An entity responsible for navigating the file
   /// structure of any type, ex. IoExplorerProvider for io
   final ExplorerProvider provider;
 
-  _ExplorerState _explorerState;
+  _ExplorerState? _explorerState;
 
   // _ExplorerState _explorerState;
   final StreamController<ExplorerState> _files =
@@ -24,7 +24,6 @@ class ExplorerController {
   Stream<ExplorerAction> get actionStream => _actions.stream;
 
   void _attach(_ExplorerState _explorerState) {
-    assert(_explorerState != null);
     this._explorerState = _explorerState;
     provider.go(provider.entryPath).then((entries) {
       _files.add(ExplorerState(
@@ -40,18 +39,18 @@ class ExplorerController {
   }
 
   void dispose() {
-    _files?.close();
-    _actions?.close();
+    _files.close();
+    _actions.close();
   }
 
-  bool get hasUploadFilesCallback => _explorerState.widget.uploadFiles != null;
+  bool get hasUploadFilesCallback => _explorerState!.widget.uploadFiles != null;
 
   Future<void> uploadLocalFiles() async {
-    if (_explorerState.widget.uploadFiles == null) {
+    if (_explorerState!.widget.uploadFiles == null) {
       return;
     }
 
-    final entries = await _explorerState.widget.uploadFiles();
+    final entries = await _explorerState!.widget.uploadFiles!();
     for (final entry in entries) {
       await copy(entry, Entry(path: p.join(currentPath, entry.name)));
     }
@@ -93,7 +92,7 @@ class ExplorerController {
     if (entry is ExplorerDirectory) {
       return go(entry.path);
     } else {
-      _explorerState.widget.filePressed(entry);
+      _explorerState!.widget.filePressed!(entry as ExplorerFile);
     }
   }
 
@@ -128,7 +127,7 @@ class ExplorerController {
       delimiter = '\\';
     }
     final names = currentPath.replaceFirst(entryPath, '').split(delimiter)
-      ..removeWhere((element) => element?.isEmpty);
+      ..removeWhere((element) => element.isEmpty);
     final crumbs = <PathBreadCrumb>[
       PathBreadCrumb(path: entryPath),
     ];

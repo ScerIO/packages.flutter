@@ -64,11 +64,11 @@ class IoExplorerProvider extends ExplorerProvider {
   Future<void> remove(Entry entry) async {
     final entityType = FileSystemEntity.typeSync(entry.path);
     if (entityType == FileSystemEntityType.directory) {
-      return Directory(entry.path).delete(recursive: true);
+      await Directory(entry.path).delete(recursive: true);
     } else if (entityType == FileSystemEntityType.file) {
-      return File(entry.path).delete(recursive: true);
+      await File(entry.path).delete(recursive: true);
     } else if (entityType == FileSystemEntityType.link) {
-      return Link(entry.path).delete(recursive: true);
+      await Link(entry.path).delete(recursive: true);
     }
   }
 

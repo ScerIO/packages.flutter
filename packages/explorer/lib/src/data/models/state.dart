@@ -6,8 +6,8 @@ class ExplorerState {
     this.entries,
   });
 
-  final String path;
-  final List<Entry> entries;
+  final String? path;
+  final List<Entry>? entries;
 }
 
 abstract class ExplorerAction {}
@@ -19,7 +19,7 @@ class ExplorerActionCopy extends ExplorerAction {
     this.from,
   });
 
-  final List<Entry> from;
+  final List<Entry>? from;
 }
 
 class ExplorerActionMove extends ExplorerAction {
@@ -27,5 +27,5 @@ class ExplorerActionMove extends ExplorerAction {
     this.from,
   });
 
-  final List<Entry> from;
+  final List<Entry>? from;
 }

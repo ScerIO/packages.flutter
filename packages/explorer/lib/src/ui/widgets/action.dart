@@ -15,13 +15,13 @@ class ExplorerActionView extends StatefulWidget {
 
 class _ExplorerActionViewState extends State<ExplorerActionView>
     with SingleTickerProviderStateMixin {
-  ExplorerController _controller;
-  AnimationController _animationController;
-  StreamSubscription<ExplorerAction> _subscription;
+  late ExplorerController _controller;
+  late AnimationController _animationController;
+  StreamSubscription<ExplorerAction>? _subscription;
 
   @override
   void initState() {
-    _controller = ControllerProvider.of(context).explorerController;
+    _controller = ControllerProvider.of(context)!.explorerController;
 
     _animationController = AnimationController(
       vsync: this,
@@ -67,19 +67,19 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
               children: [
                 if (snapshot.data is ExplorerActionCopy)
                   TextButton(
-                    child: Text(i18n.actionCopyHere),
+                    child: Text(i18n!.actionCopyHere),
                     onPressed: () {
                       _controller.copyEntriesConfirm(
-                        (snapshot.data as ExplorerActionCopy).from,
+                        (snapshot.data as ExplorerActionCopy).from!,
                       );
                     },
                   ),
                 if (snapshot.data is ExplorerActionMove)
                   TextButton(
-                    child: Text(i18n.actionMoveHere),
+                    child: Text(i18n!.actionMoveHere),
                     onPressed: () {
                       _controller.moveEntriesConfirm(
-                        (snapshot.data as ExplorerActionMove).from,
+                        (snapshot.data as ExplorerActionMove).from!,
                       );
                     },
                   ),
@@ -87,7 +87,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
                 VerticalDivider(indent: 8, endIndent: 8),
                 SizedBox(width: 16),
                 TextButton(
-                  child: Text(i18n.cancel),
+                  child: Text(i18n!.cancel),
                   onPressed: _controller.cancelAction,
                 ),
               ],

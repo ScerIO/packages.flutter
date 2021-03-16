@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 class FixedSliverPersistentHeaderDelegate
     extends SliverPersistentHeaderDelegate {
   const FixedSliverPersistentHeaderDelegate({
-    @required this.child,
+    required this.child,
     this.minHeight = 52.0,
     this.maxHeight = 52.0,
   });
@@ -13,7 +13,7 @@ class FixedSliverPersistentHeaderDelegate
         minHeight = 0,
         maxHeight = 0;
 
-  final Widget child;
+  final Widget? child;
   final double minHeight, maxHeight;
 
   @override
@@ -28,7 +28,7 @@ class FixedSliverPersistentHeaderDelegate
     double shrinkOffset,
     bool overlapsContent,
   ) =>
-      child;
+      child!;
 
   @override
   bool shouldRebuild(FixedSliverPersistentHeaderDelegate oldDelegate) => true;
