@@ -35,6 +35,8 @@ flutter:
         pluginClass: NativePdfRendererPlugin
       macos:
         pluginClass: NativePdfRendererPlugin
+      windows:
+        pluginClass: NativePdfRendererPlugin
       web:
         pluginClass: NativePdfRendererPlugin
         fileName: src/web/native_pdf_renderer_plugin.dart
