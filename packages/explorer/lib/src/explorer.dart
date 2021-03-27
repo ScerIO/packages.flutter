@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:explorer/src/data/navigator.dart';
+import 'package:explorer/src/data/provider.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,15 +17,26 @@ typedef ExplorerBuilder = List<Widget> Function(BuildContext context);
 
 class Explorer extends StatefulWidget {
   const Explorer({
-    @required this.controller,
-    @required this.builder,
+    required this.controller,
+    required this.builder,
     this.bottomBarBuilder,
-    Key key,
+    this.filePressed,
+    this.uploadFiles,
+    Key? key,
   }) : super(key: key);
 
+  /// Explorer controller
   final ExplorerController controller;
+
+  /// Main UI builder
   final ExplorerBuilder builder;
-  final WidgetBuilder bottomBarBuilder;
+
+  /// Additional builder for bottom bar
+  final WidgetBuilder? bottomBarBuilder;
+
+  final Future<List<Entry>> Function()? uploadFiles;
+
+  final void Function(ExplorerFile)? filePressed;
 
   @override
   _ExplorerState createState() => _ExplorerState();
@@ -33,31 +44,31 @@ class Explorer extends StatefulWidget {
 
 class _ExplorerState extends State<Explorer>
     with SingleTickerProviderStateMixin {
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   @override
   void initState() {
-    widget.controller?._attach(this);
+    widget.controller._attach(this);
     _scrollController = ScrollController();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant Explorer oldWidget) {
-    widget.controller?._attach(this);
+    widget.controller._attach(this);
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void deactivate() {
-    widget.controller?._detach();
+    widget.controller._detach();
     super.deactivate();
   }
 
   @override
   void dispose() {
-    widget.controller?._detach();
-    _scrollController.dispose();
+    widget.controller._detach();
+    _scrollController!.dispose();
     super.dispose();
   }
 
@@ -78,7 +89,7 @@ class _ExplorerState extends State<Explorer>
               ),
             ),
             if (widget.bottomBarBuilder != null)
-              widget.bottomBarBuilder(context),
+              widget.bottomBarBuilder!(context),
           ],
         ),
       );

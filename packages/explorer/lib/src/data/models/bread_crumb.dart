@@ -1,7 +1,7 @@
 import 'package:path/path.dart' as p;
 
 class PathBreadCrumb {
-  PathBreadCrumb({this.path}) : name = p.basename(path);
+  PathBreadCrumb({required this.path}) : name = p.basename(path);
 
   final String name, path;
 

@@ -16,14 +16,14 @@ class ExplorerFilesGridView extends StatefulWidget {
 }
 
 class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
-  ExplorerController _controller;
+  late ExplorerController _controller;
   final int listItemCount = 4;
 
   final Duration listShowItemDuration = const Duration(milliseconds: 250);
 
   @override
   void initState() {
-    _controller = ControllerProvider.of(context).explorerController;
+    _controller = ControllerProvider.of(context)!.explorerController;
 
     super.initState();
   }
@@ -34,7 +34,7 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
       );
 
   Future<void> _showContextMenu(RelativeRect position, Entry entry) async {
-    final i18n = ExplorerLocalizations.of(context);
+    final i18n = ExplorerLocalizations.of(context)!;
 
     final result = await showMenu(
       context: context,
@@ -114,16 +114,16 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
       initialData: _initialData,
       stream: _controller.stream,
       builder: (_, snapshot) {
-        final entries = snapshot.data.entries;
+        final entries = snapshot.data!.entries!;
         return SliverStack(
           insetOnOverlap: false, // defaults to false
           children: <Widget>[
             if (entries.isEmpty)
               SliverFillRemaining(
-                child: Center(child: Text(i18n.empty)),
+                child: Center(child: Text(i18n!.empty)),
               ),
             LiveSliverGrid(
-              controller: ControllerProvider.of(context).scrollController,
+              controller: ControllerProvider.of(context)!.scrollController!,
               showItemInterval: Duration(milliseconds: 25),
               showItemDuration: Duration(milliseconds: 125),
               itemCount: entries.length,

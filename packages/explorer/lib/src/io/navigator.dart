@@ -3,16 +3,19 @@ import 'dart:io';
 import 'package:io/io.dart';
 import 'package:path/path.dart' as p;
 import 'package:explorer/src/data/models/entry.dart';
-import 'package:explorer/src/data/navigator.dart';
+import 'package:explorer/src/data/provider.dart';
 
-class IoNavigatorExplorer extends NavigatorExplorer {
-  IoNavigatorExplorer({
+/// Provider for exploring the IO File System
+class IoExplorerProvider extends ExplorerProvider {
+  IoExplorerProvider({
     this.entryPath = '/',
   }) : currentPath = entryPath;
 
+  /// Explorer starts path
   @override
   final String entryPath;
 
+  /// Explorer actual path
   @override
   String currentPath;
 
@@ -61,11 +64,11 @@ class IoNavigatorExplorer extends NavigatorExplorer {
   Future<void> remove(Entry entry) async {
     final entityType = FileSystemEntity.typeSync(entry.path);
     if (entityType == FileSystemEntityType.directory) {
-      return Directory(entry.path).delete(recursive: true);
+      await Directory(entry.path).delete(recursive: true);
     } else if (entityType == FileSystemEntityType.file) {
-      return File(entry.path).delete(recursive: true);
+      await File(entry.path).delete(recursive: true);
     } else if (entityType == FileSystemEntityType.link) {
-      return Link(entry.path).delete(recursive: true);
+      await Link(entry.path).delete(recursive: true);
     }
   }
 

@@ -2,16 +2,11 @@ part of 'epub_view.dart';
 
 class EpubController {
   EpubController({
-    this.document,
-    this.data,
+    required this.document,
     this.epubCfi,
-  }) : assert(
-          document != null || data != null,
-          'Need to pass document or data for initialize',
-        );
+  });
 
-  Future<EpubBook>? document;
-  Future<Uint8List>? data;
+  Future<EpubBook> document;
   final String? epubCfi;
 
   _EpubViewState? _epubViewState;
@@ -112,31 +107,16 @@ class EpubController {
           ? _epubViewState!._chapterIndexes[index]
           : 0;
 
-  Future<void> loadDocument({
-    Future<EpubBook>? document,
-    Future<Uint8List>? data,
-  }) {
+  Future<void> loadDocument(Future<EpubBook> document) {
     this.document = document;
-    this.data = data;
-    return _loadDocument(
-      documentFuture: document,
-      dataFuture: data,
-    );
+    return _loadDocument(document);
   }
 
-  Future<void> _loadDocument({
-    Future<EpubBook>? documentFuture,
-    Future<Uint8List>? dataFuture,
-  }) async {
+  Future<void> _loadDocument(Future<EpubBook> document) async {
     _epubViewState!._initialized = false;
     try {
       _epubViewState!._changeLoadingState(_EpubViewLoadingState.loading);
-      if (documentFuture != null) {
-        _document = await documentFuture;
-      } else {
-        final data = await dataFuture!;
-        _document = await EpubReader.readBook(data);
-      }
+      _document = await document;
       await _epubViewState!._init();
       _epubViewState!._actualChapter.stream.listen((chapter) {
         _valueStreamController.sink.add(chapter);
@@ -153,16 +133,16 @@ class EpubController {
   }
 
   void _attach(_EpubViewState epubReaderViewState) {
-    assert(epubReaderViewState != null);
     _epubViewState = epubReaderViewState;
 
-    _loadDocument(
-      documentFuture: document,
-      dataFuture: data,
-    );
+    _loadDocument(document);
   }
 
   void _detach() {
+    _epubViewState = null;
+  }
+
+  void dispose() {
     _epubViewState = null;
   }
 }

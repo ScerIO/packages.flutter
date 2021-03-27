@@ -80,9 +80,12 @@ class PdfController {
           duration: duration, curve: curve);
 
   /// Load document
-  Future<void> loadDocument(Future<PdfDocument> documentFuture) {
+  Future<void> loadDocument(
+    Future<PdfDocument> documentFuture, {
+    int initialPage = 1,
+  }) {
     _pdfViewState!._changeLoadingState(_PdfViewLoadingState.loading);
-    return _loadDocument(documentFuture);
+    return _loadDocument(documentFuture, initialPage: initialPage);
   }
 
   Future<void> _loadDocument(

@@ -5,14 +5,15 @@ import 'package:explorer/src/ui/widgets/fixed_sliver_persistent_header_delegate.
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+/// Toolbar view for explorer builder
 class ExplorerToolbar extends StatelessWidget {
-  Future<String> openModal(BuildContext context, String labelText) async =>
+  Future<String?> openModal(BuildContext context, String labelText) async =>
       showDialog<String>(
         context: context,
         builder: (context) {
-          final i18n = ExplorerLocalizations.of(context);
+          final i18n = ExplorerLocalizations.of(context)!;
 
-          String result;
+          String? result;
           return AlertDialog(
             contentPadding: const EdgeInsets.all(16.0),
             content: Row(
@@ -48,7 +49,7 @@ class ExplorerToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _controller = ControllerProvider.of(context).explorerController;
+    final _controller = ControllerProvider.of(context)!.explorerController;
     final i18n = ExplorerLocalizations.of(context);
 
     final safeTopPadding = MediaQuery.of(context).padding.top;
@@ -79,12 +80,12 @@ class ExplorerToolbar extends StatelessWidget {
                         onSelected: (String value) async {
                           if (value == 'directory') {
                             final folderName =
-                                await openModal(context, i18n.folderName);
-                            _controller.newDirectory(folderName);
+                                await openModal(context, i18n!.folderName);
+                            _controller.newDirectory(folderName!);
                           } else if (value == 'file') {
                             final fileName =
-                                await openModal(context, i18n.fileName);
-                            _controller.newFile(fileName);
+                                await openModal(context, i18n!.fileName);
+                            _controller.newFile(fileName!);
                           } else if (value == 'upload') {
                             _controller.uploadLocalFiles();
                           }
@@ -98,7 +99,7 @@ class ExplorerToolbar extends StatelessWidget {
                               children: <Widget>[
                                 Icon(Icons.create_new_folder),
                                 SizedBox(width: 16),
-                                Text(i18n.newFolder),
+                                Text(i18n!.newFolder),
                               ],
                             ),
                           ),
@@ -123,7 +124,7 @@ class ExplorerToolbar extends StatelessWidget {
                                 Text(i18n.uploadFiles),
                               ],
                             ),
-                            enabled: _controller.uploadFiles != null,
+                            enabled: _controller.hasUploadFilesCallback,
                           ),
                         ],
                       ),

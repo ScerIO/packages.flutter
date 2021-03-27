@@ -326,6 +326,7 @@ class EpubCfiParser {
           ? result2
           : CfiTerminus(
               type: 'textTerminus', offsetValue: null, textAssertion: null);
+      // ignore: unnecessary_null_comparison
       if (result2 != null) {
         result0 = [result3, result2];
       } else {
@@ -728,9 +729,11 @@ class EpubCfiParser {
       // added for parsing values like [2^[1^]], without ","
       result1 = result1 != null ? result1 : '';
 
+      // ignore: unnecessary_null_comparison
       if (result1 != null) {
         result2 = _parseValue();
         result2 = result2 != null ? result2 : '';
+        // ignore: unnecessary_null_comparison
         if (result2 != null) {
           result0 = [result0, result1, result2];
         } else {
@@ -1118,6 +1121,7 @@ class EpubCfiParser {
             }
           }
         }
+        // ignore: unnecessary_null_comparison
         if (result1 != null) {
           result0 = [result0, result1];
         } else {

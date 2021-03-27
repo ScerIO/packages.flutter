@@ -24,7 +24,7 @@ class EpubCfiInterpreter {
   }
 
   Element? interpretIndexStepNode(
-      CfiStep indexStepNode, Element? currentElement) {
+      CfiStep? indexStepNode, Element? currentElement) {
     // Check node type; throw error if wrong type
     if (indexStepNode == null || indexStepNode.type != 'indexStep') {
       throw FlutterError('$indexStepNode: expected index step node');
@@ -47,7 +47,7 @@ class EpubCfiInterpreter {
   }
 
   Element? interpretIndirectionStepNode(
-      CfiStep indirectionStepNode, Element? currentElement) {
+      CfiStep? indirectionStepNode, Element? currentElement) {
     // Check node type; throw error if wrong type
     if (indirectionStepNode == null ||
         indirectionStepNode.type != 'indirectionStep') {

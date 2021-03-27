@@ -40,8 +40,10 @@ ParseParagraphsResult parseParagraphs(
       if (filename != next.ContentFileName) {
         filename = next.ContentFileName;
         final document = EpubCfiReader().chapterDocument(next);
-        final result = convertDocumentToElements(document);
-        elmList = _removeAllDiv(result);
+        if (document != null) {
+          final result = convertDocumentToElements(document);
+          elmList = _removeAllDiv(result);
+        }
       }
 
       if (next.Anchor == null) {

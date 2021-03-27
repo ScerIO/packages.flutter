@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-abstract class  LocaleKeys {
+abstract class LocaleKeys {
   static const action_menu_open = 'action_menu.open';
   static const action_menu_copy = 'action_menu.copy';
   static const action_menu_cut = 'action_menu.cut';
@@ -11,5 +11,4 @@ abstract class  LocaleKeys {
   static const action = 'action';
   static const empty = 'empty';
   static const cancel = 'cancel';
-
 }

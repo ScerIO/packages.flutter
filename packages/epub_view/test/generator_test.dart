@@ -9,9 +9,9 @@ import 'package:epub_view/src/epub_cfi/generator.dart';
 import 'package:html/dom.dart';
 
 Future<Uint8List> _loadTestBook() async {
-  final url = Directory.current.path.replaceFirst(
-      RegExp(r'/epub_view.*'), '/epub_view/test/assets/book.epub');
-  final file = File(url);
+  // final url = Directory.current.path
+  //     .replaceFirst(RegExp(r'epub_view.*'), '');
+  final file = File('test/assets/book.epub');
   return file.readAsBytes();
 }
 
@@ -106,7 +106,7 @@ void main() {
   });
 
   test('generateElementCFIComponent success', () async {
-    final document = EpubCfiReader().chapterDocument(_book.Chapters![0]);
+    final document = EpubCfiReader().chapterDocument(_book.Chapters![0])!;
     final node = document.getElementsByTagName('p')[3];
 
     final result = EpubCfiGenerator().generateElementCFIComponent(node);
@@ -116,7 +116,7 @@ void main() {
 
   test('generateCompleteCFI success', () async {
     final document =
-        EpubCfiReader().chapterDocument(_book.Chapters![0].SubChapters![1]);
+        EpubCfiReader().chapterDocument(_book.Chapters![0].SubChapters![1])!;
     final node = document.getElementsByTagName('p')[2];
 
     final packageDocumentCFIComponent = EpubCfiGenerator()

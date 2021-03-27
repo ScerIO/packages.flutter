@@ -6,7 +6,7 @@ IconData iconByEntry(Entry entry) {
   if (entry is ExplorerDirectory) {
     return Icons.folder;
   }
-  switch (entry.extension) {
+  switch ((entry as ExplorerFile).extension) {
     case 'db':
     case 'sqlite':
     case 'sqlite3':
