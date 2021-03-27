@@ -1,12 +1,48 @@
+#pragma warning(disable : 4458)
+#include <Windows.h>
+#include <gdiplus.h>
+
 #include <string>
 #include <unordered_map>
 #include <iostream>
 
 #include "native_pdf_renderer.h"
-#include "libs/lodepng.h"
+
+#pragma comment(lib, "gdiplus.lib")
 
 namespace native_pdf_renderer
 {
+    int GetEncoderClsid(const WCHAR *format, CLSID *pClsid)
+    {
+        UINT num = 0;  // number of image encoders
+        UINT size = 0; // size of the image encoder array in bytes
+
+        Gdiplus::ImageCodecInfo *pImageCodecInfo = NULL;
+
+        Gdiplus::GetImageEncodersSize(&num, &size);
+        if (size == 0)
+            return -1; // Failure
+
+        pImageCodecInfo = (Gdiplus::ImageCodecInfo *)(malloc(size));
+        if (pImageCodecInfo == NULL)
+            return -1; // Failure
+
+        GetImageEncoders(num, size, pImageCodecInfo);
+
+        for (UINT j = 0; j < num; ++j)
+        {
+            if (wcscmp(pImageCodecInfo[j].MimeType, format) == 0)
+            {
+                *pClsid = pImageCodecInfo[j].Clsid;
+                free(pImageCodecInfo);
+                return j; // Success
+            }
+        }
+
+        free(pImageCodecInfo);
+        return -1; // Failure
+    }
+
     std::unordered_map<std::string, std::shared_ptr<Document>> document_repository;
     std::unordered_map<std::string, std::shared_ptr<Page>> page_repository;
     int lastId = 0;
@@ -130,17 +166,15 @@ namespace native_pdf_renderer
         // {
         //     return null;
         // }
-        auto mwidth = FPDF_GetPageWidth(page);
 
+        // Create empty bitmap and render page onto it
         auto bitmap = FPDFBitmap_Create(width, height, 0);
         FPDFBitmap_FillRect(bitmap, 0, 0, width, height, 0xffffffff);
-
         FPDF_RenderPageBitmap(bitmap, page, 0, 0, width, height, 0, FPDF_ANNOT | FPDF_LCD_TEXT);
-        // FPDF_RenderPageBitmap(bitmap, page, 0, 0, width, height, 0, 0);
 
+        // Convert bitmap into RGBA format
         uint8_t *p = static_cast<uint8_t *>(FPDFBitmap_GetBuffer(bitmap));
         auto stride = FPDFBitmap_GetStride(bitmap);
-        size_t l = static_cast<size_t>(height * stride);
 
         // BGRA to RGBA conversion
         for (auto y = 0; y < height; y++)
@@ -155,19 +189,54 @@ namespace native_pdf_renderer
             }
         }
 
-        std::vector<uint8_t> bmp = {p, p + l};
+        // Convert to PNG
+        Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+        ULONG_PTR gdiplusToken;
+        Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
-        std::vector<unsigned char> png;
-        unsigned error = lodepng::encode(png, bmp, width, height);
+        // Get the CLSID of the PNG encoder.
+        CLSID encoderClsid;
+        GetEncoderClsid(L"image/png", &encoderClsid);
 
-        if (error)
-        {
-            std::cout << "PNG encoding error " << error << ": " << lodepng_error_text(error) << std::endl;
-        }
+        // Create gdi+ bitmap from raw image data
+        auto winBitmap = new Gdiplus::Bitmap(width, height, stride, PixelFormat32bppRGB, p);
+
+        // Create stream for converted image
+        IStream *istream = nullptr;
+        CreateStreamOnHGlobal(NULL, TRUE, &istream);
+
+        // Encode image onto stream
+        winBitmap->Save(istream, &encoderClsid, NULL);
+
+        // Get raw memory of stream
+        HGLOBAL hg = NULL;
+        GetHGlobalFromStream(istream, &hg);
+
+        // copy IStream to buffer
+        size_t bufsize = GlobalSize(hg);
+        std::vector<uint8_t> data;
+        data.resize(bufsize);
+
+        //lock & unlock memory
+        LPVOID pimage = GlobalLock(hg);
+        memcpy(&data[0], pimage, bufsize);
+        GlobalUnlock(hg);
+
+        // Close stream
+        istream->Release();
+
+        // if (stat == Ok)
+        //     printf("Bird.png was saved successfully\n");
+        // else
+        //     printf("Failure: stat = %d\n", stat);
+
+        // Cleanup gid+
+        delete winBitmap;
+        Gdiplus::GdiplusShutdown(gdiplusToken);
 
         FPDFBitmap_Destroy(bitmap);
 
         std::cout << "Page render complete" << std::endl;
-        return PageRender(png, width, height);
+        return PageRender(data, width, height);
     }
 }

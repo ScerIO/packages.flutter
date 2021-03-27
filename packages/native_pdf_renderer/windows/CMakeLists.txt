@@ -23,8 +23,6 @@ add_library(${PLUGIN_NAME} SHARED
   "native_pdf_renderer.cpp"
   "native_pdf_renderer.h"
   "native_pdf_renderer_plugin.cpp"
-  "libs/lodepng.cpp"
-  "libs/lodepng.h"
 )
 apply_standard_settings(${PLUGIN_NAME})
 set_target_properties(${PLUGIN_NAME} PROPERTIES
