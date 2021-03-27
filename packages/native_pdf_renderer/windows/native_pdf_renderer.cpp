@@ -3,10 +3,10 @@
 #include <iostream>
 
 #include "native_pdf_renderer.h"
+#include "libs/lodepng.h"
 
 namespace native_pdf_renderer
 {
-
     std::unordered_map<std::string, std::shared_ptr<Document>> document_repository;
     std::unordered_map<std::string, std::shared_ptr<Page>> page_repository;
     int lastId = 0;
@@ -88,6 +88,7 @@ namespace native_pdf_renderer
     {
         std::cout << "Document created" << std::endl;
         document = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
+        // unsigned long err = FPDF_GetLastError();
     }
 
     Document::Document(std::string file, std::string id) : id{id}
@@ -150,21 +151,31 @@ namespace native_pdf_renderer
         size_t l = static_cast<size_t>(height * stride);
 
         // BGRA to RGBA conversion
-        // for (auto y = 0; y < height; y++)
-        // {
-        //     auto offset = y * stride;
-        //     for (auto x = 0; x < width; x++)
-        //     {
-        //         auto t = p[offset];
-        //         p[offset] = p[offset + 2];
-        //         p[offset + 2] = t;
-        //         offset += 4;
-        //     }
-        // }
+        for (auto y = 0; y < height; y++)
+        {
+            auto offset = y * stride;
+            for (auto x = 0; x < width; x++)
+            {
+                auto t = p[offset];
+                p[offset] = p[offset + 2];
+                p[offset + 2] = t;
+                offset += 4;
+            }
+        }
 
-        // FPDFBitmap_Destroy(bitmap);
+        std::vector<uint8_t> bmp = {p, p + l};
+
+        std::vector<unsigned char> png;
+        unsigned error = lodepng::encode(png, bmp, width, height);
+
+        if (error)
+        {
+            std::cout << "PNG encoding error " << error << ": " << lodepng_error_text(error) << std::endl;
+        }
+
+        FPDFBitmap_Destroy(bitmap);
 
         std::cout << "Page render complete" << std::endl;
-        return PageRender(std::vector<uint8_t>{p, p + l}, width, height);
+        return PageRender(png, width, height);
     }
 }
