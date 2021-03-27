@@ -13,7 +13,6 @@ namespace native_pdf_renderer
 
     std::shared_ptr<Document> openDocument(std::vector<uint8_t> data)
     {
-        std::cout << "openDocument called" << std::endl;
         if (document_repository.size() == 0)
         {
             FPDF_InitLibraryWithConfig(nullptr);
@@ -30,7 +29,6 @@ namespace native_pdf_renderer
 
     std::shared_ptr<Document> openDocument(std::string name)
     {
-        std::cout << "openDocument called" << std::endl;
         if (document_repository.size() == 0)
         {
             FPDF_InitLibraryWithConfig(nullptr);
@@ -47,7 +45,6 @@ namespace native_pdf_renderer
 
     void closeDocument(std::string id)
     {
-        std::cout << "closeDocument called" << std::endl;
         document_repository.erase(id);
 
         if (document_repository.size() == 0)
@@ -58,7 +55,6 @@ namespace native_pdf_renderer
 
     std::shared_ptr<Page> openPage(std::string docId, int index)
     {
-        std::cout << "openPage called" << std::endl;
         lastId++;
         std::string strId = std::to_string(lastId);
 
@@ -72,13 +68,11 @@ namespace native_pdf_renderer
 
     void closePage(std::string id)
     {
-        std::cout << "closePage called" << std::endl;
         page_repository.erase(id);
     }
 
     PageRender renderPage(std::string id, int width, int height)
     {
-        std::cout << "renderPage called" << std::endl;
         return page_repository[id]->render(width, height);
     }
 
@@ -88,7 +82,6 @@ namespace native_pdf_renderer
     {
         std::cout << "Document created" << std::endl;
         document = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
-        // unsigned long err = FPDF_GetLastError();
     }
 
     Document::Document(std::string file, std::string id) : id{id}
@@ -138,7 +131,6 @@ namespace native_pdf_renderer
         //     return null;
         // }
         auto mwidth = FPDF_GetPageWidth(page);
-        std::cout << "page width: " << std::to_string(mwidth) << std::endl;
 
         auto bitmap = FPDFBitmap_Create(width, height, 0);
         FPDFBitmap_FillRect(bitmap, 0, 0, width, height, 0xffffffff);

@@ -3,9 +3,6 @@
 // This must be included before many other Windows headers.
 #include <windows.h>
 
-// For getPlatformVersion; remove unless needed for your plugin implementation.
-#include <VersionHelpers.h>
-
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
@@ -15,11 +12,27 @@
 #include <sstream>
 #include <iostream>
 
+#include <pathcch.h>
+#pragma comment(lib, "pathcch.lib")
+
+#include <shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
+
 #include "native_pdf_renderer.h"
-// #include <fpdfview.h>
 
 namespace native_pdf_renderer
 {
+
+  // Convert a wide Unicode string to an UTF8 string
+  std::string utf8_encode(const std::wstring &wstr)
+  {
+    if (wstr.empty())
+      return std::string();
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+    return strTo;
+  }
 
   const char kOpenDocumentDataMethod[] = "open.document.data";
   const char kOpenDocumentFileMethod[] = "open.document.file";
@@ -76,9 +89,23 @@ namespace native_pdf_renderer
     {
       auto name = std::get<std::string>(*method_call.arguments());
 
+      // Get .exe base path
+      WCHAR basePath[MAX_PATH];
+      GetModuleFileNameW(NULL, basePath, MAX_PATH);
+#if (NTDDI_VERSION >= NTDDI_WIN8)
+      PathCchRemoveFileSpec(basePath, MAX_PATH);
+#else
+      PathRemoveFileSpec(basePath);
+#endif
+
+      // Construct new path
+      std::string path = utf8_encode(basePath) + "\\data\\flutter_assets\\" + name;
+
+      std::shared_ptr<Document> doc = openDocument(path);
+
       auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(name);
-      mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(4);
+      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
+      mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
       result->Success(mp);
     }
     else if (method_call.method_name().compare(kOpenDocumentFileMethod) == 0)
@@ -95,29 +122,6 @@ namespace native_pdf_renderer
     else if (method_call.method_name().compare(kOpenDocumentDataMethod) == 0)
     {
       auto data = std::get<std::vector<uint8_t>>(*method_call.arguments());
-
-      // auto document = std::make_unique<Document>(data);
-
-      // FPDF_InitLibraryWithConfig(nullptr);
-
-      // FPDF_DOCUMENT doc = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
-      // if (!doc)
-      // {
-      //   FPDF_DestroyLibrary();
-      //   result->Error("Argument error", "Could not open document");
-      //   return;
-      // }
-
-      // auto pageCount = FPDF_GetPageCount(doc);
-
-      // FPDF_CloseDocument(doc);
-
-      // FPDF_DestroyLibrary();
-
-      // auto mp = flutter::EncodableMap{};
-      // mp[flutter::EncodableValue("id")] = flutter::EncodableValue("pdf_id");
-      // mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(document->getPageCount());
-      // result->Success(mp);
 
       std::shared_ptr<Document> doc = openDocument(data);
       auto mp = flutter::EncodableMap{};
@@ -178,24 +182,6 @@ namespace native_pdf_renderer
       mp[flutter::EncodableValue("width")] = flutter::EncodableValue(render.width);
       mp[flutter::EncodableValue("height")] = flutter::EncodableValue(render.height);
       result->Success(mp);
-    }
-    else if (method_call.method_name().compare("getPlatformVersion") == 0)
-    {
-      std::ostringstream version_stream;
-      version_stream << "Windows ";
-      if (IsWindows10OrGreater())
-      {
-        version_stream << "10+";
-      }
-      else if (IsWindows8OrGreater())
-      {
-        version_stream << "8";
-      }
-      else if (IsWindows7OrGreater())
-      {
-        version_stream << "7";
-      }
-      result->Success(flutter::EncodableValue(version_stream.str()));
     }
     else
     {
