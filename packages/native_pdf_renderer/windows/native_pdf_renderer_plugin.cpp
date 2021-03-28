@@ -11,6 +11,7 @@
 #include <memory>
 #include <sstream>
 #include <iostream>
+#include <stdexcept>
 
 #include <pathcch.h>
 #pragma comment(lib, "pathcch.lib")
@@ -85,6 +86,7 @@ namespace native_pdf_renderer
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
   {
+    std::cout << "Calling: " + method_call.method_name() << std::endl;
     if (method_call.method_name().compare(kOpenDocumentAssetMethod) == 0)
     {
       auto name = std::get<std::string>(*method_call.arguments());
@@ -101,33 +103,55 @@ namespace native_pdf_renderer
       // Construct new path
       std::string path = utf8_encode(basePath) + "\\data\\flutter_assets\\" + name;
 
-      std::shared_ptr<Document> doc = openDocument(path);
+      try
+      {
+        std::shared_ptr<Document> doc = openDocument(path);
 
-      auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
-      mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
-      result->Success(mp);
+        auto mp = flutter::EncodableMap{};
+        mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
+        mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
+        result->Success(mp);
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
     }
     else if (method_call.method_name().compare(kOpenDocumentFileMethod) == 0)
     {
       auto name = std::get<std::string>(*method_call.arguments());
 
-      std::shared_ptr<Document> doc = openDocument(name);
+      try
+      {
+        std::shared_ptr<Document> doc = openDocument(name);
 
-      auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
-      mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
-      result->Success(mp);
+        auto mp = flutter::EncodableMap{};
+        mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
+        mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
+        result->Success(mp);
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
     }
     else if (method_call.method_name().compare(kOpenDocumentDataMethod) == 0)
     {
       auto data = std::get<std::vector<uint8_t>>(*method_call.arguments());
 
-      std::shared_ptr<Document> doc = openDocument(data);
-      auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
-      mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
-      result->Success(mp);
+      try
+      {
+        std::shared_ptr<Document> doc = openDocument(data);
+
+        auto mp = flutter::EncodableMap{};
+        mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
+        mp[flutter::EncodableValue("pagesCount")] = flutter::EncodableValue(doc->getPageCount());
+        result->Success(mp);
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
     }
     else if (method_call.method_name().compare(kCloseDocumentMethod) == 0)
     {
@@ -141,25 +165,50 @@ namespace native_pdf_renderer
           std::get_if<flutter::EncodableMap>(method_call.arguments());
 
       auto vDocId = arguments->find(flutter::EncodableValue("documentId"));
+      if (vDocId == arguments->end())
+      {
+        result->Error("native_pdf_exception", "documentId is required");
+        return;
+      }
       auto docId = std::get<std::string>(vDocId->second);
 
       auto vPageIndex = arguments->find(flutter::EncodableValue("page"));
+      if (vPageIndex == arguments->end())
+      {
+        result->Error("native_pdf_exception", "page is required");
+        return;
+      }
       auto pageIndex = std::get<int>(vPageIndex->second) - 1;
 
-      std::shared_ptr<Page> page = openPage(docId, pageIndex);
-      auto details = page->getDetails();
+      try
+      {
+        std::shared_ptr<Page> page = openPage(docId, pageIndex);
+        auto details = page->getDetails();
 
-      auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("id")] = flutter::EncodableValue(page->id);
-      mp[flutter::EncodableValue("width")] = flutter::EncodableValue(details.width);
-      mp[flutter::EncodableValue("height")] = flutter::EncodableValue(details.height);
-      result->Success(mp);
+        auto mp = flutter::EncodableMap{};
+        mp[flutter::EncodableValue("id")] = flutter::EncodableValue(page->id);
+        mp[flutter::EncodableValue("width")] = flutter::EncodableValue(details.width);
+        mp[flutter::EncodableValue("height")] = flutter::EncodableValue(details.height);
+        result->Success(mp);
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
     }
     else if (method_call.method_name().compare(kClosePageMethod) == 0)
     {
       auto id = std::get<std::string>(*method_call.arguments());
-      closePage(id);
-      result->Success();
+
+      try
+      {
+        closePage(id);
+        result->Success();
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
     }
     else if (method_call.method_name().compare(kRenderMethod) == 0)
     {
@@ -167,16 +216,36 @@ namespace native_pdf_renderer
           std::get_if<flutter::EncodableMap>(method_call.arguments());
 
       auto vPageId = arguments->find(flutter::EncodableValue("pageId"));
+      if (vPageId == arguments->end())
+      {
+        result->Error("native_pdf_exception", "pageId is required");
+        return;
+      }
       auto pageId = std::get<std::string>(vPageId->second);
 
       auto vHeight = arguments->find(flutter::EncodableValue("height"));
+      if (vHeight == arguments->end())
+      {
+        result->Error("native_pdf_exception", "height is required");
+        return;
+      }
       auto height = std::get<int>(vHeight->second);
 
       auto vWidth = arguments->find(flutter::EncodableValue("width"));
+      if (vWidth == arguments->end())
+      {
+        result->Error("native_pdf_exception", "width is required");
+        return;
+      }
       auto width = std::get<int>(vWidth->second);
 
       // Format
       auto vFormat = arguments->find(flutter::EncodableValue("format"));
+      if (vWidth == arguments->end())
+      {
+        result->Error("native_pdf_exception", "width is required");
+        return;
+      }
       auto formatInt = std::get<int>(vFormat->second);
 
       ImageFormat format;
@@ -189,12 +258,17 @@ namespace native_pdf_renderer
         format = PNG;
         break;
       default:
-        result->NotImplemented();
+        result->Error("native_pdf_exception", "Image encoder not implemented");
         return;
       }
 
       // Cropping
       auto vCrop = arguments->find(flutter::EncodableValue("crop"));
+      if (vCrop == arguments->end())
+      {
+        result->Error("native_pdf_exception", "crop is required");
+        return;
+      }
       auto crop = std::get<bool>(vCrop->second);
 
       CropDetails *cropDetails = nullptr;
@@ -203,29 +277,52 @@ namespace native_pdf_renderer
         cropDetails = new CropDetails();
 
         auto vCropX = arguments->find(flutter::EncodableValue("crop_x"));
-        auto cropX = std::get<int>(vCropX->second);
-        cropDetails->crop_x = cropX;
+        if (vCropX == arguments->end())
+        {
+          result->Error("native_pdf_exception", "crop_x is required");
+          return;
+        }
+        cropDetails->crop_x = std::get<int>(vCropX->second);
 
         auto vCropY = arguments->find(flutter::EncodableValue("crop_y"));
-        auto cropY = std::get<int>(vCropY->second);
-        cropDetails->crop_y = cropY;
+        if (vCropY == arguments->end())
+        {
+          result->Error("native_pdf_exception", "crop_y is required");
+          return;
+        }
+        cropDetails->crop_y = std::get<int>(vCropY->second);
 
         auto vCropWidth = arguments->find(flutter::EncodableValue("crop_width"));
-        auto cropWidth = std::get<int>(vCropWidth->second);
-        cropDetails->crop_width = cropWidth;
+        if (vCropWidth == arguments->end())
+        {
+          result->Error("native_pdf_exception", "crop_width is required");
+          return;
+        }
+        cropDetails->crop_width = std::get<int>(vCropWidth->second);
 
         auto vCropHeight = arguments->find(flutter::EncodableValue("crop_height"));
-        auto cropHeight = std::get<int>(vCropHeight->second);
-        cropDetails->crop_height = cropHeight;
+        if (vCropHeight == arguments->end())
+        {
+          result->Error("native_pdf_exception", "crop_height is required");
+          return;
+        }
+        cropDetails->crop_height = std::get<int>(vCropHeight->second);
       }
 
-      auto render = renderPage(pageId, width, height, format, cropDetails);
-      std::cout << "Page rendered size: " << std::to_string(render.data.size()) << std::endl;
-      auto mp = flutter::EncodableMap{};
-      mp[flutter::EncodableValue("data")] = flutter::EncodableValue(render.data);
-      mp[flutter::EncodableValue("width")] = flutter::EncodableValue(render.width);
-      mp[flutter::EncodableValue("height")] = flutter::EncodableValue(render.height);
-      result->Success(mp);
+      try
+      {
+        auto render = renderPage(pageId, width, height, format, cropDetails);
+        auto mp = flutter::EncodableMap{};
+        mp[flutter::EncodableValue("data")] = flutter::EncodableValue(render.data);
+        mp[flutter::EncodableValue("width")] = flutter::EncodableValue(render.width);
+        mp[flutter::EncodableValue("height")] = flutter::EncodableValue(render.height);
+        result->Success(mp);
+      }
+      catch (std::exception &e)
+      {
+        result->Error("native_pdf_exception", e.what());
+      }
+
       delete cropDetails;
     }
     else

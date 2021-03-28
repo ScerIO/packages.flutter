@@ -51,7 +51,7 @@ class PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
   }) async {
-    if (format == PdfPageFormat.WEBP && Platform.isIOS) {
+    if (format == PdfPageFormat.WEBP && (Platform.isIOS || Platform.isWindows)) {
       throw PdfNotSupportException(
         'PDF Renderer on IOS platform does not support WEBP format',
       );

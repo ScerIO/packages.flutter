@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <iostream>
+#include <stdexcept>
 
 #include "native_pdf_renderer.h"
 
@@ -94,8 +95,13 @@ namespace native_pdf_renderer
         lastId++;
         std::string strId = std::to_string(lastId);
 
-        std::shared_ptr<Document> doc = document_repository[docId];
-        std::shared_ptr<Page> page = std::make_shared<Page>(doc, index, strId);
+        auto doc = document_repository.find(docId);
+        if (doc == document_repository.end())
+        {
+            throw std::invalid_argument("Document is not open");
+        }
+
+        std::shared_ptr<Page> page = std::make_shared<Page>(doc->second, index, strId);
 
         page_repository[strId] = page;
 
@@ -109,7 +115,12 @@ namespace native_pdf_renderer
 
     PageRender renderPage(std::string id, int width, int height, ImageFormat format, CropDetails *crop)
     {
-        return page_repository[id]->render(width, height, format, crop);
+        auto page = page_repository.find(id);
+        if (page == page_repository.end())
+        {
+            throw std::invalid_argument("Page does not exist");
+        }
+        return page->second->render(width, height, format, crop);
     }
 
     //
@@ -118,12 +129,20 @@ namespace native_pdf_renderer
     {
         std::cout << "Document created" << std::endl;
         document = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
+        if (!document)
+        {
+            throw std::invalid_argument("Document failed to open");
+        }
     }
 
     Document::Document(std::string file, std::string id) : id{id}
     {
         std::cout << "Document created" << std::endl;
         document = FPDF_LoadDocument(file.c_str(), nullptr);
+        if (!document)
+        {
+            throw std::invalid_argument("Document failed to open");
+        }
     }
 
     Document::~Document()
@@ -141,6 +160,10 @@ namespace native_pdf_renderer
     {
         std::cout << "Page created" << std::to_string(index) << std::endl;
         page = FPDF_LoadPage(doc->document, index);
+        if (!page)
+        {
+            throw std::invalid_argument("Page failed to open");
+        }
     }
 
     Page::~Page()
@@ -161,11 +184,6 @@ namespace native_pdf_renderer
     PageRender Page::render(int width, int height, ImageFormat format, CropDetails *crop)
     {
         std::cout << "Page rendered" << std::endl;
-        // auto page = FPDF_LoadPage(document, index);
-        // if (!page)
-        // {
-        //     return null;
-        // }
 
         int rWidth, rHeight, start_x, size_x, start_y, size_y;
         if (crop == nullptr)
@@ -217,13 +235,14 @@ namespace native_pdf_renderer
 
         // Get the CLSID of the image encoder.
         CLSID encoderClsid;
-        if (format == PNG)
+        switch (format)
         {
+        case PNG:
             GetEncoderClsid(L"image/png", &encoderClsid);
-        }
-        else if (format == JPEG)
-        {
+            break;
+        case JPEG:
             GetEncoderClsid(L"image/jpeg", &encoderClsid);
+            break;
         }
 
         // Create gdi+ bitmap from raw image data
@@ -234,7 +253,15 @@ namespace native_pdf_renderer
         CreateStreamOnHGlobal(NULL, TRUE, &istream);
 
         // Encode image onto stream
-        winBitmap->Save(istream, &encoderClsid, NULL);
+        auto stat = winBitmap->Save(istream, &encoderClsid, NULL);
+        if (stat == Gdiplus::OutOfMemory)
+        {
+            throw std::exception("Failed to encode to image, out of memory");
+        }
+        else if (stat != Gdiplus::Ok)
+        {
+            throw std::exception("Failed to encode to image");
+        }
 
         // Get raw memory of stream
         HGLOBAL hg = NULL;
@@ -253,18 +280,12 @@ namespace native_pdf_renderer
         // Close stream
         istream->Release();
 
-        // if (stat == Ok)
-        //     printf("Bird.png was saved successfully\n");
-        // else
-        //     printf("Failure: stat = %d\n", stat);
-
         // Cleanup gid+
         delete winBitmap;
         Gdiplus::GdiplusShutdown(gdiplusToken);
 
         FPDFBitmap_Destroy(bitmap);
 
-        std::cout << "Page render complete" << std::endl;
         return PageRender(data, rWidth, rHeight);
     }
 }
