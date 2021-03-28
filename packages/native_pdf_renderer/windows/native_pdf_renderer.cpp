@@ -125,9 +125,13 @@ namespace native_pdf_renderer
 
     //
 
-    Document::Document(std::vector<uint8_t> data, std::string id) : id{id}
+    Document::Document(std::vector<uint8_t> dataRef, std::string id) : id{id}
     {
         std::cout << "Document created" << std::endl;
+
+        // Copy data into object to keep it in memory
+        data.swap(dataRef);
+
         document = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
         if (!document)
         {

@@ -43,6 +43,8 @@ namespace native_pdf_renderer
     class Document
     {
     private:
+        std::vector<uint8_t> data;
+
     public:
         Document(std::vector<uint8_t> data, std::string id);
         Document(std::string file, std::string id);
