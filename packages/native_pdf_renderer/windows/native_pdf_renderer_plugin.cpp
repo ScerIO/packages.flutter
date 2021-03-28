@@ -175,6 +175,7 @@ namespace native_pdf_renderer
       auto vWidth = arguments->find(flutter::EncodableValue("width"));
       auto width = std::get<int>(vWidth->second);
 
+      // Format
       auto vFormat = arguments->find(flutter::EncodableValue("format"));
       auto formatInt = std::get<int>(vFormat->second);
 
@@ -192,13 +193,40 @@ namespace native_pdf_renderer
         return;
       }
 
-      auto render = renderPage(pageId, width, height, format);
+      // Cropping
+      auto vCrop = arguments->find(flutter::EncodableValue("crop"));
+      auto crop = std::get<bool>(vCrop->second);
+
+      CropDetails *cropDetails = nullptr;
+      if (crop)
+      {
+        cropDetails = new CropDetails();
+
+        auto vCropX = arguments->find(flutter::EncodableValue("crop_x"));
+        auto cropX = std::get<int>(vCropX->second);
+        cropDetails->crop_x = cropX;
+
+        auto vCropY = arguments->find(flutter::EncodableValue("crop_y"));
+        auto cropY = std::get<int>(vCropY->second);
+        cropDetails->crop_y = cropY;
+
+        auto vCropWidth = arguments->find(flutter::EncodableValue("crop_width"));
+        auto cropWidth = std::get<int>(vCropWidth->second);
+        cropDetails->crop_width = cropWidth;
+
+        auto vCropHeight = arguments->find(flutter::EncodableValue("crop_height"));
+        auto cropHeight = std::get<int>(vCropHeight->second);
+        cropDetails->crop_height = cropHeight;
+      }
+
+      auto render = renderPage(pageId, width, height, format, cropDetails);
       std::cout << "Page rendered size: " << std::to_string(render.data.size()) << std::endl;
       auto mp = flutter::EncodableMap{};
       mp[flutter::EncodableValue("data")] = flutter::EncodableValue(render.data);
       mp[flutter::EncodableValue("width")] = flutter::EncodableValue(render.width);
       mp[flutter::EncodableValue("height")] = flutter::EncodableValue(render.height);
       result->Success(mp);
+      delete cropDetails;
     }
     else
     {

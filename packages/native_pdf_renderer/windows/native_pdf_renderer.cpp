@@ -107,9 +107,9 @@ namespace native_pdf_renderer
         page_repository.erase(id);
     }
 
-    PageRender renderPage(std::string id, int width, int height, ImageFormat format)
+    PageRender renderPage(std::string id, int width, int height, ImageFormat format, CropDetails *crop)
     {
-        return page_repository[id]->render(width, height, format);
+        return page_repository[id]->render(width, height, format, crop);
     }
 
     //
@@ -158,7 +158,7 @@ namespace native_pdf_renderer
         return PageDetails(width, height);
     }
 
-    PageRender Page::render(int width, int height, ImageFormat format)
+    PageRender Page::render(int width, int height, ImageFormat format, CropDetails *crop)
     {
         std::cout << "Page rendered" << std::endl;
         // auto page = FPDF_LoadPage(document, index);
@@ -167,20 +167,41 @@ namespace native_pdf_renderer
         //     return null;
         // }
 
+        int rWidth, rHeight, start_x, size_x, start_y, size_y;
+        if (crop == nullptr)
+        {
+            rWidth = width;
+            rHeight = height;
+            start_x = 0;
+            size_x = width;
+            start_y = 0;
+            size_y = height;
+        }
+        else
+        {
+            rWidth = crop->crop_width;
+            rHeight = crop->crop_height;
+
+            start_x = 0 - crop->crop_x;
+            size_x = width;
+            start_y = 0 - crop->crop_y;
+            size_y = height;
+        }
+
         // Create empty bitmap and render page onto it
-        auto bitmap = FPDFBitmap_Create(width, height, 0);
-        FPDFBitmap_FillRect(bitmap, 0, 0, width, height, 0xffffffff);
-        FPDF_RenderPageBitmap(bitmap, page, 0, 0, width, height, 0, FPDF_ANNOT | FPDF_LCD_TEXT);
+        auto bitmap = FPDFBitmap_Create(rWidth, rHeight, 0);
+        FPDFBitmap_FillRect(bitmap, 0, 0, rWidth, rHeight, 0xffffffff);
+        FPDF_RenderPageBitmap(bitmap, page, start_x, start_y, size_x, size_y, 0, FPDF_ANNOT | FPDF_LCD_TEXT);
 
         // Convert bitmap into RGBA format
         uint8_t *p = static_cast<uint8_t *>(FPDFBitmap_GetBuffer(bitmap));
         auto stride = FPDFBitmap_GetStride(bitmap);
 
         // BGRA to RGBA conversion
-        for (auto y = 0; y < height; y++)
+        for (auto y = 0; y < rHeight; y++)
         {
             auto offset = y * stride;
-            for (auto x = 0; x < width; x++)
+            for (auto x = 0; x < rWidth; x++)
             {
                 auto t = p[offset];
                 p[offset] = p[offset + 2];
@@ -206,7 +227,7 @@ namespace native_pdf_renderer
         }
 
         // Create gdi+ bitmap from raw image data
-        auto winBitmap = new Gdiplus::Bitmap(width, height, stride, PixelFormat32bppRGB, p);
+        auto winBitmap = new Gdiplus::Bitmap(rWidth, rHeight, stride, PixelFormat32bppRGB, p);
 
         // Create stream for converted image
         IStream *istream = nullptr;
@@ -244,6 +265,6 @@ namespace native_pdf_renderer
         FPDFBitmap_Destroy(bitmap);
 
         std::cout << "Page render complete" << std::endl;
-        return PageRender(data, width, height);
+        return PageRender(data, rWidth, rHeight);
     }
 }

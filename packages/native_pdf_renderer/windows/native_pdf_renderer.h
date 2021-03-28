@@ -15,6 +15,14 @@ namespace native_pdf_renderer
         PNG = 1,
     };
 
+    struct CropDetails
+    {
+        int crop_x;
+        int crop_y;
+        int crop_height;
+        int crop_width;
+    };
+
     struct PageDetails
     {
         const int width;
@@ -59,7 +67,7 @@ namespace native_pdf_renderer
         std::string id;
 
         PageDetails getDetails();
-        PageRender render(int width, int height, ImageFormat format);
+        PageRender render(int width, int height, ImageFormat format, CropDetails *crop);
     };
 
     std::shared_ptr<Document> openDocument(std::vector<uint8_t> data);
@@ -68,7 +76,7 @@ namespace native_pdf_renderer
     void closeDocument(std::string id);
     std::shared_ptr<Page> openPage(std::string docId, int index);
     void closePage(std::string id);
-    PageRender renderPage(std::string id, int width, int height, ImageFormat format);
+    PageRender renderPage(std::string id, int width, int height, ImageFormat format, CropDetails *crop);
 
 }
 
