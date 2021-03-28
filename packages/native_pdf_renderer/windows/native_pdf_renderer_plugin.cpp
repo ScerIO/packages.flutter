@@ -258,6 +258,14 @@ namespace native_pdf_renderer
       }
       auto width = std::get<int>(vWidth->second);
 
+      auto vBackground = arguments->find(flutter::EncodableValue("backgroundColor"));
+      if (vBackground == arguments->end())
+      {
+        result->Error("native_pdf_exception", "backgroundColor is required");
+        return;
+      }
+      auto background = std::get<std::string>(vBackground->second);
+
       // Format
       auto vFormat = arguments->find(flutter::EncodableValue("format"));
       if (vWidth == arguments->end())
@@ -330,7 +338,7 @@ namespace native_pdf_renderer
 
       try
       {
-        auto render = renderPage(pageId, width, height, format, cropDetails);
+        auto render = renderPage(pageId, width, height, format, background, cropDetails);
         auto mp = flutter::EncodableMap{};
         mp[flutter::EncodableValue("data")] = flutter::EncodableValue(render.data);
         mp[flutter::EncodableValue("width")] = flutter::EncodableValue(render.width);

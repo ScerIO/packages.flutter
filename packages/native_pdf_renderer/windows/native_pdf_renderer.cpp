@@ -113,14 +113,20 @@ namespace native_pdf_renderer
         page_repository.erase(id);
     }
 
-    PageRender renderPage(std::string id, int width, int height, ImageFormat format, CropDetails *crop)
+    PageRender renderPage(std::string id, int width, int height, ImageFormat format, std::string backgroundStr, CropDetails *crop)
     {
         auto page = page_repository.find(id);
         if (page == page_repository.end())
         {
             throw std::invalid_argument("Page does not exist");
         }
-        return page->second->render(width, height, format, crop);
+
+        // Get background color
+        backgroundStr.erase(0, 1);
+        auto background = std::stoul(backgroundStr, nullptr, 16);
+
+        // Render page
+        return page->second->render(width, height, format, background, crop);
     }
 
     //
@@ -178,7 +184,7 @@ namespace native_pdf_renderer
         return PageDetails(width, height);
     }
 
-    PageRender Page::render(int width, int height, ImageFormat format, CropDetails *crop)
+    PageRender Page::render(int width, int height, ImageFormat format, unsigned long background, CropDetails *crop)
     {
         int rWidth, rHeight, start_x, size_x, start_y, size_y;
         if (crop == nullptr)
@@ -203,7 +209,7 @@ namespace native_pdf_renderer
 
         // Create empty bitmap and render page onto it
         auto bitmap = FPDFBitmap_Create(rWidth, rHeight, 0);
-        FPDFBitmap_FillRect(bitmap, 0, 0, rWidth, rHeight, 0xffffffff);
+        FPDFBitmap_FillRect(bitmap, 0, 0, rWidth, rHeight, background);
         FPDF_RenderPageBitmap(bitmap, page, start_x, start_y, size_x, size_y, 0, FPDF_ANNOT | FPDF_LCD_TEXT);
 
         // Convert bitmap into RGBA format
