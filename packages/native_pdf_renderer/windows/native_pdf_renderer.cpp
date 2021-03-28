@@ -107,9 +107,9 @@ namespace native_pdf_renderer
         page_repository.erase(id);
     }
 
-    PageRender renderPage(std::string id, int width, int height)
+    PageRender renderPage(std::string id, int width, int height, ImageFormat format)
     {
-        return page_repository[id]->render(width, height);
+        return page_repository[id]->render(width, height, format);
     }
 
     //
@@ -158,7 +158,7 @@ namespace native_pdf_renderer
         return PageDetails(width, height);
     }
 
-    PageRender Page::render(int width, int height)
+    PageRender Page::render(int width, int height, ImageFormat format)
     {
         std::cout << "Page rendered" << std::endl;
         // auto page = FPDF_LoadPage(document, index);
@@ -189,14 +189,21 @@ namespace native_pdf_renderer
             }
         }
 
-        // Convert to PNG
+        // Convert to image format
         Gdiplus::GdiplusStartupInput gdiplusStartupInput;
         ULONG_PTR gdiplusToken;
         Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 
-        // Get the CLSID of the PNG encoder.
+        // Get the CLSID of the image encoder.
         CLSID encoderClsid;
-        GetEncoderClsid(L"image/png", &encoderClsid);
+        if (format == PNG)
+        {
+            GetEncoderClsid(L"image/png", &encoderClsid);
+        }
+        else if (format == JPEG)
+        {
+            GetEncoderClsid(L"image/jpeg", &encoderClsid);
+        }
 
         // Create gdi+ bitmap from raw image data
         auto winBitmap = new Gdiplus::Bitmap(width, height, stride, PixelFormat32bppRGB, p);

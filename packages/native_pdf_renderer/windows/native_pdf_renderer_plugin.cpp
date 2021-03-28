@@ -175,7 +175,24 @@ namespace native_pdf_renderer
       auto vWidth = arguments->find(flutter::EncodableValue("width"));
       auto width = std::get<int>(vWidth->second);
 
-      auto render = renderPage(pageId, width, height);
+      auto vFormat = arguments->find(flutter::EncodableValue("format"));
+      auto formatInt = std::get<int>(vFormat->second);
+
+      ImageFormat format;
+      switch (formatInt)
+      {
+      case 0:
+        format = JPEG;
+        break;
+      case 1:
+        format = PNG;
+        break;
+      default:
+        result->NotImplemented();
+        return;
+      }
+
+      auto render = renderPage(pageId, width, height, format);
       std::cout << "Page rendered size: " << std::to_string(render.data.size()) << std::endl;
       auto mp = flutter::EncodableMap{};
       mp[flutter::EncodableValue("data")] = flutter::EncodableValue(render.data);
