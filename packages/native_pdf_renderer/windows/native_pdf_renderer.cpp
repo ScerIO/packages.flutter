@@ -216,19 +216,6 @@ namespace native_pdf_renderer
         uint8_t *p = static_cast<uint8_t *>(FPDFBitmap_GetBuffer(bitmap));
         auto stride = FPDFBitmap_GetStride(bitmap);
 
-        // BGRA to RGBA conversion
-        for (auto y = 0; y < rHeight; y++)
-        {
-            auto offset = y * stride;
-            for (auto x = 0; x < rWidth; x++)
-            {
-                auto t = p[offset];
-                p[offset] = p[offset + 2];
-                p[offset + 2] = t;
-                offset += 4;
-            }
-        }
-
         // Convert to image format
         Gdiplus::GdiplusStartupInput gdiplusStartupInput;
         ULONG_PTR gdiplusToken;
