@@ -127,8 +127,6 @@ namespace native_pdf_renderer
 
     Document::Document(std::vector<uint8_t> dataRef, std::string id) : id{id}
     {
-        std::cout << "Document created" << std::endl;
-
         // Copy data into object to keep it in memory
         data.swap(dataRef);
 
@@ -141,7 +139,6 @@ namespace native_pdf_renderer
 
     Document::Document(std::string file, std::string id) : id{id}
     {
-        std::cout << "Document created" << std::endl;
         document = FPDF_LoadDocument(file.c_str(), nullptr);
         if (!document)
         {
@@ -151,7 +148,6 @@ namespace native_pdf_renderer
 
     Document::~Document()
     {
-        std::cout << "Document deleted" << std::endl;
         FPDF_CloseDocument(document);
     }
 
@@ -162,7 +158,6 @@ namespace native_pdf_renderer
 
     Page::Page(std::shared_ptr<Document> doc, int index, std::string id) : id(id)
     {
-        std::cout << "Page created" << std::to_string(index) << std::endl;
         page = FPDF_LoadPage(doc->document, index);
         if (!page)
         {
@@ -172,13 +167,11 @@ namespace native_pdf_renderer
 
     Page::~Page()
     {
-        std::cout << "Page deleted" << std::endl;
         FPDF_ClosePage(page);
     }
 
     PageDetails Page::getDetails()
     {
-        std::cout << "Page got details" << std::endl;
         int width = static_cast<int>(FPDF_GetPageWidthF(page) + 0.5f);
         int height = static_cast<int>(FPDF_GetPageHeightF(page) + 0.5f);
 
@@ -187,8 +180,6 @@ namespace native_pdf_renderer
 
     PageRender Page::render(int width, int height, ImageFormat format, CropDetails *crop)
     {
-        std::cout << "Page rendered" << std::endl;
-
         int rWidth, rHeight, start_x, size_x, start_y, size_y;
         if (crop == nullptr)
         {

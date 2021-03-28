@@ -86,7 +86,10 @@ namespace native_pdf_renderer
       const flutter::MethodCall<flutter::EncodableValue> &method_call,
       std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result)
   {
-    std::cout << "Calling: " + method_call.method_name() << std::endl;
+
+    ///
+    /// Open document from flutter asset
+    ///
     if (method_call.method_name().compare(kOpenDocumentAssetMethod) == 0)
     {
       auto name = std::get<std::string>(*method_call.arguments());
@@ -117,6 +120,10 @@ namespace native_pdf_renderer
         result->Error("native_pdf_exception", e.what());
       }
     }
+
+    ///
+    /// Open document from file
+    ///
     else if (method_call.method_name().compare(kOpenDocumentFileMethod) == 0)
     {
       auto name = std::get<std::string>(*method_call.arguments());
@@ -135,6 +142,10 @@ namespace native_pdf_renderer
         result->Error("native_pdf_exception", e.what());
       }
     }
+
+    ///
+    /// Open document from data stream
+    ///
     else if (method_call.method_name().compare(kOpenDocumentDataMethod) == 0)
     {
       auto data = std::get<std::vector<uint8_t>>(*method_call.arguments());
@@ -153,12 +164,20 @@ namespace native_pdf_renderer
         result->Error("native_pdf_exception", e.what());
       }
     }
+
+    ///
+    /// Close document
+    ///
     else if (method_call.method_name().compare(kCloseDocumentMethod) == 0)
     {
       auto id = std::get<std::string>(*method_call.arguments());
       closeDocument(id);
       result->Success();
     }
+
+    ///
+    /// Open page
+    ///
     else if (method_call.method_name().compare(kOpenPageMethod) == 0)
     {
       const auto *arguments =
@@ -196,20 +215,20 @@ namespace native_pdf_renderer
         result->Error("native_pdf_exception", e.what());
       }
     }
+
+    ///
+    /// Close page
+    ///
     else if (method_call.method_name().compare(kClosePageMethod) == 0)
     {
       auto id = std::get<std::string>(*method_call.arguments());
-
-      try
-      {
-        closePage(id);
-        result->Success();
-      }
-      catch (std::exception &e)
-      {
-        result->Error("native_pdf_exception", e.what());
-      }
+      closePage(id);
+      result->Success();
     }
+
+    ///
+    /// Render page to image
+    ///
     else if (method_call.method_name().compare(kRenderMethod) == 0)
     {
       const auto *arguments =
