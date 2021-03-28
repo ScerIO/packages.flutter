@@ -75,7 +75,7 @@ class PdfDocument {
           'open.document.data',
           data,
         ))!,
-        'memory:$data',
+        'memory:binary',
       );
 
   /// Get page object. The first page is 1.
