@@ -1,6 +1,6 @@
 # PDF Renderer
 
-`Flutter` Plugin to render PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+** and **iOS**.
+`Flutter` Plugin to render PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
 **We also support the package for easy display PDF documents [native_pdf_view](https://pub.dev/packages/native_pdf_view)**
 
@@ -156,3 +156,6 @@ This plugin uses the Android native [PdfRenderer](https://developer.android.com/
 
 ### On Ios & MacOs
 This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
+
+### On Windows
+This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
