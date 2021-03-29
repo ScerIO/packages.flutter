@@ -1,7 +1,10 @@
 #pragma warning(disable : 4458)
+
+// Windows imports
 #include <Windows.h>
 #include <gdiplus.h>
 
+// std imports
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -19,12 +22,10 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
   Gdiplus::ImageCodecInfo* pImageCodecInfo = NULL;
 
   Gdiplus::GetImageEncodersSize(&num, &size);
-  if (size == 0)
-    return -1;  // Failure
+  if (size == 0) return -1;  // Failure
 
-  pImageCodecInfo = (Gdiplus::ImageCodecInfo*) (malloc(size));
-  if (pImageCodecInfo == NULL)
-    return -1;  // Failure
+  pImageCodecInfo = (Gdiplus::ImageCodecInfo*)(malloc(size));
+  if (pImageCodecInfo == NULL) return -1;  // Failure
 
   GetImageEncoders(num, size, pImageCodecInfo);
 
@@ -97,16 +98,10 @@ std::shared_ptr<Page> openPage(std::string docId, int index) {
   return page;
 }
 
-void closePage(std::string id) {
-  page_repository.erase(id);
-}
+void closePage(std::string id) { page_repository.erase(id); }
 
-PageRender renderPage(std::string id,
-                      int width,
-                      int height,
-                      ImageFormat format,
-                      std::string backgroundStr,
-                      CropDetails* crop) {
+PageRender renderPage(std::string id, int width, int height, ImageFormat format,
+                      std::string backgroundStr, CropDetails* crop) {
   auto page = page_repository.find(id);
   if (page == page_repository.end()) {
     throw std::invalid_argument("Page does not exist");
@@ -139,13 +134,9 @@ Document::Document(std::string file, std::string id) : id{id} {
   }
 }
 
-Document::~Document() {
-  FPDF_CloseDocument(document);
-}
+Document::~Document() { FPDF_CloseDocument(document); }
 
-int Document::getPageCount() {
-  return FPDF_GetPageCount(document);
-}
+int Document::getPageCount() { return FPDF_GetPageCount(document); }
 
 Page::Page(std::shared_ptr<Document> doc, int index, std::string id) : id(id) {
   page = FPDF_LoadPage(doc->document, index);
@@ -154,9 +145,7 @@ Page::Page(std::shared_ptr<Document> doc, int index, std::string id) : id(id) {
   }
 }
 
-Page::~Page() {
-  FPDF_ClosePage(page);
-}
+Page::~Page() { FPDF_ClosePage(page); }
 
 PageDetails Page::getDetails() {
   int width = static_cast<int>(FPDF_GetPageWidthF(page) + 0.5f);
@@ -165,11 +154,8 @@ PageDetails Page::getDetails() {
   return PageDetails(width, height);
 }
 
-PageRender Page::render(int width,
-                        int height,
-                        ImageFormat format,
-                        unsigned long background,
-                        CropDetails* crop) {
+PageRender Page::render(int width, int height, ImageFormat format,
+                        unsigned long background, CropDetails* crop) {
   int rWidth, rHeight, start_x, size_x, start_y, size_y;
   if (crop == nullptr) {
     rWidth = width;
@@ -206,12 +192,12 @@ PageRender Page::render(int width,
   // Get the CLSID of the image encoder.
   CLSID encoderClsid;
   switch (format) {
-  case PNG:
-    GetEncoderClsid(L"image/png", &encoderClsid);
-    break;
-  case JPEG:
-    GetEncoderClsid(L"image/jpeg", &encoderClsid);
-    break;
+    case PNG:
+      GetEncoderClsid(L"image/png", &encoderClsid);
+      break;
+    case JPEG:
+      GetEncoderClsid(L"image/jpeg", &encoderClsid);
+      break;
   }
 
   // Create gdi+ bitmap from raw image data

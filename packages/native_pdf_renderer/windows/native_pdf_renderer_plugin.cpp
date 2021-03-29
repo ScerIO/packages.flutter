@@ -3,16 +3,19 @@
 // This must be included before many other Windows headers.
 #include <windows.h>
 
+// Flutter imports
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
 #include <flutter/standard_method_codec.h>
 
+// std imports
 #include <iostream>
 #include <map>
 #include <memory>
 #include <sstream>
 #include <stdexcept>
 
+// Library linking
 #include <pathcch.h>
 #pragma comment(lib, "pathcch.lib")
 
@@ -25,12 +28,11 @@ namespace native_pdf_renderer {
 
 // Convert a wide Unicode string to an UTF8 string
 std::string utf8_encode(const std::wstring& wstr) {
-  if (wstr.empty())
-    return std::string();
-  int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int) wstr.size(),
+  if (wstr.empty()) return std::string();
+  int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(),
                                         NULL, 0, NULL, NULL);
   std::string strTo(size_needed, 0);
-  WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int) wstr.size(), &strTo[0],
+  WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0],
                       size_needed, NULL, NULL);
   return strTo;
 }
@@ -254,15 +256,15 @@ void NativePdfRendererPlugin::HandleMethodCall(
 
     ImageFormat format;
     switch (formatInt) {
-    case 0:
-      format = JPEG;
-      break;
-    case 1:
-      format = PNG;
-      break;
-    default:
-      result->Error("native_pdf_exception", "Image encoder not implemented");
-      return;
+      case 0:
+        format = JPEG;
+        break;
+      case 1:
+        format = PNG;
+        break;
+      default:
+        result->Error("native_pdf_exception", "Image encoder not implemented");
+        return;
     }
 
     // Cropping
