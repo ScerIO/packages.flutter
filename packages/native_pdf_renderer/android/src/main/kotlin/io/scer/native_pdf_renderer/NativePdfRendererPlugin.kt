@@ -190,7 +190,9 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
                     2 -> "webp"
                     else -> "jpg"
                 }
-                val tempOutFile = File(registrar.context().cacheDir, "$randomFilename.$tempOutFileExtension")
+                val tempOutFolder = File(registrar.context().cacheDir, "native_pdf_renderer_cache")
+                tempOutFolder.mkdirs()
+                val tempOutFile = File(tempOutFolder, "$randomFilename.$tempOutFileExtension")
 
                 val results = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality).toMap
                 result.success(results)
