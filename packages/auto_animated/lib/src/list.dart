@@ -65,8 +65,8 @@ class LiveList extends StatefulWidget {
   /// [SliverChildBuilderDelegate.addSemanticIndexes] property. None may be
   /// null.
   const LiveList({
-    @required this.itemBuilder,
-    @required this.itemCount,
+    required this.itemBuilder,
+    required this.itemCount,
     this.separatorBuilder,
     this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
@@ -83,9 +83,8 @@ class LiveList extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    Key key,
-  })  : assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+    Key? key,
+  })  : assert(itemCount >= 0),
         super(key: key);
 
   /// Creates a fixed-length scrollable linear array of list "items" separated
@@ -146,9 +145,9 @@ class LiveList extends StatefulWidget {
   /// [SliverChildBuilderDelegate.addSemanticIndexes] property. None may be
   /// null.
   LiveList.options({
-    @required this.itemBuilder,
-    @required this.itemCount,
-    @required LiveOptions options,
+    required this.itemBuilder,
+    required this.itemCount,
+    required LiveOptions options,
     this.separatorBuilder,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
@@ -160,14 +159,13 @@ class LiveList extends StatefulWidget {
     this.addAutomaticKeepAlives = true,
     this.addRepaintBoundaries = true,
     this.addSemanticIndexes = true,
-    Key key,
+    Key? key,
   })  : delay = options.delay,
         showItemInterval = options.showItemInterval,
         showItemDuration = options.showItemDuration,
         visibleFraction = options.visibleFraction,
         reAnimateOnVisibility = options.reAnimateOnVisibility,
-        assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+        assert(itemCount >= 0),
         super(key: key);
 
   /// Start animation after (default zero)
@@ -204,7 +202,7 @@ class LiveList extends StatefulWidget {
   ///
   ///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
   ///  * [TransitionBuilder], which is similar but also takes a child.
-  final IndexedWidgetBuilder separatorBuilder;
+  final IndexedWidgetBuilder? separatorBuilder;
 
   /// The number of items the list will start with.
   ///
@@ -244,7 +242,7 @@ class LiveList extends StatefulWidget {
   /// [ScrollController.keepScrollOffset]). It can be used to read the current
   /// scroll position (see [ScrollController.offset]), or change it (see
   /// [ScrollController.animateTo]).
-  final ScrollController controller;
+  final ScrollController? controller;
 
   /// Whether this is the primary scroll view associated with the parent
   /// [PrimaryScrollController].
@@ -254,7 +252,7 @@ class LiveList extends StatefulWidget {
   ///
   /// Defaults to true when [scrollDirection] is [Axis.vertical] and
   /// [controller] is null.
-  final bool primary;
+  final bool? primary;
 
   /// How the scroll view should respond to user input.
   ///
@@ -262,7 +260,7 @@ class LiveList extends StatefulWidget {
   /// user stops dragging the scroll view.
   ///
   /// Defaults to matching platform conventions.
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// Whether the extent of the scroll view in the [scrollDirection] should be
   /// determined by the contents being viewed.
@@ -281,7 +279,7 @@ class LiveList extends StatefulWidget {
   final bool shrinkWrap;
 
   /// The amount of space by which to inset the children.
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   final bool addAutomaticKeepAlives;
 
@@ -330,11 +328,11 @@ class LiveListState extends State<LiveList>
       childDelegate = SliverChildBuilderDelegate(
         (BuildContext context, int index) {
           final int itemIndex = index ~/ 2;
-          Widget widget;
+          Widget? widget;
           if (index.isEven) {
             widget = _itemBuilder(context, itemIndex);
           } else {
-            widget = this.widget.separatorBuilder(context, itemIndex);
+            widget = this.widget.separatorBuilder!(context, itemIndex);
             assert(() {
               if (widget == null) {
                 throw FlutterError('separatorBuilder cannot return null.');

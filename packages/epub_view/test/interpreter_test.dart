@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:epub/epub.dart';
+import 'package:epubx/epubx.dart';
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -10,15 +10,15 @@ import 'package:epub_view/src/epub_cfi/interpreter.dart';
 import 'package:html/dom.dart';
 
 Future<Uint8List> _loadTestBook() async {
-  final url = Directory.current.path.replaceFirst(
-      RegExp(r'/epub_view.*'), '/epub_view/test/assets/book.epub');
-  final file = File(url);
+  // final url = Directory.current.path.replaceFirst(
+  //     RegExp(r'/epub_view.*'), '/epub_view/test/assets/book.epub');
+  final file = File('test/assets/book.epub');
   return file.readAsBytes();
 }
 
 void main() {
-  EpubBook _book;
-  CfiFragment _cfiFragment;
+  late EpubBook _book;
+  late CfiFragment _cfiFragment;
 
   setUp(() async {
     _book = await _loadTestBook().then(EpubReader.readBook);
@@ -27,13 +27,13 @@ void main() {
   });
 
   test('searchLocalPathForHref failed', () async {
-    Element result;
+    Element? result;
     try {
       final document =
-          EpubCfiReader().chapterDocument(_book.Chapters[0].SubChapters[2]);
+          EpubCfiReader().chapterDocument(_book.Chapters![0].SubChapters![2]);
       result = EpubCfiInterpreter().searchLocalPathForHref(
-        document.documentElement,
-        _cfiFragment.path.localPath,
+        document!.documentElement,
+        _cfiFragment.path!.localPath!,
       );
     } catch (e) {
       expect(
@@ -47,11 +47,11 @@ void main() {
 
   test('searchLocalPathForHref success', () async {
     final document =
-        EpubCfiReader().chapterDocument(_book.Chapters[0].SubChapters[1]);
+        EpubCfiReader().chapterDocument(_book.Chapters![0].SubChapters![1]);
     final result = EpubCfiInterpreter().searchLocalPathForHref(
-      document.documentElement,
-      _cfiFragment.path.localPath,
-    );
+      document!.documentElement,
+      _cfiFragment.path!.localPath!,
+    )!;
 
     expect(result.toString(), Element.tag('p').toString());
     expect(result.innerHtml,

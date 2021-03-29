@@ -1,7 +1,18 @@
-## 1.1.0
+## 2.1.0
+### Changed
+* Removed data property from `EpubController`, now `EpubReader.readBook` can receive futures
+```diff
+EpubController(
+-  data: _loadFromAssets('assets/book.epub'),
++  document: EpubReader.readBook(_loadFromAssets('assets/book.epub'))
+);
+```
 
-* Flutter 1.20 capability support
-* Upgrade dependencies
+## 2.0.0
+
+* Null-safety migration & Flutter v2 capability
+* Upgraded dependencies
+* Make `[epub]` package fork with name `[epubx]` and use it
 
 ## 1.0.0
 
@@ -20,7 +31,7 @@
 ## 0.8.0
 
 * Replaced package `flutter_widgets` to `scrollable_positioned_list`
-* Upgrade `flutter_html` dependency
+* Upgraded `flutter_html` dependency
 * Set minimal flutter version to 1.17.0
 
 ## 0.7.0

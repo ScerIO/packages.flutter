@@ -1,0 +1,59 @@
+{
+  "@@locale": "ru",
+  "actionMenuOpen": "Открыть",
+  "@actionMenuOpen": {
+    "type": "text"
+  },
+  "actionMenuCopy": "Копировать",
+  "@actionMenuCopy": {
+    "type": "text"
+  },
+  "actionMenuCut": "Вырезать",
+  "@actionMenuCut": {
+    "type": "text"
+  },
+  "actionMenuDelete": "Удалить",
+  "@actionMenuDelete": {
+    "type": "text"
+  },
+  "actionCopyHere": "Копировать сюда",
+  "@actionCopyHere": {
+    "type": "text"
+  },
+  "actionMoveHere": "Вставить сюда",
+  "@actionMoveHere": {
+    "type": "text"
+  },
+  "folderName": "Имя папки",
+  "@folderName": {
+    "type": "text"
+  },
+  "fileName": "Имя файла",
+  "@fileName": {
+    "type": "text"
+  },
+  "newFolder": "Новая папка",
+  "@newFolder": {
+    "type": "text"
+  },
+  "newFile": "Новый файл",
+  "@newFile": {
+    "type": "text"
+  },
+  "uploadFiles": "Выгрузить файлы",
+  "@uploadFiles": {
+    "type": "text"
+  },
+  "empty": "Пусто",
+  "@empty": {
+    "type": "text"
+  },
+  "cancel": "Отменить",
+  "@cancel": {
+    "type": "text"
+  },
+  "create": "Создать",
+  "@create": {
+    "type": "text"
+  }
+}

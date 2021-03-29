@@ -1,8 +1,6 @@
 # epub_view
 
-Flutter widget for view EPUB documents on all platforms. Based on [epub](https://pub.dev/packages/epub) package. Render with flutter widgets (not native view) on **Web**, **MacOs**, **Android** and **iOS**
-
-for Web a bug is noticed, see [flutter_html issue#300](https://github.com/Sub6Resources/flutter_html/issues/300)
+Pure flutter widget for view EPUB documents on all platforms. Based on [epub](https://pub.dev/packages/epub) package. Render with flutter widgets (not native view) on any platforms: **Web**, **MacOs**, **Windows** **Linux**, **Android** and **iOS**
 
 ## Showcase
 
@@ -37,10 +35,10 @@ EpubController _epubController;
 @override
 void initState() {
   _epubController = EpubController(
-    // Future<Uint8List>
-    data: _loadFromAssets('assets/book.epub'),
-    // or pure Uint8List
-    // document: EpubReader.readBook(data),
+    // Load document
+    document: EpubReader.readBook(_loadFromAssets('assets/book.epub')),
+    // Set start point
+    epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
   );
   super.initState();
 }

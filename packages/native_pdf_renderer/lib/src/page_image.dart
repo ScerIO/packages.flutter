@@ -5,29 +5,30 @@ part of 'page.dart';
 /// of [PdfPage]
 class PdfPageImage {
   const PdfPageImage._({
-    @required this.id,
-    @required this.pageNumber,
-    @required this.width,
-    @required this.height,
-    @required this.bytes,
-    @required this.format,
-    @required this.quality,
+    required this.id,
+    required this.pageNumber,
+    required this.width,
+    required this.height,
+    required this.bytes,
+    required this.format,
+    required this.quality,
   });
 
-  static const MethodChannel _channel = MethodChannel('io.scer.pdf.renderer');
+  static const MethodChannel _channel =
+      MethodChannel('io.scer.native_pdf_renderer');
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when render page.
-  final String id;
+  final String? id;
 
   /// Page number. The first page is 1.
   final int pageNumber;
 
   /// Width of the rendered area in pixels.
-  final int width;
+  final int? width;
 
   /// Height of the rendered area in pixels.
-  final int height;
+  final int? height;
 
   /// Image bytes
   final Uint8List bytes;
@@ -46,15 +47,15 @@ class PdfPageImage {
   /// [format] - image type, all types can be seen here [PdfPageFormat]
   /// [crop] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
-  static Future<PdfPageImage> _render({
-    @required String pageId,
-    @required int pageNumber,
-    @required int width,
-    @required int height,
-    @required PdfPageFormat format,
-    @required String backgroundColor,
-    @required Rect crop,
-    @required int quality,
+  static Future<PdfPageImage?> _render({
+    required String? pageId,
+    required int pageNumber,
+    required int width,
+    required int height,
+    required PdfPageFormat format,
+    required String? backgroundColor,
+    required Rect? crop,
+    required int quality,
   }) async {
     if (format == PdfPageFormat.WEBP && Platform.isIOS) {
       throw PdfNotSupportException(
@@ -72,10 +73,10 @@ class PdfPageImage {
       'format': format.value,
       'backgroundColor': backgroundColor,
       'crop': crop != null,
-      'crop_x': crop?.left?.toInt(),
-      'crop_y': crop?.top?.toInt(),
-      'crop_height': crop?.height?.toInt(),
-      'crop_width': crop?.width?.toInt(),
+      'crop_x': crop?.left.toInt(),
+      'crop_y': crop?.top.toInt(),
+      'crop_height': crop?.height.toInt(),
+      'crop_width': crop?.width.toInt(),
       'quality': quality,
     });
 
@@ -83,7 +84,7 @@ class PdfPageImage {
       return null;
     }
 
-    final retWidth = obj['width'] as int, retHeight = obj['height'] as int;
+    final retWidth = obj['width'] as int?, retHeight = obj['height'] as int?;
     final pixels = Platform.isAndroid
         ? await File(obj['path'] as String).readAsBytes()
         : Uint8List.fromList(obj['data']);

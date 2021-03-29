@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:epub/epub.dart' hide Image;
+import 'package:collection/collection.dart' show IterableExtension;
+import 'package:epubx/epubx.dart' hide Image;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/style.dart';
@@ -15,7 +16,7 @@ import 'epub_cfi/generator.dart';
 import 'epub_cfi/interpreter.dart';
 import 'epub_cfi/parser.dart';
 
-export 'package:epub/epub.dart' hide Image;
+export 'package:epubx/epubx.dart' hide Image;
 
 part 'epub_data.dart';
 part 'epub_parser.dart';
@@ -41,7 +42,7 @@ typedef ExternalLinkPressed = void Function(String href);
 
 class EpubView extends StatefulWidget {
   const EpubView({
-    @required this.controller,
+    required this.controller,
     this.itemBuilder,
     this.onExternalLinkPressed,
     this.loaderSwitchDuration,
@@ -54,27 +55,27 @@ class EpubView extends StatefulWidget {
     this.chapterPadding = const EdgeInsets.all(8),
     this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
     this.textStyle = _defaultTextStyle,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   final EpubController controller;
-  final ExternalLinkPressed onExternalLinkPressed;
+  final ExternalLinkPressed? onExternalLinkPressed;
 
   /// Show document loading error message inside [EpubView]
-  final Widget Function(Exception error) errorBuilder;
-  final Widget Function(EpubChapter value) dividerBuilder;
-  final void Function(EpubChapterViewValue value) onChange;
+  final Widget Function(Exception? error)? errorBuilder;
+  final Widget Function(EpubChapter value)? dividerBuilder;
+  final void Function(EpubChapterViewValue? value)? onChange;
 
   /// Called when a document is loaded
-  final void Function(EpubBook document) onDocumentLoaded;
+  final void Function(EpubBook? document)? onDocumentLoaded;
 
   /// Called when a document loading error
-  final void Function(Exception error) onDocumentError;
-  final Duration loaderSwitchDuration;
-  final Widget loader;
+  final void Function(Exception? error)? onDocumentError;
+  final Duration? loaderSwitchDuration;
+  final Widget? loader;
   final EdgeInsetsGeometry chapterPadding;
   final EdgeInsetsGeometry paragraphPadding;
-  final ChaptersBuilder itemBuilder;
+  final ChaptersBuilder? itemBuilder;
   final TextStyle textStyle;
 
   @override
@@ -82,18 +83,18 @@ class EpubView extends StatefulWidget {
 }
 
 class _EpubViewState extends State<EpubView> {
-  _EpubViewLoadingState _loadingState;
-  Exception _loadingError;
-  ItemScrollController _itemScrollController;
-  ItemPositionsListener _itemPositionListener;
+  _EpubViewLoadingState _loadingState = _EpubViewLoadingState.loading;
+  Exception? _loadingError;
+  ItemScrollController? _itemScrollController;
+  ItemPositionsListener? _itemPositionListener;
   List<EpubChapter> _chapters = [];
   List<Paragraph> _paragraphs = [];
-  EpubCfiReader _epubCfiReader;
-  EpubChapterViewValue _currentValue;
+  EpubCfiReader? _epubCfiReader;
+  EpubChapterViewValue? _currentValue;
   bool _initialized = false;
 
   final List<int> _chapterIndexes = [];
-  final BehaviorSubject<EpubChapterViewValue> _actualChapter =
+  final BehaviorSubject<EpubChapterViewValue?> _actualChapter =
       BehaviorSubject();
   final BehaviorSubject<bool> _bookLoaded = BehaviorSubject();
 
@@ -101,16 +102,16 @@ class _EpubViewState extends State<EpubView> {
   void initState() {
     _itemScrollController = ItemScrollController();
     _itemPositionListener = ItemPositionsListener.create();
-    widget.controller?._attach(this);
+    widget.controller._attach(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    _itemPositionListener.itemPositions.removeListener(_changeListener);
+    _itemPositionListener!.itemPositions.removeListener(_changeListener);
     _actualChapter.close();
     _bookLoaded.close();
-    widget.controller?._detach();
+    widget.controller._detach();
     super.dispose();
   }
 
@@ -118,9 +119,9 @@ class _EpubViewState extends State<EpubView> {
     if (_initialized) {
       return true;
     }
-    _chapters = parseChapters(widget.controller._document);
+    _chapters = parseChapters(widget.controller._document!);
     final parseParagraphsResult =
-        parseParagraphs(_chapters, widget.controller._document.Content);
+        parseParagraphs(_chapters, widget.controller._document!.Content);
     _paragraphs = parseParagraphsResult.flatParagraphs;
     _chapterIndexes.addAll(parseParagraphsResult.chapterIndexes);
 
@@ -129,7 +130,7 @@ class _EpubViewState extends State<EpubView> {
       chapters: _chapters,
       paragraphs: _paragraphs,
     );
-    _itemPositionListener.itemPositions.addListener(_changeListener);
+    _itemPositionListener!.itemPositions.addListener(_changeListener);
     _initialized = true;
     _bookLoaded.sink.add(true);
 
@@ -138,10 +139,10 @@ class _EpubViewState extends State<EpubView> {
 
   void _changeListener() {
     if (_paragraphs.isEmpty ||
-        _itemPositionListener.itemPositions.value.isEmpty) {
+        _itemPositionListener!.itemPositions.value.isEmpty) {
       return;
     }
-    final position = _itemPositionListener.itemPositions.value.first;
+    final position = _itemPositionListener!.itemPositions.value.first;
     final chapterIndex = _getChapterIndexBy(
       positionIndex: position.index,
       trailingEdge: position.itemTrailingEdge,
@@ -163,7 +164,7 @@ class _EpubViewState extends State<EpubView> {
   }
 
   void _gotoEpubCfi(
-    String epubCfi, {
+    String? epubCfi, {
     double alignment = 0,
     Duration duration = const Duration(milliseconds: 250),
     Curve curve = Curves.linear,
@@ -183,15 +184,15 @@ class _EpubViewState extends State<EpubView> {
     );
   }
 
-  void _onLinkPressed(String href, void Function(String href) openExternal) {
+  void _onLinkPressed(String href, void Function(String href)? openExternal) {
     if (href.contains('://')) {
       openExternal?.call(href);
       return;
     }
 
     // Chapter01.xhtml#ph1_1 -> [ph1_1, Chapter01.xhtml] || [ph1_1]
-    String hrefIdRef;
-    String hrefFileName;
+    String? hrefIdRef;
+    String? hrefFileName;
 
     if (href.contains('#')) {
       final dividedHref = href.split('#');
@@ -213,10 +214,6 @@ class _EpubViewState extends State<EpubView> {
           chapter: chapter,
           additional: ['/4/2'],
         );
-
-        if (widget.controller == null) {
-          throw Exception();
-        }
 
         _gotoEpubCfi(cfi);
       }
@@ -242,32 +239,32 @@ class _EpubViewState extends State<EpubView> {
     }
   }
 
-  Paragraph _paragraphByIdRef(String idRef) =>
-      _paragraphs?.firstWhere((paragraph) {
+  Paragraph? _paragraphByIdRef(String idRef) =>
+      _paragraphs.firstWhereOrNull((paragraph) {
         if (paragraph.element.id == idRef) {
           return true;
         }
 
         return paragraph.element.children.isNotEmpty &&
             paragraph.element.children[0].id == idRef;
-      }, orElse: () => null);
+      });
 
-  EpubChapter _chapterByFileName(String fileName) =>
-      _chapters?.firstWhere((chapter) {
+  EpubChapter? _chapterByFileName(String? fileName) =>
+      _chapters.firstWhereOrNull((chapter) {
         if (fileName != null) {
-          if (chapter.ContentFileName.contains(fileName)) {
+          if (chapter.ContentFileName!.contains(fileName)) {
             return true;
           } else {
             return false;
           }
         }
         return false;
-      }, orElse: () => null);
+      });
 
   int _getChapterIndexBy({
-    @required int positionIndex,
-    double trailingEdge,
-    double leadingEdge,
+    required int positionIndex,
+    double? trailingEdge,
+    double? leadingEdge,
   }) {
     final posIndex = _getAbsParagraphIndexBy(
       positionIndex: positionIndex,
@@ -287,9 +284,9 @@ class _EpubViewState extends State<EpubView> {
   }
 
   int _getParagraphIndexBy({
-    @required int positionIndex,
-    double trailingEdge,
-    double leadingEdge,
+    required int positionIndex,
+    double? trailingEdge,
+    double? leadingEdge,
   }) {
     final posIndex = _getAbsParagraphIndexBy(
       positionIndex: positionIndex,
@@ -307,9 +304,9 @@ class _EpubViewState extends State<EpubView> {
   }
 
   int _getAbsParagraphIndexBy({
-    @required int positionIndex,
-    double trailingEdge,
-    double leadingEdge,
+    required int positionIndex,
+    double? trailingEdge,
+    double? leadingEdge,
   }) {
     int posIndex = positionIndex;
     if (trailingEdge != null &&
@@ -366,20 +363,20 @@ class _EpubViewState extends State<EpubView> {
           _buildDivider(_chapters[chapterIndex]),
         Html(
           data: _paragraphs[index].element.outerHtml,
-          onLinkTap: (href) =>
-              _onLinkPressed(href, widget.onExternalLinkPressed),
+          onLinkTap: (href, _, __, ___) =>
+              _onLinkPressed(href!, widget.onExternalLinkPressed),
           style: {
             'html': Style(
-              padding: widget.paragraphPadding,
+              padding: widget.paragraphPadding as EdgeInsets?,
             ).merge(Style.fromTextStyle(widget.textStyle)),
           },
           customRender: {
             'img': (context, child, attributes, node) {
-              final url = attributes['src'].replaceAll('../', '');
+              final url = attributes['src']!.replaceAll('../', '');
               return Image(
                 image: MemoryImage(
-                  Uint8List.fromList(
-                      widget.controller._document.Content.Images[url].Content),
+                  Uint8List.fromList(widget
+                      .controller._document!.Content!.Images![url]!.Content!),
                 ),
               );
             }
@@ -395,7 +392,7 @@ class _EpubViewState extends State<EpubView> {
         _defaultItemBuilder(index);
 
     return ScrollablePositionedList.builder(
-      initialScrollIndex: _epubCfiReader.paragraphIndexByCfiFragment ?? 0,
+      initialScrollIndex: _epubCfiReader!.paragraphIndexByCfiFragment ?? 0,
       itemCount: _paragraphs.length,
       itemScrollController: _itemScrollController,
       itemPositionsListener: _itemPositionListener,
@@ -405,7 +402,7 @@ class _EpubViewState extends State<EpubView> {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
+    Widget? content;
 
     switch (_loadingState) {
       case _EpubViewLoadingState.loading:

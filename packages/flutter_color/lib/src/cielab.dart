@@ -21,17 +21,17 @@ class CielabColor extends Color {
     xyz.forEach((key, value) {
       final cube = pow(value, 3);
       if (cube > 0.008856) {
-        xyz[key] = cube;
+        xyz[key] = cube as double;
       } else {
         xyz[key] = (value - 16 / 116) / 7.787;
       }
-      xyz[key] *= _white[key];
+      xyz[key] = xyz[key]! * _white[key]!;
     });
 
-    return XyzColor.getColorFromXyz(xyz['x'], xyz['y'], xyz['z'], opacity);
+    return XyzColor.getColorFromXyz(xyz['x']!, xyz['y']!, xyz['z']!, opacity);
   }
 
   Map<String, num> toMap() => {'l': l, 'a': a, 'b': b};
 
-  double operator [](String key) => toMap()[key];
+  double? operator [](String key) => toMap()[key] as double?;
 }

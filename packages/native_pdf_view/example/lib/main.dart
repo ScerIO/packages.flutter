@@ -9,7 +9,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _actualPageNumber = 1, _allPagesCount = 0;
+  static final int _initialPage = 2;
+  int _actualPageNumber = _initialPage, _allPagesCount = 0;
   bool isSampleDoc = true;
   PdfController _pdfController;
 
@@ -17,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     _pdfController = PdfController(
       document: PdfDocument.openAsset('assets/sample.pdf'),
+      initialPage: _initialPage,
     );
     super.initState();
   }
@@ -80,7 +82,6 @@ class _MyAppState extends State<MyApp> {
             controller: _pdfController,
             onDocumentLoaded: (document) {
               setState(() {
-                _actualPageNumber = 1;
                 _allPagesCount = document.pagesCount;
               });
             },

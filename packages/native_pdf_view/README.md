@@ -140,74 +140,20 @@ PdfView(
   controller: pdfController,
   document: snapshot.data,
   pageBuilder: (
-    PdfPageImage pageImage, 
-    bool isCurrentIndex, 
-    AnimationController animationController,
-  ) {
-    // Double tap scales
-    final List<double> _doubleTapScales = <double>[1.0, 2.0, 3.0]
-    // Double tap animation
-    Animation<double> _doubleTapAnimation;
-    void Function() _animationListener;
-
-    Widget image = ExtendedImage.memory(
-      pageImage.bytes,
-      key: Key(pageImage.hashCode.toString()),
-      fit: BoxFit.contain,
-      mode: ExtendedImageMode.gesture,
-      initGestureConfigHandler: (_) => GestureConfig(
-        minScale: 1,
-        maxScale: 3.0,
-        animationMinScale: .75,
-        animationMaxScale: 3.0,
-        speed: 1,
-        inertialSpeed: 100,
-        inPageView: true,
-        initialScale: 1.0,
-        cacheGesture: false,
+    Future<PdfPageImage> pageImage,
+    int index,
+    PdfDocument document,
+  ) => PhotoViewGalleryPageOptions(
+      imageProvider: PdfPageImageProvider(
+        pageImage,
+        index,
+        document.id,
       ),
-      onDoubleTap: (ExtendedImageGestureState state) {
-        final pointerDownPosition = state.pointerDownPosition;
-        final begin = state.gestureDetails.totalScale;
-        double end;
-
-        _doubleTapAnimation?.removeListener(_animationListener);
-
-        animationController
-          ..stop()
-          ..reset();
-
-        if (begin == _doubleTapScales[0]) {
-          end = _doubleTapScales[1];
-        } else {
-          if (begin == _doubleTapScales[1]) {
-            end = _doubleTapScales[2];
-          } else {
-            end = _doubleTapScales[0];
-          }
-        }
-
-        _animationListener = () {
-          //print(_animation.value);
-          state.handleDoubleTap(
-              scale: _doubleTapAnimation.value,
-              doubleTapPosition: pointerDownPosition);
-        };
-        _doubleTapAnimation = animationController
-            .drive(Tween<double>(begin: begin, end: end))
-              ..addListener(_animationListener);
-
-        animationController.forward();
-      },
-    );
-    if (isCurrentIndex) {
-      image = Hero(
-        tag: 'pdf_view' + pageImage.pageNumber.toString(),
-        child: image,
-      );
-    }
-    return image;
-  },
+      minScale: PhotoViewComputedScale.contained * 1,
+      maxScale: PhotoViewComputedScale.contained * 3.0,
+      initialScale: PhotoViewComputedScale.contained * 1.0,
+      heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),
+    ),
 );
 ```
 

@@ -2,48 +2,43 @@ part of 'epub_view.dart';
 
 class EpubController {
   EpubController({
-    this.document,
-    this.data,
+    required this.document,
     this.epubCfi,
-  }) : assert(
-          document != null || data != null,
-          'Need to pass document or data for initialize',
-        );
+  });
 
   Future<EpubBook> document;
-  Future<Uint8List> data;
-  final String epubCfi;
+  final String? epubCfi;
 
-  _EpubViewState _epubViewState;
-  List<EpubViewChapter> _cacheTableOfContents;
+  _EpubViewState? _epubViewState;
+  List<EpubViewChapter>? _cacheTableOfContents;
 
-  final BehaviorSubject<EpubChapterViewValue> _valueStreamController =
-      BehaviorSubject<EpubChapterViewValue>();
+  final BehaviorSubject<EpubChapterViewValue?> _valueStreamController =
+      BehaviorSubject<EpubChapterViewValue?>();
 
-  final BehaviorSubject<List<EpubViewChapter>>
+  final BehaviorSubject<List<EpubViewChapter>?>
       _tableOfContentsStreamController =
-      BehaviorSubject<List<EpubViewChapter>>();
+      BehaviorSubject<List<EpubViewChapter>?>();
 
-  EpubBook _document;
+  EpubBook? _document;
 
-  EpubChapterViewValue get currentValue => _epubViewState?._currentValue;
+  EpubChapterViewValue? get currentValue => _epubViewState?._currentValue;
 
-  bool get isBookLoaded => _epubViewState?._initialized;
+  bool? get isBookLoaded => _epubViewState?._initialized;
 
-  Stream<EpubChapterViewValue> get currentValueStream =>
+  Stream<EpubChapterViewValue?> get currentValueStream =>
       _valueStreamController.stream;
 
-  Stream<List<EpubViewChapter>> get tableOfContentsStream =>
+  Stream<List<EpubViewChapter>?> get tableOfContentsStream =>
       _tableOfContentsStreamController.stream;
 
-  void jumpTo({@required int index, double alignment = 0}) =>
+  void jumpTo({required int index, double alignment = 0}) =>
       _epubViewState?._itemScrollController?.jumpTo(
         index: index,
         alignment: alignment,
       );
 
-  Future<void> scrollTo({
-    @required int index,
+  Future<void>? scrollTo({
+    required int index,
     Duration duration = const Duration(milliseconds: 250),
     double alignment = 0,
     Curve curve = Curves.linear,
@@ -69,18 +64,18 @@ class EpubController {
     );
   }
 
-  String generateEpubCfi() => _epubViewState?._epubCfiReader?.generateCfi(
+  String? generateEpubCfi() => _epubViewState?._epubCfiReader?.generateCfi(
         book: _document,
         chapter: _epubViewState?._currentValue?.chapter,
         paragraphIndex: _epubViewState?._getAbsParagraphIndexBy(
-          positionIndex: _epubViewState?._currentValue?.position?.index ?? 0,
+          positionIndex: _epubViewState?._currentValue?.position.index ?? 0,
           trailingEdge:
-              _epubViewState?._currentValue?.position?.itemTrailingEdge,
-          leadingEdge: _epubViewState?._currentValue?.position?.itemLeadingEdge,
+              _epubViewState?._currentValue?.position.itemTrailingEdge,
+          leadingEdge: _epubViewState?._currentValue?.position.itemLeadingEdge,
         ),
       );
 
-  List<EpubViewChapter> tableOfContents() {
+  List<EpubViewChapter>? tableOfContents() {
     if (_cacheTableOfContents != null) {
       return _cacheTableOfContents;
     }
@@ -92,12 +87,12 @@ class EpubController {
     int index = -1;
 
     return _cacheTableOfContents =
-        _document.Chapters.fold<List<EpubViewChapter>>(
+        _document!.Chapters!.fold<List<EpubViewChapter>>(
       [],
       (acc, next) {
         index += 1;
         acc.add(EpubViewChapter(next.Title, _getChapterStartIndex(index)));
-        for (final subChapter in next.SubChapters) {
+        for (final subChapter in next.SubChapters!) {
           index += 1;
           acc.add(EpubViewSubChapter(
               subChapter.Title, _getChapterStartIndex(index)));
@@ -108,58 +103,46 @@ class EpubController {
   }
 
   int _getChapterStartIndex(int index) =>
-      index < _epubViewState._chapterIndexes.length
-          ? _epubViewState._chapterIndexes[index]
+      index < _epubViewState!._chapterIndexes.length
+          ? _epubViewState!._chapterIndexes[index]
           : 0;
 
-  Future<void> loadDocument({
-    Future<EpubBook> document,
-    Future<Uint8List> data,
-  }) {
+  Future<void> loadDocument(Future<EpubBook> document) {
     this.document = document;
-    this.data = data;
-    return _loadDocument(
-      documentFuture: document,
-      dataFuture: data,
-    );
+    return _loadDocument(document);
   }
 
-  Future<void> _loadDocument({
-    Future<EpubBook> documentFuture,
-    Future<Uint8List> dataFuture,
-  }) async {
-    _epubViewState._initialized = false;
+  Future<void> _loadDocument(Future<EpubBook> document) async {
+    _epubViewState!._initialized = false;
     try {
-      if (documentFuture != null) {
-        _document = await documentFuture;
-      } else {
-        final data = await dataFuture;
-        _document = await EpubReader.readBook(data);
-      }
-      await _epubViewState._init();
-      _epubViewState._actualChapter.stream.listen((chapter) {
+      _epubViewState!._changeLoadingState(_EpubViewLoadingState.loading);
+      _document = await document;
+      await _epubViewState!._init();
+      _epubViewState!._actualChapter.stream.listen((chapter) {
         _valueStreamController.sink.add(chapter);
       });
       _tableOfContentsStreamController.sink.add(tableOfContents());
-      _epubViewState._changeLoadingState(_EpubViewLoadingState.success);
+      _epubViewState!._changeLoadingState(_EpubViewLoadingState.success);
     } catch (error) {
-      _epubViewState
-        .._loadingError = error
+      _epubViewState!
+        .._loadingError = error is Exception
+            ? error
+            : Exception('An unexpected error occurred')
         .._changeLoadingState(_EpubViewLoadingState.error);
     }
   }
 
   void _attach(_EpubViewState epubReaderViewState) {
-    assert(epubReaderViewState != null);
     _epubViewState = epubReaderViewState;
 
-    _loadDocument(
-      documentFuture: document,
-      dataFuture: data,
-    );
+    _loadDocument(document);
   }
 
   void _detach() {
+    _epubViewState = null;
+  }
+
+  void dispose() {
     _epubViewState = null;
   }
 }
@@ -167,7 +150,7 @@ class EpubController {
 class EpubViewChapter {
   EpubViewChapter(this.title, this.startIndex);
 
-  final String title;
+  final String? title;
   final int startIndex;
 
   String get type => this is EpubViewSubChapter ? 'subchapter' : 'chapter';
@@ -177,7 +160,7 @@ class EpubViewChapter {
 }
 
 class EpubViewSubChapter extends EpubViewChapter {
-  EpubViewSubChapter(String title, int startIndex) : super(title, startIndex);
+  EpubViewSubChapter(String? title, int startIndex) : super(title, startIndex);
 }
 
 double _calcProgress(double leadingEdge, double trailingEdge) {

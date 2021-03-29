@@ -7,7 +7,7 @@ final Uuid uuid = Uuid();
 
 class PageRepository extends Repository<Page> {
   /// Register document in repository
-  Page register(String documentId, PdfJsPage renderer) {
+  Page register(String? documentId, PdfJsPage renderer) {
     final page = Page(
       id: uuid.v1(),
       documentId: documentId,
@@ -18,8 +18,8 @@ class PageRepository extends Repository<Page> {
   }
 
   @override
-  void close(String id) {
-    get(id).close();
+  void close(String? id) {
+    get(id)!.close();
     super.close(id);
   }
 }

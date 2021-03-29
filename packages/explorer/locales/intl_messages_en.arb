@@ -1,0 +1,59 @@
+{
+  "@@locale": "en",
+  "actionMenuOpen": "Open",
+  "@actionMenuOpen": {
+    "type": "text"
+  },
+  "actionMenuCopy": "Copy",
+  "@actionMenuCopy": {
+    "type": "text"
+  },
+  "actionMenuCut": "Cut",
+  "@actionMenuCut": {
+    "type": "text"
+  },
+  "actionMenuDelete": "Delete",
+  "@actionMenuDelete": {
+    "type": "text"
+  },
+  "actionCopyHere": "Copy here",
+  "@actionCopyHere": {
+    "type": "text"
+  },
+  "actionMoveHere": "Move here",
+  "@actionMoveHere": {
+    "type": "text"
+  },
+  "folderName": "Folder name",
+  "@folderName": {
+    "type": "text"
+  },
+  "fileName": "File name",
+  "@fileName": {
+    "type": "text"
+  },
+  "newFolder": "New folder",
+  "@newFolder": {
+    "type": "text"
+  },
+  "newFile": "New file",
+  "@newFile": {
+    "type": "text"
+  },
+  "uploadFiles": "Upload files",
+  "@uploadFiles": {
+    "type": "text"
+  },
+  "empty": "Empty",
+  "@empty": {
+    "type": "text"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "type": "text"
+  },
+  "create": "Create",
+  "@create": {
+    "type": "text"
+  }
+}

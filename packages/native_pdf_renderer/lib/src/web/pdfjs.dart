@@ -34,7 +34,7 @@ class PdfJs {
 class Settings {
   external set data(Uint8List value);
   external set scale(double value);
-  external set canvasContext(CanvasRenderingContext2D value);
+  external set canvasContext(CanvasRenderingContext2D? value);
   external set viewport(PdfJsViewport value);
 }
 
@@ -47,7 +47,7 @@ class PdfJsDocLoader {
 @anonymous
 @JS()
 class PdfJsDoc {
-  external Future<PdfJsPage> getPage(int num);
+  external Future<PdfJsPage> getPage(int? num);
   external int get numPages;
 }
 

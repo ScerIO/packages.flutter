@@ -6,7 +6,7 @@ analyzer:
     implicit-casts: true
     implicit-dynamic: true
   errors:
-    always_declare_return_types: error
+    always_declare_return_types: warning
     camel_case_types: warning
     empty_constructor_bodies: warning
     annotate_overrides: warning

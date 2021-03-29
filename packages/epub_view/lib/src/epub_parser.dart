@@ -1,11 +1,11 @@
 part of 'epub_view.dart';
 
 List<EpubChapter> parseChapters(EpubBook epubBook) =>
-    epubBook.Chapters.fold<List<EpubChapter>>(
+    epubBook.Chapters!.fold<List<EpubChapter>>(
       [],
       (acc, next) {
         acc.add(next);
-        next.SubChapters.forEach(acc.add);
+        next.SubChapters!.forEach(acc.add);
         return acc;
       },
     );
@@ -29,9 +29,9 @@ List<dom.Element> _removeAllDiv(List<dom.Element> elements) {
 
 ParseParagraphsResult parseParagraphs(
   List<EpubChapter> chapters,
-  EpubContent content,
+  EpubContent? content,
 ) {
-  String filename = '';
+  String? filename = '';
   final List<int> chapterIndexes = [];
   final paragraphs = chapters.fold<List<Paragraph>>(
     [],
@@ -40,8 +40,10 @@ ParseParagraphsResult parseParagraphs(
       if (filename != next.ContentFileName) {
         filename = next.ContentFileName;
         final document = EpubCfiReader().chapterDocument(next);
-        final result = convertDocumentToElements(document);
-        elmList = _removeAllDiv(result);
+        if (document != null) {
+          final result = convertDocumentToElements(document);
+          elmList = _removeAllDiv(result);
+        }
       }
 
       if (next.Anchor == null) {

@@ -10,34 +10,32 @@ const Duration _kDuration = Duration(milliseconds: 250);
 
 class LiveSliverGrid extends StatefulWidget {
   const LiveSliverGrid({
-    @required this.itemBuilder,
-    @required this.gridDelegate,
-    @required this.itemCount,
-    @required this.controller,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    required this.itemCount,
+    required this.controller,
     this.visibleFraction = 0.025,
     this.reAnimateOnVisibility = false,
     this.delay = Duration.zero,
     this.showItemInterval = _kDuration,
     this.showItemDuration = _kDuration,
-    Key key,
-  })  : assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+    Key? key,
+  })  : assert(itemCount >= 0),
         super(key: key);
 
   LiveSliverGrid.options({
-    @required this.itemBuilder,
-    @required this.gridDelegate,
-    @required this.itemCount,
-    @required this.controller,
-    @required LiveOptions options,
-    Key key,
+    required this.itemBuilder,
+    required this.gridDelegate,
+    required this.itemCount,
+    required this.controller,
+    required LiveOptions options,
+    Key? key,
   })  : delay = options.delay,
         showItemInterval = options.showItemInterval,
         showItemDuration = options.showItemDuration,
         visibleFraction = options.visibleFraction,
         reAnimateOnVisibility = options.reAnimateOnVisibility,
-        assert(itemBuilder != null),
-        assert(itemCount != null && itemCount >= 0),
+        assert(itemCount >= 0),
         super(key: key);
 
   /// Start animation after (default zero)

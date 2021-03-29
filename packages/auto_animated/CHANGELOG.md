@@ -1,3 +1,7 @@
+## 3.0.0
+
+* Null-safety migration & Flutter v2 capability
+
 ## 2.2.0
 
 * Set minimal dart version to 2.8.0

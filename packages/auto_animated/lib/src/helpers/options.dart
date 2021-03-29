@@ -49,11 +49,11 @@ class LiveOptions {
   /// Creates a copy of this options but with the
   /// given fields replaced with the new values.
   LiveOptions copyWith({
-    Duration delay,
-    Duration showItemInterval,
-    Duration showItemDuration,
-    double visibleFraction,
-    bool reAnimateOnVisibility,
+    Duration? delay,
+    Duration? showItemInterval,
+    Duration? showItemDuration,
+    double? visibleFraction,
+    bool? reAnimateOnVisibility,
   }) =>
       LiveOptions(
         delay: delay ?? this.delay,

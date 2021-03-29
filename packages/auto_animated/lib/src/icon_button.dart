@@ -12,9 +12,9 @@ enum IconState { first, second }
 ///[duration] is the time taken to animate the transition.
 class LiveIconButton extends StatefulWidget {
   LiveIconButton({
-    @required this.icon,
-    @required this.onPressed,
-    Key key,
+    required this.icon,
+    required this.onPressed,
+    Key? key,
     this.duration = const Duration(milliseconds: 300),
     this.splashColor,
     this.hoverColor,
@@ -34,10 +34,10 @@ class LiveIconButton extends StatefulWidget {
         super(key: key);
 
   LiveIconButton.externalState({
-    @required this.icon,
-    @required this.onPressed,
-    @required this.iconState,
-    Key key,
+    required this.icon,
+    required this.onPressed,
+    required this.iconState,
+    Key? key,
     this.duration = const Duration(milliseconds: 300),
     this.splashColor,
     this.hoverColor,
@@ -58,15 +58,15 @@ class LiveIconButton extends StatefulWidget {
   final AnimatedIconData icon;
   final Function onPressed;
   final Duration duration;
-  final Color splashColor, hoverColor;
-  final String firstTooltip, secondTooltip, semanticLabel;
+  final Color? splashColor, hoverColor;
+  final String? firstTooltip, secondTooltip, semanticLabel;
   final double size;
   final EdgeInsetsGeometry padding;
   final AlignmentGeometry alignment;
-  final Color color, focusColor, highlightColor, disabledColor;
-  final FocusNode focusNode;
-  final TextDirection textDirection;
-  final IconState iconState;
+  final Color? color, focusColor, highlightColor, disabledColor;
+  final FocusNode? focusNode;
+  final TextDirection? textDirection;
+  final IconState? iconState;
 
   @override
   _LiveIconButtonState createState() => _LiveIconButtonState();
@@ -74,7 +74,7 @@ class LiveIconButton extends StatefulWidget {
 
 class _LiveIconButtonState extends State<LiveIconButton>
     with SingleTickerProviderStateMixin {
-  AnimationController _animationController;
+  late AnimationController _animationController;
   bool _isPressed = false;
 
   @override
