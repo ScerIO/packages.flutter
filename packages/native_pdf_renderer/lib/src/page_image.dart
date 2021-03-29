@@ -53,7 +53,7 @@ class PdfPageImage {
   }) async {
     if (format == PdfPageFormat.WEBP && (Platform.isIOS || Platform.isWindows)) {
       throw PdfNotSupportException(
-        'PDF Renderer on IOS platform does not support WEBP format',
+        'PDF Renderer on IOS & Windows platforms do not support WEBP format',
       );
     }
 
