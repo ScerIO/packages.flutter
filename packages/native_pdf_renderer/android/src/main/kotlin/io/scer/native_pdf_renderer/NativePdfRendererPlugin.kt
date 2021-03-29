@@ -190,7 +190,7 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
                     2 -> "webp"
                     else -> "jpg"
                 }
-                val tempOutFolder = File(registrar.context().cacheDir, "native_pdf_renderer_cache")
+                val tempOutFolder = File(binding.applicationContext.cacheDir, "native_pdf_renderer_cache")
                 tempOutFolder.mkdirs()
                 val tempOutFile = File(tempOutFolder, "$randomFilename.$tempOutFileExtension")
 
