@@ -10,7 +10,7 @@ download_project(
   PROJ
   pdfium
   URL
-  https://github.com/bblanchon/pdfium-binaries/releases/latest/download/pdfium-windows-${ARCH}.zip
+  https://github.com/bblanchon/pdfium-binaries/releases/download/chromium%2F4475/pdfium-windows-x64.zip
   )
 
 # This value is used when generating builds using this plugin, so it must
