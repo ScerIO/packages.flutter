@@ -1,3 +1,7 @@
+## 3.1.0
+
+* Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)
+
 ## 3.0.0 
 
 * Resolved [issue#147](https://github.com/rbcprolabs/packages.flutter/issues/147), null-safety migration
@@ -58,7 +62,7 @@
 
 ## 1.7.0
 
-* Fixed PDF crop on Android ([pull#25](https://github.com/rbcprolabs/packages.flutter/pull/25)) 
+* Fixed PDF crop on Android [pull#25](https://github.com/rbcprolabs/packages.flutter/pull/25))
 * Added package synchronized for sequential access to the native api render to reduce the likelihood of a crash due to lack of memory. 
 Additional information: [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14) & [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)  
 
