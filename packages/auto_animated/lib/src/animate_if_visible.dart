@@ -99,6 +99,12 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
         !info.visibleBounds.isEmpty) {
       _controller.reverse();
     }
+    else if (info.visibleFraction <= widget.visibleFraction &&
+        mounted &&
+        widget.reAnimateOnVisibility &&
+        info.visibleBounds.isEmpty) {
+      _controller.reset();
+    }
   }
 }
 
