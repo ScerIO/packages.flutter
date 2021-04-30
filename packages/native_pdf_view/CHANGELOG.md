@@ -1,3 +1,8 @@
+## 4.1.0
+
+* Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)
+* Fixed [issue#180](https://github.com/rbcprolabs/packages.flutter/issues/180), renderer import problem
+
 ## 4.0.1
 
 * Fixed [issue#170](https://github.com/rbcprolabs/packages.flutter/issues/170), 4.0.0 not works
