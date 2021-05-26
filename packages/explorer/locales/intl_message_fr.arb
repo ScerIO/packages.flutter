@@ -40,7 +40,7 @@
   "@newFile": {
     "type": "text"
   },
-  "uploadFiles": "Upload des fichiers",
+  "uploadFiles": "Ajouter des fichiers",
   "@uploadFiles": {
     "type": "text"
   },

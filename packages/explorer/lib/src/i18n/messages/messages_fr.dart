@@ -38,6 +38,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "newFile": MessageLookupByLibrary.simpleMessage("Nouveau fichier"),
         "newFolder": MessageLookupByLibrary.simpleMessage("Nouveau dossier"),
         "uploadFiles":
-            MessageLookupByLibrary.simpleMessage("Upload des fichiers")
+            MessageLookupByLibrary.simpleMessage("Ajouter des fichiers")
       };
 }
