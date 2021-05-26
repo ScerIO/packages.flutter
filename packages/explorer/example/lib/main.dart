@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
         supportedLocales: [
           const Locale('en', ''),
           const Locale('ru', ''),
+          const Locale('fr', ''),
         ],
         home: Scaffold(
           body: Explorer(
