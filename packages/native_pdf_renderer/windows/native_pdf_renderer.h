@@ -1,11 +1,11 @@
 #ifndef NATIVE_PDF_RENDERER_H_
 #define NATIVE_PDF_RENDERER_H_
 
+#include <fpdfview.h>
+
 #include <memory>
 #include <string>
 #include <vector>
-
-#include <fpdfview.h>
 
 namespace native_pdf_renderer {
 enum ImageFormat {

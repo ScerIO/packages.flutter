@@ -20,3 +20,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   pedantic: ^1.11.0
+
+dependency_overrides:
+  native_pdf_renderer: 
+    path: ../native_pdf_renderer
