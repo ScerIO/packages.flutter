@@ -66,7 +66,7 @@ class Page {
         let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
         let ty = CGFloat(0)
         let angle = CGFloat(renderer.rotationAngle) * CGFloat.pi / 180;
-        let compressionQuality = CGFloat(quality ?? 100) / 100.0
+        let compressionQuality = CGFloat(quality) / 100
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
