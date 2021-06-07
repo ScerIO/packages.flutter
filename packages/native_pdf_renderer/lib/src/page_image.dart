@@ -85,11 +85,11 @@ class PdfPageImage {
     }
 
     final retWidth = obj['width'] as int?, retHeight = obj['height'] as int?;
-    final pixels = Platform.isAndroid
+    final pixels = Platform.isAndroid || Platform.isIOS
         ? await File(obj['path'] as String).readAsBytes()
         : Uint8List.fromList(obj['data']);
 
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isIOS) {
       await File(obj['path'] as String).delete();
     }
 

@@ -53,18 +53,20 @@ class Page {
         }
     }
 
-    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor) -> Page.DataResult? {
+    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
         var data: Data?
+        var fileURL: URL?
         var success = false
         let sx = CGFloat(width) / pdfBBox.width
         let sy = CGFloat(height) / pdfBBox.height
         let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
         let ty = CGFloat(0)
         let angle = CGFloat(renderer.rotationAngle) * CGFloat.pi / 180;
+        let compressionQuality = CGFloat(quality ?? 100) / 100.0
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
@@ -86,12 +88,14 @@ class Page {
 
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
-                        data = image.jpegData(compressionQuality: 1.0) as Data?
+                        data = image.jpegData(compressionQuality: compressionQuality) as Data?
                         break;
                     case CompressFormat.PNG:
                         data = image.pngData() as Data?
                         break;
                 }
+
+                fileURL = writeToTempFile(data: data, compressFormat: compressFormat)
 
                 success = true
             }
@@ -99,18 +103,48 @@ class Page {
         return success ? Page.DataResult(
             width: (crop != nil) ? Int(crop!.width) : width,
             height: (crop != nil) ? Int(crop!.height) : height,
-            data: data!) : nil
+            path: fileURL!.absoluteString) : nil
+    }
+
+    func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL {
+        // Create missing directories
+        let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let cacheURL = docURL.appendingPathComponent("native_pdf_renderer_cache")
+        if !FileManager.default.fileExists(atPath: cacheURL.absoluteString) {
+            do {
+                try FileManager.default.createDirectory(atPath: cacheURL.absoluteString, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print(error.localizedDescription);
+            }
+        }
+        // Create temporary filename
+        let randomFileName = NSUUID().uuidString.replacingOccurrences(of: "-", with: "")
+        var tempOutFileExtension: String?
+        var tempOutFileName: String?
+        switch(compressFormat) {
+            case CompressFormat.JPEG:
+                tempOutFileExtension = "jpg"
+                break;
+            case CompressFormat.PNG:
+                tempOutFileExtension = "png"
+                break;
+        }
+        tempOutFileName = "\(randomFileName).\(tempOutFileExtension!)"
+        let fileURL = cacheURL.appendingPathComponent(tempOutFileName!)
+        // Write the data to the temporary file
+        data.write(to: fileURL, options: .atomic)
+        return fileURL
     }
 
     class DataResult {
         let width: Int
         let height: Int
-        let data: Data
+        let path: String
 
-        init(width: Int, height: Int, data: Data) {
+        init(width: Int, height: Int, path: String) {
             self.width = width
             self.height = height
-            self.data = data
+            self.path = path
         }
     }
 }
