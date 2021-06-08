@@ -106,7 +106,7 @@ class Page {
             path: fileURL!.absoluteString) : nil
     }
 
-    func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL {
+    func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
         // Create missing directories
         let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let cacheURL = docURL.appendingPathComponent("native_pdf_renderer_cache")
@@ -114,7 +114,8 @@ class Page {
             do {
                 try FileManager.default.createDirectory(atPath: cacheURL.absoluteString, withIntermediateDirectories: true, attributes: nil)
             } catch {
-                print(error.localizedDescription);
+                print(error.localizedDescription)
+                return nil
             }
         }
         // Create temporary filename
@@ -128,11 +129,18 @@ class Page {
             case CompressFormat.PNG:
                 tempOutFileExtension = "png"
                 break;
+            default:
+                return nil
         }
         tempOutFileName = "\(randomFileName).\(tempOutFileExtension!)"
         let fileURL = cacheURL.appendingPathComponent(tempOutFileName!)
         // Write the data to the temporary file
-        data.write(to: fileURL, options: .atomic)
+        do {
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
         return fileURL
     }
 
