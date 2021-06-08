@@ -95,7 +95,9 @@ class Page {
                         break;
                 }
 
-                fileURL = writeToTempFile(data: data, compressFormat: compressFormat)
+                if data != nil {
+                    fileURL = writeToTempFile(data: data!, compressFormat: compressFormat)
+                }
 
                 success = true
             }
