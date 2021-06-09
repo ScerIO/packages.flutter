@@ -88,7 +88,7 @@ class Page {
 
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
-                        data = image.jpegData(compressionQuality: 0.8) as Data?
+                        data = image.jpegData(compressionQuality: compressionQuality) as Data?
                         break;
                     case CompressFormat.PNG:
                         data = image.pngData() as Data?
