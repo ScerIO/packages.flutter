@@ -74,7 +74,7 @@ class Page {
             if context != nil {
                 // TODO: Fix this! It doesn't work correctly on PDFs with weird rotational values
                 // Use NSLog to get these values to compare
-                NSLog("\nsx:\(sx) sy:\(sy) | tx:\(tx) ty:\(ty) | angle:\(angle) deg:\(renderer.rotationAngle) | width:\(width) height:\(height) | boxwidth:\(pdfBBox.width) boxheight:\(pdfBBox.height) | isLandscape: \(isLandscape)")
+                // printDebug("sx:\(sx) sy:\(sy) | tx:\(tx) ty:\(ty) | angle:\(angle) deg:\(renderer.rotationAngle) | width:\(width) height:\(height) | boxwidth:\(pdfBBox.width) boxheight:\(pdfBBox.height) | isLandscape: \(isLandscape)")
                 // context!.translateBy(x: tx, y: ty)
                 // context!.rotate(by: -angle)
                 context!.scaleBy(x: sx, y: sy)
@@ -108,7 +108,21 @@ class Page {
         return success ? Page.DataResult(
             width: (crop != nil) ? Int(crop!.width) : width,
             height: (crop != nil) ? Int(crop!.height) : height,
-            path: (fileURL != nil) ? fileURL!.path : "") : nil
+            path: (fileURL != nil) ? fileURL!.path : "",
+            // DEBUG
+            sx: sx as Float,
+            sy: sy as Float,
+            tx: tx as Float,
+            ty: ty as Float,
+            angle: angle as Float,
+            deg: renderer.rotationAngle,
+            width: width,
+            height: height,
+            boxWidth: pdfBBox.width as Float,
+            boxheight: pdfBBox.height as Float,
+            isLandscape: isLandscape
+            // DEBUG
+            ) : nil
     }
 
     func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
@@ -153,11 +167,43 @@ class Page {
         let width: Int
         let height: Int
         let path: String
+        // DEBUG
+        let sx: Float
+        let sy: Float
+        let tx: Float
+        let ty: Float
+        let angle: Float
+        let deg: Int
+        let boxWidth: Float
+        let boxHeight: Float
+        let isLandscape: Bool
+        // DEBUG
 
-        init(width: Int, height: Int, path: String) {
+        init(width: Int, height: Int, path: String,
+        sx: Float,
+        sy: Float,
+        tx: Float,
+        ty: Float,
+        angle: Float,
+        deg: Int,
+        boxWidth: Float,
+        boxHeight: Float,
+        isLandscape: Bool
+        ) {
             self.width = width
             self.height = height
             self.path = path
+            // DEBUG
+            self.sx = sx
+            self.sy = sy
+            self.tx = tx
+            self.ty = ty
+            self.angle = angle
+            self.deg = deg
+            self.boxWidth = boxWidth
+            self.boxHeight = boxHeight
+            self.isLandscape = isLandscape
+            // DEBUG
         }
     }
 }
