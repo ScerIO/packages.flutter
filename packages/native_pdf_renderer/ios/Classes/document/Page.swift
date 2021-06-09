@@ -110,11 +110,11 @@ class Page {
 
     func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
         // Create missing directories
-        let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]!
         let cacheURL = docURL.appendingPathComponent("native_pdf_renderer_cache")
-        if !FileManager.default.fileExists(atPath: cacheURL.absoluteString) {
+        if !FileManager.default.fileExists(atPath: cacheURL.path) {
             do {
-                try FileManager.default.createDirectory(atPath: cacheURL.absoluteString, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: cacheURL, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print(error.localizedDescription)
                 return nil
