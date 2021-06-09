@@ -1,17 +1,17 @@
 class Document {
     let id: String
-    let renderer: CGPDFDocument
-    var pages: [CGPDFPage?]
+    let renderer: PDFDocument
+    var pages: [PDFPage?]
     
-    init(id: String, renderer: CGPDFDocument) {
+    init(id: String, renderer: PDFDocument) {
         self.id = id
         self.renderer = renderer
-        self.pages = Array<CGPDFPage?>(repeating: nil, count: renderer.numberOfPages)
+        self.pages = Array<PDFPage?>(repeating: nil, count: renderer.pageCount)
     }
     
     var pagesCount: Int {
         get {
-            return renderer.numberOfPages
+            return renderer.pageCount
         }
     }
     
@@ -27,7 +27,7 @@ class Document {
     /**
      * Open page by page number (not index!)
      */
-    public func openPage(pageNumber: Int) -> CGPDFPage? {
+    public func openPage(pageNumber: Int) -> PDFPage? {
         return renderer.page(at: pageNumber)
     }
 }
