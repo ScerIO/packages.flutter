@@ -138,7 +138,7 @@ class Page {
         let fileURL = cacheURL.appendingPathComponent(tempOutFileName!)
         // Write the data to the temporary file
         do {
-            try data.write(to: fileURL)
+            try data.write(to: fileURL, options: .atomic)
         } catch {
             print(error.localizedDescription)
             return nil
