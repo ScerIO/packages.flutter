@@ -173,7 +173,7 @@ class Page {
         let tx: Float
         let ty: Float
         let angle: Float
-        let deg: Int
+        let deg: Int32
         let boxWidth: Float
         let boxHeight: Float
         let isLandscape: Bool
@@ -185,7 +185,7 @@ class Page {
         tx: Float,
         ty: Float,
         angle: Float,
-        deg: Int,
+        deg: Int32,
         boxWidth: Float,
         boxHeight: Float,
         isLandscape: Bool
