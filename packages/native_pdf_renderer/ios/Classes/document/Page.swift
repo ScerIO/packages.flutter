@@ -116,8 +116,6 @@ class Page {
             ty: Float(ty),
             angle: Float(angle),
             deg: renderer.rotationAngle,
-            width: width,
-            height: height,
             boxWidth: Float(pdfBBox.width),
             boxheight: Float(pdfBBox.height),
             isLandscape: isLandscape
