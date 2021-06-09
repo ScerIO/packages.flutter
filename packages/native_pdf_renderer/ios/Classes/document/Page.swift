@@ -105,7 +105,7 @@ class Page {
         return success ? Page.DataResult(
             width: (crop != nil) ? Int(crop!.width) : width,
             height: (crop != nil) ? Int(crop!.height) : height,
-            path: (fileURL != nil) ? fileURL!.absoluteString : "") : nil
+            path: (fileURL != nil) ? fileURL!.path : "") : nil
     }
 
     func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
