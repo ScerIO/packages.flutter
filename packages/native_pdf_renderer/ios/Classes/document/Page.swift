@@ -75,8 +75,8 @@ class Page {
                 context!.scaleBy(x: sx, y: sy)
                 context!.rotate(by: -angle)
                 context!.translateBy(x: tx, y: ty)
-                context!.setFillColor(backgroundColor.cgColor)
-                context!.fill(pdfBBox)
+                // context!.setFillColor(backgroundColor.cgColor)
+                // context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
                 var image = UIImage(cgImage: context!.makeImage()!)
 
