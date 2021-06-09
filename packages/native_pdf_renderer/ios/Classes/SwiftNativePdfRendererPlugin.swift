@@ -1,6 +1,5 @@
 import Flutter
 import UIKit
-import PDFKit
 import CoreGraphics
 
 public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
@@ -86,15 +85,16 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
         result(nil)
     }
 
-    func openDataDocument(data: Data) -> PDFDocument {
-        return PDFDocument(data: data)
+    func openDataDocument(data: Data) -> CGPDFDocument? {
+        guard let datProv = CGDataProvider(data: data as CFData) else { return nil }
+        return CGPDFDocument(datProv)
     }
 
-    func openFileDocument(pdfFilePath: String) -> PDFDocument? {
-        return PDFDocument(url: URL(fileURLWithPath: pdfFilePath))
+    func openFileDocument(pdfFilePath: String) -> CGPDFDocument? {
+        return CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
     }
 
-    func openAssetDocument(name: String) -> PDFDocument? {
+    func openAssetDocument(name: String) -> CGPDFDocument? {
         guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
             return nil
         }

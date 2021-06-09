@@ -1,19 +1,19 @@
 class Page {
     let id: String
     let documentId: String
-    let renderer: PDFPage
+    let renderer: CGPDFPage
     let boxRect: CGRect
 
-    init(id: String, documentId: String, renderer: PDFPage) {
+    init(id: String, documentId: String, renderer: CGPDFPage) {
         self.id = id
         self.documentId = documentId
         self.renderer = renderer
-        self.boxRect = renderer.bounds(.mediaBox)
+        self.boxRect = renderer.getBoxRect(.mediaBox)
     }
 
     var number: Int {
         get {
-            return renderer.pageRef!.pageNumber
+            return renderer.pageNumber
         }
     }
 
@@ -31,7 +31,7 @@ class Page {
     
     var rotationAngle: Int32 {
         get {
-            return renderer.rotation
+            return renderer.rotationAngle
         }
     }
 
@@ -54,7 +54,7 @@ class Page {
     }
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
-        let pdfBBox = renderer.bounds(.mediaBox)
+        let pdfBBox = renderer.getBoxRect(.mediaBox)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
@@ -78,7 +78,6 @@ class Page {
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
-                renderer.draw(with: pdfBBox, to: context!)
                 var image = UIImage(cgImage: context!.makeImage()!)
 
                 if (crop != nil){
