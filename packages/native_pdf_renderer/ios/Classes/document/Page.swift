@@ -72,9 +72,9 @@ class Page {
             let rgb = CGColorSpaceCreateDeviceRGB()
             let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
-                context!.scaleBy(x: sx, y: sy)
-                context!.rotate(by: -angle)
-                context!.translateBy(x: tx, y: ty)
+                // context!.scaleBy(x: sx, y: sy)
+                // context!.rotate(by: -angle)
+                // context!.translateBy(x: tx, y: ty)
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
