@@ -88,7 +88,7 @@ class PdfPageImage {
     late final Uint8List pixels;
     if (Platform.isAndroid || Platform.isIOS) {
       final file = File(obj['path'] as String);
-      await Future.delayed(const Duration(milliseconds: 300));
+      // await Future.delayed(const Duration(milliseconds: 300));
       pixels = await file.readAsBytes();
       await file.delete();
     } else {
