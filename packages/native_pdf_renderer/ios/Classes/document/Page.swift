@@ -37,8 +37,7 @@ class Page {
 
     var isLandscape: Bool {
         get {
-            return false
-            // return Bool(rotationAngle == 90 || rotationAngle == 270)
+            return Bool(rotationAngle == 90 || rotationAngle == 270)
         }
     }
 
