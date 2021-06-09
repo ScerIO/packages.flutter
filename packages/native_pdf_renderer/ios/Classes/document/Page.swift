@@ -110,16 +110,16 @@ class Page {
             height: (crop != nil) ? Int(crop!.height) : height,
             path: (fileURL != nil) ? fileURL!.path : "",
             // DEBUG
-            sx: sx as Float,
-            sy: sy as Float,
-            tx: tx as Float,
-            ty: ty as Float,
-            angle: angle as Float,
+            sx: Float(sx),
+            sy: Float(sy),
+            tx: Float(tx),
+            ty: Float(ty),
+            angle: Float(angle),
             deg: renderer.rotationAngle,
             width: width,
             height: height,
-            boxWidth: pdfBBox.width as Float,
-            boxheight: pdfBBox.height as Float,
+            boxWidth: Float(pdfBBox.width),
+            boxheight: Float(pdfBBox.height),
             isLandscape: isLandscape
             // DEBUG
             ) : nil
