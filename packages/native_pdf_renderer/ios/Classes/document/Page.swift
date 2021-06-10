@@ -61,7 +61,7 @@ class Page {
         var data: Data?
         var fileURL: URL?
         var success = false
-        let transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
+        var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
         let sx = CGFloat(width) / pdfBBox.width
         let sy = CGFloat(height) / pdfBBox.height
         let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
