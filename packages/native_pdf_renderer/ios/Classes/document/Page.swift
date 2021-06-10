@@ -55,13 +55,13 @@ class Page {
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
-        let drawingTransform = renderer.getDrawingTransform(.mediaBox, rect: pdfBBox, rotate: 0, preserveAspectRatio: true)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
         var data: Data?
         var fileURL: URL?
         var success = false
+        let drawingTransform = renderer.getDrawingTransform(.mediaBox, rect: CGSize(width: width, height: height), rotate: 0, preserveAspectRatio: true)
         let sx = CGFloat(width) / pdfBBox.width
         let sy = CGFloat(height) / pdfBBox.height
         let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
@@ -75,10 +75,9 @@ class Page {
             if context != nil {
                 // TODO: Fix this! It doesn't work correctly on PDFs with weird rotational values
                 // context!.translateBy(x: tx, y: ty)
-                // context!.rotate(by: -angle)
-                // Credit: https://stackoverflow.com/a/64886903
-                context!.translateBy(x: 0.0, y: pdfBBox.height)
-                context!.scaleBy(x: sx, y: -sy)
+                context!.rotate(by: -angle)
+                // context!.translateBy(x: 0.0, y: pdfBBox.height)
+                // context!.scaleBy(x: 1, y: -1)
                 context!.concatenate(drawingTransform)
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
