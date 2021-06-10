@@ -55,7 +55,7 @@ class Page {
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
-        let drawingTransform = page.getDrawingTransform(.mediaBox, rect: pdfBBox, rotate: 0, preserveAspectRatio: true)
+        let drawingTransform = renderer.getDrawingTransform(.mediaBox, rect: pdfBBox, rotate: 0, preserveAspectRatio: true)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
