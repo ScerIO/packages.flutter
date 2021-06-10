@@ -61,24 +61,41 @@ class Page {
         var data: Data?
         var fileURL: URL?
         var success = false
-        let drawingTransform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(x: 0, y: 0, width: width, height: height), rotate: 0, preserveAspectRatio: true)
+        let transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
         let sx = CGFloat(width) / pdfBBox.width
         let sy = CGFloat(height) / pdfBBox.height
         let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
         let ty = CGFloat(0)
-        let angle = CGFloat(renderer.rotationAngle) * CGFloat.pi / 180;
+        let angle = CGFloat(rotationAngle) * CGFloat.pi / 180;
         let compressionQuality = CGFloat(quality) / 100
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
             let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
+                // We change the context scale to fill completely the destination size
+                if pdfBBox.width < bitmapSize.width {
+                    let contextScale = bitmapSize.width / pdfBBox.width
+                    transform = transform.scaledBy(x: contextScale, y: contextScale)
+
+                    transform.tx = -(pdfBBox.origin.x * transform.a + pdfBBox.origin.y * transform.b)
+                    transform.ty = -(pdfBBox.origin.x * transform.c + pdfBBox.origin.y * transform.d)
+
+                    // Rotation handling
+                    if rotationAngle == 180 || rotationAngle == 270 {
+                        transform.tx += bitmapSize.width
+                    }
+                    if rotationAngle == 90 || rotationAngle == 180 {
+                        transform.ty += bitmapSize.height
+                    }
+                }
+
                 // TODO: Fix this! It doesn't work correctly on PDFs with weird rotational values
                 // context!.translateBy(x: tx, y: ty)
-                context!.rotate(by: -angle)
+                // context!.rotate(by: -angle)
                 // context!.translateBy(x: 0.0, y: pdfBBox.height)
                 // context!.scaleBy(x: 1, y: -1)
-                context!.concatenate(drawingTransform)
+                context!.concatenate(transform)
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
@@ -115,7 +132,7 @@ class Page {
             tx: Float(tx),
             ty: Float(ty),
             angle: Float(angle),
-            deg: Int(renderer.rotationAngle),
+            deg: Int(rotationAngle),
             boxWidth: Float(pdfBBox.width),
             boxHeight: Float(pdfBBox.height),
             isLandscape: isLandscape) : nil
