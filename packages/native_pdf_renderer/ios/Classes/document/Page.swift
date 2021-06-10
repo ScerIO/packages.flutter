@@ -114,7 +114,7 @@ class Page {
             angle: Float(angle),
             deg: Int(renderer.rotationAngle),
             boxWidth: Float(pdfBBox.width),
-            boxheight: Float(pdfBBox.height),
+            boxHeight: Float(pdfBBox.height),
             isLandscape: isLandscape) : nil
     }
 
