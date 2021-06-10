@@ -164,7 +164,18 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
                     results = [
                         "width": Int32(data.width),
                         "height": Int32(data.height),
-                        "path": String(data.path)
+                        "path": String(data.path),
+                        // DEBUG
+                        "sx": Float32(data.sx),
+                        "sy": Float32(data.sy),
+                        "tx": Float32(data.tx),
+                        "ty": Float32(data.ty),
+                        "angle": Float32(data.angle),
+                        "deg": Int32(data.deg),
+                        "boxWidth": Float32(data.boxWidth),
+                        "boxHeight": Float32(data.boxHeight),
+                        "isLandscape": Bool(data.isLandscape)
+                        // DEBUG
                     ]
                 }
             } catch {
