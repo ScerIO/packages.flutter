@@ -55,6 +55,7 @@ class Page {
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
         let pdfBBox = renderer.getBoxRect(.mediaBox)
+        let drawingTransform = page.getDrawingTransform(.mediaBox, rect: pdfBBox, rotate: 0, preserveAspectRatio: true)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
@@ -75,7 +76,10 @@ class Page {
                 // TODO: Fix this! It doesn't work correctly on PDFs with weird rotational values
                 // context!.translateBy(x: tx, y: ty)
                 // context!.rotate(by: -angle)
-                context!.scaleBy(x: sx, y: sy)
+                // Credit: https://stackoverflow.com/a/64886903
+                context!.translateBy(x: 0.0, y: pdfBBox.height)
+                context!.scaleBy(x: sx, y: -sy)
+                context!.concatenate(drawingTransform)
                 context!.setFillColor(backgroundColor.cgColor)
                 context!.fill(pdfBBox)
                 context!.drawPDFPage(renderer)
