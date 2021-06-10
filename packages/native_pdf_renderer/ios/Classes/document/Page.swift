@@ -75,8 +75,7 @@ class Page {
             if context != nil {
                 // We change the context scale to fill completely the destination size
                 if pdfBBox.width < bitmapSize.width {
-                    let contextScale = bitmapSize.width / pdfBBox.width
-                    transform = transform.scaledBy(x: contextScale, y: contextScale)
+                    transform = transform.scaledBy(x: sx, y: sy)
 
                     transform.tx = -(pdfBBox.origin.x * transform.a + pdfBBox.origin.y * transform.b)
                     transform.ty = -(pdfBBox.origin.x * transform.c + pdfBBox.origin.y * transform.d)
