@@ -73,8 +73,6 @@ class Page {
             let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 // TODO: Fix this! It doesn't work correctly on PDFs with weird rotational values
-                // Use NSLog to get these values to compare
-                // printDebug("sx:\(sx) sy:\(sy) | tx:\(tx) ty:\(ty) | angle:\(angle) deg:\(renderer.rotationAngle) | width:\(width) height:\(height) | boxwidth:\(pdfBBox.width) boxheight:\(pdfBBox.height) | isLandscape: \(isLandscape)")
                 // context!.translateBy(x: tx, y: ty)
                 // context!.rotate(by: -angle)
                 context!.scaleBy(x: sx, y: sy)
@@ -109,7 +107,6 @@ class Page {
             width: (crop != nil) ? Int(crop!.width) : width,
             height: (crop != nil) ? Int(crop!.height) : height,
             path: (fileURL != nil) ? fileURL!.path : "",
-            // DEBUG
             sx: Float(sx),
             sy: Float(sy),
             tx: Float(tx),
@@ -119,7 +116,6 @@ class Page {
             boxWidth: Float(pdfBBox.width),
             boxheight: Float(pdfBBox.height),
             isLandscape: isLandscape
-            // DEBUG
             ) : nil
     }
 
