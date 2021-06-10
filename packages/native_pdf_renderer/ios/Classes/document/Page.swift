@@ -173,17 +173,7 @@ class Page {
         let isLandscape: Bool
         // DEBUG
 
-        init(width: Int, height: Int, path: String,
-        sx: Float,
-        sy: Float,
-        tx: Float,
-        ty: Float,
-        angle: Float,
-        deg: Int32,
-        boxWidth: Float,
-        boxHeight: Float,
-        isLandscape: Bool
-        ) {
+        init(width: Int, height: Int, path: String, sx: Float, sy: Float, tx: Float, ty: Float, angle: Float, deg: Int32, boxWidth: Float, boxHeight: Float, isLandscape: Bool) {
             self.width = width
             self.height = height
             self.path = path
