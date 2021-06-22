@@ -1,0 +1,59 @@
+{
+  "@@locale": "fr",
+  "actionMenuOpen": "Ouvrir",
+  "@actionMenuOpen": {
+    "type": "text"
+  },
+  "actionMenuCopy": "Copier",
+  "@actionMenuCopy": {
+    "type": "text"
+  },
+  "actionMenuCut": "Couper",
+  "@actionMenuCut": {
+    "type": "text"
+  },
+  "actionMenuDelete": "Supprimer",
+  "@actionMenuDelete": {
+    "type": "text"
+  },
+  "actionCopyHere": "Copier ici",
+  "@actionCopyHere": {
+    "type": "text"
+  },
+  "actionMoveHere": "Déplacer ici",
+  "@actionMoveHere": {
+    "type": "text"
+  },
+  "folderName": "Nom du dossier",
+  "@folderName": {
+    "type": "text"
+  },
+  "fileName": "Nom du fichier",
+  "@fileName": {
+    "type": "text"
+  },
+  "newFolder": "Nouveau dossier",
+  "@newFolder": {
+    "type": "text"
+  },
+  "newFile": "Nouveau fichier",
+  "@newFile": {
+    "type": "text"
+  },
+  "uploadFiles": "Ajouter des fichiers",
+  "@uploadFiles": {
+    "type": "text"
+  },
+  "empty": "Vide",
+  "@empty": {
+    "type": "text"
+  },
+  "cancel": "Annuler",
+  "@cancel": {
+    "type": "text"
+  },
+  "create": "Créer",
+  "@create": {
+    "type": "text"
+  }
+}
