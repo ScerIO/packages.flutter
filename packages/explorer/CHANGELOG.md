@@ -1,3 +1,9 @@
+## 2.1.0
+### Added
+* French language
+### Fixed
+* error while ExplorerLocalizationsDelegate() 
+
 ## 2.0.0
 ### Changed
 * Null-safety migration
