@@ -1,3 +1,8 @@
+## 2.2.0
+
+* Upgrade packages
+* Minimum flutter version 2.2.0
+
 ## 2.1.0
 ### Changed
 * Removed data property from `EpubController`, now `EpubReader.readBook` can receive futures
