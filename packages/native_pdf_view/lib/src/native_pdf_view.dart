@@ -1,14 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:synchronized/synchronized.dart';
 
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
+export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
-export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 
 part 'native_pdf_controller.dart';
 
@@ -44,6 +45,7 @@ class PdfView extends StatefulWidget {
     this.physics,
     this.backgroundDecoration = const BoxDecoration(),
     this.loaderSwitchDuration = const Duration(seconds: 1),
+    this.customDocumentBuilder,
     Key? key,
   }) : super(key: key);
 
@@ -88,6 +90,11 @@ class PdfView extends StatefulWidget {
 
   /// Determines the physics of a [PdfView] widget.
   final ScrollPhysics? physics;
+
+  /// Customize your own Document View, like as Single Page View by using ListView...
+  final Widget Function(
+          BuildContext context, List<PdfPageImageProvider> documentPages)?
+      customDocumentBuilder;
 
   /// Default PdfRenderer options
   static Future<PdfPageImage?> _render(PdfPage page) => page.render(
@@ -169,7 +176,19 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
     });
   }
 
-  Widget _buildLoaded() => PhotoViewGallery.builder(
+  Widget _buildLoaded() {
+    if (widget.customDocumentBuilder != null) {
+      return widget.customDocumentBuilder!(
+          context,
+          List.generate(
+              widget.controller.pagesCount,
+              (index) => PdfPageImageProvider(
+                    _getPageImage(index),
+                    index,
+                    widget.controller._document!.id,
+                  )));
+    } else {
+      return PhotoViewGallery.builder(
         builder: (BuildContext context, int index) => widget.pageBuilder(
             _getPageImage(index), index, widget.controller._document!),
         itemCount: widget.controller._document!.pagesCount,
@@ -183,6 +202,8 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         scrollDirection: widget.scrollDirection,
         scrollPhysics: widget.physics,
       );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
