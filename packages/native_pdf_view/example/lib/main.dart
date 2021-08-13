@@ -90,6 +90,10 @@ class _MyAppState extends State<MyApp> {
                 _actualPageNumber = page;
               });
             },
+            customDocumentBuilder: (context, pages) => ListView.builder(
+              itemBuilder: (context, index) => Image(image: pages[index]),
+              itemCount: pages.length,
+            ),
           ),
         ),
       );
