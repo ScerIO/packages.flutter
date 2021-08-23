@@ -54,33 +54,45 @@ class Page {
     }
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
-        let pdfBBox = renderer.getBoxRect(.mediaBox)
+        let box = renderer.getBoxRect(.mediaBox)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
         let stride = Int(bitmapSize.width * 4)
         var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
         var data: Data?
         var fileURL: URL?
         var success = false
-        let sx = CGFloat(width) / pdfBBox.width
-        let sy = CGFloat(height) / pdfBBox.height
-        let tx = isLandscape ? CGFloat(height) / 2 : CGFloat(0)
-        let ty = CGFloat(0)
-        let angle = CGFloat(renderer.rotationAngle) * CGFloat.pi / 180;
+        var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
         let compressionQuality = CGFloat(quality) / 100
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
             let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
-                context!.scaleBy(x: sx, y: sy)
-                context!.translateBy(x: tx, y: ty)
-                context!.rotate(by: -angle)
+                // Credit: https://stackoverflow.com/a/35985236
+                // We change the context scale to fill completely the destination size (scale-down is handled by getDrawingTransform)
+                if box.width < bitmapSize.width {
+                    let sx = CGFloat(width) / box.width
+                    let sy = CGFloat(height) / box.height
+                    transform = transform.scaledBy(x: sx, y: sy)
+
+                    transform.tx = -(box.origin.x * transform.a + box.origin.y * transform.b)
+                    transform.ty = -(box.origin.x * transform.c + box.origin.y * transform.d)
+
+                    // Rotation handling
+                    if rotationAngle == 180 || rotationAngle == 270 {
+                        transform.tx += bitmapSize.width
+                    }
+                    if rotationAngle == 90 || rotationAngle == 180 {
+                        transform.ty += bitmapSize.height
+                    }
+                }
+                context!.concatenate(transform)
                 context!.setFillColor(backgroundColor.cgColor)
-                context!.fill(pdfBBox)
+                context!.fill(box)
                 context!.drawPDFPage(renderer)
                 var image = UIImage(cgImage: context!.makeImage()!)
 
-                if (crop != nil){
+                if (crop != nil) {
                     // Perform cropping in Core Graphics
                     let cutImageRef: CGImage = (image.cgImage?.cropping(to:crop!))!
                     image = UIImage(cgImage: cutImageRef)
@@ -105,16 +117,17 @@ class Page {
         return success ? Page.DataResult(
             width: (crop != nil) ? Int(crop!.width) : width,
             height: (crop != nil) ? Int(crop!.height) : height,
-            path: fileURL!.absoluteString) : nil
+            path: (fileURL != nil) ? fileURL!.path : ""
+            ) : nil
     }
 
     func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
         // Create missing directories
-        let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         let cacheURL = docURL.appendingPathComponent("native_pdf_renderer_cache")
-        if !FileManager.default.fileExists(atPath: cacheURL.absoluteString) {
+        if !FileManager.default.fileExists(atPath: cacheURL.path) {
             do {
-                try FileManager.default.createDirectory(atPath: cacheURL.absoluteString, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(at: cacheURL, withIntermediateDirectories: true, attributes: nil)
             } catch {
                 print(error.localizedDescription)
                 return nil

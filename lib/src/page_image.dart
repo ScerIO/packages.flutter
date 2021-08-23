@@ -85,12 +85,14 @@ class PdfPageImage {
     }
 
     final retWidth = obj['width'] as int?, retHeight = obj['height'] as int?;
-    final pixels = Platform.isAndroid || Platform.isIOS
-        ? await File(obj['path'] as String).readAsBytes()
-        : Uint8List.fromList(obj['data']);
-
+    late final Uint8List pixels;
     if (Platform.isAndroid || Platform.isIOS) {
-      await File(obj['path'] as String).delete();
+      final file = File(obj['path'] as String);
+      // await Future.delayed(const Duration(milliseconds: 300));
+      pixels = await file.readAsBytes();
+      await file.delete();
+    } else {
+      pixels = Uint8List.fromList(obj['data']);
     }
 
     return PdfPageImage._(
