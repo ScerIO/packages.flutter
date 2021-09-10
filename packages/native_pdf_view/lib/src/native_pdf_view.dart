@@ -172,7 +172,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
   Widget _buildLoaded() => PhotoViewGallery.builder(
         builder: (BuildContext context, int index) => widget.pageBuilder(
             _getPageImage(index), index, widget.controller._document!),
-        itemCount: widget.controller._document!.pagesCount,
+        itemCount: widget.controller._document?.pagesCount??0,
         loadingBuilder: (_, __) => widget.pageLoader ?? SizedBox(),
         backgroundDecoration: widget.backgroundDecoration,
         pageController: widget.controller._pageController,
