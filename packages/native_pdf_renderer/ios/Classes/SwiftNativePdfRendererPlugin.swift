@@ -112,6 +112,12 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
             let pageNumber = args["page"] as! Int
 
             let renderer = try documents.get(id: documentId).openPage(pageNumber: pageNumber)
+            if (renderer == nil) {
+                return result(FlutterError(code: "RENDER_ERROR",
+                                           message: "Unexpected error: renderer is nil.",
+                                           details: nil))
+            }
+            
             let page = pages.register(documentId: documentId, renderer: renderer!)
             result(page.infoMap as NSDictionary)
         } catch {
