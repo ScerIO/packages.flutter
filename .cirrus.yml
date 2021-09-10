@@ -7,7 +7,6 @@ task:
     cpu: 8
     memory: 16G
   upgrade_script:
-    - flutter channel stable
     - flutter upgrade
     - git fetch origin master
     - sudo chmod -R 755 ./script
@@ -81,5 +80,5 @@ task:
           PLUGIN_SHARDING: "--shardIndex 2 --shardCount 4"
           PLUGIN_SHARDING: "--shardIndex 3 --shardCount 4"
       build_script:
-        - ./script/incremental_build.sh build-examples --ipa
+        - ./script/incremental_build.sh build-examples --ios
         - ./script/incremental_build.sh drive-examples

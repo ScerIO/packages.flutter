@@ -1,3 +1,8 @@
+## 4.2.0
+
+* Update photo_view dependency to 0.12.0 [pull#203](https://github.com/rbcprolabs/packages.flutter/pull/203)
+* Fixed null check operator used on a null value when closing PdfView widget [pull#207](https://github.com/rbcprolabs/packages.flutter/pull/207)
+
 ## 4.1.0
 
 * Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)

@@ -1,6 +1,10 @@
+## 2.2.1
+
+* Upgrade dependencies
+
 ## 2.2.0
 
-* Upgrade packages
+* Upgrade dependencies
 * Minimum flutter version 2.2.0
 
 ## 2.1.0

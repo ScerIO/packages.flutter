@@ -1,3 +1,7 @@
+## 3.1.1
+
+* Adds flutter error when PDF is locked and unreadable [pull#211](https://github.com/rbcprolabs/packages.flutter/pull/211)
+
 ## 3.1.0
 
 * Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)

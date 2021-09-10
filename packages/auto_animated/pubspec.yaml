@@ -1,6 +1,6 @@
 name: auto_animated
 description: Widgets starting auto play animation when mounted. It is already possible to animate the list and icons.
-version: 3.0.0
+version: 3.0.1
 homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/auto_animated
 
 environment:
@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  visibility_detector: ^0.2.0-nullsafety.1
+  visibility_detector: ^0.2.0
 
 dev_dependencies:
   flutter_test:
