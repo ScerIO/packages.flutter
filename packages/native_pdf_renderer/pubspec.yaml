@@ -12,17 +12,17 @@ dependencies:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
-  uuid: ^2.0.4
-  image: ^2.1.12
-  js: ^0.6.1+1
-  meta: ^1.1.8
-  extension: ^0.1.1
-  synchronized: ^2.2.0
+  uuid: ^3.0.5
+  image: ^3.0.8
+  js: ^0.6.3
+  meta: ^1.7.0
+  extension: ^0.2.0
+  synchronized: ^3.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.9.0
+  pedantic: ^1.11.1
 
 flutter:
   plugin:
