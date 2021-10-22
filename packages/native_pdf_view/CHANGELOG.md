@@ -1,3 +1,7 @@
+## 4.3.0
+
+* Update photo_view dependency to 0.13.0 [pull#225](https://github.com/rbcprolabs/packages.flutter/pull/225)
+
 ## 4.2.0
 
 * Update photo_view dependency to 0.12.0 [pull#203](https://github.com/rbcprolabs/packages.flutter/pull/203)
