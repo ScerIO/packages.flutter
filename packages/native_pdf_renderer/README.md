@@ -16,9 +16,9 @@ dependencies:
 
 For web add lines in index.html before importing main.dart.js:
 ```html
-<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 <script type="text/javascript">
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js";
 </script>
 ```
 
@@ -131,10 +131,6 @@ final pageImage = page.render(
 | height     | Height of the rendered area in pixels, int                                         | -                 |
 | bytes      | Rendered image result, Uint8List                                                   | -                 |
 | format     | Rendered image compression format, for web always PNG                              | PdfPageFormat.PNG |
-
-```dart
-
-```
 
 **Close page:**
 <br>

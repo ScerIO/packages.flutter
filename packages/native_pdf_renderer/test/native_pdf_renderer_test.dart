@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,14 +6,16 @@ import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
 const String _testFilePath = '/dev/test/file/path/file.pdf';
 const String _testAssetPath = '/assets/file.pdf';
-final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final List<MethodCall> log = <MethodCall>[];
   PdfDocument? document;
+  late Uint8List _testData;
 
   setUpAll(() async {
+    _testData = await File('test/image.png').readAsBytes();
+
     MethodChannel('io.scer.native_pdf_renderer')
         .setMockMethodCallHandler((MethodCall methodCall) async {
       log.add(methodCall);
@@ -46,6 +49,7 @@ void main() {
           return {
             'width': methodCall.arguments['width'],
             'height': methodCall.arguments['height'],
+            'path': 'test/image.png',
             'data': _testData,
           };
         default:
@@ -148,7 +152,8 @@ void main() {
             'crop_x': null,
             'crop_y': null,
             'crop_height': null,
-            'crop_width': null
+            'crop_width': null,
+            'quality': 100,
           },
         ),
       ]);
@@ -158,6 +163,7 @@ void main() {
       expect(pageImage.width, width);
       expect(pageImage.height, height);
       expect(pageImage.pageNumber, page.pageNumber);
+      expect(pageImage.quality, 100);
     });
 
     test('close', () async {

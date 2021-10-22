@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'native_pdf_renderer'
-  s.version          = '1.2.0'
+  s.version          = '4.0.0'
   s.summary          = 'Flutter Plugin to render a PDF file.'
   s.description      = <<-DESC
 Flutter Plugin to render a PDF file.

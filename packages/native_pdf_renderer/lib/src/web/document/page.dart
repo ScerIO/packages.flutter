@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:io';
 import 'dart:js' as js;
 import 'dart:js_util';
 import 'dart:typed_data';

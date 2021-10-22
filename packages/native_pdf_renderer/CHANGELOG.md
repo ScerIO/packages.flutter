@@ -1,3 +1,11 @@
+## 4.0.0
+
+* Fixed Web support
+* Added dependency `[universal_platform]` dependency work normally web works
+* Replace dependency `[device_info]` to `[device_info_plus]`
+* Transfer the bitmap through a temporary file for performance save on *android*, *ios* & *macOS* [issue#150](https://github.com/rbcprolabs/packages.flutter/issues/150)
+* __BREAKING__: `[hasSupport]` renamed to`[hasPdfSupport]`
+
 ## 3.1.1
 
 * Adds flutter error when PDF is locked and unreadable [pull#211](https://github.com/rbcprolabs/packages.flutter/pull/211)
