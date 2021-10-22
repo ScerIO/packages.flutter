@@ -94,4 +94,4 @@ task:
           PLUGIN_SHARDING: "--shardIndex 3 --shardCount 4"
       build_script:
         - ./script/incremental_build.sh build-examples --ios
-        - ./script/incremental_build.sh drive-examples
+        - ./script/incremental_build.sh drive-examples --ios
