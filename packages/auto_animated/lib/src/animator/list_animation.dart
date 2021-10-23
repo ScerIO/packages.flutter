@@ -1,6 +1,6 @@
 import 'package:auto_animated/src/helpers/callbacks.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 // The default insert/remove animation duration.
 const Duration _kDuration = Duration(milliseconds: 300);

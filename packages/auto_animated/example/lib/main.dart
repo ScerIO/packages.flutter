@@ -1,10 +1,10 @@
 import 'package:auto_animated_example/screens/animate_if_visible.dart';
 import 'package:auto_animated_example/screens/grid.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:auto_animated_example/screens/icon_button.dart';
 import 'package:auto_animated_example/screens/list.dart';
 import 'package:auto_animated_example/screens/sliver.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
