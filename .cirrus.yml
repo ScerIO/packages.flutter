@@ -1,12 +1,13 @@
 only_if: $CIRRUS_TAG == ''
 env:
   CHANNEL: "stable" # Default to master when not explicitly set by a task.
-  PLUGIN_TOOL: "pub global run flutter_plugin_tools"
+  PLUGIN_TOOL: "./script/tool/bin/flutter_plugin_tools.dart"
 
 tool_setup_template: &TOOL_SETUP_TEMPLATE
   tool_setup_script:
     - git fetch origin master
-    - dart pub global activate flutter_plugin_tools
+    - cd script/tool
+    - dart pub get
 
 flutter_upgrade_template: &FLUTTER_UPGRADE_TEMPLATE
   upgrade_flutter_script:
