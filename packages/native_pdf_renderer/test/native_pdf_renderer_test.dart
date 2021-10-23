@@ -1,18 +1,24 @@
 import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
+import 'image.dart';
+
 const String _testFilePath = '/dev/test/file/path/file.pdf';
 const String _testAssetPath = '/assets/file.pdf';
-final Uint8List _testData = Uint8List.fromList([0, 0, 0, 0, 0, 0, 0, 0]);
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   final List<MethodCall> log = <MethodCall>[];
   PdfDocument? document;
+  late Uint8List _testData;
 
   setUpAll(() async {
+    _testData = Uint8List.fromList(imageBytes);
+
     MethodChannel('io.scer.native_pdf_renderer')
         .setMockMethodCallHandler((MethodCall methodCall) async {
       log.add(methodCall);
@@ -46,6 +52,7 @@ void main() {
           return {
             'width': methodCall.arguments['width'],
             'height': methodCall.arguments['height'],
+            'path': 'test/image.png',
             'data': _testData,
           };
         default:
@@ -58,14 +65,21 @@ void main() {
 
   group('Open document', () {
     test('from file path', () async {
-      final document = await PdfDocument.openFile(_testFilePath);
-      expect(log, <Matcher>[
-        isMethodCall(
-          'open.document.file',
-          arguments: _testFilePath,
-        ),
-      ]);
-      expect(document.pagesCount, 1);
+      if (kIsWeb) {
+        expect(
+          PdfDocument.openFile(_testFilePath),
+          throwsA(isInstanceOf<PlatformNotSupportedException>()),
+        );
+      } else {
+        final document = await PdfDocument.openFile(_testFilePath);
+        expect(log, <Matcher>[
+          isMethodCall(
+            'open.document.file',
+            arguments: _testFilePath,
+          ),
+        ]);
+        expect(document.pagesCount, 1);
+      }
     });
 
     test('from asset', () async {
@@ -133,6 +147,7 @@ void main() {
         height: height,
         format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
+        removeTempFile: false,
       ))!;
 
       expect(log, <Matcher>[
@@ -148,7 +163,8 @@ void main() {
             'crop_x': null,
             'crop_y': null,
             'crop_height': null,
-            'crop_width': null
+            'crop_width': null,
+            'quality': 100,
           },
         ),
       ]);
@@ -158,6 +174,7 @@ void main() {
       expect(pageImage.width, width);
       expect(pageImage.height, height);
       expect(pageImage.pageNumber, page.pageNumber);
+      expect(pageImage.quality, 100);
     });
 
     test('close', () async {
@@ -168,7 +185,7 @@ void main() {
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
       expect(
-        page.render(width: 1, height: 1),
+        page.render(width: 1, height: 1, removeTempFile: false),
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
     });

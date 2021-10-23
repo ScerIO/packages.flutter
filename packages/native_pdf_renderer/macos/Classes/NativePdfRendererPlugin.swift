@@ -124,6 +124,7 @@ public class NativePdfRendererPlugin: NSObject, FlutterPlugin {
         let crop = args["crop"] as! Bool
         let compressFormat = args["format"]as! Int
         let backgroundColor = args["backgroundColor"] as! String
+        let quality = args["quality"] as! Int
 
         // Set crop if required
         var cropZone: CGRect? = nil
@@ -148,12 +149,13 @@ public class NativePdfRendererPlugin: NSObject, FlutterPlugin {
                     height: height,
                     crop: cropZone,
                     compressFormat: CompressFormat(rawValue: compressFormat)!,
-                    backgroundColor: NSColor(hexString: backgroundColor)
+                    backgroundColor: NSColor(hexString: backgroundColor),
+                    quality: quality
                 ) {
                     results = [
                         "width": Int32(data.width),
                         "height": Int32(data.height),
-                        "data": FlutterStandardTypedData(bytes: data.data)
+                        "path": String(data.path)
                     ]
                 }
             } catch {

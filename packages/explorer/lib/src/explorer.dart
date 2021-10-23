@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:explorer/src/data/provider.dart';
 import 'package:explorer/src/ui/provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:path/path.dart' as p;
 import 'package:universal_platform/universal_platform.dart';
 import 'data/models/bread_crumb.dart';

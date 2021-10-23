@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'animate_if_visible.dart';
 import 'helpers/callbacks.dart';

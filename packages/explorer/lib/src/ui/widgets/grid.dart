@@ -5,7 +5,6 @@ import 'package:explorer/src/explorer.dart';
 import 'package:explorer/src/i18n/localization.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 import 'entry.dart';

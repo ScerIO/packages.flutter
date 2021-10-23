@@ -1,8 +1,8 @@
-import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:js/js_util.dart';
 import 'package:native_pdf_renderer/src/web/pdfjs.dart';
 import 'package:native_pdf_renderer/src/web/resources/document_repository.dart';
 import 'package:native_pdf_renderer/src/web/resources/page_repository.dart';

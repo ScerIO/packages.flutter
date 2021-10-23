@@ -1,5 +1,4 @@
-import 'dart:js_util';
-
+import 'package:js/js_util.dart';
 import 'package:native_pdf_renderer/src/web/pdfjs.dart';
 
 class Document {
