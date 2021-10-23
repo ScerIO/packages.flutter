@@ -1,6 +1,6 @@
 name: explorer
 description: 'Universal explorer UI for navigate files, ftp, etc. Support custom providers and any platforms c:'
-homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/explorer
+repository: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/explorer
 issue_tracker: https://github.com/rbcprolabs/packages.flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+explorer%22
 version: 2.1.0
 

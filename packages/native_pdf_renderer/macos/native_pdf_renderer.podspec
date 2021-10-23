@@ -8,11 +8,12 @@ Pod::Spec.new do |s|
   s.summary          = 'Flutter Plugin to render a PDF file.'
   s.description      = <<-DESC
   Flutter Plugin to render a PDF file.
+  Downloaded by pub (not CocoaPods).
                        DESC
-  s.homepage         = 'http://serge.software'
-  s.license          = { :file => '../LICENSE' }
+  s.homepage         = 'https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_renderer'
+  s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'Serge Shkurko' => 'sergeshkurko@outlook.com' }
-  s.source           = { :path => '.' }
+  s.source           = { :http => 'https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_renderer' }
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
 

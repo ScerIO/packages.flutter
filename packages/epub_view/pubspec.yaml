@@ -1,6 +1,6 @@
 name: epub_view
 description: Flutter widget for view EPUB documents on on Web, MacOs, Android and iOS. Based on dart-epub package.
-homepage: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view
+repository: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view
 issue_tracker: https://github.com/rbcprolabs/packages.flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+epub_view%22
 version: 2.3.0
 

@@ -144,8 +144,6 @@ class Page {
             case CompressFormat.PNG:
                 tempOutFileExtension = "png"
                 break;
-            default:
-                return nil
         }
         tempOutFileName = "\(randomFileName).\(tempOutFileExtension!)"
         let fileURL = cacheURL.appendingPathComponent(tempOutFileName!)

@@ -51,11 +51,6 @@ task:
   << : *FLUTTER_UPGRADE_TEMPLATE
   container:
     dockerfile: .ci/Dockerfile
-    builder_image_name: docker-builder-linux # gce vm image
-    builder_image_project: flutter-cirrus
-    cluster_name: test-cluster
-    zone: us-central1-a
-    namespace: default
   matrix:
     ### Platform-agnostic tasks ###
     - name: publishable
@@ -105,11 +100,6 @@ task:
   << : *FLUTTER_UPGRADE_TEMPLATE
   gke_container:
     dockerfile: .ci/Dockerfile
-    builder_image_name: docker-builder-linux # gce vm image
-    builder_image_project: flutter-cirrus
-    cluster_name: test-cluster
-    zone: us-central1-a
-    namespace: default
     cpu: 4
     memory: 12G
   matrix:

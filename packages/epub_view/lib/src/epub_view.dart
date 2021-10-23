@@ -362,31 +362,6 @@ class _EpubViewState extends State<EpubView> {
         if (chapterIndex >= 0 &&
             _getParagraphIndexBy(positionIndex: index) == 0)
           _buildDivider(_chapters[chapterIndex]),
-        // Padding(
-        //   padding: widget.paragraphPadding,
-        //   child: HtmlWidget(
-        //     _paragraphs[index].element.outerHtml,
-        //     key: UniqueKey(),
-        //     onTapUrl: (href) {
-        //       _onLinkPressed(href, widget.onExternalLinkPressed);
-        //       return true;
-        //     },
-        //     customWidgetBuilder: (element) {
-        //       if (element.localName == 'img') {
-        //         final url = element.attributes['src']!.replaceAll('../', '');
-        //         return Image(
-        //           key: UniqueKey(),
-        //           image: MemoryImage(
-        //             Uint8List.fromList(widget
-        //                 .controller._document!.Content!.Images![url]!.Content!),
-        //           ),
-        //         );
-        //       }
-
-        //       return null;
-        //     },
-        //   ),
-        // ),
         Html(
           data: _paragraphs[index].element.outerHtml,
           onLinkTap: (href, _, __, ___) =>
