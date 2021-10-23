@@ -14,11 +14,14 @@ dependencies:
   native_pdf_renderer: any
 ```
 
-For web add lines in index.html before importing main.dart.js:
+For web add lines in index.html before importing main.dart.js:<br/>
+**note that the files have different names**
 ```html
+<!-- Link to pdf.js library -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 <script type="text/javascript">
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js";
+  // Link to worker for pdf.js library
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
 </script>
 ```
 
