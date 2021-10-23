@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:epubx/epubx.dart';
 import 'package:epub_view/epub_view.dart';
+import 'package:epub_view/src/epub_cfi/generator.dart';
+import 'package:epubx/epubx.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:epub_view/src/epub_cfi/generator.dart';
 import 'package:html/dom.dart';
 
 Future<Uint8List> _loadTestBook() async {

@@ -1,5 +1,5 @@
-import 'package:flutter_test/flutter_test.dart';
 import 'package:epub_view/src/epub_cfi/parser.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   test('fragment parse - empty', () async {

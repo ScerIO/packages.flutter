@@ -1,3 +1,8 @@
+## 2.3.0
+
+* Epub v3 support 
+* Upgrade dependencies
+
 ## 2.2.1
 
 * Upgrade dependencies

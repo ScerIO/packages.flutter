@@ -5,12 +5,13 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:epubx/epubx.dart' hide Image;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:flutter_html/flutter_html.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'epub_cfi/generator.dart';
 import 'epub_cfi/interpreter.dart';
@@ -53,7 +54,7 @@ class EpubView extends StatefulWidget {
     this.onDocumentLoaded,
     this.onDocumentError,
     this.chapterPadding = const EdgeInsets.all(8),
-    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
+    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.textStyle = _defaultTextStyle,
     Key? key,
   }) : super(key: key);
@@ -361,6 +362,31 @@ class _EpubViewState extends State<EpubView> {
         if (chapterIndex >= 0 &&
             _getParagraphIndexBy(positionIndex: index) == 0)
           _buildDivider(_chapters[chapterIndex]),
+        // Padding(
+        //   padding: widget.paragraphPadding,
+        //   child: HtmlWidget(
+        //     _paragraphs[index].element.outerHtml,
+        //     key: UniqueKey(),
+        //     onTapUrl: (href) {
+        //       _onLinkPressed(href, widget.onExternalLinkPressed);
+        //       return true;
+        //     },
+        //     customWidgetBuilder: (element) {
+        //       if (element.localName == 'img') {
+        //         final url = element.attributes['src']!.replaceAll('../', '');
+        //         return Image(
+        //           key: UniqueKey(),
+        //           image: MemoryImage(
+        //             Uint8List.fromList(widget
+        //                 .controller._document!.Content!.Images![url]!.Content!),
+        //           ),
+        //         );
+        //       }
+
+        //       return null;
+        //     },
+        //   ),
+        // ),
         Html(
           data: _paragraphs[index].element.outerHtml,
           onLinkTap: (href, _, __, ___) =>

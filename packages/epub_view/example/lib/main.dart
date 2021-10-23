@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:epub_view/epub_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiOverlayStyle, rootBundle;
-import 'package:epub_view/epub_view.dart';
 
 void main() => runApp(MyApp());
 
