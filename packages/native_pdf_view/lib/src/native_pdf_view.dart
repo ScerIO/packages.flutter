@@ -1,14 +1,14 @@
 import 'package:flutter/widgets.dart';
+import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:synchronized/synchronized.dart';
 
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
+export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
-export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 
 part 'native_pdf_controller.dart';
 

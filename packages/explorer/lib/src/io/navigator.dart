@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:io/io.dart';
-import 'package:path/path.dart' as p;
 import 'package:explorer/src/data/models/entry.dart';
 import 'package:explorer/src/data/provider.dart';
+import 'package:io/io.dart';
+import 'package:path/path.dart' as p;
 
 /// Provider for exploring the IO File System
 class IoExplorerProvider extends ExplorerProvider {
