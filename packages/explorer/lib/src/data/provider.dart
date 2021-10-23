@@ -17,7 +17,7 @@ abstract class ExplorerProvider {
   Future<ExplorerFile> newFile(String name);
 
   /// Recursive remove file or dir at [currentPath]
-  Future<void> remove(Entry name);
+  Future<void> remove(Entry entry);
 
   /// Copy file or dir
   Future<void> copy(Entry from, Entry to);

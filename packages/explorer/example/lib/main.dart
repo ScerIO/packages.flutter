@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:explorer/explorer.dart';
 import 'package:explorer/explorer_io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
