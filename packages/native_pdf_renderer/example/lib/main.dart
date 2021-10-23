@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
-void main() => runApp(ExampleApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ExampleApp());
+}
 
 class ExampleApp extends StatelessWidget {
   Future<PdfDocument> _getDocument() async {

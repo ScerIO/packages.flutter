@@ -56,6 +56,7 @@ class PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
+    required bool removeTempFile,
   }) async {
     if (format == PdfPageFormat.WEBP &&
         (UniversalPlatform.isIOS || UniversalPlatform.isWindows)) {
@@ -90,9 +91,15 @@ class PdfPageImage {
     if (UniversalPlatform.isAndroid ||
         UniversalPlatform.isIOS ||
         UniversalPlatform.isMacOS) {
-      pixels = await getPixels(path: obj['path']);
+      pixels = await getPixels(
+        path: obj['path'],
+        removeTempFile: removeTempFile,
+      );
     } else {
-      pixels = await getPixels(bytes: obj['data']);
+      pixels = await getPixels(
+        bytes: obj['data'],
+        removeTempFile: removeTempFile,
+      );
     }
 
     return PdfPageImage._(

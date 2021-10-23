@@ -3,6 +3,7 @@ import 'dart:typed_data' show Uint8List;
 
 import 'package:flutter/services.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'page.dart';
 
 /// PDF page image renderer
@@ -52,13 +53,18 @@ class PdfDocument {
       );
 
   /// Open PDF document from filesystem path
-  static Future<PdfDocument> openFile(String filePath) async => _open(
-        (await _channel.invokeMethod<Map<dynamic, dynamic>>(
-          'open.document.file',
-          filePath,
-        ))!,
-        'file:$filePath',
-      );
+  static Future<PdfDocument> openFile(String filePath) async {
+    if (UniversalPlatform.isWeb) {
+      throw PlatformNotSupportedException();
+    }
+    return _open(
+      (await _channel.invokeMethod<Map<dynamic, dynamic>>(
+        'open.document.file',
+        filePath,
+      ))!,
+      'file:$filePath',
+    );
+  }
 
   /// Open PDF document from application assets
   static Future<PdfDocument> openAsset(String name) async => _open(
@@ -124,4 +130,10 @@ class PdfDocumentAlreadyClosedException implements Exception {
 class PdfPageNotFoundException implements Exception {
   @override
   String toString() => '$runtimeType: Page is not in the document';
+}
+
+class PlatformNotSupportedException implements Exception {
+  @override
+  String toString() => '$runtimeType: Actual platform not supported by '
+      'it method, try use another';
 }

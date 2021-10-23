@@ -4,6 +4,7 @@ import 'dart:ui';
 
 import 'package:extension/enum.dart';
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'document.dart';
@@ -73,6 +74,7 @@ class PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    @visibleForTesting bool removeTempFile = true,
   }) =>
       _lock.synchronized<PdfPageImage?>(() async {
         if (document.isClosed) {
@@ -90,6 +92,7 @@ class PdfPage {
           backgroundColor: backgroundColor,
           crop: cropRect,
           quality: quality,
+          removeTempFile: removeTempFile,
         );
       });
 

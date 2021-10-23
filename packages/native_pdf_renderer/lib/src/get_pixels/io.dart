@@ -3,12 +3,16 @@ import 'dart:typed_data';
 
 import 'browser.dart' as browser;
 
-Future<Uint8List> getPlatformPixels({String? path, List<int>? bytes}) async {
+Future<Uint8List> getPlatformPixels({
+  String? path,
+  List<int>? bytes,
+  bool removeTempFile = true,
+}) async {
   if (path != null) {
     final file = File(path);
 
     final Uint8List pixels = await file.readAsBytes();
-    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (removeTempFile) {
       await file.delete();
     }
     return pixels;

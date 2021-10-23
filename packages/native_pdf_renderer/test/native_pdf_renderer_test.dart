@@ -1,8 +1,11 @@
-import 'dart:io';
 import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+
+import 'image.dart';
 
 const String _testFilePath = '/dev/test/file/path/file.pdf';
 const String _testAssetPath = '/assets/file.pdf';
@@ -14,7 +17,7 @@ void main() {
   late Uint8List _testData;
 
   setUpAll(() async {
-    _testData = await File('test/image.png').readAsBytes();
+    _testData = Uint8List.fromList(imageBytes);
 
     MethodChannel('io.scer.native_pdf_renderer')
         .setMockMethodCallHandler((MethodCall methodCall) async {
@@ -62,14 +65,21 @@ void main() {
 
   group('Open document', () {
     test('from file path', () async {
-      final document = await PdfDocument.openFile(_testFilePath);
-      expect(log, <Matcher>[
-        isMethodCall(
-          'open.document.file',
-          arguments: _testFilePath,
-        ),
-      ]);
-      expect(document.pagesCount, 1);
+      if (kIsWeb) {
+        expect(
+          PdfDocument.openFile(_testFilePath),
+          throwsA(isInstanceOf<PlatformNotSupportedException>()),
+        );
+      } else {
+        final document = await PdfDocument.openFile(_testFilePath);
+        expect(log, <Matcher>[
+          isMethodCall(
+            'open.document.file',
+            arguments: _testFilePath,
+          ),
+        ]);
+        expect(document.pagesCount, 1);
+      }
     });
 
     test('from asset', () async {
@@ -137,6 +147,7 @@ void main() {
         height: height,
         format: PdfPageFormat.JPEG,
         backgroundColor: '#ffffff',
+        removeTempFile: false,
       ))!;
 
       expect(log, <Matcher>[
@@ -174,7 +185,7 @@ void main() {
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
       expect(
-        page.render(width: 1, height: 1),
+        page.render(width: 1, height: 1, removeTempFile: false),
         throwsA(isInstanceOf<PdfPageAlreadyClosedException>()),
       );
     });
