@@ -1,6 +1,12 @@
 only_if: $CIRRUS_TAG == ''
 env:
   CHANNEL: "stable" # Default to master when not explicitly set by a task.
+  PLUGIN_TOOL: "pub global run flutter_plugin_tools"
+
+tool_setup_template: &TOOL_SETUP_TEMPLATE
+  tool_setup_script:
+    - git fetch origin master
+    - dart pub global activate flutter_plugin_tools
 
 flutter_upgrade_template: &FLUTTER_UPGRADE_TEMPLATE
   upgrade_flutter_script:
@@ -15,76 +21,155 @@ flutter_upgrade_template: &FLUTTER_UPGRADE_TEMPLATE
     - git reset --hard @{u}
     # Run doctor to allow auditing of what version of Flutter the run is using.
     - flutter doctor -v
+  << : *TOOL_SETUP_TEMPLATE
 
-task:
-  << : *FLUTTER_UPGRADE_TEMPLATE
-  use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true' && $CIRRUS_PR == ''
-  container:
-    dockerfile: .ci/Dockerfile
-    cpu: 8
-    memory: 16G
-  upgrade_script:
-    - git fetch origin master
-    - sudo chmod -R 755 ./script
-  activate_script: pub global activate flutter_plugin_tools
-  matrix:
-    - name: publishable
-      script: ./script/check_publish.sh
-    - name: format
-      install_script:
-        - wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
-        - sudo apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-7 main"
-        - sudo apt-get update
-        - sudo apt-get install -y --allow-unauthenticated clang-format-7
-      format_script: ./script/incremental_build.sh format --travis --clang-format=clang-format-7
-    - name: test
-      test_script: ./script/incremental_build.sh test
-    - name: analyze
-      script: ./script/incremental_build.sh analyze
-    - name: build_all_plugins_apk
-      script:  ./script/build_all_plugins_app.sh apk
-    - name: build-apks+java-test
-      env:
-        matrix:
-          PLUGIN_SHARDING: "--shardIndex 0 --shardCount 2"
-          PLUGIN_SHARDING: "--shardIndex 1 --shardCount 2"
-      script:
-        # Unsetting CIRRUS_CHANGE_MESSAGE and CIRRUS_COMMIT_MESSAGE as they
-        # might include non-ASCII characters which makes Gradle crash.
-        # See: https://github.com/flutter/flutter/issues/24935
-        # This is a temporary workaround until we figure how to properly configure
-        # a UTF8 locale on Cirrus (or until the Gradle bug is fixed).
-        # TODO(amirh): Set the locale to UTF8.
-        - echo "$CIRRUS_CHANGE_MESSAGE" > /tmp/cirrus_change_message.txt
-        - echo "$CIRRUS_COMMIT_MESSAGE" > /tmp/cirrus_commit_message.txt
-        - export CIRRUS_CHANGE_MESSAGE=""
-        - export CIRRUS_COMMIT_MESSAGE=""
-        - ./script/incremental_build.sh build-examples --android
-        - ./script/incremental_build.sh java-test  # must come after apk build
-        - export CIRRUS_CHANGE_MESSAGE=`cat /tmp/cirrus_change_message.txt`
-        - export CIRRUS_COMMIT_MESSAGE=`cat /tmp/cirrus_commit_message.txt`
+build_all_plugins_app_template: &BUILD_ALL_PLUGINS_APP_TEMPLATE
+  create_all_plugins_app_script:
+    - dart $PLUGIN_TOOL all-plugins-app --output-dir=. --exclude script/configs/exclude_all_plugins_app.yaml
+  build_all_plugins_debug_script:
+    - cd all_plugins
+    - if [[ "$BUILD_ALL_ARGS" == "web" ]]; then
+    -   echo "Skipping; web does not support debug builds"
+    - else
+    -   flutter build $BUILD_ALL_ARGS --debug
+    - fi
+  build_all_plugins_release_script:
+    - cd all_plugins
+    - flutter build $BUILD_ALL_ARGS --release
 
-task:
-  << : *FLUTTER_UPGRADE_TEMPLATE
+macos_template: &MACOS_TEMPLATE
+  # Only one macOS task can run in parallel without credits, so use them for
+  # PRs on macOS.
   use_compute_credits: $CIRRUS_USER_COLLABORATOR == 'true'
   osx_instance:
-    image: big-sur-xcode-12.5
-  setup_script:
-    - pod repo update
-  upgrade_script:
-    - git fetch origin master
-    - sudo chmod -R 755 ./script
-  activate_script: pub global activate flutter_plugin_tools
-  create_simulator_script:
-    - xcrun simctl list
-    - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-14-5 | xargs xcrun simctl boot
+    image: big-sur-xcode-13
+
+# Light-workload Linux tasks.
+# These use default machines, with fewer CPUs, to reduce pressure on the
+# concurrency limits.
+task:
+  << : *FLUTTER_UPGRADE_TEMPLATE
+  container:
+    dockerfile: .ci/Dockerfile
+    builder_image_name: docker-builder-linux # gce vm image
+    builder_image_project: flutter-cirrus
+    cluster_name: test-cluster
+    zone: us-central1-a
+    namespace: default
   matrix:
-    - name: build_all_plugins_ipa
+    ### Platform-agnostic tasks ###
+    - name: publishable
+      env:
+        CHANNEL: stable
+        CHANGE_DESC: "$TMPDIR/change-description.txt"
+      version_check_script:
+        # For pre-submit, pass the PR description to the script to allow for
+        # platform version breaking version change justifications.
+        # For post-submit, ignore platform version breaking version changes.
+        # The PR description isn't reliably part of the commit message, so using
+        # the same flags as for presubmit would likely result in false-positive
+        # post-submit failures.
+        - if [[ $CIRRUS_PR == "" ]]; then
+        -   ./script/tool_runner.sh version-check --ignore-platform-interface-breaks
+        - else
+        -   echo "$CIRRUS_CHANGE_MESSAGE" > "$CHANGE_DESC"
+        -   ./script/tool_runner.sh version-check --change-description-file="$CHANGE_DESC"
+        - fi
+      publish_check_script: ./script/tool_runner.sh publish-check
+    - name: format
+      always:
+        format_script: ./script/tool_runner.sh format --fail-on-change
+        pubspec_script: ./script/tool_runner.sh pubspec-check
+    - name: dart_unit_tests
+      env:
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
+      test_script:
+        - ./script/tool_runner.sh test
+    - name: analyze
+      env:
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
       script:
-        - ./script/build_all_plugins_app.sh ios --no-codesign
-    - name: lint_darwin_plugins
-      script: ./script/lint_darwin_plugins.sh
-    - name: build-ipas+drive-examples
+        # DO NOT change the custom-analysis argument here without changing the Dart repo.
+        # See the comment in script/configs/custom_analysis.yaml for details.
+        - ./script/tool_runner.sh analyze --custom-analysis=script/configs/custom_analysis.yaml
+
+
+# Heavy-workload Linux tasks.
+# These use machines with more CPUs and memory, so will reduce parallelization
+# for non-credit runs.
+task:
+  << : *FLUTTER_UPGRADE_TEMPLATE
+  gke_container:
+    dockerfile: .ci/Dockerfile
+    builder_image_name: docker-builder-linux # gce vm image
+    builder_image_project: flutter-cirrus
+    cluster_name: test-cluster
+    zone: us-central1-a
+    namespace: default
+    cpu: 4
+    memory: 12G
+  matrix:
+    ### Android tasks ###
+    - name: android-build_all_plugins
+      env:
+        BUILD_ALL_ARGS: "apk"
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
+      << : *BUILD_ALL_PLUGINS_APP_TEMPLATE
+    - name: android-platform_tests
+      env:
+        matrix:
+          PLUGIN_SHARDING: "--shardIndex 0 --shardCount 4"
+          PLUGIN_SHARDING: "--shardIndex 1 --shardCount 4"
+          PLUGIN_SHARDING: "--shardIndex 2 --shardCount 4"
+          PLUGIN_SHARDING: "--shardIndex 3 --shardCount 4"
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
+      build_script:
+        # Unsetting CIRRUS_CHANGE_MESSAGE and CIRRUS_COMMIT_MESSAGE as they
+        # might include non-ASCII characters which makes Gradle crash.
+        # TODO(stuartmorgan): See https://github.com/flutter/flutter/issues/24935
+        - export CIRRUS_CHANGE_MESSAGE=""
+        - export CIRRUS_COMMIT_MESSAGE=""
+        - ./script/tool_runner.sh build-examples --apk
+      lint_script:
+        # Unsetting CIRRUS_CHANGE_MESSAGE and CIRRUS_COMMIT_MESSAGE as they
+        # might include non-ASCII characters which makes Gradle crash.
+        # TODO(stuartmorgan): See https://github.com/flutter/flutter/issues/24935
+        - export CIRRUS_CHANGE_MESSAGE=""
+        - export CIRRUS_COMMIT_MESSAGE=""
+        - ./script/tool_runner.sh lint-android # must come after build-examples
+      # Upload the full lint results to Cirrus to display in the results UI.
+      always:
+        android-lint_artifacts:
+          path: "**/reports/lint-results-debug.xml"
+          type: text/xml
+          format: android-lint
+
+# macOS tasks.
+task:
+  << : *MACOS_TEMPLATE
+  << : *FLUTTER_UPGRADE_TEMPLATE
+  matrix:
+    ### iOS+macOS tasks ***
+    - name: darwin-lint_podspecs
+      script:
+        - ./script/tool_runner.sh podspecs
+    ### iOS tasks ###
+    - name: ios-build_all_plugins
+      env:
+        BUILD_ALL_ARGS: "ios --no-codesign"
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
+      << : *BUILD_ALL_PLUGINS_APP_TEMPLATE
+    - name: ios-platform_tests
       env:
         PATH: $PATH:/usr/local/bin
         matrix:
@@ -92,6 +177,20 @@ task:
           PLUGIN_SHARDING: "--shardIndex 1 --shardCount 4"
           PLUGIN_SHARDING: "--shardIndex 2 --shardCount 4"
           PLUGIN_SHARDING: "--shardIndex 3 --shardCount 4"
+        matrix:
+          CHANNEL: "master"
+          CHANNEL: "stable"
+      create_simulator_script:
+        - xcrun simctl list
+        - xcrun simctl create Flutter-iPhone com.apple.CoreSimulator.SimDeviceType.iPhone-11 com.apple.CoreSimulator.SimRuntime.iOS-15-0 | xargs xcrun simctl boot
       build_script:
-        - ./script/incremental_build.sh build-examples --ios
-        - ./script/incremental_build.sh drive-examples --ios
+        - ./script/tool_runner.sh build-examples --ios
+      xcode_analyze_script:
+        - ./script/tool_runner.sh xcode-analyze --ios
+      native_test_script:
+        - ./script/tool_runner.sh native-test --ios --ios-destination "platform=iOS Simulator,name=iPhone 11,OS=latest" --exclude=script/configs/exclude_native_ios.yaml
+      drive_script:
+        # `drive-examples` contains integration tests, which changes the UI of the application.
+        # This UI change sometimes affects `xctest`.
+        # So we run `drive-examples` after `native-test`; changing the order will result ci failure.
+        - ./script/tool_runner.sh drive-examples --ios --exclude=script/configs/exclude_integration_ios.yaml
