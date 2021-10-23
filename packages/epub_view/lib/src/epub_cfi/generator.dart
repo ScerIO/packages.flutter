@@ -118,7 +118,7 @@ class EpubCfiGenerator {
   void validatePackageDocument(EpubPackage? packageDocument, String? idRef) {
     // Check that the package document is non-empty
     // and contains an item ref element for the supplied id ref
-    if (packageDocument == null || packageDocument is! EpubPackage) {
+    if (packageDocument == null) {
       throw FlutterError(
           'A package document must be supplied to generate a CFI');
     }

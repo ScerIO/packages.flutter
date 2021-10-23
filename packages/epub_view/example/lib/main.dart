@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'dart:ui';
 
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter/material.dart';

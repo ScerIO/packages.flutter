@@ -1,6 +1,5 @@
 import 'package:epub_view/src/epub_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class EpubReaderTableOfContents extends StatelessWidget {
   const EpubReaderTableOfContents({
