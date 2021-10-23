@@ -94,7 +94,7 @@ class PdfController {
   }) async {
     assert(_pdfViewState != null);
 
-    if (!await hasSupport()) {
+    if (!await hasPdfSupport()) {
       _pdfViewState!
         .._loadingError = Exception(
             'This device does not support the display of PDF documents')
