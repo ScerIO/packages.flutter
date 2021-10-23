@@ -204,7 +204,8 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         break;
       case _PdfViewLoadingState.success:
         content = KeyedSubtree(
-          key: Key('$runtimeType.root.success'),
+          key: Key(
+              '$runtimeType.root.success.${widget.controller._document!.id}'),
           child: _buildLoaded(),
         );
         break;

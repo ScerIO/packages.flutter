@@ -1,7 +1,7 @@
 ## 4.0.0
 
 * Fixed Web support
-* Added dependency `[universal_platform]` dependency work normally web works
+* Added dependency `[universal_platform]` for detect platform anywhere
 * Replace dependency `[device_info]` to `[device_info_plus]`
 * Update pdf.js version in readme
 * Transfer the bitmap through a temporary file for performance save on *android*, *ios* & *macOS* [issue#150](https://github.com/rbcprolabs/packages.flutter/issues/150)

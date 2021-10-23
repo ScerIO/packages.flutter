@@ -1,6 +1,8 @@
-## 4.3.0
+## 5.0.0
 
 * Update photo_view dependency to 0.13.0 [pull#225](https://github.com/rbcprolabs/packages.flutter/pull/225)
+* Fixed another document loading
+* Upgrade `[native_pdf_renderer]` to 4.0.0
 
 ## 4.2.0
 
