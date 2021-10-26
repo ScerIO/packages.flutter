@@ -1,3 +1,7 @@
+## 4.0.1
+
+* Fixed MacOS app crush when used format: PdfPageFormat.WEBP
+
 ## 4.0.0
 
 * Fixed Web support

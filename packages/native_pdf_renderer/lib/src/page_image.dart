@@ -59,9 +59,11 @@ class PdfPageImage {
     required bool removeTempFile,
   }) async {
     if (format == PdfPageFormat.WEBP &&
-        (UniversalPlatform.isIOS || UniversalPlatform.isWindows)) {
+        (UniversalPlatform.isIOS ||
+            UniversalPlatform.isWindows ||
+            UniversalPlatform.isMacOS)) {
       throw PdfNotSupportException(
-        'PDF Renderer on IOS & Windows platforms do not support WEBP format',
+        'PDF Renderer on IOS & Windows, MacOs platforms do not support WEBP format',
       );
     }
 
