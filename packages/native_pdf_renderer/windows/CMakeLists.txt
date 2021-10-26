@@ -3,12 +3,12 @@ set(PROJECT_NAME "native_pdf_renderer")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 set(ARCH "x64")
-set(PDFIUM_VERSION "4475")
+set(PDFIUM_VERSION "4638" CACHE STRING "Version of pdfium used")
 
 if(${PDFIUM_VERSION} STREQUAL "latest")
   set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/latest/download/pdfium-windows-${ARCH}.zip")
 else()
-  set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium%2F${PDFIUM_VERSION}/pdfium-windows-${ARCH}.zip")
+  set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/${PDFIUM_VERSION}/pdfium-windows-${ARCH}.zip")
 endif()
 
 # Download pdfium
