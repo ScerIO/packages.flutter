@@ -63,7 +63,8 @@ class PdfPageImage {
             UniversalPlatform.isWindows ||
             UniversalPlatform.isMacOS)) {
       throw PdfNotSupportException(
-        'PDF Renderer on IOS & Windows, MacOs platforms do not support WEBP format',
+        'PDF Renderer on IOS & Windows, MacOs platforms '
+        'do not support WEBP format',
       );
     }
 
