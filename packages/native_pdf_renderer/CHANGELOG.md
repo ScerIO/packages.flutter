@@ -1,6 +1,7 @@
 ## 4.0.1
 
 * Fixed MacOS app crush when used format: PdfPageFormat.WEBP
+* Fixed Windows build [pull#233](https://github.com/rbcprolabs/packages.flutter/pull/233)
 
 ## 4.0.0
 
