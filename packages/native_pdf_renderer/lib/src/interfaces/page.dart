@@ -3,12 +3,8 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 
 import 'package:extension/enum.dart';
-import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import 'package:synchronized/synchronized.dart';
-import 'package:universal_platform/universal_platform.dart';
 import 'document.dart';
-import 'get_pixels/main.dart';
 
 part 'page_image.dart';
 
@@ -25,20 +21,14 @@ class PdfPageFormat extends Enum<int> {
 
 /// An integral part of a document is its page,
 /// which contains a method [render] for rendering into an image
-class PdfPage {
+abstract class PdfPage {
   PdfPage({
     required this.document,
     required this.id,
     required this.pageNumber,
     required this.width,
     required this.height,
-    required Lock lock,
-  }) : _lock = lock;
-
-  static const MethodChannel _channel =
-      MethodChannel('io.scer.native_pdf_renderer');
-
-  final Lock _lock;
+  });
 
   final PdfDocument document;
 
@@ -75,47 +65,56 @@ class PdfPage {
     Rect? cropRect,
     int quality = 100,
     @visibleForTesting bool removeTempFile = true,
-  }) =>
-      _lock.synchronized<PdfPageImage?>(() async {
-        if (document.isClosed) {
-          throw PdfDocumentAlreadyClosedException();
-        } else if (isClosed) {
-          throw PdfPageAlreadyClosedException();
-        }
+  });
 
-        return PdfPageImage._render(
-          pageId: id,
-          pageNumber: pageNumber,
-          width: width,
-          height: height,
-          format: format,
-          backgroundColor: backgroundColor,
-          crop: cropRect,
-          quality: quality,
-          removeTempFile: removeTempFile,
-        );
-      });
+  // Future<bool> updateTexture({
+  //   int destX = 0,
+  //   int destY = 0,
+  //   int? width,
+  //   int? height,
+  //   int srcX = 0,
+  //   int srcY = 0,
+  //   int? texWidth,
+  //   int? texHeight,
+  //   double? fullWidth,
+  //   double? fullHeight,
+  //   bool backgroundFill = true,
+  //   bool allowAntialiasingIOS = true,
+  // }) async {
+  //   final result = (await _channel.invokeMethod<int>('update.texture', {
+  //     'docId': pdfDocument.id,
+  //     'pageNumber': pageNumber,
+  //     'texId': texId,
+  //     'destX': destX,
+  //     'destY': destY,
+  //     'width': width,
+  //     'height': height,
+  //     'srcX': srcX,
+  //     'srcY': srcY,
+  //     'texWidth': texWidth,
+  //     'texHeight': texHeight,
+  //     'fullWidth': fullWidth,
+  //     'fullHeight': fullHeight,
+  //     'backgroundFill': backgroundFill,
+  //     'allowAntialiasingIOS': allowAntialiasingIOS,
+  //   }))!;
+  //   if (result >= 0) {
+  //     _texWidth = texWidth ?? _texWidth;
+  //     _texHeight = texHeight ?? _texHeight;
+  //   }
+  //   return result >= 0;
+  // }
 
   /// Before open another page it is necessary to close the previous.
   ///
   /// The android platform does not allow parallel rendering.
-  Future<void> close() => _lock.synchronized(() async {
-        if (isClosed) {
-          throw PdfPageAlreadyClosedException();
-        } else {
-          isClosed = true;
-        }
-        return _channel.invokeMethod('close.page', id);
-      });
+  Future<void> close();
 
   @override
-  bool operator ==(Object other) =>
-      other is PdfPage &&
-      other.document.hashCode == document.hashCode &&
-      other.pageNumber == pageNumber;
+  bool operator ==(Object other);
 
   @override
-  int get hashCode => document.hashCode ^ pageNumber;
+  int get hashCode;
 
   @override
   String toString() => '$runtimeType{'

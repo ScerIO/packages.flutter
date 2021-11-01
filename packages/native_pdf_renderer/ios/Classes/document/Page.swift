@@ -41,18 +41,6 @@ class Page {
         }
     }
 
-    var infoMap: [String: Any] {
-        get {
-            return [
-                "documentId": documentId,
-                "id": id,
-                "pageNumber": Int32(number),
-                "width": Int32(width),
-                "height": Int32(height)
-            ]
-        }
-    }
-
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: UIColor, quality: Int) -> Page.DataResult? {
         let box = renderer.getBoxRect(.mediaBox)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)

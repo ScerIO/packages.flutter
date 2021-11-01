@@ -15,6 +15,8 @@ public class NativePdfRendererPlugin: NSObject, FlutterPlugin {
             name: "io.scer.native_pdf_renderer", binaryMessenger: registrar.messenger)
         let instance = NativePdfRendererPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
+        
+        PdfRendererApiSetup();
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {

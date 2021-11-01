@@ -8,7 +8,7 @@ class Document {
   });
 
   final String id;
-  final PdfJsDoc document;
+  final PdfjsDocument document;
 
   int get pagesCount => document.numPages;
 
@@ -19,6 +19,6 @@ class Document {
 
   void close() {}
 
-  Future<PdfJsPage> openPage(int? pageNumber) =>
-      promiseToFuture<PdfJsPage>(document.getPage(pageNumber));
+  Future<PdfjsPage> openPage(int? pageNumber) =>
+      promiseToFuture<PdfjsPage>(document.getPage(pageNumber!));
 }

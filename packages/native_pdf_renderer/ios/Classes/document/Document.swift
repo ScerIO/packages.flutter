@@ -15,15 +15,6 @@ class Document {
         }
     }
     
-    var infoMap: [String: Any] {
-        get {
-            return [
-                "id": id,
-                "pagesCount": Int32(pagesCount)
-            ]
-        }
-    }
-    
     /**
      * Open page by page number (not index!)
      */

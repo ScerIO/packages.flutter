@@ -11,11 +11,11 @@ class Page {
     required this.id,
     required this.documentId,
     required this.page,
-  }) : _viewport = page.getViewport(Settings()..scale = 1.0);
+  }) : _viewport = page.getViewport(PdfjsViewportParams(scale: 1));
 
   final String? id, documentId;
-  final PdfJsPage page;
-  final PdfJsViewport _viewport;
+  final PdfjsPage page;
+  final PdfjsViewport _viewport;
 
   int get number => page.pageNumber;
 
@@ -38,19 +38,20 @@ class Page {
   }) async {
     final html.CanvasElement canvas =
         js.context['document'].createElement('canvas');
-    final html.CanvasRenderingContext2D? context =
-        canvas.getContext('2d') as html.CanvasRenderingContext2D?;
+    final html.CanvasRenderingContext2D context =
+        canvas.getContext('2d') as html.CanvasRenderingContext2D;
 
     final viewport =
-        page.getViewport(Settings()..scale = width / _viewport.width);
+        page.getViewport(PdfjsViewportParams(scale: width / _viewport.width));
 
     canvas
       ..height = viewport.height.toInt()
       ..width = viewport.width.toInt();
 
-    final renderContext = Settings()
-      ..canvasContext = context
-      ..viewport = viewport;
+    final renderContext = PdfjsRenderContext(
+      canvasContext: context,
+      viewport: viewport,
+    );
 
     await promiseToFuture<void>(page.render(renderContext).promise);
 

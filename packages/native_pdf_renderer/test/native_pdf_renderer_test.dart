@@ -114,7 +114,7 @@ void main() {
       // page number 0 - not available
       expect(
         document!.getPage(0),
-        throwsA(isInstanceOf<PdfPageNotFoundException>()),
+        throwsA(isInstanceOf<RangeError>()),
       );
 
       page = await document!.getPage(3);
@@ -136,7 +136,7 @@ void main() {
       // page number 4 more than the document
       expect(
         document!.getPage(4),
-        throwsA(isInstanceOf<PdfPageNotFoundException>()),
+        throwsA(isInstanceOf<RangeError>()),
       );
     });
 

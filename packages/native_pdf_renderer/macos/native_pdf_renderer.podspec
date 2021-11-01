@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'Serge Shkurko' => 'sergeshkurko@outlook.com' }
   s.source           = { :http => 'https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_renderer' }
-  s.source_files     = 'Classes/**/*'
+  s.source_files     = 'Classes/**/*', '../ios/Classes/pigeon/**/*'
   s.dependency 'FlutterMacOS'
 
   s.platform = :osx, '10.11'

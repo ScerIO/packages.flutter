@@ -7,7 +7,7 @@ final Uuid uuid = Uuid();
 
 class DocumentRepository extends Repository<Document> {
   /// Register document in repository
-  Document register(PdfJsDoc renderer) {
+  Document register(PdfjsDocument renderer) {
     final document = Document(
       id: uuid.v1(),
       document: renderer,

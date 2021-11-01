@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import CoreGraphics
 
-public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
+public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererApi {
     static let invalid = NSNumber(value: -1)
     let dispQueue = DispatchQueue(label: "io.scer.native_pdf_renderer")
 
@@ -10,79 +10,148 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
     let pages = PageRepository()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(
-            name: "io.scer.native_pdf_renderer", binaryMessenger: registrar.messenger())
-        let instance = SwiftNativePdfRendererPlugin()
-        registrar.addMethodCallDelegate(instance, channel: channel)
+        let messenger: FlutterBinaryMessenger = registrar.messenger()
+        let api: PdfRendererApi & NSObjectProtocol = SwiftNativePdfRendererPlugin.init()
+        PdfRendererApiSetup(messenger, api);
     }
 
-    public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        switch call.method {
-        case "open.document.data": openDocumentDataHandler(call: call, result: result)
-        case "open.document.file": openDocumentFileHandler(call: call, result: result)
-        case "open.document.asset": openDocumentAssetHandler(call: call, result: result)
-        case "open.page": openPageHandler(call: call, result: result)
-        case "close.document": closeDocumentHandler(call: call, result: result)
-        case "close.page": closePageHandler(call: call, result: result)
-        case "render": renderHandler(call: call, result: result)
-        default: result(FlutterMethodNotImplemented)
-        }
-    }
-
-    func openDocumentDataHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        guard let data = call.arguments as! FlutterStandardTypedData? else {
-            return result(FlutterError(code: "RENDER_ERROR",
+    public func openDocumentDataMessage(_ message: OpenDataMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let data = message?.data else {
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
         }
         guard let renderer = openDataDocument(data: data.data) else {
-            return result(FlutterError(code: "RENDER_ERROR",
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
         }
-        result(documents.register(renderer: renderer).infoMap as NSDictionary)
+
+        let document = documents.register(renderer: renderer);
+        let result = OpenReply.init()
+        result.id = document.id
+        result.pagesCount = NSNumber.init(value: document.pagesCount)
+
+        completion(result, nil);
     }
 
-    func openDocumentFileHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        guard let pdfFilePath = call.arguments as! String? else {
-            return result(FlutterError(code: "RENDER_ERROR",
+    public func openDocumentFileMessage(_ message: OpenPathMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let pdfFilePath = message?.path else {
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
         }
         guard let renderer = openFileDocument(pdfFilePath: pdfFilePath)  else {
-            return result(FlutterError(code: "RENDER_ERROR",
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
         }
-        result(documents.register(renderer: renderer).infoMap as NSDictionary)
+
+        let document = documents.register(renderer: renderer);
+        let result = OpenReply.init()
+        result.id = document.id
+        result.pagesCount = NSNumber.init(value: document.pagesCount)
+
+        completion(result, nil);
     }
 
-    func openDocumentAssetHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        guard let name = call.arguments as! String? else {
-            return result(FlutterError(code: "RENDER_ERROR",
+    public func openDocumentAssetMessage(_ message: OpenPathMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let name = message?.path else {
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
         }
         guard let renderer = openAssetDocument(name: name)  else {
-            return result(FlutterError(code: "RENDER_ERROR",
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
         }
-        result(documents.register(renderer: renderer).infoMap as NSDictionary)
+
+        let document = documents.register(renderer: renderer);
+        let result = OpenReply.init()
+        result.id = document.id
+        result.pagesCount = NSNumber.init(value: document.pagesCount)
+
+        completion(result, nil);
     }
 
-    func closeDocumentHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        if let id = call.arguments as! String? {
+    public func closeDocumentMessage(_ message: IdMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        if let id = message.id {
             documents.close(id: id)
         }
-        result(nil)
+    }
+    
+    public func getPageMessage(_ message: GetPageMessage?, completion: @escaping (GetPageReply?, FlutterError?) -> Void) {
+        do {
+            let documentId = message!.documentId
+            let pageNumber = message!.pageNumber
+            
+            let result = GetPageReply.init();
+
+            let renderer = try documents.get(id: documentId!).openPage(pageNumber: pageNumber as! Int)
+            if (renderer == nil) {
+                return completion(nil, FlutterError(code: "RENDER_ERROR",
+                                           message: "Unexpected error: renderer is nil.",
+                                           details: nil))
+            }
+
+            let page = pages.register(documentId: documentId!, renderer: renderer!)
+            result.id = page.id
+            result.width = NSNumber.init(value: page.width)
+            result.height = NSNumber.init(value: page.height)
+            completion(result, nil)
+        } catch let err {
+            return completion(nil, FlutterError(code: "RENDER_ERROR",
+                                message: "Unexpected error: \(err).",
+                                details: nil))
+        }
     }
 
-    func closePageHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        if let id = call.arguments as! String? {
+    public func renderPageMessage(_ message: RenderPageMessage?, completion: @escaping (RenderPageReply?, FlutterError?) -> Void) {
+        // Set crop if required
+        var cropZone: CGRect? = nil
+        if (message!.crop!.boolValue){
+            let cWidth = message!.cropWidth!.intValue
+            let cHeight = message!.cropHeight!.intValue
+            if (cWidth != message!.width!.intValue || cHeight != message!.height!.intValue){
+                cropZone = CGRect(x: message!.cropX as! Int,
+                                  y: message!.cropY as! Int,
+                                  width: cWidth,
+                                  height: cHeight)
+            }
+        }
+
+        dispQueue.async {
+            let result = RenderPageReply.init()
+            do {
+                let page = try self.pages.get(id: message!.pageId!)
+                if let data = page.render(
+                    width: message!.width!.intValue,
+                    height: message!.height!.intValue,
+                    crop: cropZone,
+                    compressFormat: CompressFormat(rawValue: message!.format!.intValue)!,
+                    backgroundColor: UIColor(hexString: message!.backgroundColor!),
+                    quality: message!.quality!.intValue
+                ) {
+                    result.width = NSNumber.init(value: data.width)
+                    result.height = NSNumber.init(value: data.height)
+                    result.path = data.path
+                }
+            } catch {
+                completion(nil, FlutterError(code: "RENDER_ERROR",
+                                    message: "Unexpected error: \(error).",
+                    details: nil))
+            }
+            DispatchQueue.main.async {
+                completion(result.path != nil ? result : nil, nil)
+            }
+        }
+    }
+
+    public func closePageMessage(_ message: IdMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        if let id = message.id {
             pages.close(id: id)
         }
-        result(nil)
     }
 
     func openDataDocument(data: Data) -> CGPDFDocument? {
@@ -99,88 +168,5 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
             return nil
         }
         return openFileDocument(pdfFilePath: path)
-    }
-
-    func openPageHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        guard let args = call.arguments as! NSDictionary? else {
-            return result(FlutterError(code: "RENDER_ERROR",
-                                       message: "Arguments not sended",
-                                       details: nil))
-        }
-        do {
-            let documentId = args["documentId"] as! String
-            let pageNumber = args["page"] as! Int
-
-            let renderer = try documents.get(id: documentId).openPage(pageNumber: pageNumber)
-            if (renderer == nil) {
-                return result(FlutterError(code: "RENDER_ERROR",
-                                           message: "Unexpected error: renderer is nil.",
-                                           details: nil))
-            }
-
-            let page = pages.register(documentId: documentId, renderer: renderer!)
-            result(page.infoMap as NSDictionary)
-        } catch {
-            result(FlutterError(code: "RENDER_ERROR",
-                                message: "Unexpected error: \(error).",
-                details: nil))
-        }
-    }
-
-    func renderHandler(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        guard let args = call.arguments as! NSDictionary? else {
-            return result(FlutterError(code: "RENDER_ERROR",
-                                       message: "Arguments not sended",
-                                       details: nil))
-        }
-        let pageId = args["pageId"] as! String
-        let width = args["width"] as! Int
-        let height = args["height"] as! Int
-        let crop = args["crop"] as! Bool
-        let compressFormat = args["format"]as! Int
-        let backgroundColor = args["backgroundColor"] as! String
-        let quality = args["quality"] as! Int
-
-        // Set crop if required
-        var cropZone: CGRect? = nil
-        if (crop){
-            let cWidth = args["crop_width"] as! Int
-            let cHeight = args["crop_height"] as! Int
-            if (cWidth != width || cHeight != height){
-                cropZone = CGRect(x: args["crop_x"] as! Int,
-                                  y: args["crop_y"] as! Int,
-                                  width: cWidth,
-                                  height: cHeight)
-            }
-        }
-
-
-        dispQueue.async {
-            var results: [String: Any]? = nil
-            do {
-                let page = try self.pages.get(id: pageId)
-                if let data = page.render(
-                    width: width,
-                    height: height,
-                    crop: cropZone,
-                    compressFormat: CompressFormat(rawValue: compressFormat)!,
-                    backgroundColor: UIColor(hexString: backgroundColor),
-                    quality: quality
-                ) {
-                    results = [
-                        "width": Int32(data.width),
-                        "height": Int32(data.height),
-                        "path": String(data.path)
-                    ]
-                }
-            } catch {
-                result(FlutterError(code: "RENDER_ERROR",
-                                    message: "Unexpected error: \(error).",
-                    details: nil))
-            }
-            DispatchQueue.main.async {
-                result(results != nil ? (results! as NSDictionary) : nil)
-            }
-        }
     }
 }
