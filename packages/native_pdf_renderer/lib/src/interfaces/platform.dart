@@ -6,7 +6,8 @@ import 'package:native_pdf_renderer/src/io/platform_pigeon.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:universal_platform/universal_platform.dart';
 
-/// Abstraction layer to isolate [PdfDocument]/[PdfPageImageTexture] implementation from the public interface.
+/// Abstraction layer to isolate [PdfDocument] implementation
+/// from the public interface.
 abstract class PdfRenderPlatform extends PlatformInterface {
   /// Constructs a PdfRenderPlatform.
   PdfRenderPlatform() : super(token: _token);

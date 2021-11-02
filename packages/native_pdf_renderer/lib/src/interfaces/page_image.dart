@@ -1,8 +1,6 @@
 part of 'page.dart';
 
-/// Object containing a rendered image
-/// in a pre-selected format in [_render] method
-/// of [PdfPage]
+/// Object containing a rendered image of [PdfPage]
 abstract class PdfPageImage {
   const PdfPageImage({
     required this.id,
