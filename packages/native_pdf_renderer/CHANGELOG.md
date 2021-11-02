@@ -1,3 +1,7 @@
+## 4.1.0
+
+* Full refactoring, usage pigeon
+
 ## 4.0.1
 
 * Fixed MacOS app crush when used format: PdfPageFormat.WEBP

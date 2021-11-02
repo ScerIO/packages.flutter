@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:native_pdf_renderer/src/interfaces/document.dart';
 import 'package:native_pdf_renderer/src/io/platform_method_channel.dart';
+import 'package:native_pdf_renderer/src/io/platform_pigeon.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 /// Abstraction layer to isolate [PdfDocument]/[PdfPageImageTexture] implementation from the public interface.
 abstract class PdfRenderPlatform extends PlatformInterface {
@@ -11,7 +13,9 @@ abstract class PdfRenderPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static PdfRenderPlatform _instance = PdfRenderPlatformMethodChannel();
+  static PdfRenderPlatform _instance = UniversalPlatform.isIOS
+      ? PdfRenderPlatformPigeon()
+      : PdfRenderPlatformMethodChannel();
 
   /// The default instance of [PdfRenderPlatform] to use.
   ///

@@ -11,15 +11,15 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   NSDictionary *errorDict = (NSDictionary *)[NSNull null];
   if (error) {
     errorDict = @{
-        @"code": (error.code ? error.code : [NSNull null]),
-        @"message": (error.message ? error.message : [NSNull null]),
-        @"details": (error.details ? error.details : [NSNull null]),
-        };
+      @"code" : (error.code ? error.code : [NSNull null]),
+      @"message" : (error.message ? error.message : [NSNull null]),
+      @"details" : (error.details ? error.details : [NSNull null]),
+    };
   }
   return @{
-      @"result": (result ? result : [NSNull null]),
-      @"error": errorDict,
-      };
+    @"result" : (result ? result : [NSNull null]),
+    @"error" : errorDict,
+  };
 }
 
 @interface OpenDataMessage ()
@@ -65,7 +65,8 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.data ? self.data : [NSNull null]), @"data", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.data ? self.data : [NSNull null]), @"data", nil];
 }
 @end
 
@@ -79,7 +80,8 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.path ? self.path : [NSNull null]), @"path", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.path ? self.path : [NSNull null]), @"path", nil];
 }
 @end
 
@@ -97,7 +99,10 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", (self.pagesCount ? self.pagesCount : [NSNull null]), @"pagesCount", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id",
+                                   (self.pagesCount ? self.pagesCount : [NSNull null]),
+                                   @"pagesCount", nil];
 }
 @end
 
@@ -111,7 +116,8 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", nil];
+  return
+      [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", nil];
 }
 @end
 
@@ -129,7 +135,11 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.documentId ? self.documentId : [NSNull null]), @"documentId", (self.pageNumber ? self.pageNumber : [NSNull null]), @"pageNumber", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.documentId ? self.documentId : [NSNull null]),
+                                   @"documentId",
+                                   (self.pageNumber ? self.pageNumber : [NSNull null]),
+                                   @"pageNumber", nil];
 }
 @end
 
@@ -151,7 +161,10 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", (self.width ? self.width : [NSNull null]), @"width", (self.height ? self.height : [NSNull null]), @"height", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id",
+                                   (self.width ? self.width : [NSNull null]), @"width",
+                                   (self.height ? self.height : [NSNull null]), @"height", nil];
 }
 @end
 
@@ -205,7 +218,19 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.pageId ? self.pageId : [NSNull null]), @"pageId", (self.width ? self.width : [NSNull null]), @"width", (self.height ? self.height : [NSNull null]), @"height", (self.format ? self.format : [NSNull null]), @"format", (self.backgroundColor ? self.backgroundColor : [NSNull null]), @"backgroundColor", (self.crop ? self.crop : [NSNull null]), @"crop", (self.cropX ? self.cropX : [NSNull null]), @"cropX", (self.cropY ? self.cropY : [NSNull null]), @"cropY", (self.cropHeight ? self.cropHeight : [NSNull null]), @"cropHeight", (self.cropWidth ? self.cropWidth : [NSNull null]), @"cropWidth", (self.quality ? self.quality : [NSNull null]), @"quality", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.pageId ? self.pageId : [NSNull null]), @"pageId",
+                                   (self.width ? self.width : [NSNull null]), @"width",
+                                   (self.height ? self.height : [NSNull null]), @"height",
+                                   (self.format ? self.format : [NSNull null]), @"format",
+                                   (self.backgroundColor ? self.backgroundColor : [NSNull null]),
+                                   @"backgroundColor", (self.crop ? self.crop : [NSNull null]),
+                                   @"crop", (self.cropX ? self.cropX : [NSNull null]), @"cropX",
+                                   (self.cropY ? self.cropY : [NSNull null]), @"cropY",
+                                   (self.cropHeight ? self.cropHeight : [NSNull null]),
+                                   @"cropHeight", (self.cropWidth ? self.cropWidth : [NSNull null]),
+                                   @"cropWidth", (self.quality ? self.quality : [NSNull null]),
+                                   @"quality", nil];
 }
 @end
 
@@ -231,43 +256,45 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   return result;
 }
 - (NSDictionary *)toMap {
-  return [NSDictionary dictionaryWithObjectsAndKeys:(self.width ? self.width : [NSNull null]), @"width", (self.height ? self.height : [NSNull null]), @"height", (self.path ? self.path : [NSNull null]), @"path", (self.data ? self.data : [NSNull null]), @"data", nil];
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.width ? self.width : [NSNull null]), @"width",
+                                   (self.height ? self.height : [NSNull null]), @"height",
+                                   (self.path ? self.path : [NSNull null]), @"path",
+                                   (self.data ? self.data : [NSNull null]), @"data", nil];
 }
 @end
 
 @interface PdfRendererApiCodecReader : FlutterStandardReader
 @end
 @implementation PdfRendererApiCodecReader
-- (nullable id)readValueOfType:(UInt8)type 
-{
+- (nullable id)readValueOfType:(UInt8)type {
   switch (type) {
-    case 128:     
+    case 128:
       return [GetPageMessage fromMap:[self readValue]];
-    
-    case 129:     
+
+    case 129:
       return [GetPageReply fromMap:[self readValue]];
-    
-    case 130:     
+
+    case 130:
       return [IdMessage fromMap:[self readValue]];
-    
-    case 131:     
+
+    case 131:
       return [OpenDataMessage fromMap:[self readValue]];
-    
-    case 132:     
+
+    case 132:
       return [OpenPathMessage fromMap:[self readValue]];
-    
-    case 133:     
+
+    case 133:
       return [OpenReply fromMap:[self readValue]];
-    
-    case 134:     
+
+    case 134:
       return [RenderPageMessage fromMap:[self readValue]];
-    
-    case 135:     
+
+    case 135:
       return [RenderPageReply fromMap:[self readValue]];
-    
-    default:    
+
+    default:
       return [super readValueOfType:type];
-    
   }
 }
 @end
@@ -275,41 +302,32 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
 @interface PdfRendererApiCodecWriter : FlutterStandardWriter
 @end
 @implementation PdfRendererApiCodecWriter
-- (void)writeValue:(id)value 
-{
+- (void)writeValue:(id)value {
   if ([value isKindOfClass:[GetPageMessage class]]) {
     [self writeByte:128];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[GetPageReply class]]) {
+  } else if ([value isKindOfClass:[GetPageReply class]]) {
     [self writeByte:129];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[IdMessage class]]) {
+  } else if ([value isKindOfClass:[IdMessage class]]) {
     [self writeByte:130];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[OpenDataMessage class]]) {
+  } else if ([value isKindOfClass:[OpenDataMessage class]]) {
     [self writeByte:131];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[OpenPathMessage class]]) {
+  } else if ([value isKindOfClass:[OpenPathMessage class]]) {
     [self writeByte:132];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[OpenReply class]]) {
+  } else if ([value isKindOfClass:[OpenReply class]]) {
     [self writeByte:133];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[RenderPageMessage class]]) {
+  } else if ([value isKindOfClass:[RenderPageMessage class]]) {
     [self writeByte:134];
     [self writeValue:[value toMap]];
-  } else 
-  if ([value isKindOfClass:[RenderPageReply class]]) {
+  } else if ([value isKindOfClass:[RenderPageReply class]]) {
     [self writeByte:135];
     [self writeValue:[value toMap]];
-  } else 
-{
+  } else {
     [super writeValue:value];
   }
 }
@@ -336,76 +354,85 @@ NSObject<FlutterMessageCodec> *PdfRendererApiGetCodec() {
   return s_sharedObject;
 }
 
-
-void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<PdfRendererApi> *api) {
+void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger,
+                         NSObject<PdfRendererApi> *api) {
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.openDocumentData"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(openDocumentDataMessage:completion:)], @"PdfRendererApi api (%@) doesn't respond to @selector(openDocumentDataMessage:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(openDocumentDataMessage:completion:)],
+                @"PdfRendererApi api (%@) doesn't respond to "
+                @"@selector(openDocumentDataMessage:completion:)",
+                api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         OpenDataMessage *arg_message = args[0];
-        [api openDocumentDataMessage:arg_message completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
-          callback(wrapResult(output, error));
-        }];
+        [api openDocumentDataMessage:arg_message
+                          completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
+                            callback(wrapResult(output, error));
+                          }];
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.openDocumentFile"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(openDocumentFileMessage:completion:)], @"PdfRendererApi api (%@) doesn't respond to @selector(openDocumentFileMessage:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(openDocumentFileMessage:completion:)],
+                @"PdfRendererApi api (%@) doesn't respond to "
+                @"@selector(openDocumentFileMessage:completion:)",
+                api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         OpenPathMessage *arg_message = args[0];
-        [api openDocumentFileMessage:arg_message completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
-          callback(wrapResult(output, error));
-        }];
+        [api openDocumentFileMessage:arg_message
+                          completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
+                            callback(wrapResult(output, error));
+                          }];
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.openDocumentAsset"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(openDocumentAssetMessage:completion:)], @"PdfRendererApi api (%@) doesn't respond to @selector(openDocumentAssetMessage:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(openDocumentAssetMessage:completion:)],
+                @"PdfRendererApi api (%@) doesn't respond to "
+                @"@selector(openDocumentAssetMessage:completion:)",
+                api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         OpenPathMessage *arg_message = args[0];
-        [api openDocumentAssetMessage:arg_message completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
-          callback(wrapResult(output, error));
-        }];
+        [api
+            openDocumentAssetMessage:arg_message
+                          completion:^(OpenReply *_Nullable output, FlutterError *_Nullable error) {
+                            callback(wrapResult(output, error));
+                          }];
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.closeDocument"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(closeDocumentMessage:error:)], @"PdfRendererApi api (%@) doesn't respond to @selector(closeDocumentMessage:error:)", api);
+      NSCAssert(
+          [api respondsToSelector:@selector(closeDocumentMessage:error:)],
+          @"PdfRendererApi api (%@) doesn't respond to @selector(closeDocumentMessage:error:)",
+          api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         IdMessage *arg_message = args[0];
@@ -413,59 +440,62 @@ void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<Pd
         [api closeDocumentMessage:arg_message error:&error];
         callback(wrapResult(nil, error));
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.getPage"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(getPageMessage:completion:)], @"PdfRendererApi api (%@) doesn't respond to @selector(getPageMessage:completion:)", api);
+      NSCAssert([api respondsToSelector:@selector(getPageMessage:completion:)],
+                @"PdfRendererApi api (%@) doesn't respond to @selector(getPageMessage:completion:)",
+                api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         GetPageMessage *arg_message = args[0];
-        [api getPageMessage:arg_message completion:^(GetPageReply *_Nullable output, FlutterError *_Nullable error) {
-          callback(wrapResult(output, error));
-        }];
+        [api getPageMessage:arg_message
+                 completion:^(GetPageReply *_Nullable output, FlutterError *_Nullable error) {
+                   callback(wrapResult(output, error));
+                 }];
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.renderPage"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(renderPageMessage:completion:)], @"PdfRendererApi api (%@) doesn't respond to @selector(renderPageMessage:completion:)", api);
+      NSCAssert(
+          [api respondsToSelector:@selector(renderPageMessage:completion:)],
+          @"PdfRendererApi api (%@) doesn't respond to @selector(renderPageMessage:completion:)",
+          api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         RenderPageMessage *arg_message = args[0];
-        [api renderPageMessage:arg_message completion:^(RenderPageReply *_Nullable output, FlutterError *_Nullable error) {
-          callback(wrapResult(output, error));
-        }];
+        [api renderPageMessage:arg_message
+                    completion:^(RenderPageReply *_Nullable output, FlutterError *_Nullable error) {
+                      callback(wrapResult(output, error));
+                    }];
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
   {
-    FlutterBasicMessageChannel *channel =
-      [FlutterBasicMessageChannel
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
         messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.closePage"
-        binaryMessenger:binaryMessenger
-        codec:PdfRendererApiGetCodec()];
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
     if (api) {
-      NSCAssert([api respondsToSelector:@selector(closePageMessage:error:)], @"PdfRendererApi api (%@) doesn't respond to @selector(closePageMessage:error:)", api);
+      NSCAssert([api respondsToSelector:@selector(closePageMessage:error:)],
+                @"PdfRendererApi api (%@) doesn't respond to @selector(closePageMessage:error:)",
+                api);
       [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
         NSArray *args = message;
         IdMessage *arg_message = args[0];
@@ -473,8 +503,7 @@ void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<Pd
         [api closePageMessage:arg_message error:&error];
         callback(wrapResult(nil, error));
       }];
-    }
-    else {
+    } else {
       [channel setMessageHandler:nil];
     }
   }
