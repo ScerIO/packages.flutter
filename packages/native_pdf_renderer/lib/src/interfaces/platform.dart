@@ -6,6 +6,10 @@ import 'package:native_pdf_renderer/src/io/platform_pigeon.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:universal_platform/universal_platform.dart';
 
+final _usePigeon = UniversalPlatform.isIOS ||
+    UniversalPlatform.isMacOS ||
+    UniversalPlatform.isAndroid;
+
 /// Abstraction layer to isolate [PdfDocument] implementation
 /// from the public interface.
 abstract class PdfRenderPlatform extends PlatformInterface {
@@ -15,9 +19,7 @@ abstract class PdfRenderPlatform extends PlatformInterface {
   static final Object _token = Object();
 
   static PdfRenderPlatform _instance =
-      (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
-          ? PdfRenderPlatformPigeon()
-          : PdfRenderPlatformMethodChannel();
+      _usePigeon ? PdfRenderPlatformPigeon() : PdfRenderPlatformMethodChannel();
 
   /// The default instance of [PdfRenderPlatform] to use.
   ///

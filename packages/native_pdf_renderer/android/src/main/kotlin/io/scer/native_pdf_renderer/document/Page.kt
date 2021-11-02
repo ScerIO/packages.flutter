@@ -10,15 +10,15 @@ import java.io.File
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class Page(
-    private val id: String,
+    val id: String,
     private val documentId: String,
     private val pageRenderer: PdfRenderer.Page
 ) {
     /** Page number in document */
     private val number: Int get() = pageRenderer.index
 
-    private val width: Int get() = pageRenderer.width
-    private val height: Int get() = pageRenderer.height
+    val width: Int get() = pageRenderer.width
+    val height: Int get() = pageRenderer.height
 
     val infoMap: Map<String, Any>
         get() =

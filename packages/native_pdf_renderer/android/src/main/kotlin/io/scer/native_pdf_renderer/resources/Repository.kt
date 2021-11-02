@@ -17,6 +17,8 @@ abstract class Repository<T> {
         items[id] = item
     }
 
+    fun clear() = items.clear()
+
     private fun exist(id: String): Boolean = items.contains(id)
 
     protected open fun close(id: String) {
