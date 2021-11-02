@@ -59,6 +59,16 @@ class RenderPageReply {
 }
 
 /// Rebuild: `flutter pub run pigeon --input pigeons/message.dart`
+/// After build edit ios/Classes/pigeon/messages.m
+/// replace `#import <Flutter/Flutter.h>` to
+/// ````
+// #if os(iOS)
+// #import <Flutter/Flutter.h>
+// #elseif os(macOS)
+// #import <FlutterMacOS/FlutterMacOS.h>
+// #endif
+/// ````
+///
 @HostApi()
 abstract class PdfRendererApi {
   @async

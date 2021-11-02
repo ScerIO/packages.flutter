@@ -1,5 +1,10 @@
+#if os(iOS)
 import Flutter
 import UIKit
+#elseif os(macOS)
+import Cocoa
+import FlutterMacOS
+#endif
 import CoreGraphics
 
 public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererApi {
@@ -10,7 +15,11 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
     let pages = PageRepository()
 
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let messenger: FlutterBinaryMessenger = registrar.messenger()
+        #if os(iOS)
+            let messenger: FlutterBinaryMessenger = registrar.messenger()
+        #elseif os(macOS)
+            let messenger: FlutterBinaryMessenger = registrar.messenger
+        #endif
         let api: PdfRendererApi & NSObjectProtocol = SwiftNativePdfRendererPlugin.init()
         PdfRendererApiSetup(messenger, api);
     }
@@ -80,12 +89,12 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
             documents.close(id: id)
         }
     }
-    
+
     public func getPageMessage(_ message: GetPageMessage?, completion: @escaping (GetPageReply?, FlutterError?) -> Void) {
         do {
             let documentId = message!.documentId
             let pageNumber = message!.pageNumber
-            
+
             let result = GetPageReply.init();
 
             let renderer = try documents.get(id: documentId!).openPage(pageNumber: pageNumber as! Int)
@@ -130,7 +139,7 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
                     height: message!.height!.intValue,
                     crop: cropZone,
                     compressFormat: CompressFormat(rawValue: message!.format!.intValue)!,
-                    backgroundColor: UIColor(hexString: message!.backgroundColor!),
+                    backgroundColor: message!.backgroundColor!,
                     quality: message!.quality!.intValue
                 ) {
                     result.width = NSNumber.init(value: data.width)
@@ -164,9 +173,14 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
     }
 
     func openAssetDocument(name: String) -> CGPDFDocument? {
+        #if os(iOS)
         guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
             return nil
         }
+        #elseif os(macOS)
+        let path = Bundle.main.bundlePath + "/Contents/Frameworks/App.framework/Resources/flutter_assets/" + name;
+        #endif
+        
         return openFileDocument(pdfFilePath: path)
     }
 }

@@ -13,9 +13,10 @@ abstract class PdfRenderPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static PdfRenderPlatform _instance = UniversalPlatform.isIOS
-      ? PdfRenderPlatformPigeon()
-      : PdfRenderPlatformMethodChannel();
+  static PdfRenderPlatform _instance =
+      (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
+          ? PdfRenderPlatformPigeon()
+          : PdfRenderPlatformMethodChannel();
 
   /// The default instance of [PdfRenderPlatform] to use.
   ///

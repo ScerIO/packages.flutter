@@ -1,3 +1,28 @@
+class Document {
+    let id: String
+    let renderer: CGPDFDocument
+    var pages: [CGPDFPage?]
+
+    init(id: String, renderer: CGPDFDocument) {
+        self.id = id
+        self.renderer = renderer
+        self.pages = Array<CGPDFPage?>(repeating: nil, count: renderer.numberOfPages)
+    }
+
+    var pagesCount: Int {
+        get {
+            return renderer.numberOfPages
+        }
+    }
+
+    /**
+     * Open page by page number (not index!)
+     */
+    public func openPage(pageNumber: Int) -> CGPDFPage? {
+        return renderer.page(at: pageNumber)
+    }
+}
+
 class Page {
     let id: String
     let documentId: String
@@ -28,7 +53,7 @@ class Page {
             return Int(boxRect.height)
         }
     }
-    
+
     var rotationAngle: Int32 {
         get {
             return renderer.rotationAngle
@@ -41,31 +66,20 @@ class Page {
         }
     }
 
-    var infoMap: [String: Any] {
-        get {
-            return [
-                "documentId": documentId,
-                "id": id,
-                "pageNumber": Int32(number),
-                "width": Int32(width),
-                "height": Int32(height)
-            ]
-        }
-    }
-
-    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: NSColor, quality: Int) -> Page.DataResult? {
+    func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: String = "#ffffff", quality: Int) -> Page.DataResult? {
         let box = renderer.getBoxRect(.mediaBox)
         let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
-        let stride = width * 4
-        var tempData = Data(repeating: 0, count: stride * height)
+        let stride = Int(bitmapSize.width * 4)
+        var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
         var data: Data?
         var fileURL: URL?
         var success = false
         var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
+        let compressionQuality = CGFloat(quality) / 100
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
-            let context = CGContext(data: rawPtr, width: width, height: height, bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 // Credit: https://stackoverflow.com/a/35985236
                 // We change the context scale to fill completely the destination size (scale-down is handled by getDrawingTransform)
@@ -86,26 +100,46 @@ class Page {
                     }
                 }
                 context!.concatenate(transform)
-                context!.setFillColor(backgroundColor.cgColor)
+                #if os(iOS)
+                context!.setFillColor(UIColor(hexString: backgroundColor).cgColor)
+                #elseif os(macOS)
+                context!.setFillColor(NSColor(hexString: backgroundColor).cgColor)
+                #endif
                 context!.fill(box)
                 context!.drawPDFPage(renderer)
-                var bitmapRep = NSBitmapImageRep(cgImage: context!.makeImage()!)
+                #if os(iOS)
+                var image = UIImage(cgImage: context!.makeImage()!)
+                #elseif os(macOS)
+                var image = NSBitmapImageRep(cgImage: context!.makeImage()!)
+                #endif
 
-                if (crop != nil){
+                if (crop != nil) {
                     // Perform cropping in Core Graphics
-                    let cutImageRef: CGImage = (bitmapRep.cgImage?.cropping(to:crop!))!
-                    bitmapRep = NSBitmapImageRep(cgImage: cutImageRef)
+                    let cutImageRef: CGImage = (image.cgImage?.cropping(to:crop!))!
+                    #if os(iOS)
+                    image = UIImage(cgImage: cutImageRef)
+                    #elseif os(macOS)
+                    image = NSBitmapImageRep(cgImage: cutImageRef)
+                    #endif
                 }
 
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
-                        data = bitmapRep.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [:]) as Data?
+                        #if os(iOS)
+                        data = image.jpegData(compressionQuality: compressionQuality) as Data?
+                        #elseif os(macOS)
+                        data = image.representation(using: NSBitmapImageRep.FileType.jpeg, properties: [:]) as Data?
+                        #endif
                         break;
                     case CompressFormat.PNG:
-                        data = bitmapRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:]) as Data?
+                        #if os(iOS)
+                        data = image.pngData() as Data?
+                        #elseif os(macOS)
+                        data = image.representation(using: NSBitmapImageRep.FileType.png, properties: [:]) as Data?
+                        #endif
                         break;
                 }
-                
+
                 if data != nil {
                     fileURL = writeToTempFile(data: data!, compressFormat: compressFormat)
                 }
@@ -119,7 +153,7 @@ class Page {
             path: (fileURL != nil) ? fileURL!.path : ""
         ) : nil
     }
-    
+
     func writeToTempFile(data: Data, compressFormat: CompressFormat) -> URL? {
         // Create missing directories
         let docURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
