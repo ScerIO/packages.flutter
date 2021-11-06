@@ -1,6 +1,5 @@
 import 'package:explorer/src/data/models/entry.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 IconData iconByEntry(Entry entry) {
   if (entry is ExplorerDirectory) {

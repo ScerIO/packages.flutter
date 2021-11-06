@@ -1,7 +1,7 @@
-import 'package:epubx/epubx.dart';
 import 'package:epub_view/src/utils.dart';
-import 'package:html/dom.dart';
+import 'package:epubx/epubx.dart';
 import 'package:flutter/foundation.dart';
+import 'package:html/dom.dart';
 
 class EpubCfiGenerator {
   const EpubCfiGenerator();
@@ -118,7 +118,7 @@ class EpubCfiGenerator {
   void validatePackageDocument(EpubPackage? packageDocument, String? idRef) {
     // Check that the package document is non-empty
     // and contains an item ref element for the supplied id ref
-    if (packageDocument == null || packageDocument is! EpubPackage) {
+    if (packageDocument == null) {
       throw FlutterError(
           'A package document must be supplied to generate a CFI');
     }

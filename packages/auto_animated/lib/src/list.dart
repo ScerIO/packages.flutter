@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 import 'dart:math' as math;
 
-import 'package:flutter/animation.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'animate_if_visible.dart';

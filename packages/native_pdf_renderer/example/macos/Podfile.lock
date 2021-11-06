@@ -1,22 +1,28 @@
 PODS:
+  - device_info_plus_macos (0.0.1):
+    - FlutterMacOS
   - FlutterMacOS (1.0.0)
-  - native_pdf_renderer (0.0.1):
+  - native_pdf_renderer (4.0.0):
     - FlutterMacOS
 
 DEPENDENCIES:
+  - device_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - native_pdf_renderer (from `Flutter/ephemeral/.symlinks/plugins/native_pdf_renderer/macos`)
 
 EXTERNAL SOURCES:
+  device_info_plus_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   native_pdf_renderer:
     :path: Flutter/ephemeral/.symlinks/plugins/native_pdf_renderer/macos
 
 SPEC CHECKSUMS:
+  device_info_plus_macos: 1ad388a1ef433505c4038e7dd9605aadd1e2e9c7
   FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
-  native_pdf_renderer: dc72346b3bce0ba03e5b7b832ef875fd55bf5e3c
+  native_pdf_renderer: 2711fd67a4b326bbfb2cf83d7cdd7dddd9e09e3e
 
 PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

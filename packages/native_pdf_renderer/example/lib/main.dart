@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 
-void main() => runApp(ExampleApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(ExampleApp());
+}
 
 class ExampleApp extends StatelessWidget {
   Future<PdfDocument> _getDocument() async {
-    if (await hasSupport()) {
+    if (await hasPdfSupport()) {
       return PdfDocument.openAsset('assets/sample.pdf');
     }
 
@@ -99,24 +102,26 @@ class ImageLoader extends StatelessWidget {
   final int pageNumber;
 
   @override
-  Widget build(BuildContext context) => FutureBuilder(
-        future: _renderPage(),
-        builder: (context, AsyncSnapshot<PdfPageImage?> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error'),
-            );
-          }
-          if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+  Widget build(BuildContext context) => Center(
+        child: FutureBuilder(
+          future: _renderPage(),
+          builder: (context, AsyncSnapshot<PdfPageImage?> snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text('Error'),
+              );
+            }
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-          return Image(
-            image: MemoryImage(snapshot.data!.bytes),
-          );
-        },
+            return Image(
+              image: MemoryImage(snapshot.data!.bytes),
+            );
+          },
+        ),
       );
 
   Future<PdfPageImage?> _renderPage() async {

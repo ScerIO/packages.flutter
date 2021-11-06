@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:auto_animated_example/utils.dart';
+import 'package:flutter/material.dart';
 
 class SliverExample extends StatefulWidget {
   @override

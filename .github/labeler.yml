@@ -1,0 +1,18 @@
+'p: auto_animated':
+  - packages/auto_animated/**/*
+
+'p: epub_view':
+  - packages/epub_view/**/*
+
+'p: explorer':
+  - packages/explorer/**/*
+
+'p: flutter_color':
+  - packages/flutter_color/**/*
+
+'p: native_pdf_renderer':
+  - packages/native_pdf_renderer/**/*
+
+'p: native_pdf_view':
+  - packages/native_pdf_view/**/*
+

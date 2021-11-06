@@ -1,6 +1,6 @@
+import 'package:epub_view/src/epub_cfi/parser.dart';
 import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
-import 'package:epub_view/src/epub_cfi/parser.dart';
 
 class EpubCfiInterpreter {
   Element? searchLocalPathForHref(

@@ -4,7 +4,6 @@ import 'package:explorer/src/data/models/state.dart';
 import 'package:explorer/src/explorer.dart';
 import 'package:explorer/src/ui/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 
 /// Location (path) breadcrumbs view for explorer builder

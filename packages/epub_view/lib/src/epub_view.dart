@@ -3,14 +3,12 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:epubx/epubx.dart' hide Image;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' show parse;
-import 'package:flutter_html/flutter_html.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'epub_cfi/generator.dart';
 import 'epub_cfi/interpreter.dart';
@@ -53,7 +51,7 @@ class EpubView extends StatefulWidget {
     this.onDocumentLoaded,
     this.onDocumentError,
     this.chapterPadding = const EdgeInsets.all(8),
-    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 8),
+    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 16),
     this.textStyle = _defaultTextStyle,
     Key? key,
   }) : super(key: key);
@@ -371,8 +369,9 @@ class _EpubViewState extends State<EpubView> {
             ).merge(Style.fromTextStyle(widget.textStyle)),
           },
           customRender: {
-            'img': (context, child, attributes, node) {
-              final url = attributes['src']!.replaceAll('../', '');
+            'img': (context, child) {
+              final url = context.tree.element!.attributes['src']!
+                  .replaceAll('../', '');
               return Image(
                 image: MemoryImage(
                   Uint8List.fromList(widget

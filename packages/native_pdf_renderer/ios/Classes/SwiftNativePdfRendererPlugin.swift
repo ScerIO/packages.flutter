@@ -112,6 +112,12 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
             let pageNumber = args["page"] as! Int
 
             let renderer = try documents.get(id: documentId).openPage(pageNumber: pageNumber)
+            if (renderer == nil) {
+                return result(FlutterError(code: "RENDER_ERROR",
+                                           message: "Unexpected error: renderer is nil.",
+                                           details: nil))
+            }
+
             let page = pages.register(documentId: documentId, renderer: renderer!)
             result(page.infoMap as NSDictionary)
         } catch {
@@ -133,6 +139,7 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
         let crop = args["crop"] as! Bool
         let compressFormat = args["format"]as! Int
         let backgroundColor = args["backgroundColor"] as! String
+        let quality = args["quality"] as! Int
 
         // Set crop if required
         var cropZone: CGRect? = nil
@@ -157,12 +164,13 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin {
                     height: height,
                     crop: cropZone,
                     compressFormat: CompressFormat(rawValue: compressFormat)!,
-                    backgroundColor: UIColor(hexString: backgroundColor)
+                    backgroundColor: UIColor(hexString: backgroundColor),
+                    quality: quality
                 ) {
                     results = [
                         "width": Int32(data.width),
                         "height": Int32(data.height),
-                        "data": FlutterStandardTypedData(bytes: data.data)
+                        "path": String(data.path)
                     ]
                 }
             } catch {

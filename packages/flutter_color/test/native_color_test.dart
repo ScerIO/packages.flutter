@@ -1,6 +1,6 @@
 import 'package:flutter/painting.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_color/flutter_color.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:html' as html;
-import 'dart:io';
 import 'dart:js' as js;
-import 'dart:js_util';
 import 'dart:typed_data';
 
+import 'package:js/js_util.dart';
 import 'package:native_pdf_renderer/src/web/pdfjs.dart';
 
 class Page {

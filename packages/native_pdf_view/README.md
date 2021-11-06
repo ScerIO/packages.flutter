@@ -1,6 +1,6 @@
 # native_pdf_view
 
-`Flutter` Plugin to render PDF and show a PDF file on **Web**, **MacOs 10.11+**, **Android 5.0+** and **iOS**.
+`Flutter` Plugin to render PDF and show a PDF file on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
 ## Showcase
 
@@ -19,11 +19,14 @@ dependencies:
   native_pdf_view: any
 ```
 
-For web add lines in index.html before importing main.dart.js:
+For web add lines in index.html before importing main.dart.js:<br/>
+**note that the files have different names**
 ```html
-<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.min.js"></script>
+<!-- Link to pdf.js library -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 <script type="text/javascript">
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.4.456/pdf.worker.min.js";
+  // Link to worker for pdf.js library
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
 </script>
 ```
 
@@ -167,3 +170,6 @@ This plugin uses the Android native [PdfRenderer](https://developer.android.com/
 
 ### On Ios & MacOs
 This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
+
+### On Windows
+This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
+import 'package:flutter/material.dart';
 
 class LiveIconButtonExample extends StatefulWidget {
   @override

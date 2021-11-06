@@ -26,6 +26,9 @@ class ExplorerController {
   void _attach(_ExplorerState _explorerState) {
     this._explorerState = _explorerState;
     provider.go(provider.entryPath).then((entries) {
+      if (_files.isClosed) {
+        return;
+      }
       _files.add(ExplorerState(
         path: provider.currentPath,
         entries: entries,

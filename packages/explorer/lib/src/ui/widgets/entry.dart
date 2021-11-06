@@ -2,7 +2,6 @@ import 'package:explorer/src/data/models/entry.dart';
 import 'package:explorer/src/utils/icon_by_entry.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 /// Entry view
 class EntryExplorer extends StatefulWidget {
@@ -32,17 +31,60 @@ class _EntryExplorerState extends State<EntryExplorer> {
   @override
   Widget build(BuildContext context) => Listener(
         child: InkWell(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(iconByEntry(widget.entry), size: 48),
-              SizedBox(height: 8),
-              Text(
-                widget.entry.name,
-                textAlign: TextAlign.center,
-              ),
-            ],
+          // child: Flex(
+          //   direction: Axis.vertical,
+          //   // mainAxisAlignment: MainAxisAlignment.center,
+          //   // crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          //     Flexible(
+          //       flex: 2,
+          //       child: Icon(
+          //         iconByEntry(widget.entry),
+          //         size: 48,
+          //       ),
+          //     ),
+          //     SizedBox(height: 8),
+          //     Flexible(
+          //       flex: 1,
+          //       child: Text(
+          //         widget.entry.name,
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final iconTopOffset = (constraints.maxHeight - 48) / 4;
+              return Stack(
+                children: [
+                  Positioned(
+                    top: iconTopOffset,
+                    width: constraints.maxWidth,
+                    child: Icon(
+                      iconByEntry(widget.entry),
+                      size: 48,
+                    ),
+                  ),
+                  // Align(
+                  //   alignment: Alignment.center,
+                  //   child: Icon(
+                  //     iconByEntry(widget.entry),
+                  //     size: 48,
+                  //   ),
+                  // ),
+                  Positioned(
+                    width: constraints.maxWidth,
+                    // entry height / 2 + icon / 2 + padding
+                    top: iconTopOffset + 48,
+                    child: Text(
+                      widget.entry.name,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
           onTap: widget.onPressed,
           onLongPress: () {

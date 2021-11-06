@@ -7,7 +7,8 @@ class ExplorerLocalizationsDelegate
   const ExplorerLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) => ['en', 'ru'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      ['en', 'ru', 'fr'].contains(locale.languageCode);
 
   @override
   Future<ExplorerLocalizations> load(Locale locale) =>

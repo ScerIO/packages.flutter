@@ -12,7 +12,7 @@ class PdfController {
   Future<PdfDocument> document;
 
   /// The page to show when first creating the [PdfView].
-  final int initialPage;
+  late int initialPage;
 
   /// The fraction of the viewport that each page should occupy.
   ///
@@ -94,7 +94,7 @@ class PdfController {
   }) async {
     assert(_pdfViewState != null);
 
-    if (!await hasSupport()) {
+    if (!await hasPdfSupport()) {
       _pdfViewState!
         .._loadingError = Exception(
             'This device does not support the display of PDF documents')
@@ -103,7 +103,11 @@ class PdfController {
     }
 
     try {
+      if (page != initialPage) {
+        _pdfViewState?.widget.onPageChanged?.call(initialPage);
+      }
       _reInitPageController(initialPage);
+      _pdfViewState!._currentIndex = this.initialPage = initialPage;
 
       _document = await documentFuture;
       _pdfViewState!._changeLoadingState(_PdfViewLoadingState.success);
@@ -128,9 +132,9 @@ class PdfController {
       return;
     }
 
-    _reInitPageController(initialPage);
-
     _pdfViewState = pdfViewState;
+
+    _reInitPageController(initialPage);
 
     if (_document == null) {
       _loadDocument(document, initialPage: initialPage);

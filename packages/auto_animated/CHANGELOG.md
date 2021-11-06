@@ -1,3 +1,7 @@
+## 3.0.1
+
+* Upgrade `visibility_detector` dependency
+
 ## 3.0.0
 
 * Null-safety migration & Flutter v2 capability

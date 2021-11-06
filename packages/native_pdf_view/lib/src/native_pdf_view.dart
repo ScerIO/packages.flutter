@@ -1,11 +1,14 @@
 import 'package:flutter/widgets.dart';
+import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:native_pdf_view/src/pdf_page_image_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:synchronized/synchronized.dart';
 
 export 'package:native_pdf_renderer/native_pdf_renderer.dart';
+export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
+export 'package:photo_view/photo_view.dart';
+export 'package:photo_view/photo_view_gallery.dart';
 
 part 'native_pdf_controller.dart';
 
@@ -169,7 +172,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
   Widget _buildLoaded() => PhotoViewGallery.builder(
         builder: (BuildContext context, int index) => widget.pageBuilder(
             _getPageImage(index), index, widget.controller._document!),
-        itemCount: widget.controller._document!.pagesCount,
+        itemCount: widget.controller._document?.pagesCount ?? 0,
         loadingBuilder: (_, __) => widget.pageLoader ?? SizedBox(),
         backgroundDecoration: widget.backgroundDecoration,
         pageController: widget.controller._pageController,
@@ -201,7 +204,8 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         break;
       case _PdfViewLoadingState.success:
         content = KeyedSubtree(
-          key: Key('$runtimeType.root.success'),
+          key: Key(
+              '$runtimeType.root.success.${widget.controller._document!.id}'),
           child: _buildLoaded(),
         );
         break;

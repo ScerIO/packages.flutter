@@ -1,12 +1,14 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:typed_data' show Uint8List;
+import 'dart:ui';
 
 import 'package:extension/enum.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 import 'package:synchronized/synchronized.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'document.dart';
+import 'get_pixels/main.dart';
 
 part 'page_image.dart';
 
@@ -64,12 +66,15 @@ class PdfPage {
   /// [backgroundColor] property like a hex string ('#FFFFFF')
   /// [format] - image type, all types can be seen here [PdfPageFormat]
   /// [cropRect] - render only the necessary part of the image
+  /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
   Future<PdfPageImage?> render({
     required int width,
     required int height,
     PdfPageFormat format = PdfPageFormat.PNG,
     String? backgroundColor,
     Rect? cropRect,
+    int quality = 100,
+    @visibleForTesting bool removeTempFile = true,
   }) =>
       _lock.synchronized<PdfPageImage?>(() async {
         if (document.isClosed) {
@@ -86,6 +91,8 @@ class PdfPage {
           format: format,
           backgroundColor: backgroundColor,
           crop: cropRect,
+          quality: quality,
+          removeTempFile: removeTempFile,
         );
       });
 

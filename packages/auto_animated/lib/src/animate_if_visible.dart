@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -98,6 +97,11 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
         widget.reAnimateOnVisibility &&
         !info.visibleBounds.isEmpty) {
       _controller.reverse();
+    } else if (info.visibleFraction <= widget.visibleFraction &&
+        mounted &&
+        widget.reAnimateOnVisibility &&
+        info.visibleBounds.isEmpty) {
+      _controller.reset();
     }
   }
 }
