@@ -29,12 +29,13 @@ class IdMessage {
 class GetPageMessage {
   String? documentId;
   int? pageNumber;
+  bool? autoCloseAndroid;
 }
 
 class GetPageReply {
   String? id;
-  int? width;
-  int? height;
+  double? width;
+  double? height;
 }
 
 class RenderPageMessage {
@@ -58,13 +59,48 @@ class RenderPageReply {
   Uint8List? data;
 }
 
+class RegisterTextureReply {
+  int? id;
+}
+
+class UpdateTextureMessage {
+  // For android
+  String? documentId;
+  int? pageNumber;
+  // For ios & macos
+  String? pageId;
+  int? textureId;
+  int? width;
+  int? height;
+  String? backgroundColor;
+  int? sourceX;
+  int? sourceY;
+  int? destinationX;
+  int? destinationY;
+  double? fullWidth;
+  double? fullHeight;
+  int? textureWidth;
+  int? textureHeight;
+  bool? allowAntiAliasing;
+}
+
+class ResizeTextureMessage {
+  int? textureId;
+  int? width;
+  int? height;
+}
+
+class UnregisterTextureMessage {
+  int? id;
+}
+
 /// Rebuild: `flutter pub run pigeon --input pigeons/message.dart`
 /// After build edit ios/Classes/pigeon/messages.m
 /// replace `#import <Flutter/Flutter.h>` to
 /// ````
-// #if os(iOS)
+// #if TARGET_OS_IOS
 // #import <Flutter/Flutter.h>
-// #elseif os(macOS)
+// #else
 // #import <FlutterMacOS/FlutterMacOS.h>
 // #endif
 /// ````
@@ -84,4 +120,11 @@ abstract class PdfRendererApi {
   @async
   RenderPageReply renderPage(RenderPageMessage message);
   void closePage(IdMessage message);
+
+  RegisterTextureReply registerTexture();
+  @async
+  void updateTexture(UpdateTextureMessage message);
+  @async
+  void resizeTexture(ResizeTextureMessage message);
+  void unregisterTexture(UnregisterTextureMessage message);
 }

@@ -16,6 +16,10 @@ NS_ASSUME_NONNULL_BEGIN
 @class GetPageReply;
 @class RenderPageMessage;
 @class RenderPageReply;
+@class RegisterTextureReply;
+@class UpdateTextureMessage;
+@class ResizeTextureMessage;
+@class UnregisterTextureMessage;
 
 @interface OpenDataMessage : NSObject
 @property(nonatomic, strong, nullable) FlutterStandardTypedData *data;
@@ -37,6 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface GetPageMessage : NSObject
 @property(nonatomic, copy, nullable) NSString *documentId;
 @property(nonatomic, strong, nullable) NSNumber *pageNumber;
+@property(nonatomic, strong, nullable) NSNumber *autoCloseAndroid;
 @end
 
 @interface GetPageReply : NSObject
@@ -66,6 +71,39 @@ NS_ASSUME_NONNULL_BEGIN
 @property(nonatomic, strong, nullable) FlutterStandardTypedData *data;
 @end
 
+@interface RegisterTextureReply : NSObject
+@property(nonatomic, strong, nullable) NSNumber *id;
+@end
+
+@interface UpdateTextureMessage : NSObject
+@property(nonatomic, copy, nullable) NSString *documentId;
+@property(nonatomic, strong, nullable) NSNumber *pageNumber;
+@property(nonatomic, copy, nullable) NSString *pageId;
+@property(nonatomic, strong, nullable) NSNumber *textureId;
+@property(nonatomic, strong, nullable) NSNumber *width;
+@property(nonatomic, strong, nullable) NSNumber *height;
+@property(nonatomic, copy, nullable) NSString *backgroundColor;
+@property(nonatomic, strong, nullable) NSNumber *sourceX;
+@property(nonatomic, strong, nullable) NSNumber *sourceY;
+@property(nonatomic, strong, nullable) NSNumber *destinationX;
+@property(nonatomic, strong, nullable) NSNumber *destinationY;
+@property(nonatomic, strong, nullable) NSNumber *fullWidth;
+@property(nonatomic, strong, nullable) NSNumber *fullHeight;
+@property(nonatomic, strong, nullable) NSNumber *textureWidth;
+@property(nonatomic, strong, nullable) NSNumber *textureHeight;
+@property(nonatomic, strong, nullable) NSNumber *allowAntiAliasing;
+@end
+
+@interface ResizeTextureMessage : NSObject
+@property(nonatomic, strong, nullable) NSNumber *textureId;
+@property(nonatomic, strong, nullable) NSNumber *width;
+@property(nonatomic, strong, nullable) NSNumber *height;
+@end
+
+@interface UnregisterTextureMessage : NSObject
+@property(nonatomic, strong, nullable) NSNumber *id;
+@end
+
 /// The codec used by PdfRendererApi.
 NSObject<FlutterMessageCodec> *PdfRendererApiGetCodec(void);
 
@@ -83,6 +121,14 @@ NSObject<FlutterMessageCodec> *PdfRendererApiGetCodec(void);
 - (void)renderPageMessage:(nullable RenderPageMessage *)message
                completion:(void (^)(RenderPageReply *_Nullable, FlutterError *_Nullable))completion;
 - (void)closePageMessage:(IdMessage *)message error:(FlutterError *_Nullable *_Nonnull)error;
+- (nullable RegisterTextureReply *)registerTextureWithError:
+    (FlutterError *_Nullable *_Nonnull)error;
+- (void)updateTextureMessage:(nullable UpdateTextureMessage *)message
+                  completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)resizeTextureMessage:(nullable ResizeTextureMessage *)message
+                  completion:(void (^)(FlutterError *_Nullable))completion;
+- (void)unregisterTextureMessage:(UnregisterTextureMessage *)message
+                           error:(FlutterError *_Nullable *_Nonnull)error;
 @end
 
 extern void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger,

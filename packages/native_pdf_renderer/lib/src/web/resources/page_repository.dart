@@ -5,13 +5,13 @@ import 'package:uuid/uuid.dart';
 
 final Uuid uuid = Uuid();
 
-class PageRepository extends Repository<Page> {
+class PageRepository<T> extends Repository<Page> {
   /// Register document in repository
   Page register(String? documentId, PdfjsPage renderer) {
     final page = Page(
       id: uuid.v1(),
       documentId: documentId,
-      page: renderer,
+      renderer: renderer,
     );
     set(page.id, page);
     return page;

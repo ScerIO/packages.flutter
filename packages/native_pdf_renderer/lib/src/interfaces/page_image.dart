@@ -48,12 +48,3 @@ abstract class PdfPageImage {
       'height: $height, '
       'bytesLength: ${bytes.lengthInBytes}}';
 }
-
-class PdfNotSupportException implements Exception {
-  PdfNotSupportException(this.message);
-
-  final String message;
-
-  @override
-  String toString() => '$runtimeType: $message';
-}

@@ -10,14 +10,14 @@ class Page {
   Page({
     required this.id,
     required this.documentId,
-    required this.page,
-  }) : _viewport = page.getViewport(PdfjsViewportParams(scale: 1));
+    required this.renderer,
+  }) : _viewport = renderer.getViewport(PdfjsViewportParams(scale: 1));
 
   final String? id, documentId;
-  final PdfjsPage page;
+  final PdfjsPage renderer;
   final PdfjsViewport _viewport;
 
-  int get number => page.pageNumber;
+  int get number => renderer.pageNumber;
 
   int get width => _viewport.width.toInt();
   int get height => _viewport.height.toInt();
@@ -41,8 +41,8 @@ class Page {
     final html.CanvasRenderingContext2D context =
         canvas.getContext('2d') as html.CanvasRenderingContext2D;
 
-    final viewport =
-        page.getViewport(PdfjsViewportParams(scale: width / _viewport.width));
+    final viewport = renderer
+        .getViewport(PdfjsViewportParams(scale: width / _viewport.width));
 
     canvas
       ..height = viewport.height.toInt()
@@ -53,7 +53,7 @@ class Page {
       viewport: viewport,
     );
 
-    await promiseToFuture<void>(page.render(renderContext).promise);
+    await promiseToFuture<void>(renderer.render(renderContext).promise);
 
     // Convert the image to PNG
     final completer = Completer<void>();

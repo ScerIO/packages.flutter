@@ -159,10 +159,21 @@ public class Pigeon {
       this.pageNumber = setterArg;
     }
 
+    private Boolean autoCloseAndroid;
+
+    public Boolean getAutoCloseAndroid() {
+      return autoCloseAndroid;
+    }
+
+    public void setAutoCloseAndroid(Boolean setterArg) {
+      this.autoCloseAndroid = setterArg;
+    }
+
     Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("documentId", documentId);
       toMapResult.put("pageNumber", pageNumber);
+      toMapResult.put("autoCloseAndroid", autoCloseAndroid);
       return toMapResult;
     }
 
@@ -175,6 +186,8 @@ public class Pigeon {
           (pageNumber == null)
               ? null
               : ((pageNumber instanceof Integer) ? (Integer) pageNumber : (Long) pageNumber);
+      Object autoCloseAndroid = map.get("autoCloseAndroid");
+      fromMapResult.autoCloseAndroid = (Boolean) autoCloseAndroid;
       return fromMapResult;
     }
   }
@@ -191,23 +204,23 @@ public class Pigeon {
       this.id = setterArg;
     }
 
-    private Long width;
+    private Double width;
 
-    public Long getWidth() {
+    public Double getWidth() {
       return width;
     }
 
-    public void setWidth(Long setterArg) {
+    public void setWidth(Double setterArg) {
       this.width = setterArg;
     }
 
-    private Long height;
+    private Double height;
 
-    public Long getHeight() {
+    public Double getHeight() {
       return height;
     }
 
-    public void setHeight(Long setterArg) {
+    public void setHeight(Double setterArg) {
       this.height = setterArg;
     }
 
@@ -224,13 +237,9 @@ public class Pigeon {
       Object id = map.get("id");
       fromMapResult.id = (String) id;
       Object width = map.get("width");
-      fromMapResult.width =
-          (width == null) ? null : ((width instanceof Integer) ? (Integer) width : (Long) width);
+      fromMapResult.width = (Double) width;
       Object height = map.get("height");
-      fromMapResult.height =
-          (height == null)
-              ? null
-              : ((height instanceof Integer) ? (Integer) height : (Long) height);
+      fromMapResult.height = (Double) height;
       return fromMapResult;
     }
   }
@@ -478,6 +487,368 @@ public class Pigeon {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class RegisterTextureReply {
+    private Long id;
+
+    public Long getId() {
+      return id;
+    }
+
+    public void setId(Long setterArg) {
+      this.id = setterArg;
+    }
+
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("id", id);
+      return toMapResult;
+    }
+
+    static RegisterTextureReply fromMap(Map<String, Object> map) {
+      RegisterTextureReply fromMapResult = new RegisterTextureReply();
+      Object id = map.get("id");
+      fromMapResult.id = (id == null) ? null : ((id instanceof Integer) ? (Integer) id : (Long) id);
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class UpdateTextureMessage {
+    private String documentId;
+
+    public String getDocumentId() {
+      return documentId;
+    }
+
+    public void setDocumentId(String setterArg) {
+      this.documentId = setterArg;
+    }
+
+    private Long pageNumber;
+
+    public Long getPageNumber() {
+      return pageNumber;
+    }
+
+    public void setPageNumber(Long setterArg) {
+      this.pageNumber = setterArg;
+    }
+
+    private String pageId;
+
+    public String getPageId() {
+      return pageId;
+    }
+
+    public void setPageId(String setterArg) {
+      this.pageId = setterArg;
+    }
+
+    private Long textureId;
+
+    public Long getTextureId() {
+      return textureId;
+    }
+
+    public void setTextureId(Long setterArg) {
+      this.textureId = setterArg;
+    }
+
+    private Long width;
+
+    public Long getWidth() {
+      return width;
+    }
+
+    public void setWidth(Long setterArg) {
+      this.width = setterArg;
+    }
+
+    private Long height;
+
+    public Long getHeight() {
+      return height;
+    }
+
+    public void setHeight(Long setterArg) {
+      this.height = setterArg;
+    }
+
+    private String backgroundColor;
+
+    public String getBackgroundColor() {
+      return backgroundColor;
+    }
+
+    public void setBackgroundColor(String setterArg) {
+      this.backgroundColor = setterArg;
+    }
+
+    private Long sourceX;
+
+    public Long getSourceX() {
+      return sourceX;
+    }
+
+    public void setSourceX(Long setterArg) {
+      this.sourceX = setterArg;
+    }
+
+    private Long sourceY;
+
+    public Long getSourceY() {
+      return sourceY;
+    }
+
+    public void setSourceY(Long setterArg) {
+      this.sourceY = setterArg;
+    }
+
+    private Long destinationX;
+
+    public Long getDestinationX() {
+      return destinationX;
+    }
+
+    public void setDestinationX(Long setterArg) {
+      this.destinationX = setterArg;
+    }
+
+    private Long destinationY;
+
+    public Long getDestinationY() {
+      return destinationY;
+    }
+
+    public void setDestinationY(Long setterArg) {
+      this.destinationY = setterArg;
+    }
+
+    private Double fullWidth;
+
+    public Double getFullWidth() {
+      return fullWidth;
+    }
+
+    public void setFullWidth(Double setterArg) {
+      this.fullWidth = setterArg;
+    }
+
+    private Double fullHeight;
+
+    public Double getFullHeight() {
+      return fullHeight;
+    }
+
+    public void setFullHeight(Double setterArg) {
+      this.fullHeight = setterArg;
+    }
+
+    private Long textureWidth;
+
+    public Long getTextureWidth() {
+      return textureWidth;
+    }
+
+    public void setTextureWidth(Long setterArg) {
+      this.textureWidth = setterArg;
+    }
+
+    private Long textureHeight;
+
+    public Long getTextureHeight() {
+      return textureHeight;
+    }
+
+    public void setTextureHeight(Long setterArg) {
+      this.textureHeight = setterArg;
+    }
+
+    private Boolean allowAntiAliasing;
+
+    public Boolean getAllowAntiAliasing() {
+      return allowAntiAliasing;
+    }
+
+    public void setAllowAntiAliasing(Boolean setterArg) {
+      this.allowAntiAliasing = setterArg;
+    }
+
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("documentId", documentId);
+      toMapResult.put("pageNumber", pageNumber);
+      toMapResult.put("pageId", pageId);
+      toMapResult.put("textureId", textureId);
+      toMapResult.put("width", width);
+      toMapResult.put("height", height);
+      toMapResult.put("backgroundColor", backgroundColor);
+      toMapResult.put("sourceX", sourceX);
+      toMapResult.put("sourceY", sourceY);
+      toMapResult.put("destinationX", destinationX);
+      toMapResult.put("destinationY", destinationY);
+      toMapResult.put("fullWidth", fullWidth);
+      toMapResult.put("fullHeight", fullHeight);
+      toMapResult.put("textureWidth", textureWidth);
+      toMapResult.put("textureHeight", textureHeight);
+      toMapResult.put("allowAntiAliasing", allowAntiAliasing);
+      return toMapResult;
+    }
+
+    static UpdateTextureMessage fromMap(Map<String, Object> map) {
+      UpdateTextureMessage fromMapResult = new UpdateTextureMessage();
+      Object documentId = map.get("documentId");
+      fromMapResult.documentId = (String) documentId;
+      Object pageNumber = map.get("pageNumber");
+      fromMapResult.pageNumber =
+          (pageNumber == null)
+              ? null
+              : ((pageNumber instanceof Integer) ? (Integer) pageNumber : (Long) pageNumber);
+      Object pageId = map.get("pageId");
+      fromMapResult.pageId = (String) pageId;
+      Object textureId = map.get("textureId");
+      fromMapResult.textureId =
+          (textureId == null)
+              ? null
+              : ((textureId instanceof Integer) ? (Integer) textureId : (Long) textureId);
+      Object width = map.get("width");
+      fromMapResult.width =
+          (width == null) ? null : ((width instanceof Integer) ? (Integer) width : (Long) width);
+      Object height = map.get("height");
+      fromMapResult.height =
+          (height == null)
+              ? null
+              : ((height instanceof Integer) ? (Integer) height : (Long) height);
+      Object backgroundColor = map.get("backgroundColor");
+      fromMapResult.backgroundColor = (String) backgroundColor;
+      Object sourceX = map.get("sourceX");
+      fromMapResult.sourceX =
+          (sourceX == null)
+              ? null
+              : ((sourceX instanceof Integer) ? (Integer) sourceX : (Long) sourceX);
+      Object sourceY = map.get("sourceY");
+      fromMapResult.sourceY =
+          (sourceY == null)
+              ? null
+              : ((sourceY instanceof Integer) ? (Integer) sourceY : (Long) sourceY);
+      Object destinationX = map.get("destinationX");
+      fromMapResult.destinationX =
+          (destinationX == null)
+              ? null
+              : ((destinationX instanceof Integer) ? (Integer) destinationX : (Long) destinationX);
+      Object destinationY = map.get("destinationY");
+      fromMapResult.destinationY =
+          (destinationY == null)
+              ? null
+              : ((destinationY instanceof Integer) ? (Integer) destinationY : (Long) destinationY);
+      Object fullWidth = map.get("fullWidth");
+      fromMapResult.fullWidth = (Double) fullWidth;
+      Object fullHeight = map.get("fullHeight");
+      fromMapResult.fullHeight = (Double) fullHeight;
+      Object textureWidth = map.get("textureWidth");
+      fromMapResult.textureWidth =
+          (textureWidth == null)
+              ? null
+              : ((textureWidth instanceof Integer) ? (Integer) textureWidth : (Long) textureWidth);
+      Object textureHeight = map.get("textureHeight");
+      fromMapResult.textureHeight =
+          (textureHeight == null)
+              ? null
+              : ((textureHeight instanceof Integer)
+                  ? (Integer) textureHeight
+                  : (Long) textureHeight);
+      Object allowAntiAliasing = map.get("allowAntiAliasing");
+      fromMapResult.allowAntiAliasing = (Boolean) allowAntiAliasing;
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class ResizeTextureMessage {
+    private Long textureId;
+
+    public Long getTextureId() {
+      return textureId;
+    }
+
+    public void setTextureId(Long setterArg) {
+      this.textureId = setterArg;
+    }
+
+    private Long width;
+
+    public Long getWidth() {
+      return width;
+    }
+
+    public void setWidth(Long setterArg) {
+      this.width = setterArg;
+    }
+
+    private Long height;
+
+    public Long getHeight() {
+      return height;
+    }
+
+    public void setHeight(Long setterArg) {
+      this.height = setterArg;
+    }
+
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("textureId", textureId);
+      toMapResult.put("width", width);
+      toMapResult.put("height", height);
+      return toMapResult;
+    }
+
+    static ResizeTextureMessage fromMap(Map<String, Object> map) {
+      ResizeTextureMessage fromMapResult = new ResizeTextureMessage();
+      Object textureId = map.get("textureId");
+      fromMapResult.textureId =
+          (textureId == null)
+              ? null
+              : ((textureId instanceof Integer) ? (Integer) textureId : (Long) textureId);
+      Object width = map.get("width");
+      fromMapResult.width =
+          (width == null) ? null : ((width instanceof Integer) ? (Integer) width : (Long) width);
+      Object height = map.get("height");
+      fromMapResult.height =
+          (height == null)
+              ? null
+              : ((height instanceof Integer) ? (Integer) height : (Long) height);
+      return fromMapResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static class UnregisterTextureMessage {
+    private Long id;
+
+    public Long getId() {
+      return id;
+    }
+
+    public void setId(Long setterArg) {
+      this.id = setterArg;
+    }
+
+    Map<String, Object> toMap() {
+      Map<String, Object> toMapResult = new HashMap<>();
+      toMapResult.put("id", id);
+      return toMapResult;
+    }
+
+    static UnregisterTextureMessage fromMap(Map<String, Object> map) {
+      UnregisterTextureMessage fromMapResult = new UnregisterTextureMessage();
+      Object id = map.get("id");
+      fromMapResult.id = (id == null) ? null : ((id instanceof Integer) ? (Integer) id : (Long) id);
+      return fromMapResult;
+    }
+  }
+
   public interface Result<T> {
     void success(T result);
 
@@ -511,10 +882,22 @@ public class Pigeon {
           return OpenReply.fromMap((Map<String, Object>) readValue(buffer));
 
         case (byte) 134:
-          return RenderPageMessage.fromMap((Map<String, Object>) readValue(buffer));
+          return RegisterTextureReply.fromMap((Map<String, Object>) readValue(buffer));
 
         case (byte) 135:
+          return RenderPageMessage.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte) 136:
           return RenderPageReply.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte) 137:
+          return ResizeTextureMessage.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte) 138:
+          return UnregisterTextureMessage.fromMap((Map<String, Object>) readValue(buffer));
+
+        case (byte) 139:
+          return UpdateTextureMessage.fromMap((Map<String, Object>) readValue(buffer));
 
         default:
           return super.readValueOfType(type, buffer);
@@ -541,12 +924,24 @@ public class Pigeon {
       } else if (value instanceof OpenReply) {
         stream.write(133);
         writeValue(stream, ((OpenReply) value).toMap());
-      } else if (value instanceof RenderPageMessage) {
+      } else if (value instanceof RegisterTextureReply) {
         stream.write(134);
+        writeValue(stream, ((RegisterTextureReply) value).toMap());
+      } else if (value instanceof RenderPageMessage) {
+        stream.write(135);
         writeValue(stream, ((RenderPageMessage) value).toMap());
       } else if (value instanceof RenderPageReply) {
-        stream.write(135);
+        stream.write(136);
         writeValue(stream, ((RenderPageReply) value).toMap());
+      } else if (value instanceof ResizeTextureMessage) {
+        stream.write(137);
+        writeValue(stream, ((ResizeTextureMessage) value).toMap());
+      } else if (value instanceof UnregisterTextureMessage) {
+        stream.write(138);
+        writeValue(stream, ((UnregisterTextureMessage) value).toMap());
+      } else if (value instanceof UpdateTextureMessage) {
+        stream.write(139);
+        writeValue(stream, ((UpdateTextureMessage) value).toMap());
       } else {
         super.writeValue(stream, value);
       }
@@ -568,6 +963,14 @@ public class Pigeon {
     void renderPage(RenderPageMessage message, Result<RenderPageReply> result);
 
     void closePage(IdMessage message);
+
+    RegisterTextureReply registerTexture();
+
+    void updateTexture(UpdateTextureMessage message, Result<Void> result);
+
+    void resizeTexture(ResizeTextureMessage message, Result<Void> result);
+
+    void unregisterTexture(UnregisterTextureMessage message);
 
     /** The codec used by PdfRendererApi. */
     static MessageCodec<Object> getCodec() {
@@ -801,6 +1204,125 @@ public class Pigeon {
                     throw new NullPointerException("messageArg unexpectedly null.");
                   }
                   api.closePage(messageArg);
+                  wrapped.put("result", null);
+                } catch (Error | RuntimeException exception) {
+                  wrapped.put("error", wrapError(exception));
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.PdfRendererApi.registerTexture", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                Map<String, Object> wrapped = new HashMap<>();
+                try {
+                  RegisterTextureReply output = api.registerTexture();
+                  wrapped.put("result", output);
+                } catch (Error | RuntimeException exception) {
+                  wrapped.put("error", wrapError(exception));
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.PdfRendererApi.updateTexture", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                Map<String, Object> wrapped = new HashMap<>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  UpdateTextureMessage messageArg = (UpdateTextureMessage) args.get(0);
+                  if (messageArg == null) {
+                    throw new NullPointerException("messageArg unexpectedly null.");
+                  }
+                  Result<Void> resultCallback =
+                      new Result<Void>() {
+                        public void success(Void result) {
+                          wrapped.put("result", null);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          wrapped.put("error", wrapError(error));
+                          reply.reply(wrapped);
+                        }
+                      };
+
+                  api.updateTexture(messageArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  wrapped.put("error", wrapError(exception));
+                  reply.reply(wrapped);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.PdfRendererApi.resizeTexture", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                Map<String, Object> wrapped = new HashMap<>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  ResizeTextureMessage messageArg = (ResizeTextureMessage) args.get(0);
+                  if (messageArg == null) {
+                    throw new NullPointerException("messageArg unexpectedly null.");
+                  }
+                  Result<Void> resultCallback =
+                      new Result<Void>() {
+                        public void success(Void result) {
+                          wrapped.put("result", null);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          wrapped.put("error", wrapError(error));
+                          reply.reply(wrapped);
+                        }
+                      };
+
+                  api.resizeTexture(messageArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  wrapped.put("error", wrapError(exception));
+                  reply.reply(wrapped);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.PdfRendererApi.unregisterTexture", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                Map<String, Object> wrapped = new HashMap<>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  UnregisterTextureMessage messageArg = (UnregisterTextureMessage) args.get(0);
+                  if (messageArg == null) {
+                    throw new NullPointerException("messageArg unexpectedly null.");
+                  }
+                  api.unregisterTexture(messageArg);
                   wrapped.put("result", null);
                 } catch (Error | RuntimeException exception) {
                   wrapped.put("error", wrapError(exception));

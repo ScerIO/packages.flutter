@@ -12,8 +12,8 @@ import java.io.File
 class Page(
     val id: String,
     private val documentId: String,
-    private val pageRenderer: PdfRenderer.Page
-) {
+    val pageRenderer: PdfRenderer.Page
+    ) {
     /** Page number in document */
     private val number: Int get() = pageRenderer.index
 
@@ -40,8 +40,8 @@ class Page(
             height,
             Bitmap.Config.ARGB_8888)
         bitmap.eraseColor(background)
-
         pageRenderer.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+
 
         if (crop && (cropW != width || cropH != height)) {
             val cropped = Bitmap.createBitmap(bitmap, cropX, cropY, cropW, cropH)

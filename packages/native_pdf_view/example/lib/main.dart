@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  static final int _initialPage = 2;
+  static const int _initialPage = 2;
   int _actualPageNumber = _initialPage, _allPagesCount = 0;
   bool isSampleDoc = true;
-  PdfController _pdfController;
+  late PdfController _pdfController;
 
   @override
   void initState() {
@@ -34,14 +36,14 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(primaryColor: Colors.white),
         home: Scaffold(
           appBar: AppBar(
-            title: Text('PdfView example'),
+            title: const Text('PdfView example'),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.navigate_before),
+                icon: const Icon(Icons.navigate_before),
                 onPressed: () {
                   _pdfController.previousPage(
                     curve: Curves.ease,
-                    duration: Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 100),
                   );
                 },
               ),
@@ -49,20 +51,20 @@ class _MyAppState extends State<MyApp> {
                 alignment: Alignment.center,
                 child: Text(
                   '$_actualPageNumber/$_allPagesCount',
-                  style: TextStyle(fontSize: 22),
+                  style: const TextStyle(fontSize: 22),
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.navigate_next),
+                icon: const Icon(Icons.navigate_next),
                 onPressed: () {
                   _pdfController.nextPage(
                     curve: Curves.ease,
-                    duration: Duration(milliseconds: 100),
+                    duration: const Duration(milliseconds: 100),
                   );
                 },
               ),
               IconButton(
-                icon: Icon(Icons.refresh),
+                icon: const Icon(Icons.refresh),
                 onPressed: () {
                   if (isSampleDoc) {
                     _pdfController.loadDocument(
@@ -77,8 +79,8 @@ class _MyAppState extends State<MyApp> {
             ],
           ),
           body: PdfView(
-            documentLoader: Center(child: CircularProgressIndicator()),
-            pageLoader: Center(child: CircularProgressIndicator()),
+            documentLoader: const Center(child: CircularProgressIndicator()),
+            pageLoader: const Center(child: CircularProgressIndicator()),
             controller: _pdfController,
             onDocumentLoaded: (document) {
               setState(() {

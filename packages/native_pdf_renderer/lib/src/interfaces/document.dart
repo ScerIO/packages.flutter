@@ -44,7 +44,10 @@ abstract class PdfDocument {
       PdfRenderPlatform.instance.openData(data);
 
   /// Get page object. The first page is 1.
-  Future<PdfPage> getPage(int pageNumber);
+  Future<PdfPage> getPage(
+    int pageNumber, {
+    bool autoCloseAndroid = false,
+  });
 
   @override
   bool operator ==(Object other);

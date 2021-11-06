@@ -58,6 +58,22 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
 + (RenderPageReply *)fromMap:(NSDictionary *)dict;
 - (NSDictionary *)toMap;
 @end
+@interface RegisterTextureReply ()
++ (RegisterTextureReply *)fromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
+@interface UpdateTextureMessage ()
++ (UpdateTextureMessage *)fromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
+@interface ResizeTextureMessage ()
++ (ResizeTextureMessage *)fromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
+@interface UnregisterTextureMessage ()
++ (UnregisterTextureMessage *)fromMap:(NSDictionary *)dict;
+- (NSDictionary *)toMap;
+@end
 
 @implementation OpenDataMessage
 + (OpenDataMessage *)fromMap:(NSDictionary *)dict {
@@ -136,6 +152,10 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   if ((NSNull *)result.pageNumber == [NSNull null]) {
     result.pageNumber = nil;
   }
+  result.autoCloseAndroid = dict[@"autoCloseAndroid"];
+  if ((NSNull *)result.autoCloseAndroid == [NSNull null]) {
+    result.autoCloseAndroid = nil;
+  }
   return result;
 }
 - (NSDictionary *)toMap {
@@ -143,7 +163,9 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
       dictionaryWithObjectsAndKeys:(self.documentId ? self.documentId : [NSNull null]),
                                    @"documentId",
                                    (self.pageNumber ? self.pageNumber : [NSNull null]),
-                                   @"pageNumber", nil];
+                                   @"pageNumber",
+                                   (self.autoCloseAndroid ? self.autoCloseAndroid : [NSNull null]),
+                                   @"autoCloseAndroid", nil];
 }
 @end
 
@@ -268,6 +290,160 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
 }
 @end
 
+@implementation RegisterTextureReply
++ (RegisterTextureReply *)fromMap:(NSDictionary *)dict {
+  RegisterTextureReply *result = [[RegisterTextureReply alloc] init];
+  result.id = dict[@"id"];
+  if ((NSNull *)result.id == [NSNull null]) {
+    result.id = nil;
+  }
+  return result;
+}
+- (NSDictionary *)toMap {
+  return
+      [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", nil];
+}
+@end
+
+@implementation UpdateTextureMessage
++ (UpdateTextureMessage *)fromMap:(NSDictionary *)dict {
+  UpdateTextureMessage *result = [[UpdateTextureMessage alloc] init];
+  result.documentId = dict[@"documentId"];
+  if ((NSNull *)result.documentId == [NSNull null]) {
+    result.documentId = nil;
+  }
+  result.pageNumber = dict[@"pageNumber"];
+  if ((NSNull *)result.pageNumber == [NSNull null]) {
+    result.pageNumber = nil;
+  }
+  result.pageId = dict[@"pageId"];
+  if ((NSNull *)result.pageId == [NSNull null]) {
+    result.pageId = nil;
+  }
+  result.textureId = dict[@"textureId"];
+  if ((NSNull *)result.textureId == [NSNull null]) {
+    result.textureId = nil;
+  }
+  result.width = dict[@"width"];
+  if ((NSNull *)result.width == [NSNull null]) {
+    result.width = nil;
+  }
+  result.height = dict[@"height"];
+  if ((NSNull *)result.height == [NSNull null]) {
+    result.height = nil;
+  }
+  result.backgroundColor = dict[@"backgroundColor"];
+  if ((NSNull *)result.backgroundColor == [NSNull null]) {
+    result.backgroundColor = nil;
+  }
+  result.sourceX = dict[@"sourceX"];
+  if ((NSNull *)result.sourceX == [NSNull null]) {
+    result.sourceX = nil;
+  }
+  result.sourceY = dict[@"sourceY"];
+  if ((NSNull *)result.sourceY == [NSNull null]) {
+    result.sourceY = nil;
+  }
+  result.destinationX = dict[@"destinationX"];
+  if ((NSNull *)result.destinationX == [NSNull null]) {
+    result.destinationX = nil;
+  }
+  result.destinationY = dict[@"destinationY"];
+  if ((NSNull *)result.destinationY == [NSNull null]) {
+    result.destinationY = nil;
+  }
+  result.fullWidth = dict[@"fullWidth"];
+  if ((NSNull *)result.fullWidth == [NSNull null]) {
+    result.fullWidth = nil;
+  }
+  result.fullHeight = dict[@"fullHeight"];
+  if ((NSNull *)result.fullHeight == [NSNull null]) {
+    result.fullHeight = nil;
+  }
+  result.textureWidth = dict[@"textureWidth"];
+  if ((NSNull *)result.textureWidth == [NSNull null]) {
+    result.textureWidth = nil;
+  }
+  result.textureHeight = dict[@"textureHeight"];
+  if ((NSNull *)result.textureHeight == [NSNull null]) {
+    result.textureHeight = nil;
+  }
+  result.allowAntiAliasing = dict[@"allowAntiAliasing"];
+  if ((NSNull *)result.allowAntiAliasing == [NSNull null]) {
+    result.allowAntiAliasing = nil;
+  }
+  return result;
+}
+- (NSDictionary *)toMap {
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.documentId ? self.documentId : [NSNull null]),
+                                   @"documentId",
+                                   (self.pageNumber ? self.pageNumber : [NSNull null]),
+                                   @"pageNumber", (self.pageId ? self.pageId : [NSNull null]),
+                                   @"pageId", (self.textureId ? self.textureId : [NSNull null]),
+                                   @"textureId", (self.width ? self.width : [NSNull null]),
+                                   @"width", (self.height ? self.height : [NSNull null]), @"height",
+                                   (self.backgroundColor ? self.backgroundColor : [NSNull null]),
+                                   @"backgroundColor",
+                                   (self.sourceX ? self.sourceX : [NSNull null]), @"sourceX",
+                                   (self.sourceY ? self.sourceY : [NSNull null]), @"sourceY",
+                                   (self.destinationX ? self.destinationX : [NSNull null]),
+                                   @"destinationX",
+                                   (self.destinationY ? self.destinationY : [NSNull null]),
+                                   @"destinationY",
+                                   (self.fullWidth ? self.fullWidth : [NSNull null]), @"fullWidth",
+                                   (self.fullHeight ? self.fullHeight : [NSNull null]),
+                                   @"fullHeight",
+                                   (self.textureWidth ? self.textureWidth : [NSNull null]),
+                                   @"textureWidth",
+                                   (self.textureHeight ? self.textureHeight : [NSNull null]),
+                                   @"textureHeight",
+                                   (self.allowAntiAliasing ? self.allowAntiAliasing
+                                                           : [NSNull null]),
+                                   @"allowAntiAliasing", nil];
+}
+@end
+
+@implementation ResizeTextureMessage
++ (ResizeTextureMessage *)fromMap:(NSDictionary *)dict {
+  ResizeTextureMessage *result = [[ResizeTextureMessage alloc] init];
+  result.textureId = dict[@"textureId"];
+  if ((NSNull *)result.textureId == [NSNull null]) {
+    result.textureId = nil;
+  }
+  result.width = dict[@"width"];
+  if ((NSNull *)result.width == [NSNull null]) {
+    result.width = nil;
+  }
+  result.height = dict[@"height"];
+  if ((NSNull *)result.height == [NSNull null]) {
+    result.height = nil;
+  }
+  return result;
+}
+- (NSDictionary *)toMap {
+  return [NSDictionary
+      dictionaryWithObjectsAndKeys:(self.textureId ? self.textureId : [NSNull null]), @"textureId",
+                                   (self.width ? self.width : [NSNull null]), @"width",
+                                   (self.height ? self.height : [NSNull null]), @"height", nil];
+}
+@end
+
+@implementation UnregisterTextureMessage
++ (UnregisterTextureMessage *)fromMap:(NSDictionary *)dict {
+  UnregisterTextureMessage *result = [[UnregisterTextureMessage alloc] init];
+  result.id = dict[@"id"];
+  if ((NSNull *)result.id == [NSNull null]) {
+    result.id = nil;
+  }
+  return result;
+}
+- (NSDictionary *)toMap {
+  return
+      [NSDictionary dictionaryWithObjectsAndKeys:(self.id ? self.id : [NSNull null]), @"id", nil];
+}
+@end
+
 @interface PdfRendererApiCodecReader : FlutterStandardReader
 @end
 @implementation PdfRendererApiCodecReader
@@ -292,10 +468,22 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
       return [OpenReply fromMap:[self readValue]];
 
     case 134:
-      return [RenderPageMessage fromMap:[self readValue]];
+      return [RegisterTextureReply fromMap:[self readValue]];
 
     case 135:
+      return [RenderPageMessage fromMap:[self readValue]];
+
+    case 136:
       return [RenderPageReply fromMap:[self readValue]];
+
+    case 137:
+      return [ResizeTextureMessage fromMap:[self readValue]];
+
+    case 138:
+      return [UnregisterTextureMessage fromMap:[self readValue]];
+
+    case 139:
+      return [UpdateTextureMessage fromMap:[self readValue]];
 
     default:
       return [super readValueOfType:type];
@@ -325,11 +513,23 @@ static NSDictionary<NSString *, id> *wrapResult(id result, FlutterError *error) 
   } else if ([value isKindOfClass:[OpenReply class]]) {
     [self writeByte:133];
     [self writeValue:[value toMap]];
-  } else if ([value isKindOfClass:[RenderPageMessage class]]) {
+  } else if ([value isKindOfClass:[RegisterTextureReply class]]) {
     [self writeByte:134];
     [self writeValue:[value toMap]];
-  } else if ([value isKindOfClass:[RenderPageReply class]]) {
+  } else if ([value isKindOfClass:[RenderPageMessage class]]) {
     [self writeByte:135];
+    [self writeValue:[value toMap]];
+  } else if ([value isKindOfClass:[RenderPageReply class]]) {
+    [self writeByte:136];
+    [self writeValue:[value toMap]];
+  } else if ([value isKindOfClass:[ResizeTextureMessage class]]) {
+    [self writeByte:137];
+    [self writeValue:[value toMap]];
+  } else if ([value isKindOfClass:[UnregisterTextureMessage class]]) {
+    [self writeByte:138];
+    [self writeValue:[value toMap]];
+  } else if ([value isKindOfClass:[UpdateTextureMessage class]]) {
+    [self writeByte:139];
     [self writeValue:[value toMap]];
   } else {
     [super writeValue:value];
@@ -505,6 +705,89 @@ void PdfRendererApiSetup(id<FlutterBinaryMessenger> binaryMessenger,
         IdMessage *arg_message = args[0];
         FlutterError *error;
         [api closePageMessage:arg_message error:&error];
+        callback(wrapResult(nil, error));
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.registerTexture"
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(registerTextureWithError:)],
+                @"PdfRendererApi api (%@) doesn't respond to @selector(registerTextureWithError:)",
+                api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        FlutterError *error;
+        RegisterTextureReply *output = [api registerTextureWithError:&error];
+        callback(wrapResult(output, error));
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.updateTexture"
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
+    if (api) {
+      NSCAssert(
+          [api respondsToSelector:@selector(updateTextureMessage:completion:)],
+          @"PdfRendererApi api (%@) doesn't respond to @selector(updateTextureMessage:completion:)",
+          api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        UpdateTextureMessage *arg_message = args[0];
+        [api updateTextureMessage:arg_message
+                       completion:^(FlutterError *_Nullable error) {
+                         callback(wrapResult(nil, error));
+                       }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.resizeTexture"
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
+    if (api) {
+      NSCAssert(
+          [api respondsToSelector:@selector(resizeTextureMessage:completion:)],
+          @"PdfRendererApi api (%@) doesn't respond to @selector(resizeTextureMessage:completion:)",
+          api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        ResizeTextureMessage *arg_message = args[0];
+        [api resizeTextureMessage:arg_message
+                       completion:^(FlutterError *_Nullable error) {
+                         callback(wrapResult(nil, error));
+                       }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel = [FlutterBasicMessageChannel
+        messageChannelWithName:@"dev.flutter.pigeon.PdfRendererApi.unregisterTexture"
+               binaryMessenger:binaryMessenger
+                         codec:PdfRendererApiGetCodec()];
+    if (api) {
+      NSCAssert(
+          [api respondsToSelector:@selector(unregisterTextureMessage:error:)],
+          @"PdfRendererApi api (%@) doesn't respond to @selector(unregisterTextureMessage:error:)",
+          api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        NSArray *args = message;
+        UnregisterTextureMessage *arg_message = args[0];
+        FlutterError *error;
+        [api unregisterTextureMessage:arg_message error:&error];
         callback(wrapResult(nil, error));
       }];
     } else {

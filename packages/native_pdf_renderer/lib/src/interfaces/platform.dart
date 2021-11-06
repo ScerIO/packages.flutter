@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:native_pdf_renderer/src/interfaces/document.dart';
@@ -38,4 +39,13 @@ abstract class PdfRenderPlatform extends PlatformInterface {
   Future<PdfDocument> openAsset(String name);
 
   Future<PdfDocument> openData(Uint8List data);
+}
+
+class PdfNotSupportException implements Exception {
+  PdfNotSupportException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => '$runtimeType: $message';
 }

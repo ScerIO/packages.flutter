@@ -74,7 +74,10 @@ class PdfDocumentPigeon extends PdfDocument {
 
   /// Get page object. The first page is 1.
   @override
-  Future<PdfPage> getPage(int pageNumber) async {
+  Future<PdfPage> getPage(
+    int pageNumber, {
+    bool autoCloseAndroid = false,
+  }) async {
     if (pageNumber < 1 || pageNumber > pagesCount) {
       throw RangeError.range(pageNumber, 1, pagesCount);
     }
@@ -87,15 +90,17 @@ class PdfDocumentPigeon extends PdfDocument {
         final result = await _api.getPage(
           GetPageMessage()
             ..documentId = id
-            ..pageNumber = pageNumber,
+            ..pageNumber = pageNumber
+            ..autoCloseAndroid = autoCloseAndroid,
         );
 
         page = PdfPagePigeon(
           document: this,
-          id: result.id!,
+          id: result.id,
           pageNumber: pageNumber,
           width: result.width!,
           height: result.height!,
+          autoCloseAndroid: autoCloseAndroid,
         );
       }
 
@@ -114,22 +119,28 @@ class PdfDocumentPigeon extends PdfDocument {
 class PdfPagePigeon extends PdfPage {
   PdfPagePigeon({
     required PdfDocument document,
-    required String id,
+    required String? id,
     required int pageNumber,
-    required int width,
-    required int height,
+    required double width,
+    required double height,
+    required bool autoCloseAndroid,
   }) : super(
           document: document,
           id: id,
           pageNumber: pageNumber,
           width: width,
           height: height,
-        );
+          autoCloseAndroid: autoCloseAndroid,
+        ) {
+    if (autoCloseAndroid) {
+      isClosed = true;
+    }
+  }
 
   @override
   Future<PdfPageImage?> render({
-    required int width,
-    required int height,
+    required double width,
+    required double height,
     PdfPageFormat format = PdfPageFormat.PNG,
     String? backgroundColor,
     Rect? cropRect,
@@ -155,6 +166,17 @@ class PdfPagePigeon extends PdfPage {
           removeTempFile: removeTempFile,
         );
       });
+
+  @override
+  Future<PdfPageTexture> createTexture() async {
+    final result = await _api.registerTexture();
+
+    return PdfPageTexturePigeon(
+      id: result.id!,
+      pageId: id,
+      pageNumber: pageNumber,
+    );
+  }
 
   @override
   Future<void> close() => _lock.synchronized(() async {
@@ -206,8 +228,8 @@ class PdfPageImagePigeon extends PdfPageImage {
   static Future<PdfPageImage?> render({
     required String? pageId,
     required int pageNumber,
-    required int width,
-    required int height,
+    required double width,
+    required double height,
     required PdfPageFormat format,
     required String? backgroundColor,
     required Rect? crop,
@@ -229,8 +251,8 @@ class PdfPageImagePigeon extends PdfPageImage {
 
     final result = await _api.renderPage(RenderPageMessage()
       ..pageId = pageId
-      ..width = width
-      ..height = height
+      ..width = width.toInt()
+      ..height = height.toInt()
       ..format = format.value
       ..backgroundColor = backgroundColor
       ..crop = crop != null
@@ -274,4 +296,83 @@ class PdfPageImagePigeon extends PdfPageImage {
 
   @override
   int get hashCode => identityHashCode(id) ^ pageNumber;
+}
+
+class PdfPageTexturePigeon extends PdfPageTexture {
+  PdfPageTexturePigeon({
+    required int id,
+    required String? pageId,
+    required int pageNumber,
+  }) : super(
+          id: id,
+          pageId: pageId,
+          pageNumber: pageNumber,
+        );
+
+  int? _texWidth;
+  int? _texHeight;
+
+  @override
+  int? get textureWidth => _texWidth;
+  @override
+  int? get textureHeight => _texHeight;
+  @override
+  bool get hasUpdatedTexture => _texWidth != null;
+
+  @override
+  Future<void> dispose() =>
+      _api.unregisterTexture(UnregisterTextureMessage()..id = id);
+
+  @override
+  Future<bool> updateRect({
+    required String documentId,
+    int destinationX = 0,
+    int destinationY = 0,
+    int? width,
+    int? height,
+    int sourceX = 0,
+    int sourceY = 0,
+    int? textureWidth,
+    int? textureHeight,
+    double? fullWidth,
+    double? fullHeight,
+    String? backgroundColor,
+    bool allowAntiAliasing = true,
+  }) async {
+    try {
+      final params = UpdateTextureMessage()
+        ..documentId = documentId
+        ..pageNumber = pageNumber
+        ..textureId = id
+        ..pageId = pageId
+        ..destinationX = destinationX
+        ..destinationY = destinationY
+        ..width = width
+        ..height = height
+        ..sourceX = sourceX
+        ..sourceY = sourceY
+        ..textureWidth = textureWidth
+        ..textureHeight = textureHeight
+        ..fullWidth = fullWidth
+        ..fullHeight = fullHeight
+        ..backgroundColor = backgroundColor
+        ..allowAntiAliasing = allowAntiAliasing;
+      await _api.updateTexture(params);
+      _texWidth = textureWidth ?? _texWidth;
+      _texHeight = textureHeight ?? _texHeight;
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  @override
+  int get hashCode => identityHashCode(id) ^ pageNumber;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PdfPageTexturePigeon &&
+      other.id == id &&
+      other.pageId == pageId &&
+      other.pageNumber == pageNumber;
 }

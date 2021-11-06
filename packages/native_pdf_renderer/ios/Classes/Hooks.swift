@@ -46,3 +46,17 @@ extension NSColor {
 
 #endif
 
+extension CGPDFPage {
+  func getRotatedSize() -> CGSize {
+    let bbox = getBoxRect(.mediaBox)
+    let rot = rotationAngle
+    if rot == 90 || rot == 270 {
+        return CGSize(width: bbox.height, height: bbox.width)
+    }
+    return bbox.size
+  }
+  func getRotationTransform() -> CGAffineTransform {
+    let rect = CGRect(origin: CGPoint.zero, size: getRotatedSize())
+    return getDrawingTransform(.mediaBox, rect: rect, rotate: 0, preserveAspectRatio: true)
+  }
+}

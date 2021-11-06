@@ -85,7 +85,10 @@ class PdfDocumentMethodChannel extends PdfDocument {
 
   /// Get page object. The first page is 1.
   @override
-  Future<PdfPage> getPage(int pageNumber) async {
+  Future<PdfPage> getPage(
+    int pageNumber, {
+    bool autoCloseAndroid = false,
+  }) async {
     if (pageNumber < 1 || pageNumber > pagesCount) {
       throw RangeError.range(pageNumber, 1, pagesCount);
     }
@@ -107,8 +110,8 @@ class PdfDocumentMethodChannel extends PdfDocument {
           document: this,
           id: obj['id'] as String,
           pageNumber: pageNumber,
-          width: obj['width'] as int,
-          height: obj['height'] as int,
+          width: obj['width'] as double,
+          height: obj['height'] as double,
         );
       }
 
@@ -129,20 +132,21 @@ class PdfPageMethodChannel extends PdfPage {
     required PdfDocument document,
     required String id,
     required int pageNumber,
-    required int width,
-    required int height,
+    required double width,
+    required double height,
   }) : super(
           document: document,
           id: id,
           pageNumber: pageNumber,
           width: width,
           height: height,
+          autoCloseAndroid: false,
         );
 
   @override
   Future<PdfPageImage?> render({
-    required int width,
-    required int height,
+    required double width,
+    required double height,
     PdfPageFormat format = PdfPageFormat.PNG,
     String? backgroundColor,
     Rect? cropRect,
@@ -159,8 +163,8 @@ class PdfPageMethodChannel extends PdfPage {
         return PdfPageImageMethodChannel.render(
           pageId: id,
           pageNumber: pageNumber,
-          width: width,
-          height: height,
+          width: width.toInt(),
+          height: height.toInt(),
           format: format,
           backgroundColor: backgroundColor,
           crop: cropRect,
@@ -168,6 +172,11 @@ class PdfPageMethodChannel extends PdfPage {
           removeTempFile: removeTempFile,
         );
       });
+
+  @override
+  Future<PdfPageTexture> createTexture() {
+    throw UnimplementedError();
+  }
 
   @override
   Future<void> close() => _lock.synchronized(() async {

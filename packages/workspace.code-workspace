@@ -19,5 +19,9 @@
 			"path": "native_pdf_view"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"cSpell.words": [
+			"scer"
+		]
+	}
 }

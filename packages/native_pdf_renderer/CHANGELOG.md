@@ -1,6 +1,9 @@
-## 4.1.0
+## 5.0.0
 
-* Full refactoring, usage pigeon
+* Usage pigeon for iOS, macOS, Android
+* Usage [plugin_platform_interface] for better work web
+* iOS and macOS now use a single codebase
+* Added texture rendering 
 
 ## 4.0.1
 

@@ -8,11 +8,17 @@ import FlutterMacOS
 import CoreGraphics
 
 public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererApi {
+    let registrar: FlutterPluginRegistrar
     static let invalid = NSNumber(value: -1)
     let dispQueue = DispatchQueue(label: "io.scer.native_pdf_renderer")
 
     let documents = DocumentRepository()
     let pages = PageRepository()
+    var textures: [Int64: PdfPageTexture] = [:]
+
+    init(registrar: FlutterPluginRegistrar) {
+      self.registrar = registrar
+    }
 
     public static func register(with registrar: FlutterPluginRegistrar) {
         #if os(iOS)
@@ -20,7 +26,7 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
         #elseif os(macOS)
             let messenger: FlutterBinaryMessenger = registrar.messenger
         #endif
-        let api: PdfRendererApi & NSObjectProtocol = SwiftNativePdfRendererPlugin.init()
+        let api: PdfRendererApi & NSObjectProtocol = SwiftNativePdfRendererPlugin.init(registrar: registrar)
         PdfRendererApiSetup(messenger, api);
     }
 
@@ -163,6 +169,96 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
         }
     }
 
+    public func registerTextureWithError(_ error: AutoreleasingUnsafeMutablePointer<FlutterError?>) -> RegisterTextureReply? {
+        let result = RegisterTextureReply.init()
+        let pageTex = PdfPageTexture(registrar: registrar)
+        #if os(iOS)
+            let texId = registrar.textures().register(pageTex)
+        #elseif os(macOS)
+            let texId = registrar.textures.register(pageTex)
+        #endif
+        textures[texId] = pageTex
+        pageTex.texId = texId
+        result.id = NSNumber.init(value: texId)
+        return result
+    }
+
+    public func unregisterTextureMessage(_ message: UnregisterTextureMessage, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        let texId = message.id?.int64Value
+        #if os(iOS)
+            registrar.textures().unregisterTexture(texId!)
+        #elseif os(macOS)
+            registrar.textures.unregisterTexture(texId!)
+        #endif
+            textures[texId!] = nil
+    }
+
+    public func resizeTextureMessage(_ message: ResizeTextureMessage?, completion: @escaping (FlutterError?) -> Void) {
+        let texId = message!.textureId?.int64Value
+        guard let pageTex = textures[texId!] else {
+            return completion(FlutterError(code: "RENDER_ERROR",
+                                           message: "No texture of texId=\(String(describing: texId!))",
+                                       details: nil))
+        }
+        let width = message!.width?.intValue,
+            height = message!.height?.intValue
+        pageTex.resize(width: width!, height: height!)
+        return completion(nil)
+    }
+
+    public func updateTextureMessage(_ message: UpdateTextureMessage?, completion: @escaping (FlutterError?) -> Void) {
+        let texId = message!.textureId?.int64Value
+        let pageId = message!.pageId!
+        let destX = message?.destinationX?.intValue
+        let destY = message?.destinationY?.intValue
+        let width = message?.width?.intValue
+        let height = message?.height?.intValue
+        let srcX = message?.sourceX?.intValue
+        let srcY = message?.sourceY?.intValue
+        let fw = message?.fullWidth?.doubleValue
+        let fh = message?.fullHeight?.doubleValue
+        let backgroundColor = message?.backgroundColor
+        let allowAntialiasing = message!.allowAntiAliasing?.boolValue
+
+        let tw = message?.textureWidth?.intValue
+        let th = message?.textureHeight?.intValue
+
+        let pageTex = textures[texId!]!
+
+        if tw != nil && th != nil {
+          pageTex.resize(width: tw!, height: th!)
+        }
+
+        if width == nil || height == nil {
+            return completion(FlutterError(code: "RENDER_ERROR",
+                                           message: "width/height nil",
+                                       details: nil))
+        }
+        do {
+            let page = try self.pages.get(id: pageId)
+
+            try pageTex.updateTex(
+                page: page.renderer,
+                destX: destX!,
+                destY: destY!,
+                width: width!,
+                height: height!,
+                srcX: srcX!,
+                srcY: srcY!,
+                fullWidth: fw,
+                fullHeight: fh,
+                backgroundColor: backgroundColor,
+                allowAntialiasing: allowAntialiasing!
+            )
+            return completion(nil)
+        } catch {
+            return completion(FlutterError(code: "RENDER_ERROR",
+                                           message: "Cannot render texture",
+                                       details: nil))
+        }
+
+    }
+
     func openDataDocument(data: Data) -> CGPDFDocument? {
         guard let datProv = CGDataProvider(data: data as CFData) else { return nil }
         return CGPDFDocument(datProv)
@@ -180,7 +276,113 @@ public class SwiftNativePdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererA
         #elseif os(macOS)
         let path = Bundle.main.bundlePath + "/Contents/Frameworks/App.framework/Resources/flutter_assets/" + name;
         #endif
-        
+
         return openFileDocument(pdfFilePath: path)
     }
+}
+
+enum PdfRenderError : Error {
+  case operationFailed(String)
+  case invalidArgument(String)
+  case notSupported(String)
+}
+
+class PdfPageTexture : NSObject {
+  var pixBuf : CVPixelBuffer?
+  weak var registrar: FlutterPluginRegistrar?
+  var texId: Int64 = 0
+  var texWidth: Int = 0
+  var texHeight: Int = 0
+
+  init(registrar: FlutterPluginRegistrar?) {
+    self.registrar = registrar
+  }
+
+  func resize(width: Int, height: Int) {
+    if self.texWidth == width && self.texHeight == height {
+      return
+    }
+    self.texWidth = width
+    self.texHeight = height
+  }
+
+  func updateTex(
+    page: CGPDFPage,
+    destX: Int,
+    destY: Int,
+    width: Int,
+    height: Int,
+    srcX: Int,
+    srcY: Int,
+    fullWidth: Double?,
+    fullHeight: Double?,
+    backgroundColor: String?,
+    allowAntialiasing: Bool = true
+  ) throws {
+
+    let rotatedSize = page.getRotatedSize()
+    let fw = fullWidth ?? Double(rotatedSize.width)
+    let fh = fullHeight ?? Double(rotatedSize.height)
+    let sx = CGFloat(fw) / rotatedSize.width
+    let sy = CGFloat(fh) / rotatedSize.height
+
+    var pixBuf: CVPixelBuffer?
+    let options = [
+      kCVPixelBufferCGImageCompatibilityKey as String: true,
+      kCVPixelBufferCGBitmapContextCompatibilityKey as String: true,
+      kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+      ] as [String : Any]
+    let cvRet = CVPixelBufferCreate(kCFAllocatorDefault, texWidth, texHeight, kCVPixelFormatType_32BGRA, options as CFDictionary?, &pixBuf)
+    if pixBuf == nil {
+      throw PdfRenderError.operationFailed("CVPixelBufferCreate failed: result code=\(cvRet)")
+    }
+
+    let lockFlags = CVPixelBufferLockFlags(rawValue: 0)
+    let _ = CVPixelBufferLockBaseAddress(pixBuf!, lockFlags)
+    defer {
+      CVPixelBufferUnlockBaseAddress(pixBuf!, lockFlags)
+    }
+
+    let bufferAddress = CVPixelBufferGetBaseAddress(pixBuf!)
+    let bytesPerRow = CVPixelBufferGetBytesPerRow(pixBuf!)
+    let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+    let context = CGContext(data: bufferAddress?.advanced(by: destX * 4 + destY * bytesPerRow),
+                            width: width,
+                            height: height,
+                            bitsPerComponent: 8,
+                            bytesPerRow: bytesPerRow,
+                            space: rgbColorSpace,
+                            bitmapInfo: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+
+
+    if backgroundColor != nil {
+        #if os(iOS)
+            context?.setFillColor(UIColor(hexString: backgroundColor!).cgColor)
+        #elseif os(macOS)
+            context?.setFillColor(NSColor(hexString: backgroundColor!).cgColor)
+        #endif
+        context?.fill(CGRect(x: 0, y: 0, width: width, height: height))
+    }
+
+    context?.setAllowsAntialiasing(allowAntialiasing)
+
+    context?.translateBy(x: CGFloat(-srcX), y: CGFloat(Double(srcY + height) - fh))
+    context?.scaleBy(x: sx, y: sy)
+    context?.concatenate(page.getRotationTransform())
+    context?.drawPDFPage(page)
+    context?.flush()
+
+    self.pixBuf = pixBuf
+    #if os(iOS)
+      registrar?.textures().textureFrameAvailable(texId)
+    #elseif os(macOS)
+      registrar?.textures.textureFrameAvailable(texId)
+    #endif
+  }
+}
+
+extension PdfPageTexture : FlutterTexture {
+  func copyPixelBuffer() -> Unmanaged<CVPixelBuffer>? {
+    return pixBuf != nil ? Unmanaged<CVPixelBuffer>.passRetained(pixBuf!) : nil
+  }
 }

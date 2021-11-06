@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'document.dart';
 
 part 'page_image.dart';
+part 'page_texture.dart';
 
 /// Image compression format
 class PdfPageFormat extends Enum<int> {
@@ -28,23 +29,26 @@ abstract class PdfPage {
     required this.pageNumber,
     required this.width,
     required this.height,
+    required this.autoCloseAndroid,
   });
 
   final PdfDocument document;
 
   /// Page unique id. Needed for rendering and closing page.
   /// Generated when opening page.
-  final String id;
+  final String? id;
 
   /// Page number in document.
   /// Starts from 1.
   final int pageNumber;
 
   /// Page source width in pixels
-  final int width;
+  final double width;
 
   /// Page source height in pixels
-  final int height;
+  final double height;
+
+  final bool autoCloseAndroid;
 
   /// Is the page closed
   bool isClosed = false;
@@ -58,8 +62,8 @@ abstract class PdfPage {
   /// [cropRect] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
   Future<PdfPageImage?> render({
-    required int width,
-    required int height,
+    required double width,
+    required double height,
     PdfPageFormat format = PdfPageFormat.PNG,
     String? backgroundColor,
     Rect? cropRect,
@@ -67,43 +71,9 @@ abstract class PdfPage {
     @visibleForTesting bool removeTempFile = true,
   });
 
-  // Future<bool> updateTexture({
-  //   int destX = 0,
-  //   int destY = 0,
-  //   int? width,
-  //   int? height,
-  //   int srcX = 0,
-  //   int srcY = 0,
-  //   int? texWidth,
-  //   int? texHeight,
-  //   double? fullWidth,
-  //   double? fullHeight,
-  //   bool backgroundFill = true,
-  //   bool allowAntialiasingIOS = true,
-  // }) async {
-  //   final result = (await _channel.invokeMethod<int>('update.texture', {
-  //     'docId': pdfDocument.id,
-  //     'pageNumber': pageNumber,
-  //     'texId': texId,
-  //     'destX': destX,
-  //     'destY': destY,
-  //     'width': width,
-  //     'height': height,
-  //     'srcX': srcX,
-  //     'srcY': srcY,
-  //     'texWidth': texWidth,
-  //     'texHeight': texHeight,
-  //     'fullWidth': fullWidth,
-  //     'fullHeight': fullHeight,
-  //     'backgroundFill': backgroundFill,
-  //     'allowAntialiasingIOS': allowAntialiasingIOS,
-  //   }))!;
-  //   if (result >= 0) {
-  //     _texWidth = texWidth ?? _texWidth;
-  //     _texHeight = texHeight ?? _texHeight;
-  //   }
-  //   return result >= 0;
-  // }
+  /// Create a new Flutter `Texture`. The object should be released by
+  /// calling `dispose` method after use it.
+  Future<PdfPageTexture> createTexture();
 
   /// Before open another page it is necessary to close the previous.
   ///

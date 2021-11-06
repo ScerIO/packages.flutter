@@ -42,15 +42,15 @@ class Page {
         }
     }
 
-    var width: Int {
+    var width: Double {
         get {
-            return Int(boxRect.width)
+            return Double(boxRect.width)
         }
     }
 
-    var height: Int {
+    var height: Double {
         get {
-            return Int(boxRect.height)
+            return Double(boxRect.height)
         }
     }
 

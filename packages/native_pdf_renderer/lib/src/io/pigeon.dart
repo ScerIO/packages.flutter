@@ -75,11 +75,13 @@ class IdMessage {
 class GetPageMessage {
   String? documentId;
   int? pageNumber;
+  bool? autoCloseAndroid;
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
     pigeonMap['documentId'] = documentId;
     pigeonMap['pageNumber'] = pageNumber;
+    pigeonMap['autoCloseAndroid'] = autoCloseAndroid;
     return pigeonMap;
   }
 
@@ -87,14 +89,15 @@ class GetPageMessage {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     return GetPageMessage()
       ..documentId = pigeonMap['documentId'] as String?
-      ..pageNumber = pigeonMap['pageNumber'] as int?;
+      ..pageNumber = pigeonMap['pageNumber'] as int?
+      ..autoCloseAndroid = pigeonMap['autoCloseAndroid'] as bool?;
   }
 }
 
 class GetPageReply {
   String? id;
-  int? width;
-  int? height;
+  double? width;
+  double? height;
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
@@ -108,8 +111,8 @@ class GetPageReply {
     final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
     return GetPageReply()
       ..id = pigeonMap['id'] as String?
-      ..width = pigeonMap['width'] as int?
-      ..height = pigeonMap['height'] as int?;
+      ..width = pigeonMap['width'] as double?
+      ..height = pigeonMap['height'] as double?;
   }
 }
 
@@ -184,6 +187,119 @@ class RenderPageReply {
   }
 }
 
+class RegisterTextureReply {
+  int? id;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['id'] = id;
+    return pigeonMap;
+  }
+
+  static RegisterTextureReply decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return RegisterTextureReply()..id = pigeonMap['id'] as int?;
+  }
+}
+
+class UpdateTextureMessage {
+  String? documentId;
+  int? pageNumber;
+  String? pageId;
+  int? textureId;
+  int? width;
+  int? height;
+  String? backgroundColor;
+  int? sourceX;
+  int? sourceY;
+  int? destinationX;
+  int? destinationY;
+  double? fullWidth;
+  double? fullHeight;
+  int? textureWidth;
+  int? textureHeight;
+  bool? allowAntiAliasing;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['documentId'] = documentId;
+    pigeonMap['pageNumber'] = pageNumber;
+    pigeonMap['pageId'] = pageId;
+    pigeonMap['textureId'] = textureId;
+    pigeonMap['width'] = width;
+    pigeonMap['height'] = height;
+    pigeonMap['backgroundColor'] = backgroundColor;
+    pigeonMap['sourceX'] = sourceX;
+    pigeonMap['sourceY'] = sourceY;
+    pigeonMap['destinationX'] = destinationX;
+    pigeonMap['destinationY'] = destinationY;
+    pigeonMap['fullWidth'] = fullWidth;
+    pigeonMap['fullHeight'] = fullHeight;
+    pigeonMap['textureWidth'] = textureWidth;
+    pigeonMap['textureHeight'] = textureHeight;
+    pigeonMap['allowAntiAliasing'] = allowAntiAliasing;
+    return pigeonMap;
+  }
+
+  static UpdateTextureMessage decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return UpdateTextureMessage()
+      ..documentId = pigeonMap['documentId'] as String?
+      ..pageNumber = pigeonMap['pageNumber'] as int?
+      ..pageId = pigeonMap['pageId'] as String?
+      ..textureId = pigeonMap['textureId'] as int?
+      ..width = pigeonMap['width'] as int?
+      ..height = pigeonMap['height'] as int?
+      ..backgroundColor = pigeonMap['backgroundColor'] as String?
+      ..sourceX = pigeonMap['sourceX'] as int?
+      ..sourceY = pigeonMap['sourceY'] as int?
+      ..destinationX = pigeonMap['destinationX'] as int?
+      ..destinationY = pigeonMap['destinationY'] as int?
+      ..fullWidth = pigeonMap['fullWidth'] as double?
+      ..fullHeight = pigeonMap['fullHeight'] as double?
+      ..textureWidth = pigeonMap['textureWidth'] as int?
+      ..textureHeight = pigeonMap['textureHeight'] as int?
+      ..allowAntiAliasing = pigeonMap['allowAntiAliasing'] as bool?;
+  }
+}
+
+class ResizeTextureMessage {
+  int? textureId;
+  int? width;
+  int? height;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['textureId'] = textureId;
+    pigeonMap['width'] = width;
+    pigeonMap['height'] = height;
+    return pigeonMap;
+  }
+
+  static ResizeTextureMessage decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return ResizeTextureMessage()
+      ..textureId = pigeonMap['textureId'] as int?
+      ..width = pigeonMap['width'] as int?
+      ..height = pigeonMap['height'] as int?;
+  }
+}
+
+class UnregisterTextureMessage {
+  int? id;
+
+  Object encode() {
+    final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
+    pigeonMap['id'] = id;
+    return pigeonMap;
+  }
+
+  static UnregisterTextureMessage decode(Object message) {
+    final Map<Object?, Object?> pigeonMap = message as Map<Object?, Object?>;
+    return UnregisterTextureMessage()..id = pigeonMap['id'] as int?;
+  }
+}
+
 class _PdfRendererApiCodec extends StandardMessageCodec {
   const _PdfRendererApiCodec();
   @override
@@ -206,11 +322,23 @@ class _PdfRendererApiCodec extends StandardMessageCodec {
     } else if (value is OpenReply) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    } else if (value is RenderPageMessage) {
+    } else if (value is RegisterTextureReply) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    } else if (value is RenderPageReply) {
+    } else if (value is RenderPageMessage) {
       buffer.putUint8(135);
+      writeValue(buffer, value.encode());
+    } else if (value is RenderPageReply) {
+      buffer.putUint8(136);
+      writeValue(buffer, value.encode());
+    } else if (value is ResizeTextureMessage) {
+      buffer.putUint8(137);
+      writeValue(buffer, value.encode());
+    } else if (value is UnregisterTextureMessage) {
+      buffer.putUint8(138);
+      writeValue(buffer, value.encode());
+    } else if (value is UpdateTextureMessage) {
+      buffer.putUint8(139);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -239,10 +367,22 @@ class _PdfRendererApiCodec extends StandardMessageCodec {
         return OpenReply.decode(readValue(buffer)!);
 
       case 134:
-        return RenderPageMessage.decode(readValue(buffer)!);
+        return RegisterTextureReply.decode(readValue(buffer)!);
 
       case 135:
+        return RenderPageMessage.decode(readValue(buffer)!);
+
+      case 136:
         return RenderPageReply.decode(readValue(buffer)!);
+
+      case 137:
+        return ResizeTextureMessage.decode(readValue(buffer)!);
+
+      case 138:
+        return UnregisterTextureMessage.decode(readValue(buffer)!);
+
+      case 139:
+        return UpdateTextureMessage.decode(readValue(buffer)!);
 
       default:
         return super.readValueOfType(type, buffer);
@@ -414,6 +554,106 @@ class PdfRendererApi {
   Future<void> closePage(IdMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.PdfRendererApi.closePage', codec,
+        binaryMessenger: _binaryMessenger);
+    final Map<Object?, Object?>? replyMap =
+        await channel.send(<Object>[arg_message]) as Map<Object?, Object?>?;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
+      throw PlatformException(
+        code: (error['code'] as String?)!,
+        message: error['message'] as String?,
+        details: error['details'],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<RegisterTextureReply> registerTexture() async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.PdfRendererApi.registerTexture', codec,
+        binaryMessenger: _binaryMessenger);
+    final Map<Object?, Object?>? replyMap =
+        await channel.send(null) as Map<Object?, Object?>?;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
+      throw PlatformException(
+        code: (error['code'] as String?)!,
+        message: error['message'] as String?,
+        details: error['details'],
+      );
+    } else {
+      return (replyMap['result'] as RegisterTextureReply?)!;
+    }
+  }
+
+  Future<void> updateTexture(UpdateTextureMessage arg_message) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.PdfRendererApi.updateTexture', codec,
+        binaryMessenger: _binaryMessenger);
+    final Map<Object?, Object?>? replyMap =
+        await channel.send(<Object>[arg_message]) as Map<Object?, Object?>?;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
+      throw PlatformException(
+        code: (error['code'] as String?)!,
+        message: error['message'] as String?,
+        details: error['details'],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> resizeTexture(ResizeTextureMessage arg_message) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.PdfRendererApi.resizeTexture', codec,
+        binaryMessenger: _binaryMessenger);
+    final Map<Object?, Object?>? replyMap =
+        await channel.send(<Object>[arg_message]) as Map<Object?, Object?>?;
+    if (replyMap == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+        details: null,
+      );
+    } else if (replyMap['error'] != null) {
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
+      throw PlatformException(
+        code: (error['code'] as String?)!,
+        message: error['message'] as String?,
+        details: error['details'],
+      );
+    } else {
+      return;
+    }
+  }
+
+  Future<void> unregisterTexture(UnregisterTextureMessage arg_message) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.PdfRendererApi.unregisterTexture', codec,
         binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object>[arg_message]) as Map<Object?, Object?>?;
