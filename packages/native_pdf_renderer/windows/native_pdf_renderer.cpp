@@ -47,7 +47,13 @@ int lastId = 0;
 
 std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
   if (document_repository.size() == 0) {
-    FPDF_InitLibraryWithConfig(nullptr);
+    FPDF_LIBRARY_CONFIG config;
+    config.version = 2;
+    config.m_pUserFontPaths = NULL;
+    config.m_pIsolate = NULL;
+    config.m_v8EmbedderSlot = 0;
+
+    FPDF_InitLibraryWithConfig(&config);
   }
 
   lastId++;
@@ -61,7 +67,13 @@ std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
 
 std::shared_ptr<Document> openDocument(std::string name) {
   if (document_repository.size() == 0) {
-    FPDF_InitLibraryWithConfig(nullptr);
+    FPDF_LIBRARY_CONFIG config;
+    config.version = 2;
+    config.m_pUserFontPaths = NULL;
+    config.m_pIsolate = NULL;
+    config.m_v8EmbedderSlot = 0;
+
+    FPDF_InitLibraryWithConfig(&config);
   }
 
   lastId++;
