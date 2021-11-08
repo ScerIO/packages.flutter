@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:native_pdf_view/src/wrappers/pdf_texture.dart';
 import 'package:pdf_renderer/pdf_renderer.dart';
@@ -530,7 +529,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
               color: Color.fromARGB(255, 250, 250, 250),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black45,
+                  color: Color(0x73000000),
                   blurRadius: 4,
                   offset: Offset(2, 2),
                 )
