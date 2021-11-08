@@ -4,39 +4,23 @@
 
 **We also support the package for easy display PDF documents [native_pdf_view](https://pub.dev/packages/native_pdf_view)**
 
+[![pub package](https://img.shields.io/pub/v/pdf_renderer.svg)](https:///packages/pdf_renderer)
+
 ## Getting Started
 In your flutter project add the dependency:
 
-[![pub package](https://img.shields.io/pub/v/pdf_renderer.svg)](https://pub.dartlang.org/packages/pdf_renderer)
-
-```yaml
-dependencies:
-  pdf_renderer: any
+```shell
+flutter pub add pdf_renderer
 ```
 
-For web add lines in index.html before importing main.dart.js:
-<br/>
-**note that the files have different names**
-```html
-<!-- Link to pdf.js library -->
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.js" type="text/javascript"></script>
-<script type="text/javascript">
-  // Link to worker for pdf.js library
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.worker.min.js";
-  pdfRenderOptions = {
-    // where cmaps are downloaded from
-    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/cmaps/',
-    // The cmaps are compressed in the case
-    cMapPacked: true,
-    // any other options for pdfjsLib.getDocument.
-    // params: {}
-  }
-</script>
+For web run tool for automatically add pdfjs library in index.html:
+```shell
+flutter pub run pdf_renderer:install_web
 ```
 
-For windows pdfium version used can be overridden by the base flutter application by adding the following line to the host apps CMakeLists.txt file:
+For windows run tool automatically add override for pdfium version property in CMakeLists.txt file:
 ```
-set(PDFIUM_VERSION "4638" CACHE STRING "")
+flutter pub run pdf_renderer:install_web
 ```
 
 ## Usage example
@@ -50,7 +34,10 @@ void main() async {
   try {
     final document = await PdfDocument.openAsset('assets/sample.pdf');
     final page = await document.getPage(1);
-    final pageImage = await page.render(width: page.width, height: page.height);
+    final pageImage = await page.render(
+      width: page.width, 
+      height: page.height
+    );
     await page.close();
     runApp(
       MaterialApp(
@@ -81,7 +68,7 @@ void main() async {
 | pagesCount | All pages count in document. Starts from 1.                                                | -       |
 | isClosed   | Is the document closed                                                                     | -       |
 
-**Document open:**
+**Local document open:**
 ```dart
 // From assets (Android, Ios, MacOs, Web)
 PdfDocument.openAsset('assets/sample.pdf')
@@ -90,7 +77,22 @@ PdfDocument.openAsset('assets/sample.pdf')
 PdfDocument.openFile('path/to/file/on/device')
 
 // From data (Android, Ios, MacOs, Web)
-PdfDocument.openData(uint8Data)
+PdfDocument.openData((FutureOr<Uint8List>) data)
+```
+**Network document open:**
+
+Install [[network_file]](https://pub.dev/packages/internet_file) package (supports all platforms):
+```shell
+flutter pub add internet_file
+```
+
+And use it
+```dart
+import 'package:internet_file/internet_file.dart';
+
+PdfDocument.openData(InternetFile.get(
+    'https://github.com/rbcprolabs/packages.flutter/raw/fd0c92ac83ee355255acb306251b1adfeb2f2fd6/packages/native_pdf_renderer/example/assets/sample.pdf',
+))
 ```
 
 **Open page:**
@@ -122,9 +124,9 @@ final pageImage = page.render(
   height: page.height * 2,
 
   // Rendered image compression format, also can be PNG, WEBP*
-  // Optional, default: PdfPageFormat.PNG
+  // Optional, default: PdfPageImageFormat.PNG
   // Web not supported
-  format: PdfPageFormat.JPEG,
+  format: PdfPageImageFormat.JPEG,
 
   // Image background fill color for JPEG
   // Optional, default '#ffffff'
@@ -147,7 +149,7 @@ final pageImage = page.render(
 | width      | Width of the rendered area in pixels, int                                          | -                 |
 | height     | Height of the rendered area in pixels, int                                         | -                 |
 | bytes      | Rendered image result, Uint8List                                                   | -                 |
-| format     | Rendered image compression format, for web always PNG                              | PdfPageFormat.PNG |
+| format     | Rendered image compression format, for web always PNG                              | PdfPageImageFormat.PNG |
 
 **Close page:**
 <br>
@@ -157,7 +159,7 @@ If this is not done, the application may crash with an error
 page.close();
 ```
 
-\* __PdfPageFormat.WEBP support only on android__
+\* __PdfPageImageFormat.WEBP support only on android__
 
 ## Rendering additional info
 
@@ -168,7 +170,7 @@ This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
 
 ### On Ios & MacOs
-This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
+This plugin uses the iOS & MacOs native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
 
 ### On Windows
-This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
+This plugin uses [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)

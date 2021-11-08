@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/painting.dart';
@@ -41,8 +42,8 @@ class PdfRenderPlatformPigeon extends PdfRenderPlatform {
 
   /// Open PDF file from memory (Uint8List)
   @override
-  Future<PdfDocument> openData(Uint8List data) async => _open(
-        await _api.openDocumentData(OpenDataMessage()..data = data),
+  Future<PdfDocument> openData(FutureOr<Uint8List> data) async => _open(
+        await _api.openDocumentData(OpenDataMessage()..data = await data),
         'memory:binary',
       );
 }
@@ -141,7 +142,7 @@ class PdfPagePigeon extends PdfPage {
   Future<PdfPageImage?> render({
     required double width,
     required double height,
-    PdfPageFormat format = PdfPageFormat.png,
+    PdfPageImageFormat format = PdfPageImageFormat.png,
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
@@ -205,7 +206,7 @@ class PdfPageImagePigeon extends PdfPageImage {
     required int? width,
     required int? height,
     required Uint8List bytes,
-    required PdfPageFormat format,
+    required PdfPageImageFormat format,
     required int quality,
   }) : super(
           id: id,
@@ -222,7 +223,7 @@ class PdfPageImagePigeon extends PdfPageImage {
   /// [width], [height] specify resolution to render in pixels.
   /// As default PNG uses transparent background. For change it you can set
   /// [backgroundColor] property like a hex string ('#000000')
-  /// [format] - image type, all types can be seen here [PdfPageFormat]
+  /// [format] - image type, all types can be seen here [PdfPageImageFormat]
   /// [crop] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
   static Future<PdfPageImage?> render({
@@ -230,13 +231,13 @@ class PdfPageImagePigeon extends PdfPageImage {
     required int pageNumber,
     required double width,
     required double height,
-    required PdfPageFormat format,
+    required PdfPageImageFormat format,
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
     required bool removeTempFile,
   }) async {
-    if (format == PdfPageFormat.webp &&
+    if (format == PdfPageImageFormat.webp &&
         (UniversalPlatform.isIOS ||
             UniversalPlatform.isWindows ||
             UniversalPlatform.isMacOS)) {
@@ -247,7 +248,7 @@ class PdfPageImagePigeon extends PdfPageImage {
     }
 
     backgroundColor ??=
-        (format == PdfPageFormat.jpeg) ? '#FFFFFF' : '#00FFFFFF';
+        (format == PdfPageImageFormat.jpeg) ? '#FFFFFF' : '#00FFFFFF';
 
     final result = await _api.renderPage(RenderPageMessage()
       ..pageId = pageId

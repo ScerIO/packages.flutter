@@ -1,10 +1,17 @@
 ## 5.0.0
 
+* Now it package used as proxy for `[pdf_renderer]` (Plugin renamed, migration guide in readme)
+* `PdfDocument.openData()` added supports `Future<Uin8List>` by usage `FutureOf`
+* Added internet file usage example
+* Added [flutter_lints]
 * Usage pigeon for iOS, macOS, Android
-* Usage [plugin_platform_interface] for better work web
+* Usage `[plugin_platform_interface]` for better work web
 * iOS and macOS now use a single codebase
 * Added texture rendering 
+* Renamed `PdfPageFormat` -> `PdfPageImageFormat`
 
+### Breaking changes:
+* Values of `PdfPageImageFormat` change case `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
 ## 4.0.1
 
 * Fixed MacOS app crush when used format: PdfPageFormat.WEBP

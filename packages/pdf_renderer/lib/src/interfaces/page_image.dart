@@ -29,7 +29,7 @@ abstract class PdfPageImage {
   final Uint8List bytes;
 
   /// Target compression format
-  final PdfPageFormat format;
+  final PdfPageImageFormat format;
 
   /// Target compression format quality
   final int quality;

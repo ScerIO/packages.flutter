@@ -54,8 +54,8 @@ class PdfRendererWeb extends PdfRenderPlatform {
   }
 
   @override
-  Future<PdfDocument> openData(Uint8List data) async {
-    final obj = await _openDocumentData(data.buffer);
+  Future<PdfDocument> openData(FutureOr<Uint8List> data) async {
+    final obj = await _openDocumentData((await data).buffer);
 
     return _open(obj, 'memory:binary');
   }
@@ -136,7 +136,7 @@ class PdfPageWeb extends PdfPage {
   Future<PdfPageImage?> render({
     required double width,
     required double height,
-    PdfPageFormat format = PdfPageFormat.png,
+    PdfPageImageFormat format = PdfPageImageFormat.png,
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
@@ -192,7 +192,7 @@ class PdfPageImageWeb extends PdfPageImage {
     required int? height,
     required Uint8List bytes,
     required this.pdfJsPage,
-    required PdfPageFormat format,
+    required PdfPageImageFormat format,
     required int quality,
   }) : super(
           id: id,
@@ -211,7 +211,7 @@ class PdfPageImageWeb extends PdfPageImage {
   /// [width], [height] specify resolution to render in pixels.
   /// As default PNG uses transparent background. For change it you can set
   /// [backgroundColor] property like a hex string ('#000000')
-  /// [format] - image type, all types can be seen here [PdfPageFormat]
+  /// [format] - image type, all types can be seen here [PdfPageImageFormat]
   /// [crop] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
   static Future<PdfPageImage?> render({
@@ -219,7 +219,7 @@ class PdfPageImageWeb extends PdfPageImage {
     required int pageNumber,
     required int width,
     required int height,
-    required PdfPageFormat format,
+    required PdfPageImageFormat format,
     required String? backgroundColor,
     required Rect? crop,
     required int quality,

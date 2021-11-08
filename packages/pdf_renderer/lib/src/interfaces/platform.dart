@@ -38,7 +38,7 @@ abstract class PdfRenderPlatform extends PlatformInterface {
 
   Future<PdfDocument> openAsset(String name);
 
-  Future<PdfDocument> openData(Uint8List data);
+  Future<PdfDocument> openData(FutureOr<Uint8List> data);
 }
 
 class PdfNotSupportException implements Exception {

@@ -10,14 +10,14 @@ part 'page_image.dart';
 part 'page_texture.dart';
 
 /// Image compression format
-class PdfPageFormat extends Enum<int> {
-  const PdfPageFormat(int val) : super(val);
+class PdfPageImageFormat extends Enum<int> {
+  const PdfPageImageFormat(int val) : super(val);
 
-  static const PdfPageFormat jpeg = PdfPageFormat(0);
-  static const PdfPageFormat png = PdfPageFormat(1);
+  static const PdfPageImageFormat jpeg = PdfPageImageFormat(0);
+  static const PdfPageImageFormat png = PdfPageImageFormat(1);
 
   /// ***Attention!*** Works only on android
-  static const PdfPageFormat webp = PdfPageFormat(2);
+  static const PdfPageImageFormat webp = PdfPageImageFormat(2);
 }
 
 /// An integral part of a document is its page,
@@ -58,13 +58,13 @@ abstract class PdfPage {
   /// [width], [height] specify resolution to render in pixels.
   /// As default PNG uses transparent background. For change it you can set
   /// [backgroundColor] property like a hex string ('#FFFFFF')
-  /// [format] - image type, all types can be seen here [PdfPageFormat]
+  /// [format] - image type, all types can be seen here [PdfPageImageFormat]
   /// [cropRect] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
   Future<PdfPageImage?> render({
     required double width,
     required double height,
-    PdfPageFormat format = PdfPageFormat.jpeg,
+    PdfPageImageFormat format = PdfPageImageFormat.jpeg,
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,

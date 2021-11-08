@@ -145,7 +145,7 @@ void main() {
       final pageImage = (await page.render(
         width: width,
         height: height,
-        format: PdfPageFormat.jpeg,
+        format: PdfPageImageFormat.jpeg,
         backgroundColor: '#ffffff',
         removeTempFile: false,
       ))!;
@@ -157,7 +157,7 @@ void main() {
             'pageId': page.id,
             'width': width,
             'height': height,
-            'format': PdfPageFormat.jpeg.value,
+            'format': PdfPageImageFormat.jpeg.value,
             'backgroundColor': '#ffffff',
             'crop': false,
             'crop_x': null,
@@ -170,7 +170,7 @@ void main() {
       ]);
 
       expect(pageImage.bytes, _testData);
-      expect(pageImage.format, PdfPageFormat.jpeg);
+      expect(pageImage.format, PdfPageImageFormat.jpeg);
       expect(pageImage.width, width);
       expect(pageImage.height, height);
       expect(pageImage.pageNumber, page.pageNumber);

@@ -40,7 +40,7 @@ abstract class PdfDocument {
       PdfRenderPlatform.instance.openAsset(name);
 
   /// Opening the PDF on memory.
-  static Future<PdfDocument> openData(Uint8List data) =>
+  static Future<PdfDocument> openData(FutureOr<Uint8List> data) =>
       PdfRenderPlatform.instance.openData(data);
 
   /// Get page object. The first page is 1.
