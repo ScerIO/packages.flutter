@@ -264,7 +264,7 @@ class PdfPageImageMethodChannel extends PdfPageImage {
       'quality': quality,
     });
 
-    if (obj! is Map<dynamic, dynamic>) {
+    if (obj is! Map<dynamic, dynamic>) {
       return null;
     }
 

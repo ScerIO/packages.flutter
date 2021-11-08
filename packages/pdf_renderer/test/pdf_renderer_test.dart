@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pdf_renderer/pdf_renderer.dart';
+import 'package:pdf_renderer/src/interfaces/platform.dart';
+import 'package:pdf_renderer/src/io/platform_method_channel.dart';
 
 import 'image.dart';
 
@@ -12,6 +14,7 @@ const String _testAssetPath = '/assets/file.pdf';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  PdfRenderPlatform.instance = PdfRenderPlatformMethodChannel();
   final List<MethodCall> log = <MethodCall>[];
   PdfDocument? document;
   late Uint8List _testData;
@@ -43,8 +46,8 @@ void main() {
         case 'open.page':
           return {
             'id': 'page-id',
-            'width': 720,
-            'height': 1280,
+            'width': 720.0,
+            'height': 1280.0,
           };
         case 'close.page':
           return null;

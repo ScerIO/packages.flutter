@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Fixed render problem 
+
 ## 0.2.0
 
 * Added supports `Future<Uin8List>` argument for `PdfDocument.openData()` by usage `FutureOf`
