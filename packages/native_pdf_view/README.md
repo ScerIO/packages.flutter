@@ -10,24 +10,21 @@
 
 
 ## Getting Started
-In your flutter project add the dependency:
-
 [![pub package](https://img.shields.io/pub/v/native_pdf_view.svg)](https://pub.dev/packages/native_pdf_view)
 
-```yaml
-dependencies:
-  native_pdf_view: any
+In your flutter project add the dependency:
+```shell
+flutter pub add native_pdf_view
 ```
 
-For web add lines in index.html before importing main.dart.js:<br/>
-**note that the files have different names**
-```html
-<!-- Link to pdf.js library -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
-<script type="text/javascript">
-  // Link to worker for pdf.js library
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
-</script>
+For web run tool for automatically add pdfjs library in index.html:
+```shell
+flutter pub run native_pdf_view:install_web
+```
+
+For windows run tool automatically add override for pdfium version property in CMakeLists.txt file:
+```
+flutter pub run native_pdf_view:install_web
 ```
 
 ## Usage example
@@ -42,6 +39,26 @@ final pdfController = PdfController(
 Widget pdfView() => PdfView(
   controller: pdfController,
 );
+```
+
+Package usage [[pdf_renderer]](https://pub.dev/packages/pdf_renderer) and supports her api:
+
+**Local document open:**
+```dart
+// From assets (Android, Ios, MacOs, Web)
+PdfDocument.openAsset('assets/sample.pdf')
+
+// From file (Android, Ios, MacOs)
+PdfDocument.openFile('path/to/file/on/device')
+
+// From data (Android, Ios, MacOs, Web)
+PdfDocument.openData((FutureOr<Uint8List>) data)
+```
+**Network document open:**
+
+Install [[network_file]](https://pub.dev/packages/internet_file) package (supports all platforms):
+```shell
+flutter pub add internet_file
 ```
 
 ## Api

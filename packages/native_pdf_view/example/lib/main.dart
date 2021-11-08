@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:native_pdf_view/native_pdf_view.dart';
+import 'package:performance/performance.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,12 +15,12 @@ class _MyAppState extends State<MyApp> {
   static const int _initialPage = 2;
   int _actualPageNumber = _initialPage, _allPagesCount = 0;
   bool isSampleDoc = true;
-  late PdfController _pdfController;
+  late PdfControllerPinch _pdfController;
 
   @override
   void initState() {
-    _pdfController = PdfController(
-      document: PdfDocument.openAsset('assets/sample.pdf'),
+    _pdfController = PdfControllerPinch(
+      document: PdfDocument.openAsset('assets/hello.pdf'),
       initialPage: _initialPage,
     );
     super.initState();
@@ -34,7 +35,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(primaryColor: Colors.white),
+        darkTheme: ThemeData.dark(),
         home: Scaffold(
+          backgroundColor: Colors.grey,
           appBar: AppBar(
             title: const Text('PdfView example'),
             actions: <Widget>[
@@ -78,20 +81,23 @@ class _MyAppState extends State<MyApp> {
               )
             ],
           ),
-          body: PdfView(
-            documentLoader: const Center(child: CircularProgressIndicator()),
-            pageLoader: const Center(child: CircularProgressIndicator()),
-            controller: _pdfController,
-            onDocumentLoaded: (document) {
-              setState(() {
-                _allPagesCount = document.pagesCount;
-              });
-            },
-            onPageChanged: (page) {
-              setState(() {
-                _actualPageNumber = page;
-              });
-            },
+          body: CustomPerformanceOverlay(
+            // enabled: true,
+            child: PdfViewPinch(
+              documentLoader: const Center(child: CircularProgressIndicator()),
+              pageLoader: const Center(child: CircularProgressIndicator()),
+              controller: _pdfController,
+              onDocumentLoaded: (document) {
+                setState(() {
+                  _allPagesCount = document.pagesCount;
+                });
+              },
+              onPageChanged: (page) {
+                setState(() {
+                  _actualPageNumber = page;
+                });
+              },
+            ),
           ),
         ),
       );

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+import 'package:pdf_renderer/pdf_renderer.dart';
 
 class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   const PdfPageImageProvider(

@@ -8,7 +8,6 @@
 
 ## Getting Started
 In your flutter project add the dependency:
-
 ```shell
 flutter pub add pdf_renderer
 ```

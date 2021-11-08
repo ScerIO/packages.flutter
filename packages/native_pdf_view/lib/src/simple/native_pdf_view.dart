@@ -1,14 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
 import 'package:native_pdf_view/src/pdf_page_image_provider.dart';
+import 'package:pdf_renderer/pdf_renderer.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:synchronized/synchronized.dart';
-
-export 'package:native_pdf_renderer/native_pdf_renderer.dart';
-export 'package:native_pdf_view/src/pdf_page_image_provider.dart';
-export 'package:photo_view/photo_view.dart';
-export 'package:photo_view/photo_view_gallery.dart';
 
 part 'native_pdf_controller.dart';
 
@@ -93,7 +88,7 @@ class PdfView extends StatefulWidget {
   static Future<PdfPageImage?> _render(PdfPage page) => page.render(
         width: page.width * 2,
         height: page.height * 2,
-        format: PdfPageFormat.JPEG,
+        format: PdfPageImageFormat.jpeg,
         backgroundColor: '#ffffff',
       );
 
@@ -157,13 +152,18 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
       });
 
   void _changeLoadingState(_PdfViewLoadingState state) {
-    if (state == _PdfViewLoadingState.loading) {
-      _pages.clear();
-    } else if (state == _PdfViewLoadingState.success) {
-      widget.onDocumentLoaded?.call(widget.controller._document!);
-    } else if (state == _PdfViewLoadingState.error) {
-      widget.onDocumentError?.call(_loadingError!);
+    switch (state) {
+      case _PdfViewLoadingState.loading:
+        _pages.clear();
+        break;
+      case _PdfViewLoadingState.success:
+        widget.onDocumentLoaded?.call(widget.controller._document!);
+        break;
+      case _PdfViewLoadingState.error:
+        widget.onDocumentError?.call(_loadingError!);
+        break;
     }
+
     setState(() {
       _loadingState = state;
     });
@@ -173,7 +173,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         builder: (BuildContext context, int index) => widget.pageBuilder(
             _getPageImage(index), index, widget.controller._document!),
         itemCount: widget.controller._document?.pagesCount ?? 0,
-        loadingBuilder: (_, __) => widget.pageLoader ?? SizedBox(),
+        loadingBuilder: (_, __) => widget.pageLoader ?? const SizedBox(),
         backgroundDecoration: widget.backgroundDecoration,
         pageController: widget.controller._pageController,
         onPageChanged: (int index) {
@@ -186,30 +186,27 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Widget content;
-
-    switch (_loadingState) {
-      case _PdfViewLoadingState.loading:
-        content = KeyedSubtree(
-          key: Key('$runtimeType.root.loading'),
-          child: widget.documentLoader ?? SizedBox(),
-        );
-        break;
-      case _PdfViewLoadingState.error:
-        content = KeyedSubtree(
-          key: Key('$runtimeType.root.error'),
-          child: widget.errorBuilder?.call(_loadingError!) ??
-              Center(child: Text(_loadingError.toString())),
-        );
-        break;
-      case _PdfViewLoadingState.success:
-        content = KeyedSubtree(
-          key: Key(
-              '$runtimeType.root.success.${widget.controller._document!.id}'),
-          child: _buildLoaded(),
-        );
-        break;
-    }
+    final Widget content = () {
+      switch (_loadingState) {
+        case _PdfViewLoadingState.loading:
+          return KeyedSubtree(
+            key: Key('$runtimeType.root.loading'),
+            child: widget.documentLoader ?? const SizedBox(),
+          );
+        case _PdfViewLoadingState.error:
+          return KeyedSubtree(
+            key: Key('$runtimeType.root.error'),
+            child: widget.errorBuilder?.call(_loadingError!) ??
+                Center(child: Text(_loadingError.toString())),
+          );
+        case _PdfViewLoadingState.success:
+          return KeyedSubtree(
+            key: Key(
+                '$runtimeType.root.success.${widget.controller._document!.id}'),
+            child: _buildLoaded(),
+          );
+      }
+    }();
 
     return AnimatedSwitcher(
       duration: widget.loaderSwitchDuration,
