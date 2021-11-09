@@ -132,7 +132,7 @@ class ImageLoader extends StatelessWidget {
     final pageImage = await page.render(
       width: page.width * 2,
       height: page.height * 2,
-      format: PdfPageFormat.PNG,
+      format: PdfPageImageFormat.png,
     );
     await page.close();
     storage[pageNumber] = pageImage;
