@@ -10,5 +10,5 @@ import pdf_renderer
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
-  NativePdfRendererPlugin.register(with: registry.registrar(forPlugin: "NativePdfRendererPlugin"))
+  PdfRendererPlugin.register(with: registry.registrar(forPlugin: "PdfRendererPlugin"))
 }
