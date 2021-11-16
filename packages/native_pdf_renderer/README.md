@@ -161,5 +161,5 @@ This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.
 
 The pdfium version used can be overridden by the base flutter application by adding the following line to the host apps CMakeLists.txt file:
 ```
-set(PDFIUM_VERSION "4638" CACHE STRING "")
+set(PDFIUM_VERSION "4634" CACHE STRING "")
 ```
