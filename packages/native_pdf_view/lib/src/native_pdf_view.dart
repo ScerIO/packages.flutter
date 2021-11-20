@@ -42,6 +42,7 @@ class PdfView extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.pageSnapping = true,
     this.physics,
+    this.reverse = false,
     this.backgroundDecoration = const BoxDecoration(),
     this.loaderSwitchDuration = const Duration(seconds: 1),
     Key? key,
@@ -88,6 +89,9 @@ class PdfView extends StatefulWidget {
 
   /// Determines the physics of a [PdfView] widget.
   final ScrollPhysics? physics;
+
+  /// Reverse scroll direction, useful for RTL support.
+  final bool reverse;
 
   /// Default PdfRenderer options
   static Future<PdfPageImage?> _render(PdfPage page) => page.render(
@@ -182,6 +186,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         },
         scrollDirection: widget.scrollDirection,
         scrollPhysics: widget.physics,
+        reverse: widget.reverse,
       );
 
   @override
