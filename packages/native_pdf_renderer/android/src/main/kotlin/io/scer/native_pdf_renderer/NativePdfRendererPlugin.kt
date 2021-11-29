@@ -62,8 +62,9 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
     private fun openDocumentDataHandler(call: MethodCall, result: Result) {
         Thread {
             try {
-                val data = call.arguments<ByteArray>()!!
-                val documentRenderer = openDataDocument(data)
+                val data = call.argument<ByteArray>("data")!!
+                val printQuality = call.argument<Boolean>("printQuality")!!
+                val documentRenderer = openDataDocument(data, printQuality)
                 result.success(documents.register(documentRenderer).infoMap)
             } catch (e: NullPointerException) {
                 result.error("PDF_RENDER", "Need call arguments: data!", null)
@@ -80,8 +81,9 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
     private fun openDocumentFileHandler(call: MethodCall, result: Result) {
         Thread {
             try {
-                val path = call.arguments<String>()!!
-                val documentRenderer = openFileDocument(File(path))
+                val path = call.argument<String>("path")!!
+                val printQuality = call.argument<Boolean>("printQuality")!!
+                val documentRenderer = openFileDocument(File(path), printQuality)
                 result.success(documents.register(documentRenderer).infoMap)
             } catch (e: NullPointerException) {
                 result.error("PDF_RENDER", "Need call arguments: path", null)
@@ -100,11 +102,12 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
     private fun openDocumentAssetHandler(call: MethodCall, result: Result) {
         Thread {
             try {
-                val path = call.arguments<String>()!!
-                val documentRenderer = openAssetDocument(path)
+                val name = call.argument<String>("name")!!
+                val printQuality = call.argument<Boolean>("printQuality")!!
+                val documentRenderer = openAssetDocument(name, printQuality)
                 result.success(documents.register(documentRenderer).infoMap)
             } catch (e: NullPointerException) {
-                result.error("PDF_RENDER", "Need call arguments: path", null)
+                result.error("PDF_RENDER", "Need call arguments: name", null)
             } catch (e: FileNotFoundException) {
                 result.error("PDF_RENDER", "File not found", null)
             } catch (e: IOException) {
@@ -181,6 +184,7 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
                 val cropW = if (crop) call.argument<Int>("crop_width")!! else 0;
 
                 val quality = call.argument<Int>("quality") ?: 100
+                val printQuality = call.argument<Boolean>("printQuality") ?: false
 
                 val page = pages.get(pageId)
 
@@ -194,7 +198,7 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
                 tempOutFolder.mkdirs()
                 val tempOutFile = File(tempOutFolder, "$randomFilename.$tempOutFileExtension")
 
-                val results = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality).toMap
+                val results = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality, printQuality).toMap
                 result.success(results)
 
             } catch (e: Exception) {
@@ -203,16 +207,16 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
         }.start()
     }
 
-    private fun openDataDocument(data: ByteArray): Pair<ParcelFileDescriptor, PdfRenderer>? {
+    private fun openDataDocument(data: ByteArray, printQuality: Boolean): Pair<ParcelFileDescriptor, PdfRenderer>? {
         val tempDataFile = File(binding.applicationContext.cacheDir, "$randomFilename.pdf")
         if (!tempDataFile.exists()) {
             tempDataFile.writeBytes(data)
         }
         Log.d("PDF_RENDER", "OpenDataDocument. Created file: " + tempDataFile.path)
-        return openFileDocument(tempDataFile)
+        return openFileDocument(tempDataFile, printQuality)
     }
 
-    private fun openAssetDocument(assetPath: String): Pair<ParcelFileDescriptor, PdfRenderer>?{
+    private fun openAssetDocument(assetPath: String, printQuality: Boolean): Pair<ParcelFileDescriptor, PdfRenderer>?{
         val fullAssetPath = binding.flutterAssets.getAssetFilePathByName(assetPath)
         val tempAssetFile = File(binding.applicationContext.cacheDir, "$randomFilename.pdf")
         if (!tempAssetFile.exists()) {
@@ -221,14 +225,15 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
             inputStream.close()
         }
         Log.d("PDF_RENDER", "OpenAssetDocument. Created file: " + tempAssetFile.path)
-        return openFileDocument(tempAssetFile)
+        return openFileDocument(tempAssetFile, printQuality)
     }
 
-    private fun openFileDocument(file: File): Pair<ParcelFileDescriptor, PdfRenderer> {
+    private fun openFileDocument(file: File, printQuality: Boolean): Pair<ParcelFileDescriptor, PdfRenderer> {
         Log.d("PDF_RENDER", "OpenFileDocument. File: " + file.path)
         val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
         return if (fileDescriptor != null) {
             val pdfRenderer = PdfRenderer(fileDescriptor)
+            if (printQuality) pdfRenderer.shouldScaleForPrinting();
             Pair(fileDescriptor, pdfRenderer)
         } else throw CreateRendererException()
     }
@@ -250,4 +255,3 @@ class NativePdfRendererPlugin : FlutterPlugin, MethodCallHandler {
         }
     }
 }
-
