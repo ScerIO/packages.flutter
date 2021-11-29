@@ -75,6 +75,7 @@ class PdfPage {
     Rect? cropRect,
     int quality = 100,
     @visibleForTesting bool removeTempFile = true,
+    bool printQuality = false,
   }) =>
       _lock.synchronized<PdfPageImage?>(() async {
         if (document.isClosed) {
@@ -93,6 +94,7 @@ class PdfPage {
           crop: cropRect,
           quality: quality,
           removeTempFile: removeTempFile,
+          printQuality: printQuality,
         );
       });
 
