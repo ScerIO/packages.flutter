@@ -57,6 +57,7 @@ class PdfPageImage {
     required Rect? crop,
     required int quality,
     required bool removeTempFile,
+    required bool printQuality,
   }) async {
     if (format == PdfPageFormat.WEBP &&
         (UniversalPlatform.isIOS ||
@@ -83,6 +84,7 @@ class PdfPageImage {
       'crop_height': crop?.height.toInt(),
       'crop_width': crop?.width.toInt(),
       'quality': quality,
+      'printQuality': printQuality,
     });
 
     if (!(obj is Map<dynamic, dynamic>)) {
