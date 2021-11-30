@@ -53,7 +53,8 @@ class PdfDocument {
       );
 
   /// Open PDF document from filesystem path
-  static Future<PdfDocument> openFile(String filePath, {bool printQuality = false}) async {
+  static Future<PdfDocument> openFile(String filePath,
+      {bool printQuality = false}) async {
     if (UniversalPlatform.isWeb) {
       throw PlatformNotSupportedException();
     }
@@ -70,7 +71,9 @@ class PdfDocument {
   }
 
   /// Open PDF document from application assets
-  static Future<PdfDocument> openAsset(String name, {bool printQuality = false}) async => _open(
+  static Future<PdfDocument> openAsset(String name,
+          {bool printQuality = false}) async =>
+      _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
           {
@@ -82,7 +85,9 @@ class PdfDocument {
       );
 
   /// Open PDF file from memory (Uint8List)
-  static Future<PdfDocument> openData(Uint8List data, {bool printQuality = false}) async => _open(
+  static Future<PdfDocument> openData(Uint8List data,
+          {bool printQuality = false}) async =>
+      _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
           {
