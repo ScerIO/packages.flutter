@@ -41,6 +41,29 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
   return -1;  // Failure
 }
 
+// Converts the given UTF-8 string to UTF-16.
+std::wstring Utf16FromUtf8(const std::string& utf8_string) {
+  if (utf8_string.empty()) {
+    return std::wstring();
+  }
+  int target_length =
+      ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8_string.data(),
+                            static_cast<int>(utf8_string.length()), nullptr, 0);
+  if (target_length == 0) {
+    return std::wstring();
+  }
+  std::wstring utf16_string;
+  utf16_string.resize(target_length);
+  int converted_length =
+      ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, utf8_string.data(),
+                            static_cast<int>(utf8_string.length()),
+                            utf16_string.data(), target_length);
+  if (converted_length == 0) {
+    return std::wstring();
+  }
+  return utf16_string;
+}
+
 std::unordered_map<std::string, std::shared_ptr<Document>> document_repository;
 std::unordered_map<std::string, std::shared_ptr<Page>> page_repository;
 int lastId = 0;
@@ -128,7 +151,49 @@ Document::Document(std::vector<uint8_t> dataRef, std::string id) : id{id} {
 }
 
 Document::Document(std::string file, std::string id) : id{id} {
-  document = FPDF_LoadDocument(file.c_str(), nullptr);
+  HANDLE hFile;
+
+  // If is root path, add \\?\ to support long file names
+  if (PathIsRootW(Utf16FromUtf8(file).c_str())) {
+    file = "\\\\?\\" + file;
+  }
+
+  hFile =
+      CreateFileW(Utf16FromUtf8(file).c_str(), GENERIC_READ, FILE_SHARE_READ,
+                  NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+  if (hFile == INVALID_HANDLE_VALUE) {
+    throw std::invalid_argument("Document failed to open");
+  }
+
+  LARGE_INTEGER liFileSize;
+
+  // Read file size
+  if (FALSE == GetFileSizeEx(hFile, &liFileSize)) {
+    CloseHandle(hFile);
+    throw std::invalid_argument("Could not read file size");
+  }
+
+  if (liFileSize.QuadPart > ((ULONGLONG)((DWORD)(-1)))) {
+    CloseHandle(hFile);
+    throw std::invalid_argument("File too large");
+  }
+  DWORD fileSize = (DWORD)(liFileSize.QuadPart);
+
+  // Allocate memory for reading into
+  data.reserve(fileSize);
+  DWORD bytesRead;
+
+  // Read file
+  if (FALSE == ReadFile(hFile, data.data(), fileSize, &bytesRead, NULL)) {
+    CloseHandle(hFile);
+    throw std::invalid_argument("Failed to read file");
+  }
+
+  CloseHandle(hFile);
+
+  // Load PDF
+  document = FPDF_LoadMemDocument64(data.data(), bytesRead, nullptr);
   if (!document) {
     throw std::invalid_argument("Document failed to open");
   }
