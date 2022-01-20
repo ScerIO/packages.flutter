@@ -1,6 +1,7 @@
 #pragma warning(disable : 4458)
 
 // Windows imports
+#include <Shlwapi.h>
 #include <Windows.h>
 #include <gdiplus.h>
 
