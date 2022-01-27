@@ -34,7 +34,9 @@ class PdfView extends StatefulWidget {
     this.onPageChanged,
     this.onDocumentLoaded,
     this.onDocumentError,
+    this.documentLoadingBuilder,
     this.documentLoader,
+    this.pageLoadingBuilder,
     this.pageLoader,
     this.pageBuilder = _pageBuilder,
     this.errorBuilder,
@@ -45,7 +47,9 @@ class PdfView extends StatefulWidget {
     this.backgroundDecoration = const BoxDecoration(),
     this.loaderSwitchDuration = const Duration(seconds: 1),
     Key? key,
-  }) : super(key: key);
+  })  : assert(documentLoader == null || documentLoadingBuilder == null),
+        assert(pageLoader == null || pageLoadingBuilder == null),
+        super(key: key);
 
   ///
   final Duration loaderSwitchDuration;
@@ -62,8 +66,14 @@ class PdfView extends StatefulWidget {
   /// Called when a document loading error
   final void Function(Object error)? onDocumentError;
 
+  /// Widget builder showing when pdf document loading
+  final Widget Function(BuildContext context)? documentLoadingBuilder;
+
   /// Widget showing when pdf document loading
   final Widget? documentLoader;
+
+  /// Widget builder showing when pdf page loading
+  final Widget Function(BuildContext context)? pageLoadingBuilder;
 
   /// Widget showing when pdf page loading
   final Widget? pageLoader;
@@ -72,7 +82,7 @@ class PdfView extends StatefulWidget {
   final PDFViewPageBuilder pageBuilder;
 
   /// Show document loading error message inside [PdfView]
-  final Widget Function(Exception error)? errorBuilder;
+  final Widget Function(BuildContext context, Exception error)? errorBuilder;
 
   /// Custom PdfRenderer options
   final PDFViewPageRenderer renderer;
@@ -173,7 +183,10 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
         builder: (BuildContext context, int index) => widget.pageBuilder(
             _getPageImage(index), index, widget.controller._document!),
         itemCount: widget.controller._document?.pagesCount ?? 0,
-        loadingBuilder: (_, __) => widget.pageLoader ?? SizedBox(),
+        loadingBuilder: (context, __) =>
+            widget.pageLoadingBuilder?.call(context) ??
+            widget.pageLoader ??
+            SizedBox(),
         backgroundDecoration: widget.backgroundDecoration,
         pageController: widget.controller._pageController,
         onPageChanged: (int index) {
@@ -192,13 +205,15 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
       case _PdfViewLoadingState.loading:
         content = KeyedSubtree(
           key: Key('$runtimeType.root.loading'),
-          child: widget.documentLoader ?? SizedBox(),
+          child: widget.documentLoader ??
+              widget.documentLoadingBuilder?.call(context) ??
+              SizedBox(),
         );
         break;
       case _PdfViewLoadingState.error:
         content = KeyedSubtree(
           key: Key('$runtimeType.root.error'),
-          child: widget.errorBuilder?.call(_loadingError!) ??
+          child: widget.errorBuilder?.call(context, _loadingError!) ??
               Center(child: Text(_loadingError.toString())),
         );
         break;
