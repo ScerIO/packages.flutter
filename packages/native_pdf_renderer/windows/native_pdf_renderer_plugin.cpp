@@ -15,10 +15,9 @@
 #include <sstream>
 #include <stdexcept>
 
-// Library linking
-#include <pathcch.h>
-#pragma comment(lib, "pathcch.lib")
+#include <comdef.h>
 
+// Library linking
 #include <shlwapi.h>
 #pragma comment(lib, "shlwapi.lib")
 
@@ -94,15 +93,19 @@ void NativePdfRendererPlugin::HandleMethodCall(
     // Get .exe base path
     WCHAR basePath[MAX_PATH];
     GetModuleFileNameW(NULL, basePath, MAX_PATH);
-#if (NTDDI_VERSION >= NTDDI_WIN8)
-    PathCchRemoveFileSpec(basePath, MAX_PATH);
-#else
-    PathRemoveFileSpec(basePath);
-#endif
+    _bstr_t basePathStr(basePath);
+
+    char drive[_MAX_DRIVE];
+    char dir[_MAX_DIR];
+    char fname[_MAX_FNAME];
+    char ext[_MAX_EXT];
+
+    _splitpath_s(basePathStr, drive, _MAX_DRIVE, dir, _MAX_DIR, fname,
+                 _MAX_FNAME, ext, _MAX_EXT);
 
     // Construct new path
     std::string path =
-        utf8_encode(basePath) + "\\data\\flutter_assets\\" + name;
+        std::string(drive) + std::string(dir) + "data\\flutter_assets\\" + name;
 
     try {
       std::shared_ptr<Document> doc = openDocument(path);
