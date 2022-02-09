@@ -8,8 +8,7 @@
 |---|---|
 | [![pub package][auto_animated_badge]][auto_animated_pub] | [`packages/auto_animated`][auto_animated_code] |
 | [![pub package][flutter_color_badge]][flutter_color_pub] | [`packages/flutter_color`][flutter_color_code] |
-| [![pub package][pdf_renderer_badge]][pdf_renderer_pub] | [`packages/pdf_renderer`][pdf_renderer_code] |
-| [![pub package][native_pdf_view_badge]][native_pdf_view_pub] | [`packages/native_pdf_view`][native_pdf_view_code] |
+| [![pub package][pdfx_badge]][pdfx_pub] | [`packages/pdfx`][pdfx_code] |
 | [![pub package][epub_view_badge]][epub_view_pub] | [`packages/epub_view`][epub_view_code] |
 | [![pub package][explorer_badge]][explorer_pub] | [`packages/explorer`][explorer_code] |
 
@@ -30,9 +29,9 @@
 [flutter_color_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/flutter_color
 [flutter_color_badge]: https://img.shields.io/pub/v/flutter_color.svg
 
-[pdf_renderer_pub]: https://pub.dev/packages/pdf_renderer
-[pdf_renderer_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/pdf_renderer
-[pdf_renderer_badge]: https://img.shields.io/pub/v/pdf_renderer.svg
+[pdfx_pub]: https://pub.dev/packages/pdfx
+[pdfx_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/pdfx
+[pdfx_badge]: https://img.shields.io/pub/v/pdfx.svg
 
 [epub_view_pub]: https://pub.dev/packages/epub_view
 [epub_view_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view

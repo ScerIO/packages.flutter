@@ -1,3 +1,26 @@
+> ## Plugin renamed and republished as `[pdfx]`
+>
+> [[pdfx] on pub.dev](https://pub.dev/packages/pdfx)
+>
+> Some smaller api changes
+> <br/><br/>
+>
+
+<br/>
+
+
+Migration:
+1. Replace dependencies
+```diff
+dependencies:
+-   native_pdf_renderer: ^4.0.1
++   pdfx: ^1.0.0
+```
+2. Renamed `PdfPageFormat` -> `PdfPageImageFormat`
+3. Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
+
+<br/><br/>
+
 # native_pdf_view
 
 `Flutter` Plugin to render PDF and show a PDF file on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.

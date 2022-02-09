@@ -1,89 +1,45 @@
-> ## Plugin renamed and republished as `[pdfx]`
->
-> [[pdfx] on pub.dev](https://pub.dev/packages/pdfx)
->
-> Some smaller api changes
-> <br/><br/>
->
+# PDFx
 
-<br/>
+`Flutter` Plugin to render & show PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
+**We also support the package for easy display PDF documents [pdfx](https://pub.dev/packages/pdfx)**
 
-Migration:
-1. Replace dependencies
-```diff
-dependencies:
--   native_pdf_renderer: ^4.0.1
-+   pdfx: ^1.0.0
-```
-2. Renamed `PdfPageFormat` -> `PdfPageImageFormat`
-3. Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
+[![pub package](https://img.shields.io/pub/v/pdfx.svg)](https://packages/pdfx)
 
-<br/><br/>
+## Showcase
 
-# PDF Renderer
-
-`Flutter` Plugin to render PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
-
-**We also support the package for easy display PDF documents [native_pdf_view](https://pub.dev/packages/native_pdf_view)**
+| Live                      | Screenshot                 |
+|---------------------------|----------------------------|
+|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/live.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/screenshot.png?raw=true)  |
 
 ## Getting Started
 In your flutter project add the dependency:
-
-[![pub package](https://img.shields.io/pub/v/native_pdf_renderer.svg)](https:///packages/native_pdf_renderer)
-
-```yaml
-dependencies:
-  native_pdf_renderer: any
+```shell
+flutter pub add pdfx
 ```
 
-For web add lines in index.html before importing main.dart.js:<br/>
-**note that the files have different names**
-```html
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.js" type="text/javascript"></script>
-<script type="text/javascript">
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.worker.min.js";
-  pdfRenderOptions = {
-    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/cmaps/',
-    cMapPacked: true,
-  }
-</script>
+For web run tool for automatically add pdfjs library in index.html:
+```shell
+flutter pub run pdfx:install_web
 ```
 
-for windows the pdfium version used can be overridden by the base flutter application by adding the following line to the host apps CMakeLists.txt file:
+For windows run tool automatically add override for pdfium version property in CMakeLists.txt file:
 ```
-set(PDFIUM_VERSION "4638" CACHE STRING "")
+flutter pub run pdfx:install_web
 ```
 
 ## Usage example
 
 ```dart
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:native_pdf_renderer/native_pdf_renderer.dart';
+import 'package:pdfx/pdfx.dart';
 
-void main() async {
-  try {
-    final document = await PdfDocument.openAsset('assets/sample.pdf');
-    final page = await document.getPage(1);
-    final pageImage = await page.render(width: page.width, height: page.height);
-    await page.close();
-    runApp(
-      MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: Image(
-              image: MemoryImage(pageImage.bytes),
-            ),
-          ),
-        ),
-        color: Colors.white,
-      )
-    );
-  } on PlatformException catch (error) {
-    print(error);
-  }
-}
+final pdfController = PdfController(
+  document: PdfDocument.openAsset('assets/sample.pdf'),
+);
+
+Widget pdfView() => PdfViewPinch(
+  controller: pdfController,
+);
 ```
 
 ## Api
@@ -119,9 +75,7 @@ And use it
 ```dart
 import 'package:internet_file/internet_file.dart';
 
-PdfDocument.openData(InternetFile.get(
-    'https://github.com/rbcprolabs/packages.flutter/raw/fd0c92ac83ee355255acb306251b1adfeb2f2fd6/packages/native_pdf_renderer/example/assets/sample.pdf',
-))
+PdfDocument.openData(InternetFile.get('https://github.com/rbcprolabs/packages.flutter/raw/fd0c92ac83ee355255acb306251b1adfeb2f2fd6/packages/native_pdf_renderer/example/assets/sample.pdf'))
 ```
 
 **Open page:**
@@ -153,9 +107,9 @@ final pageImage = page.render(
   height: page.height * 2,
 
   // Rendered image compression format, also can be PNG, WEBP*
-  // Optional, default: PdfPageFormat.PNG
+  // Optional, default: PdfPageImageFormat.PNG
   // Web not supported
-  format: PdfPageFormat.JPEG,
+  format: PdfPageImageFormat.JPEG,
 
   // Image background fill color for JPEG
   // Optional, default '#ffffff'
@@ -178,7 +132,7 @@ final pageImage = page.render(
 | width      | Width of the rendered area in pixels, int                                          | -                 |
 | height     | Height of the rendered area in pixels, int                                         | -                 |
 | bytes      | Rendered image result, Uint8List                                                   | -                 |
-| format     | Rendered image compression format, for web always PNG                              | PdfPageFormat.PNG |
+| format     | Rendered image compression format, for web always PNG                              | PdfPageImageFormat.PNG |
 
 **Close page:**
 <br>
@@ -188,7 +142,7 @@ If this is not done, the application may crash with an error
 page.close();
 ```
 
-\* __PdfPageFormat.WEBP support only on android__
+\* __PdfPageImageFormat.WEBP support only on android__
 
 ## Rendering additional info
 
@@ -199,7 +153,7 @@ This plugin uses the [PDF.js](https://mozilla.github.io/pdf.js/)
 This plugin uses the Android native [PdfRenderer](https://developer.android.com/reference/android/graphics/pdf/PdfRenderer)
 
 ### On Ios & MacOs
-This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
+This plugin uses the iOS & MacOs native [CGPDFPage](https://developer.apple.com/documentation/coregraphics/cgpdfdocument/cgpdfpage)
 
 ### On Windows
-This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
+This plugin uses [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
