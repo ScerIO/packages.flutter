@@ -1,3 +1,6 @@
+## 6.0.0+1
+
+* Update readme
 ## 6.0.0
 
 <!--- * Now it package used as proxy for `[pdfx]` (Plugin renamed, migration guide in readme) -->

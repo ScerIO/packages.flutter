@@ -3,10 +3,8 @@
 > [[pdfx] on pub.dev](https://pub.dev/packages/pdfx)
 >
 > Some smaller api changes
-> <br/><br/>
+> 
 >
-
-<br/>
 
 
 Migration:
@@ -18,8 +16,6 @@ dependencies:
 ```
 2. Renamed `PdfPageFormat` -> `PdfPageImageFormat`
 3. Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
-
-<br/><br/>
 
 # PDF Renderer
 
