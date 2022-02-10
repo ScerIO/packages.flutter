@@ -1,8 +1,6 @@
 # PDFx
 
-`Flutter` Plugin to render & show PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
-
-**We also support the package for easy display PDF documents [pdfx](https://pub.dev/packages/pdfx)**
+`Flutter` Render & show PDF documents on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
 [![pub package](https://img.shields.io/pub/v/pdfx.svg)](https://packages/pdfx)
 
@@ -25,7 +23,7 @@ flutter pub run pdfx:install_web
 
 For windows run tool automatically add override for pdfium version property in CMakeLists.txt file:
 ```
-flutter pub run pdfx:install_web
+flutter pub run pdfx:install_windows
 ```
 
 ## Usage example
