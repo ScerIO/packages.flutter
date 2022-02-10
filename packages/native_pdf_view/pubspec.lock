@@ -190,7 +190,7 @@ packages:
       name: pdfx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   photo_view:
     dependency: transitive
     description:
@@ -295,5 +295,5 @@ packages:
     source: hosted
     version: "2.2.10"
 sdks:
-  dart: ">=2.16.0 <3.0.0"
+  dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.0.0"

@@ -1,6 +1,6 @@
 ## 5.0.0
 
-* Now it package used as proxy for `[pdf_renderer]` (Plugin renamed, migration guide in readme)
+* Now it package used as proxy for `[pdfx]` (Plugin renamed, migration guide in readme)
 * `PdfDocument.openData()` added supports `Future<Uin8List>` by usage `FutureOf`
 * Added internet file usage example
 * Added [flutter_lints]

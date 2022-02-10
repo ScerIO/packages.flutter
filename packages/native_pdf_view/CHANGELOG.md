@@ -1,6 +1,6 @@
 ## 6.0.0
 
-<!--- * Now it package used as proxy for `[pdf_view]` (Plugin renamed, migration guide in readme) -->
+<!--- * Now it package used as proxy for `[pdfx]` (Plugin renamed, migration guide in readme) -->
 * `PdfDocument.openData()` added supports `Future<Uin8List>` by usage `FutureOf`
 * Renamed `PdfPageFormat` -> `PdfPageImageFormat`
 * Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
