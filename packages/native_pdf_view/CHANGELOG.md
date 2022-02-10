@@ -1,8 +1,16 @@
+## 6.0.0
+
+<!--- * Now it package used as proxy for `[pdf_view]` (Plugin renamed, migration guide in readme) -->
+* `PdfDocument.openData()` added supports `Future<Uin8List>` by usage `FutureOf`
+* Renamed `PdfPageFormat` -> `PdfPageImageFormat`
+* Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
+* Added supports `Future<Uin8List>` argument for `PdfDocument.openData()` by usage `FutureOf`
+
 ## 5.0.0
 
 * Update photo_view dependency to 0.13.0 [pull#225](https://github.com/rbcprolabs/packages.flutter/pull/225)
 * Fixed another document loading
-* Upgrade `[native_pdf_renderer]` to 4.0.0
+* Upgrade `[pdf_renderer]` to 4.0.0
 
 ## 4.2.0
 
@@ -158,7 +166,7 @@ from `PageController` saved in `PdfController`)
 * Removed default padding
 
 ## 2.0.0-dev.1
-* Rewritten again with using package `[native_pdf_renderer]`
+* Rewritten again with using package `[pdf_renderer]`
 * Usage `[extended_image]` instead `[photo_view]`
 * Optimized page rendering speed
 

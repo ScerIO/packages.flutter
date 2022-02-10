@@ -1,23 +1,31 @@
 {
-	"folders": [
-		{
-			"path": "native_pdf_renderer"
-		},
-		{
-			"path": "auto_animated"
-		},
-		{
-			"path": "epub_view"
-		},
-		{
-			"path": "explorer"
-		},
-		{
-			"path": "flutter_color"
-		},
-		{
-			"path": "native_pdf_view"
-		}
-	],
-	"settings": {}
+  "folders": [
+    {
+      "path": "native_pdf_renderer"
+    },
+    {
+      "path": "auto_animated"
+    },
+    {
+      "path": "epub_view"
+    },
+    {
+      "path": "explorer"
+    },
+    {
+      "path": "flutter_color"
+    },
+    {
+      "path": "native_pdf_view"
+    },
+    {
+      "path": "pdf_renderer"
+    }
+  ],
+  "settings": {
+    "cSpell.words": [
+      "dont",
+      "scer"
+    ]
+  }
 }

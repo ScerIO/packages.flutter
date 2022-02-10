@@ -1,1 +1,1 @@
-export 'src/native_pdf_view.dart';
+export 'package:pdfx/pdfx.dart';

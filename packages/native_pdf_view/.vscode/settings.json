@@ -4,5 +4,12 @@
         "**/.project": true,
         "**/.settings": true,
         "**/.factorypath": true
-    }
+    },
+    "cSpell.words": [
+        "ARGB",
+        "LTRB",
+        "LTWH",
+        "pdfium",
+        "pdfjs"
+    ]
 }

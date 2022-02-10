@@ -1,3 +1,26 @@
+> ## Plugin renamed and republished as `[pdfx]`
+>
+> [[pdfx] on pub.dev](https://pub.dev/packages/pdfx)
+>
+> Some smaller api changes
+> <br/><br/>
+>
+
+<br/>
+
+
+Migration:
+1. Replace dependencies
+```diff
+dependencies:
+-   native_pdf_renderer: ^4.0.1
++   pdfx: ^1.0.0
+```
+2. Renamed `PdfPageFormat` -> `PdfPageImageFormat`
+3. Re-case values `PdfPageImageFormat{JPEG,PNG,WEBP}` -> `PdfPageImageFormat{jpeg,png,webp}`
+
+<br/><br/>
+
 # PDF Renderer
 
 `Flutter` Plugin to render PDF pages as images on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
@@ -7,7 +30,7 @@
 ## Getting Started
 In your flutter project add the dependency:
 
-[![pub package](https://img.shields.io/pub/v/native_pdf_renderer.svg)](https://pub.dartlang.org/packages/native_pdf_renderer)
+[![pub package](https://img.shields.io/pub/v/native_pdf_renderer.svg)](https:///packages/native_pdf_renderer)
 
 ```yaml
 dependencies:
@@ -17,12 +40,19 @@ dependencies:
 For web add lines in index.html before importing main.dart.js:<br/>
 **note that the files have different names**
 ```html
-<!-- Link to pdf.js library -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.js" type="text/javascript"></script>
 <script type="text/javascript">
-  // Link to worker for pdf.js library
-  pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/build/pdf.worker.min.js";
+  pdfRenderOptions = {
+    cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.7.570/cmaps/',
+    cMapPacked: true,
+  }
 </script>
+```
+
+for windows the pdfium version used can be overridden by the base flutter application by adding the following line to the host apps CMakeLists.txt file:
+```
+set(PDFIUM_VERSION "4638" CACHE STRING "")
 ```
 
 ## Usage example
@@ -67,7 +97,7 @@ void main() async {
 | pagesCount | All pages count in document. Starts from 1.                                                | -       |
 | isClosed   | Is the document closed                                                                     | -       |
 
-**Document open:**
+**Local document open:**
 ```dart
 // From assets (Android, Ios, MacOs, Web)
 PdfDocument.openAsset('assets/sample.pdf')
@@ -76,7 +106,22 @@ PdfDocument.openAsset('assets/sample.pdf')
 PdfDocument.openFile('path/to/file/on/device')
 
 // From data (Android, Ios, MacOs, Web)
-PdfDocument.openData(uint8Data)
+PdfDocument.openData((FutureOr<Uint8List>) data)
+```
+**Network document open:**
+
+Install [[network_file]](https://pub.dev/packages/internet_file) package (supports all platforms):
+```shell
+flutter pub add internet_file
+```
+
+And use it
+```dart
+import 'package:internet_file/internet_file.dart';
+
+PdfDocument.openData(InternetFile.get(
+    'https://github.com/rbcprolabs/packages.flutter/raw/fd0c92ac83ee355255acb306251b1adfeb2f2fd6/packages/native_pdf_renderer/example/assets/sample.pdf',
+))
 ```
 
 **Open page:**
@@ -158,8 +203,3 @@ This plugin uses the IOS native [CGPDFPage](https://developer.apple.com/document
 
 ### On Windows
 This plugin use [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
-
-The pdfium version used can be overridden by the base flutter application by adding the following line to the host apps CMakeLists.txt file:
-```
-set(PDFIUM_VERSION "4638" CACHE STRING "")
-```

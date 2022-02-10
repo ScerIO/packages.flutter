@@ -1,0 +1,21 @@
+{
+    "files.exclude": {
+        "**/.classpath": true,
+        "**/.project": true,
+        "**/.settings": true,
+        "**/.factorypath": true
+    },
+    "cSpell.words": [
+        "alloc",
+        "dont",
+        "macos",
+        "pdfium",
+        "pdfjs",
+        "pdfx",
+        "scer",
+        "Uint",
+        "uuid",
+        "WEBP"
+    ],
+    "C_Cpp.clang_format_fallbackStyle": "Google"
+}

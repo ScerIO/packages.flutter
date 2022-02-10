@@ -101,12 +101,14 @@ class _ExplorerFilesGridViewState extends State<ExplorerFilesGridView> {
     final i18n = ExplorerLocalizations.of(context);
 
     var crossAxisCount = 3;
-    if (size.width >= 800 && size.width < 1000) {
+    if (size.width >= 600 && size.width < 800) {
       crossAxisCount = 4;
-    } else if (size.width >= 1000 && size.width < 1200) {
+    } else if (size.width >= 800 && size.width < 1000) {
       crossAxisCount = 5;
-    } else if (size.width >= 1200) {
+    } else if (size.width >= 1000 && size.width < 1200) {
       crossAxisCount = 6;
+    } else if (size.width >= 1200) {
+      crossAxisCount = 7;
     }
 
     return StreamBuilder<ExplorerState>(

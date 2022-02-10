@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  native_pdf_renderer
+  pdfx
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)
