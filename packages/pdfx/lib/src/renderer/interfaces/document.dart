@@ -33,15 +33,15 @@ abstract class PdfDocument {
   /// For Web, [filePath] can be relative path from `index.html` or any
   /// arbitrary URL but it may be restricted by CORS.
   static Future<PdfDocument> openFile(String filePath) =>
-      PdfRenderPlatform.instance.openFile(filePath);
+      PdfxPlatform.instance.openFile(filePath);
 
   /// Opening the specified asset.
   static Future<PdfDocument> openAsset(String name) =>
-      PdfRenderPlatform.instance.openAsset(name);
+      PdfxPlatform.instance.openAsset(name);
 
   /// Opening the PDF on memory.
   static Future<PdfDocument> openData(FutureOr<Uint8List> data) =>
-      PdfRenderPlatform.instance.openData(data);
+      PdfxPlatform.instance.openData(data);
 
   /// Get page object. The first page is 1.
   Future<PdfPage> getPage(

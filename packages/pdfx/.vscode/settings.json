@@ -11,6 +11,7 @@
         "macos",
         "pdfium",
         "pdfjs",
+        "pdfx",
         "scer",
         "Uint",
         "uuid",

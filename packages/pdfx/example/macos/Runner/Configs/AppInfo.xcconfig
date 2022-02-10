@@ -11,4 +11,4 @@ PRODUCT_NAME = example
 PRODUCT_BUNDLE_IDENTIFIER = io.scer.example
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2021 io.scer. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2022 io.scer. All rights reserved.

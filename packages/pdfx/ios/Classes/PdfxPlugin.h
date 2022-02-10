@@ -4,5 +4,5 @@
 #import <FlutterMacOS/FlutterMacOS.h>
 #endif
 
-@interface PdfRendererPlugin : NSObject <FlutterPlugin>
+@interface PdfxPlugin : NSObject <FlutterPlugin>
 @end

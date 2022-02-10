@@ -1,11 +1,10 @@
-package io.scer.pdf_renderer.document
+package io.scer.pdfx.document
 
 import android.annotation.TargetApi
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
-import io.scer.pdf_renderer.utils.toByteArray
-import io.scer.pdf_renderer.utils.toFile
+import io.scer.pdfx.utils.toFile
 import java.io.File
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)

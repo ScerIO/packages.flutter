@@ -26,3 +26,6 @@ flutter:
 
   assets:
     - assets/sample.pdf
+    - assets/dummy.pdf
+    - assets/hello.pdf
+

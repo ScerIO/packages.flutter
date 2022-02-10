@@ -13,23 +13,23 @@ final _usePigeon = UniversalPlatform.isIOS ||
 
 /// Abstraction layer to isolate [PdfDocument] implementation
 /// from the public interface.
-abstract class PdfRenderPlatform extends PlatformInterface {
-  /// Constructs a PdfRenderPlatform.
-  PdfRenderPlatform() : super(token: _token);
+abstract class PdfxPlatform extends PlatformInterface {
+  /// Constructs a PdfxPlatform.
+  PdfxPlatform() : super(token: _token);
 
   static final Object _token = Object();
 
-  static PdfRenderPlatform _instance =
-      _usePigeon ? PdfRenderPlatformPigeon() : PdfRenderPlatformMethodChannel();
+  static PdfxPlatform _instance =
+      _usePigeon ? PdfxPlatformPigeon() : PdfxPlatformMethodChannel();
 
-  /// The default instance of [PdfRenderPlatform] to use.
+  /// The default instance of [PdfxPlatform] to use.
   ///
-  /// Defaults to [PdfRenderPlatformMethodChannel].
-  static PdfRenderPlatform get instance => _instance;
+  /// Defaults to [PdfxPlatformMethodChannel].
+  static PdfxPlatform get instance => _instance;
 
   /// Platform-specific plugins should set this with their own platform-specific
-  /// class that extends [PdfRenderPlatform] when they register themselves.
-  static set instance(PdfRenderPlatform instance) {
+  /// class that extends [PdfxPlatform] when they register themselves.
+  static set instance(PdfxPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }

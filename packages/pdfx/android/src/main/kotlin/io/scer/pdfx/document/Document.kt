@@ -1,4 +1,4 @@
-package io.scer.pdf_renderer.document
+package io.scer.pdfx.document
 
 import android.annotation.TargetApi
 import android.graphics.pdf.PdfRenderer

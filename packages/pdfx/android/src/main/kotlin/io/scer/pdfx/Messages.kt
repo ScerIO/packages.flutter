@@ -1,4 +1,4 @@
-package io.scer.pdf_renderer
+package io.scer.pdfx
 
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -15,12 +15,12 @@ import dev.flutter.pigeon.Pigeon
 import io.flutter.BuildConfig
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.view.TextureRegistry
-import io.scer.pdf_renderer.resources.DocumentRepository
-import io.scer.pdf_renderer.resources.PageRepository
-import io.scer.pdf_renderer.resources.RepositoryItemNotFoundException
-import io.scer.pdf_renderer.utils.CreateRendererException
-import io.scer.pdf_renderer.utils.randomFilename
-import io.scer.pdf_renderer.utils.toFile
+import io.scer.pdfx.resources.DocumentRepository
+import io.scer.pdfx.resources.PageRepository
+import io.scer.pdfx.resources.RepositoryItemNotFoundException
+import io.scer.pdfx.utils.CreateRendererException
+import io.scer.pdfx.utils.randomFilename
+import io.scer.pdfx.utils.toFile
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException

@@ -7,7 +7,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:synchronized/synchronized.dart';
 
-part 'native_pdf_controller.dart';
+part 'pdf_controller.dart';
 
 typedef PDFViewPageBuilder = PhotoViewGalleryPageOptions Function(
   /// Page image model

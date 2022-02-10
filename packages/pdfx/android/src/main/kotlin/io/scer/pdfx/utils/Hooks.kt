@@ -1,4 +1,4 @@
-package io.scer.pdf_renderer.utils
+package io.scer.pdfx.utils
 
 import android.graphics.Bitmap
 import java.io.ByteArrayOutputStream

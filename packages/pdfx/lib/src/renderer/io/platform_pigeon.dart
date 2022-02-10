@@ -14,7 +14,7 @@ import 'package:universal_platform/universal_platform.dart';
 final _lock = Lock();
 final _api = PdfRendererApi();
 
-class PdfRenderPlatformPigeon extends PdfRenderPlatform {
+class PdfxPlatformPigeon extends PdfxPlatform {
   PdfDocument _open(OpenReply result, String sourceName) => PdfDocumentPigeon._(
         sourceName: sourceName,
         id: result.id!,

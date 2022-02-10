@@ -15,7 +15,7 @@ const MethodChannel _channel = MethodChannel('io.scer.pdf_renderer');
 
 final Lock _lock = Lock();
 
-class PdfRenderPlatformMethodChannel extends PdfRenderPlatform {
+class PdfxPlatformMethodChannel extends PdfxPlatform {
   PdfDocument _open(Map<dynamic, dynamic> obj, String sourceName) =>
       PdfDocumentMethodChannel._(
         sourceName: sourceName,

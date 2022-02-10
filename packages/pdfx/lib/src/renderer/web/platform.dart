@@ -22,8 +22,8 @@ final _pages = PageRepository();
 final _textures = <int, RgbaData>{};
 int _texId = -1;
 
-class PdfRendererWeb extends PdfRenderPlatform {
-  PdfRendererWeb() {
+class PdfxWeb extends PdfxPlatform {
+  PdfxWeb() {
     _eventChannel.setController(_eventStreamController);
   }
 
@@ -305,7 +305,7 @@ class PdfPageTextureWeb extends PdfPageTexture {
   @override
   Future<void> dispose() async {
     _textures.remove(id);
-    js_util.setProperty(html.window, 'pdf_renderer_texture_$id', null);
+    js_util.setProperty(html.window, 'pdfx_texture_$id', null);
   }
 
   @override
@@ -335,7 +335,7 @@ class PdfPageTextureWeb extends PdfPageTexture {
         height: height,
         fullWidth: fullWidth,
         backgroundColor: backgroundColor,
-        dontFlip: false,
+        dontFlip: true,
         handleRawData: (src, width, height) async {
           final destX = destinationX;
           final destY = destinationY;
@@ -351,7 +351,7 @@ class PdfPageTextureWeb extends PdfPageTexture {
             dp += destStride;
             sp -= bpl;
           }
-          PdfRendererWeb._eventStreamController.sink.add(id);
+          PdfxWeb._eventStreamController.sink.add(id);
 
           return true;
         },
@@ -382,7 +382,7 @@ class PdfPageTextureWeb extends PdfPageTexture {
       width: width,
       height: height,
     );
-    js_util.setProperty(html.window, 'pdf_renderer_texture_$id', data);
+    js_util.setProperty(html.window, 'pdfx_texture_$id', data);
     return data;
   }
 

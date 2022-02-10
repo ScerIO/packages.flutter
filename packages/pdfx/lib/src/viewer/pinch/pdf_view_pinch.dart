@@ -13,7 +13,7 @@ export 'package:pdfx/src/viewer/pdf_page_image_provider.dart';
 export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
-part 'native_pdf_controller_pinch.dart';
+part 'pdf_controller_pinch.dart';
 
 typedef PdfViewPinchPageBuilderPinch = PhotoViewGalleryPageOptions Function(
   /// Page image model
@@ -39,7 +39,7 @@ class PdfViewPinch extends StatefulWidget {
     this.documentLoader,
     this.pageLoader,
     this.errorBuilder,
-    this.scrollDirection = Axis.horizontal,
+    this.scrollDirection = Axis.vertical,
     this.pageSnapping = true,
     this.padding = 10,
     this.physics,
@@ -244,15 +244,27 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     final maxWidth = _pages.fold<double>(
         0.0, (maxWidth, page) => max(maxWidth, page.pageSize.width));
     final ratio = (viewSize.width - _padding * 2) / maxWidth;
-    var top = _padding;
-    for (int i = 0; i < _pages.length; i++) {
-      final page = _pages[i];
-      final w = page.pageSize.width * ratio;
-      final h = page.pageSize.height * ratio;
-      page.rect = Rect.fromLTWH(_padding, top, w, h);
-      top += h + _padding;
+    if (widget.scrollDirection == Axis.horizontal) {
+      var left = _padding;
+      for (int i = 0; i < _pages.length; i++) {
+        final page = _pages[i];
+        final w = page.pageSize.width * ratio;
+        final h = page.pageSize.height * ratio;
+        page.rect = Rect.fromLTWH(left, _padding, w, h);
+        left += w + _padding;
+      }
+      _docSize = Size(left, viewSize.height);
+    } else {
+      var top = _padding;
+      for (int i = 0; i < _pages.length; i++) {
+        final page = _pages[i];
+        final w = page.pageSize.width * ratio;
+        final h = page.pageSize.height * ratio;
+        page.rect = Rect.fromLTWH(_padding, top, w, h);
+        top += h + _padding;
+      }
+      _docSize = Size(viewSize.width, top);
     }
-    _docSize = Size(viewSize.width, top);
   }
 
   /// Not to purge loaded page previews if they're "near"

@@ -18,8 +18,7 @@ class PdfTexture extends StatefulWidget {
   _PdfTextureState createState() => _PdfTextureState();
 
   RgbaData? get data =>
-      js_util.getProperty(html.window, 'pdf_render_texture_$textureId')
-          as RgbaData?;
+      js_util.getProperty(html.window, 'pdfx_texture_$textureId') as RgbaData?;
 }
 
 class _PdfTextureState extends State<PdfTexture> {
@@ -69,7 +68,7 @@ class _PdfTextureState extends State<PdfTexture> {
         await ui.ImmutableBuffer.fromUint8List(data.data),
         width: data.width,
         height: data.height,
-        pixelFormat: ui.PixelFormat.bgra8888,
+        pixelFormat: ui.PixelFormat.rgba8888,
       );
       final codec = await descriptor.instantiateCodec();
       final frame = await codec.getNextFrame();

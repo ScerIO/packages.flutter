@@ -1,1 +1,0 @@
-../../ios/Classes/SwiftPdfRendererPlugin.swift

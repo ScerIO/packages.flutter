@@ -7,7 +7,7 @@ import FlutterMacOS
 #endif
 import CoreGraphics
 
-public class SwiftPdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererApi {
+public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfRendererApi {
     let registrar: FlutterPluginRegistrar
     static let invalid = NSNumber(value: -1)
     let dispQueue = DispatchQueue(label: "io.scer.pdf_renderer")
@@ -26,7 +26,7 @@ public class SwiftPdfRendererPlugin: NSObject, FlutterPlugin, PdfRendererApi {
         #elseif os(macOS)
             let messenger: FlutterBinaryMessenger = registrar.messenger
         #endif
-        let api: PdfRendererApi & NSObjectProtocol = SwiftPdfRendererPlugin.init(registrar: registrar)
+        let api: PdfRendererApi & NSObjectProtocol = SwiftPdfxPlugin.init(registrar: registrar)
         PdfRendererApiSetup(messenger, api);
     }
 

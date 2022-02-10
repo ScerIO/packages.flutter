@@ -14,7 +14,7 @@ const String _testAssetPath = '/assets/file.pdf';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  PdfRenderPlatform.instance = PdfRenderPlatformMethodChannel();
+  PdfxPlatform.instance = PdfxPlatformMethodChannel();
   final List<MethodCall> log = <MethodCall>[];
   PdfDocument? document;
   late Uint8List _testData;
