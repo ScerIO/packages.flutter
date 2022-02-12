@@ -47,7 +47,12 @@ int lastId = 0;
 
 std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
   if (document_repository.size() == 0) {
-    FPDF_InitLibraryWithConfig(nullptr);
+    FPDF_LIBRARY_CONFIG config;
+    config.version = 2;
+    config.m_pUserFontPaths = NULL;
+    config.m_pIsolate = NULL;
+    config.m_v8EmbedderSlot = 0;
+    FPDF_InitLibraryWithConfig(&config);
   }
 
   lastId++;
@@ -61,7 +66,12 @@ std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
 
 std::shared_ptr<Document> openDocument(std::string name) {
   if (document_repository.size() == 0) {
-    FPDF_InitLibraryWithConfig(nullptr);
+    FPDF_LIBRARY_CONFIG config;
+    config.version = 2;
+    config.m_pUserFontPaths = NULL;
+    config.m_pIsolate = NULL;
+    config.m_v8EmbedderSlot = 0;
+    FPDF_InitLibraryWithConfig(&config);
   }
 
   lastId++;
@@ -177,8 +187,8 @@ PageRender Page::render(int width, int height, ImageFormat format,
   // Create empty bitmap and render page onto it
   auto bitmap = FPDFBitmap_Create(rWidth, rHeight, 0);
   FPDFBitmap_FillRect(bitmap, 0, 0, rWidth, rHeight, background);
-  Fpdf_rendererPageBitmap(bitmap, page, start_x, start_y, size_x, size_y, 0,
-                          FPDF_ANNOT | FPDF_LCD_TEXT);
+  FPDF_RenderPageBitmap(bitmap, page, start_x, start_y, size_x, size_y, 0,
+                      FPDF_ANNOT | FPDF_LCD_TEXT);
 
   // Convert bitmap into RGBA format
   uint8_t* p = static_cast<uint8_t*>(FPDFBitmap_GetBuffer(bitmap));
