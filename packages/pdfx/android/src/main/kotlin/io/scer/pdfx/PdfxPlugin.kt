@@ -9,7 +9,7 @@ import io.scer.pdfx.resources.DocumentRepository
 import io.scer.pdfx.resources.PageRepository
 
 /**
- * PdfRendererPlugin
+ * PdfxPlugin
  */
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class PdfxPlugin : FlutterPlugin {

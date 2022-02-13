@@ -1,12 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
-set(PROJECT_NAME "pdf_renderer")
+set(PROJECT_NAME "pdfx")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 set(ARCH "x64")
-set(PDFIUM_VERSION "4638" CACHE STRING "Version of pdfium used")
+set(PDFIUM_VERSION "4634" CACHE STRING "Version of pdfium used")
+
+string(COMPARE GREATER_EQUAL ${PDFIUM_VERSION} "4690" PDFIUM_BINARY_NEW_FORMAT)
 
 if(${PDFIUM_VERSION} STREQUAL "latest")
   set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/latest/download/pdfium-windows-${ARCH}.zip")
+elseif(PDFIUM_BINARY_NEW_FORMAT)
+  set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/${PDFIUM_VERSION}/pdfium-win-${ARCH}.tgz")
 else()
   set(PDFIUM_URL "https://github.com/bblanchon/pdfium-binaries/releases/download/chromium/${PDFIUM_VERSION}/pdfium-windows-${ARCH}.zip")
 endif()
@@ -18,18 +22,18 @@ download_project(
   pdfium
   URL
   ${PDFIUM_URL}
-  )
+)
 
 # This value is used when generating builds using this plugin, so it must
 # not be changed
-set(PLUGIN_NAME "pdf_renderer_plugin")
+set(PLUGIN_NAME "pdfx_plugin")
 
 include(${pdfium_SOURCE_DIR}/PDFiumConfig.cmake)
 
 add_library(${PLUGIN_NAME} SHARED
-  "pdf_renderer.cpp"
-  "pdf_renderer.h"
-  "pdf_renderer_plugin.cpp"
+  "pdfx.cpp"
+  "pdfx.h"
+  "pdfx_plugin.cpp"
 )
 apply_standard_settings(${PLUGIN_NAME})
 set_target_properties(${PLUGIN_NAME} PROPERTIES
@@ -40,7 +44,7 @@ target_include_directories(${PLUGIN_NAME} INTERFACE
 target_link_libraries(${PLUGIN_NAME} PRIVATE pdfium flutter flutter_wrapper_plugin)
 
 # List of absolute paths to libraries that should be bundled with the plugin
-set(pdf_renderer_bundled_libraries
+set(pdfx_bundled_libraries
   "${PDFium_LIBRARY}"
   PARENT_SCOPE
 )

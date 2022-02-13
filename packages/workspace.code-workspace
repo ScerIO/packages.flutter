@@ -19,7 +19,7 @@
       "path": "native_pdf_view"
     },
     {
-      "path": "pdf_renderer"
+      "path": "pdfx"
     }
   ],
   "settings": {

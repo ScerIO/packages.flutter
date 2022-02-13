@@ -7,6 +7,7 @@ import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 import 'package:pdfx/src/viewer/wrappers/pdf_texture.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:universal_platform/universal_platform.dart';
 import 'package:vector_math/vector_math_64.dart' as math64;
 
 export 'package:pdfx/src/viewer/pdf_page_image_provider.dart';
@@ -123,6 +124,10 @@ class _PdfViewPinchState extends State<PdfViewPinch>
 
   @override
   void initState() {
+    if (UniversalPlatform.isWindows) {
+      throw UnimplementedError(
+          'PdfViewPinch not supported in Windows, usage PdfView instead');
+    }
     _loadingState = _PdfViewPinchLoadingState.loading;
     _controller._attach(this);
     _animController = AnimationController(
@@ -570,11 +575,13 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           maxScale: 20,
           panEnabled: true,
           scaleEnabled: true,
-          child: Stack(
-            children: <Widget>[
-              SizedBox(width: docSize.width, height: docSize.height),
-              ...iterateLaidOutPages(viewSize)
-            ],
+          child: SafeArea(
+            child: Stack(
+              children: <Widget>[
+                SizedBox(width: docSize.width, height: docSize.height),
+                ...iterateLaidOutPages(viewSize)
+              ],
+            ),
           ),
         );
       },

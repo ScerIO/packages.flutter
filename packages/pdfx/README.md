@@ -2,7 +2,7 @@
 
 `Flutter` Render & show PDF documents on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
-[![pub package](https://img.shields.io/pub/v/pdfx.svg)](https://packages/pdfx)
+[![pub package](https://img.shields.io/pub/v/pdfx.svg)](https://pub.dev/packages/pdfx)
 
 ## Showcase
 

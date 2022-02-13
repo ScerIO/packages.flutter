@@ -27,7 +27,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.4
-  pigeon: ^1.0.8
+  pigeon: ^1.0.18
 
 flutter:
   plugin:
@@ -40,7 +40,7 @@ flutter:
       macos:
         pluginClass: PdfxPlugin
       windows:
-        pluginClass: NativePdfRendererPlugin
+        pluginClass: PdfxPlugin
       web:
         pluginClass: PdfxPlugin
         fileName: src/renderer/web/pdfx_plugin.dart

@@ -1,0 +1,4 @@
+[core]
+autocrlf = input
+safecrlf = false
+eol = lf

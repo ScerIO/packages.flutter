@@ -111,8 +111,8 @@ class PdfDocumentMethodChannel extends PdfDocument {
           document: this,
           id: obj['id'] as String,
           pageNumber: pageNumber,
-          width: obj['width'] as double,
-          height: obj['height'] as double,
+          width: double.parse(obj['width'].toString()),
+          height: double.parse(obj['height'].toString()),
         );
       }
 
@@ -176,7 +176,8 @@ class PdfPageMethodChannel extends PdfPage {
 
   @override
   Future<PdfPageTexture> createTexture() {
-    throw UnimplementedError();
+    throw UnimplementedError(
+        'PdfViewPinch not supported in Windows, usage PdfView instead');
   }
 
   @override
