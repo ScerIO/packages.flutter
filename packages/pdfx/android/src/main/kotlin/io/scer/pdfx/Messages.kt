@@ -29,7 +29,7 @@ import java.lang.RuntimeException
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                private val documents: DocumentRepository,
-               private val pages: PageRepository) : Pigeon.PdfRendererApi {
+               private val pages: PageRepository) : Pigeon.PdfxApi {
 
     private val textures: SparseArray<TextureRegistry.SurfaceTextureEntry> = SparseArray()
 

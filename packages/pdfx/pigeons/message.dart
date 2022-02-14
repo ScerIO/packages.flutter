@@ -1,7 +1,7 @@
 import 'package:pigeon/pigeon.dart';
 
 @ConfigurePigeon(PigeonOptions(
-  dartOut: 'lib/src/io/pigeon.dart',
+  dartOut: 'lib/src/renderer/io/pigeon.dart',
   objcHeaderOut: './ios/Classes/messages.h',
   objcSourceOut: './ios/Classes/messages.m',
   javaOut: './android/src/main/java/dev/flutter/pigeon/Pigeon.java',
@@ -106,7 +106,7 @@ class UnregisterTextureMessage {
 /// ````
 ///
 @HostApi()
-abstract class PdfRendererApi {
+abstract class PdfxApi {
   @async
   OpenReply openDocumentData(OpenDataMessage message);
   @async

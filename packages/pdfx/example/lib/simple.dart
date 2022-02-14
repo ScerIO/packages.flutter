@@ -11,8 +11,7 @@ class SimplePage extends StatefulWidget {
 
 class _SimplePageState extends State<SimplePage> {
   static const int _initialPage = 2;
-  int _actualPageNumber = _initialPage, _allPagesCount = 0;
-  bool isSampleDoc = true;
+  bool _isSampleDoc = true;
   late PdfController _pdfController;
 
   @override
@@ -46,11 +45,14 @@ class _SimplePageState extends State<SimplePage> {
               );
             },
           ),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              '$_actualPageNumber/$_allPagesCount',
-              style: const TextStyle(fontSize: 22),
+          PdfPageNumber(
+            controller: _pdfController,
+            builder: (_, loadingState, page, pagesCount) => Container(
+              alignment: Alignment.center,
+              child: Text(
+                '$page/${pagesCount ?? 0}',
+                style: const TextStyle(fontSize: 22),
+              ),
             ),
           ),
           IconButton(
@@ -65,34 +67,29 @@ class _SimplePageState extends State<SimplePage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              if (isSampleDoc) {
-                _pdfController
-                    .loadDocument(PdfDocument.openAsset('assets/dummy.pdf'));
+              if (_isSampleDoc) {
+                _pdfController.loadDocument(
+                    PdfDocument.openAsset('assets/flutter_tutorial.pdf'));
               } else {
                 _pdfController
-                    .loadDocument(PdfDocument.openAsset('assets/sample.pdf'));
+                    .loadDocument(PdfDocument.openAsset('assets/hello.pdf'));
               }
-              isSampleDoc = !isSampleDoc;
+              _isSampleDoc = !_isSampleDoc;
             },
-          )
+          ),
         ],
       ),
       body: CustomPerformanceOverlay(
         enabled: false,
         child: PdfView(
-          documentLoader: const Center(child: CircularProgressIndicator()),
-          pageLoader: const Center(child: CircularProgressIndicator()),
+          builders: PdfViewBuilders<DefaultBuilderOptions>(
+            options: const DefaultBuilderOptions(),
+            documentLoaderBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+            pageLoaderBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+          ),
           controller: _pdfController,
-          onDocumentLoaded: (document) {
-            setState(() {
-              _allPagesCount = document.pagesCount;
-            });
-          },
-          onPageChanged: (page) {
-            setState(() {
-              _actualPageNumber = page;
-            });
-          },
         ),
       ),
     );

@@ -2,13 +2,17 @@
 
 `Flutter` Render & show PDF documents on **Web**, **MacOs 10.11+**, **Android 5.0+**, **iOS** and **Windows**.
 
+Includes 2 api:
+- `renderer` Work with Pdf document, pages, render page to image
+- `viewer` Set of flutter widgets & controllers for show renderer result
+
 [![pub package](https://img.shields.io/pub/v/pdfx.svg)](https://pub.dev/packages/pdfx)
 
 ## Showcase
 
-| Live                      | Screenshot                 |
+| PdfViewPinch              | PdfView                    |
 |---------------------------|----------------------------|
-|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/live.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/screenshot.png?raw=true)  |
+|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/pdfx/example/media/pinch.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/pdfx/example/media/simple.gif?raw=true)  |
 
 ## Getting Started
 In your flutter project add the dependency:
@@ -31,16 +35,224 @@ flutter pub run pdfx:install_windows
 ```dart
 import 'package:pdfx/pdfx.dart';
 
+final pdfPinchController = PdfControllerPinch(
+  document: PdfDocument.openAsset('assets/sample.pdf'),
+);
+
+// Pdf view with re-render pdf texture on zoom (not loose quality on zoom)
+// Not supported on windows
+PdfViewPinch(
+  controller: pdfPinchController,
+);
+
+//-- or --//
+
 final pdfController = PdfController(
   document: PdfDocument.openAsset('assets/sample.pdf'),
 );
 
-Widget pdfView() => PdfViewPinch(
+// Simple Pdf view with one render of page (loose quality on zoom)
+PdfView(
   controller: pdfController,
 );
 ```
 
-## Api
+## Viewer Api
+
+### PdfController & PdfControllerPinch
+
+| Parameter        | Description                                                | Default |
+|------------------|------------------------------------------------------------|---------|
+| document         | The document to be displayed                               | -       |
+| initialPage      | The page to show when first creating the  [PdfView]        | 1       |
+| viewportFraction | The fraction of the viewport that each page should occupy. | 1.0     |
+
+### PdfView & PdfViewPinch
+
+| Parameter        	| Description                                                                                                    	| Default                                                                                             	| PdfViewPinch 	| PdfView 	|
+|------------------	|----------------------------------------------------------------------------------------------------------------	|-----------------------------------------------------------------------------------------------------	|--------------	|---------	|
+| controller       	| Pages control. See [page control](#page-control) and  [additional pdf info](#additional-pdf-info)              	| -                                                                                                   	| +            	| +       	|
+| onPageChanged    	| Called whenever the page in the center of the viewport changes.  See [Document callbacks](#document-callbacks) 	| -                                                                                                   	| +            	| +       	|
+| onDocumentLoaded 	| Called when a document is loaded. See [Document callbacks](#document-callbacks)                                	| -                                                                                                   	| +            	| +       	|
+| onDocumentError  	| Called when a document loading error. Exception is passed in the attributes                                    	| -                                                                                                   	| +            	| +       	|
+| builders         	| Set of pdf view builders. See [Custom builders](#custom-builders)                                              	| Default builders                                                                                    	| +            	| +       	|
+| scrollDirection  	| Page turning direction                                                                                         	| Axis.horizontal                                                                                     	| +            	| +       	|
+| renderer         	| Custom PdfRenderer options.  See [custom renderer options](#custom-renderer-options)                           	| width: page.width * 2 height: page.height * 2 format: PdfPageFormat.JPEG backgroundColor: '#ffffff' 	|              	| +       	|
+| pageSnapping     	| Set to false for mouse wheel scroll on web                                                                     	| true                                                                                                	|              	| +       	|
+| physics          	| How the widgets should respond to user input                                                                   	| -                                                                                                   	|              	| +       	|
+| padding          	| Padding for the every page.                                                                                    	| 10                                                                                                  	| +            	|         	|
+
+### PdfViewBuilders & PdfViewPinchBuilders
+
+| Parameter             	| Description                                                                                       	| Default               	| PdfViewPinchBuilders 	| PdfViewBuilders 	|
+|-----------------------	|---------------------------------------------------------------------------------------------------	|-----------------------	|----------------------	|-----------------	|
+| options<T>            	| Additional options for builder                                                                    	| DefaultBuilderOptions 	| +                    	| +               	|
+| documentLoaderBuilder 	| Widget showing when pdf document loading                                                          	| SizedBox()            	| +                    	| +               	|
+| pageLoaderBuilder     	| Widget showing when pdf page loading                                                              	| SizedBox()            	| +                    	| +               	|
+| errorBuilder          	| Show document loading error message                                                               	| Centered error text   	| +                    	| +               	|
+| builder               	| Root view builder for animate pdf loading state                                                   	| Default builder       	| +                    	| +               	|
+| pageBuilder           	| Callback called to render a widget for each page. See [custom page builder](#custom-page-builder) 	| Default builder       	|                      	| +               	|
+
+## Additional examples
+
+### Open another document
+```dart
+pdfController.openDocument(PdfDocument.openAsset('assets/sample.pdf'));
+```
+
+### Page control:
+```dart
+// Jump to specified page
+pdfController.jumpTo(3);
+
+// Animate to specified page
+_pdfController.animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.ease);
+
+// Animate to next page 
+_pdfController.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+
+// Animate to previous page
+_pdfController.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeOut);
+```
+### Additional pdf info:
+```dart
+// Actual showed page
+pdfController.page;
+
+// Count of all pages in document
+pdfController.pagesCount;
+```
+
+### Document callbacks
+```dart
+PdfView(
+  controller: pdfController,
+  onDocumentLoaded: (document) {},
+  onPageChanged: (page) {},
+);
+```
+
+### Show actual page number & all pages count
+```dart
+PdfPageNumber(
+  controller: _pdfController,
+  // When `loadingState != PdfLoadingState.success`  `pagesCount` equals null_
+  builder: (_, state, loadingState, pagesCount) => Container(
+    alignment: Alignment.center,
+    child: Text(
+      '$page/${pagesCount ?? 0}',
+      style: const TextStyle(fontSize: 22),
+    ),
+  ),
+)
+```
+
+### Custom renderer options
+```dart
+PdfView(
+  controller: pdfController,
+  renderer: (PdfPage page) => page.render(
+    width: page.width * 2,
+    height: page.height * 2,
+    format: PdfPageFormat.JPEG,
+    backgroundColor: '#FFFFFF',
+  ),
+);
+```
+
+### Custom builders
+```dart
+// Need static methods for builders arguments
+class SomeWidget {
+  static Widget builder(
+    BuildContext context,
+    PdfViewPinchBuilders builders,
+    PdfLoadingState state,
+    WidgetBuilder loadedBuilder,
+    PdfDocument? document,
+    Exception? loadingError,
+  ) {
+    final Widget content = () {
+      switch (state) {
+        case PdfLoadingState.loading:
+          return KeyedSubtree(
+            key: const Key('pdfx.root.loading'),
+            child: builders.documentLoaderBuilder?.call(context) ??
+                const SizedBox(),
+          );
+        case PdfLoadingState.error:
+          return KeyedSubtree(
+            key: const Key('pdfx.root.error'),
+            child: builders.errorBuilder?.call(context, loadingError!) ??
+                Center(child: Text(loadingError.toString())),
+          );
+        case PdfLoadingState.success:
+          return KeyedSubtree(
+            key: Key('pdfx.root.success.${document!.id}'),
+            child: loadedBuilder(context),
+          );
+      }
+    }();
+
+    final defaultBuilder =
+        builders as PdfViewPinchBuilders<DefaultBuilderOptions>;
+    final options = defaultBuilder.options;
+
+    return AnimatedSwitcher(
+      duration: options.loaderSwitchDuration,
+      transitionBuilder: options.transitionBuilder,
+      child: content,
+    );
+  }
+
+  static Widget transitionBuilder(Widget child, Animation<double> animation) =>
+      FadeTransition(opacity: animation, child: child);
+
+  static PhotoViewGalleryPageOptions pageBuilder(
+    BuildContext context,
+    Future<PdfPageImage> pageImage,
+    int index,
+    PdfDocument document,
+  ) =>
+      PhotoViewGalleryPageOptions(
+        imageProvider: PdfPageImageProvider(
+          pageImage,
+          index,
+          document.id,
+        ),
+        minScale: PhotoViewComputedScale.contained * 1,
+        maxScale: PhotoViewComputedScale.contained * 3.0,
+        initialScale: PhotoViewComputedScale.contained * 1.0,
+        heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),
+      );
+}
+
+PdfViewPinch(
+  controller: pdfPinchController,
+  builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
+    options: const DefaultBuilderOptions(
+      loaderSwitchDuration: const Duration(seconds: 1),
+      transitionBuilder: SomeWidget.transitionBuilder,
+    ),
+    documentLoaderBuilder: (_) =>
+        const Center(child: CircularProgressIndicator()),
+    pageLoaderBuilder: (_) =>
+        const Center(child: CircularProgressIndicator()),
+    errorBuilder: (_, error) => Center(child: Text(error.toString())),
+    builder: SomeWidget.builder,
+  ),
+)
+
+PdfView(
+  controller: pdfController,
+  builders: PdfViewBuilders<DefaultBuilderOptions>(
+    // All from `PdfViewPinch` and:
+    pageBuilder: SomeWidget.pageBuilder,
+  ),
+);
+```
+
+## Renderer Api
 
 ### PdfDocument
 
@@ -54,13 +266,13 @@ Widget pdfView() => PdfViewPinch(
 **Local document open:**
 ```dart
 // From assets (Android, Ios, MacOs, Web)
-PdfDocument.openAsset('assets/sample.pdf')
+final document = await PdfDocument.openAsset('assets/sample.pdf')
 
 // From file (Android, Ios, MacOs)
-PdfDocument.openFile('path/to/file/on/device')
+final document = await PdfDocument.openFile('path/to/file/on/device')
 
 // From data (Android, Ios, MacOs, Web)
-PdfDocument.openData((FutureOr<Uint8List>) data)
+final document = await PdfDocument.openData((FutureOr<Uint8List>) data)
 ```
 **Network document open:**
 

@@ -26,7 +26,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/sample.pdf
-    - assets/dummy.pdf
+    - assets/flutter_tutorial.pdf
     - assets/hello.pdf
 

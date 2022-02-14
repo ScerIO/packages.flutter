@@ -1,12 +1,16 @@
 part of 'pdf_view.dart';
 
 /// Pages control
-class PdfController {
+class PdfController with BasePdfController {
   PdfController({
     required this.document,
     this.initialPage = 1,
     this.viewportFraction = 1.0,
   }) : assert(viewportFraction > 0.0);
+
+  @override
+  final ValueNotifier<PdfLoadingState> loadingState =
+      ValueNotifier(PdfLoadingState.loading);
 
   /// Document future for showing in [PdfView]
   Future<PdfDocument> document;
@@ -24,11 +28,17 @@ class PdfController {
   PageController? _pageController;
   PdfDocument? _document;
 
+  /// Actual page number wrapped with ValueNotifier
+  @override
+  late final ValueNotifier<int> pageListenable = ValueNotifier(initialPage);
+
   /// Actual showed page
+  @override
   int get page => (_pdfViewState!._currentIndex) + 1;
 
   /// Count of all pages in document
-  int get pagesCount => _document!.pagesCount;
+  @override
+  int? get pagesCount => _document?.pagesCount;
 
   /// Changes which page is displayed in the controlled [PdfView].
   ///
@@ -84,7 +94,7 @@ class PdfController {
     Future<PdfDocument> documentFuture, {
     int initialPage = 1,
   }) {
-    _pdfViewState!._changeLoadingState(_PdfViewLoadingState.loading);
+    loadingState.value = PdfLoadingState.loading;
     return _loadDocument(documentFuture, initialPage: initialPage);
   }
 
@@ -95,27 +105,26 @@ class PdfController {
     assert(_pdfViewState != null);
 
     if (!await hasPdfSupport()) {
-      _pdfViewState!
-        .._loadingError = Exception(
-            'This device does not support the display of PDF documents')
-        .._changeLoadingState(_PdfViewLoadingState.error);
+      _pdfViewState!._loadingError = Exception(
+          'This device does not support the display of PDF documents');
+      loadingState.value = PdfLoadingState.error;
       return;
     }
 
     try {
       if (page != initialPage) {
         _pdfViewState?.widget.onPageChanged?.call(initialPage);
+        pageListenable.value = initialPage;
       }
       _reInitPageController(initialPage);
       _pdfViewState!._currentIndex = this.initialPage = initialPage;
 
       _document = await documentFuture;
-      _pdfViewState!._changeLoadingState(_PdfViewLoadingState.success);
+      loadingState.value = PdfLoadingState.success;
     } catch (error) {
-      _pdfViewState!
-        .._loadingError =
-            error is Exception ? error : Exception('Unknown error')
-        .._changeLoadingState(_PdfViewLoadingState.error);
+      _pdfViewState!._loadingError =
+          error is Exception ? error : Exception('Unknown error');
+      loadingState.value = PdfLoadingState.error;
     }
   }
 

@@ -17,14 +17,14 @@ class PdfxPlugin : FlutterPlugin {
     private val pages = PageRepository()
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        Pigeon.PdfRendererApi.setup(
+        Pigeon.PdfxApi.setup(
             flutterPluginBinding.binaryMessenger,
             Messages(flutterPluginBinding, documents, pages)
         )
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        Pigeon.PdfRendererApi.setup(binding.binaryMessenger, null)
+        Pigeon.PdfxApi.setup(binding.binaryMessenger, null)
         documents.clear()
         pages.clear()
     }

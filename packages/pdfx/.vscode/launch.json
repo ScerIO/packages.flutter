@@ -2,12 +2,22 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Flutter",
+      "name": "Debug",
       "request": "launch",
       "type": "dart",
       "program": "./example/lib/main.dart",
       "args": [
         "--web-enable-expression-evaluation"
+      ]
+    },
+    {
+      "name": "Profile",
+      "request": "launch",
+      "type": "dart",
+      "program": "./example/lib/main.dart",
+      "flutterMode": "profile",
+      "args": [
+        "--web-enable-expression-evaluation",
       ]
     }
   ]

@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart'
+    hide InteractiveViewer, TransformationController;
 import 'package:pdfx/src/renderer/has_pdf_support.dart';
 import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
+import 'package:pdfx/src/viewer/base/base_pdf_builders.dart';
+import 'package:pdfx/src/viewer/base/base_pdf_controller.dart';
+import 'package:pdfx/src/viewer/interactive_viewer.dart';
 import 'package:pdfx/src/viewer/wrappers/pdf_texture.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:vector_math/vector_math_64.dart' as math64;
 
@@ -15,45 +18,26 @@ export 'package:photo_view/photo_view.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
 part 'pdf_controller_pinch.dart';
+part 'pdf_view_pinch_builders.dart';
 
-typedef PdfViewPinchPageBuilderPinch = PhotoViewGalleryPageOptions Function(
-  /// Page image model
-  Future<PdfPageTexture> pageImage,
-
-  /// page index
-  int index,
-
-  /// pdf document
-  PdfDocument document,
-);
-
-typedef PdfViewPinchPageRendererPinch = Future<PdfPageTexture?> Function(
-    PdfPage page);
-
-/// Widget for viewing PDF documents
+/// Widget for viewing PDF documents with pinch to zoom feature
 class PdfViewPinch extends StatefulWidget {
   const PdfViewPinch({
     required this.controller,
     this.onPageChanged,
     this.onDocumentLoaded,
     this.onDocumentError,
-    this.documentLoader,
-    this.pageLoader,
-    this.errorBuilder,
+    this.builders = const PdfViewPinchBuilders<DefaultBuilderOptions>(
+      options: DefaultBuilderOptions(),
+    ),
     this.scrollDirection = Axis.vertical,
-    this.pageSnapping = true,
     this.padding = 10,
-    this.physics,
     this.backgroundDecoration = const BoxDecoration(),
-    this.loaderSwitchDuration = const Duration(seconds: 1),
     Key? key,
   }) : super(key: key);
 
   /// Padding for the every page.
   final double padding;
-
-  ///
-  final Duration loaderSwitchDuration;
 
   /// Page management
   final PdfControllerPinch controller;
@@ -67,34 +51,14 @@ class PdfViewPinch extends StatefulWidget {
   /// Called when a document loading error
   final void Function(Object error)? onDocumentError;
 
-  /// Widget showing when pdf document loading
-  final Widget? documentLoader;
-
-  /// Widget showing when pdf page loading
-  final Widget? pageLoader;
-
-  /// Show document loading error message inside [PdfViewPinch]
-  final Widget Function(Exception error)? errorBuilder;
+  /// Builders
+  final PdfViewPinchBuilders builders;
 
   /// Page turning direction
   final Axis scrollDirection;
 
-  /// Set to false to disable page snapping, useful for custom scroll behavior.
-  final bool pageSnapping;
-
   /// Pdf widget page background decoration
   final BoxDecoration? backgroundDecoration;
-
-  /// Determines the physics of a [PdfViewPinch] widget.
-  final ScrollPhysics? physics;
-
-  /// Default PdfRenderer options
-  // static Future<PdfPageTexture?> _render(PdfPage page) => page.render(
-  //       width: page.width * 2,
-  //       height: page.height * 2,
-  //       format: PdfPageFormat.JPEG,
-  //       backgroundColor: '#ffffff',
-  //     );
 
   /// Default page builder
   @override
@@ -103,9 +67,9 @@ class PdfViewPinch extends StatefulWidget {
 
 class _PdfViewPinchState extends State<PdfViewPinch>
     with SingleTickerProviderStateMixin {
+  PdfControllerPinch get _controller => widget.controller;
   final List<_PdfPageState> _pages = [];
   final List<_PdfPageState> _pendedPageDisposes = [];
-  late _PdfViewPinchLoadingState _loadingState;
   Exception? _loadingError;
   Size? _lastViewSize;
   Timer? _realSizeUpdateTimer;
@@ -120,21 +84,35 @@ class _PdfViewPinchState extends State<PdfViewPinch>
 
   double get _padding => widget.padding;
 
-  PdfControllerPinch get _controller => widget.controller;
-
   @override
   void initState() {
+    super.initState();
     if (UniversalPlatform.isWindows) {
       throw UnimplementedError(
           'PdfViewPinch not supported in Windows, usage PdfView instead');
     }
-    _loadingState = _PdfViewPinchLoadingState.loading;
     _controller._attach(this);
     _animController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    super.initState();
+    widget.controller.loadingState.addListener(() {
+      switch (widget.controller.loadingState.value) {
+        case PdfLoadingState.loading:
+          _pages.clear();
+          break;
+        case PdfLoadingState.success:
+          widget.onDocumentLoaded?.call(widget.controller._document!);
+          break;
+        case PdfLoadingState.error:
+          widget.onDocumentError?.call(_loadingError!);
+          break;
+      }
+
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -470,7 +448,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     }
   }
 
-  final _realSizeOverlayUpdateBufferDuration = const Duration(milliseconds: 50);
+  final _realSizeOverlayUpdateBufferDuration =
+      const Duration(milliseconds: 100);
 
   void _needRealSizeOverlayUpdate() {
     _cancelLastRealSizeUpdate();
@@ -479,17 +458,87 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         Timer(_realSizeOverlayUpdateBufferDuration, _updateRealSizeOverlay);
   }
 
-  void _changeLoadingState(_PdfViewPinchLoadingState state) {
-    if (state == _PdfViewPinchLoadingState.loading) {
-      _pages.clear();
-    } else if (state == _PdfViewPinchLoadingState.success) {
-      widget.onDocumentLoaded?.call(_controller._document!);
-    } else if (state == _PdfViewPinchLoadingState.error) {
-      widget.onDocumentError?.call(_loadingError!);
-    }
-    setState(() {
-      _loadingState = state;
-    });
+  @override
+  Widget build(BuildContext context) {
+    return widget.builders.builder(
+      context,
+      widget.builders,
+      _controller.loadingState.value,
+      _buildLoaded,
+      widget.controller._document,
+      _loadingError,
+    );
+  }
+
+  static Widget _builder(
+    BuildContext context,
+    PdfViewPinchBuilders builders,
+    PdfLoadingState state,
+    WidgetBuilder loadedBuilder,
+    PdfDocument? document,
+    Exception? loadingError,
+  ) {
+    final Widget content = () {
+      switch (state) {
+        case PdfLoadingState.loading:
+          return KeyedSubtree(
+            key: const Key('pdfx.root.loading'),
+            child: builders.documentLoaderBuilder?.call(context) ??
+                const SizedBox(),
+          );
+        case PdfLoadingState.error:
+          return KeyedSubtree(
+            key: const Key('pdfx.root.error'),
+            child: builders.errorBuilder?.call(context, loadingError!) ??
+                Center(child: Text(loadingError.toString())),
+          );
+        case PdfLoadingState.success:
+          return KeyedSubtree(
+            key: Key('pdfx.root.success.${document!.id}'),
+            child: loadedBuilder(context),
+          );
+      }
+    }();
+
+    final defaultBuilder =
+        builders as PdfViewPinchBuilders<DefaultBuilderOptions>;
+    final options = defaultBuilder.options;
+
+    return AnimatedSwitcher(
+      duration: options.loaderSwitchDuration,
+      transitionBuilder: options.transitionBuilder,
+      child: content,
+    );
+  }
+
+  Widget _buildLoaded(BuildContext context) {
+    Future.microtask(_handlePendedPageDisposes);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final viewSize = Size(constraints.maxWidth, constraints.maxHeight);
+        _reLayout(viewSize);
+        final docSize = _docSize ?? const Size(10, 10); // dummy size
+        return InteractiveViewer(
+          transformationController: _controller,
+          scrollControls: InteractiveViewerScrollControls.scrollPans,
+          constrained: false,
+          alignPanAxis: false,
+          boundaryMargin: EdgeInsets.zero,
+          minScale: 1.0,
+          maxScale: 20,
+          panEnabled: true,
+          scaleEnabled: true,
+          child: SafeArea(
+            child: Stack(
+              children: <Widget>[
+                SizedBox(width: docSize.width, height: docSize.height),
+                ...iterateLaidOutPages(viewSize)
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Iterable<Widget> iterateLaidOutPages(Size viewSize) sync* {
@@ -550,7 +599,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
                   color: Color(0x73000000),
                   blurRadius: 4,
                   offset: Offset(2, 2),
-                )
+                ),
               ],
             ),
           ),
@@ -558,71 +607,4 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       }
     }
   }
-
-  Widget _buildLoaded() {
-    Future.microtask(_handlePendedPageDisposes);
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final viewSize = Size(constraints.maxWidth, constraints.maxHeight);
-        _reLayout(viewSize);
-        final docSize = _docSize ?? const Size(10, 10); // dummy size
-        return InteractiveViewer(
-          transformationController: _controller,
-          constrained: false,
-          alignPanAxis: false,
-          boundaryMargin: EdgeInsets.zero,
-          minScale: 1.0,
-          maxScale: 20,
-          panEnabled: true,
-          scaleEnabled: true,
-          child: SafeArea(
-            child: Stack(
-              children: <Widget>[
-                SizedBox(width: docSize.width, height: docSize.height),
-                ...iterateLaidOutPages(viewSize)
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final Widget content = () {
-      switch (_loadingState) {
-        case _PdfViewPinchLoadingState.loading:
-          return KeyedSubtree(
-            key: Key('$runtimeType.root.loading'),
-            child: widget.documentLoader ?? const SizedBox(),
-          );
-        case _PdfViewPinchLoadingState.error:
-          return KeyedSubtree(
-            key: Key('$runtimeType.root.error'),
-            child: widget.errorBuilder?.call(_loadingError!) ??
-                Center(child: Text(_loadingError.toString())),
-          );
-        case _PdfViewPinchLoadingState.success:
-          return KeyedSubtree(
-            key: Key(
-                '$runtimeType.root.success.${widget.controller._document!.id}'),
-            child: _buildLoaded(),
-          );
-      }
-    }();
-
-    return AnimatedSwitcher(
-      duration: widget.loaderSwitchDuration,
-      transitionBuilder: (child, animation) =>
-          FadeTransition(opacity: animation, child: child),
-      child: content,
-    );
-  }
-}
-
-enum _PdfViewPinchLoadingState {
-  loading,
-  error,
-  success,
 }

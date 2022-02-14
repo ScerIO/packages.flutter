@@ -1,12 +1,17 @@
 part of 'pdf_view_pinch.dart';
 
 /// Pages control
-class PdfControllerPinch extends TransformationController {
+class PdfControllerPinch extends TransformationController
+    with BasePdfController {
   PdfControllerPinch({
     required this.document,
     this.initialPage = 1,
     this.viewportFraction = 1.0,
   }) : assert(viewportFraction > 0.0);
+
+  @override
+  final ValueNotifier<PdfLoadingState> loadingState =
+      ValueNotifier(PdfLoadingState.loading);
 
   /// Document future for showing in [PdfViewPinch]
   Future<PdfDocument> document;
@@ -23,33 +28,37 @@ class PdfControllerPinch extends TransformationController {
   _PdfViewPinchState? _state;
   PdfDocument? _document;
 
-  /// Get total page count in the PDF document.
-  int get pageCount => _state!._pages.length;
-
-  /// Get page location. If the page is out of view,
-  Rect? getPageRect(int pageNumber) => _state!._pages[pageNumber - 1].rect;
+  /// Actual page number wrapped with ValueNotifier
+  @override
+  late final ValueNotifier<int> pageListenable = ValueNotifier(initialPage);
 
   /// Get the current page number by obtaining
   /// the page that has the largest area from [visiblePages].
-  int get currentPageNumber {
+  @override
+  int get page {
     MapEntry<int, double>? max;
     for (final v in visiblePages.entries) {
       if (max == null || max.value < v.value) {
         max = v;
       }
     }
-    return max?.key ?? 1;
+    return max?.key ?? initialPage;
   }
 
-  int get page => currentPageNumber;
-  int _prevPage = 1;
+  late int _prevPage = initialPage;
+
+  @override
+  int? get pagesCount => _document?.pagesCount;
+
+  /// Get page location. If the page is out of view,
+  Rect? getPageRect(int pageNumber) => _state!._pages[pageNumber - 1].rect;
 
   /// Load document
   Future<void> loadDocument(
     Future<PdfDocument> documentFuture, {
     int initialPage = 1,
   }) {
-    _state!._changeLoadingState(_PdfViewPinchLoadingState.loading);
+    loadingState.value = PdfLoadingState.loading;
     return _loadDocument(documentFuture, initialPage: initialPage);
   }
 
@@ -60,10 +69,10 @@ class PdfControllerPinch extends TransformationController {
     assert(_state != null);
 
     if (!await hasPdfSupport()) {
-      _state!
-        .._loadingError = Exception(
-            'This device does not support the display of PDF documents')
-        .._changeLoadingState(_PdfViewPinchLoadingState.error);
+      _state!._loadingError = Exception(
+          'This device does not support the display of PDF documents');
+
+      loadingState.value = PdfLoadingState.error;
       return;
     }
 
@@ -72,6 +81,7 @@ class PdfControllerPinch extends TransformationController {
 
       if (page != initialPage) {
         _state?.widget.onPageChanged?.call(initialPage);
+        pageListenable.value = initialPage;
       }
 
       _document = await documentFuture;
@@ -92,12 +102,11 @@ class PdfControllerPinch extends TransformationController {
       _state!._firstControllerAttach = true;
       _state!._pages.addAll(pages);
 
-      _state!._changeLoadingState(_PdfViewPinchLoadingState.success);
+      loadingState.value = PdfLoadingState.success;
     } catch (error) {
-      _state!
-        .._loadingError =
-            error is Exception ? error : Exception('Unknown error')
-        .._changeLoadingState(_PdfViewPinchLoadingState.error);
+      _state!._loadingError =
+          error is Exception ? error : Exception('Unknown error');
+      loadingState.value = PdfLoadingState.error;
     }
   }
 
@@ -119,6 +128,7 @@ class PdfControllerPinch extends TransformationController {
     addListener(() {
       if (page != _prevPage) {
         _state!.widget.onPageChanged?.call(page);
+        pageListenable.value = page;
         _prevPage = page;
       }
     });
@@ -128,8 +138,18 @@ class PdfControllerPinch extends TransformationController {
     }
   }
 
+  /// Changes which page is displayed in the controlled [PdfView].
+  ///
+  /// Jumps the page position from its current value to the given value,
+  /// without animation, and without checking if the new value is in range.
+  void jumpToPage(int page) => animateToPage(
+        pageNumber: page + 1,
+        duration: Duration.zero,
+        curve: Curves.linear,
+      );
+
   /// Go to the destination specified by the matrix.
-  /// To go to a specific page, use [goToPage] method or use
+  /// To go to a specific page, use [animateToPage] method or use
   ///  [calculatePageFitMatrix] method to calculate the page location matrix.
   /// If [destination] is null, the method does nothing.
   Future<void> goTo({
@@ -144,7 +164,7 @@ class PdfControllerPinch extends TransformationController {
       );
 
   /// Go to the specified page.
-  Future<void> goToPage({
+  Future<void> animateToPage({
     required int pageNumber,
     double? padding,
     Duration duration = const Duration(milliseconds: 500),
@@ -173,7 +193,7 @@ class PdfControllerPinch extends TransformationController {
     required Duration duration,
     required Curve curve,
   }) =>
-      goToPage(pageNumber: page + 1, duration: duration, curve: curve);
+      animateToPage(pageNumber: page + 1, duration: duration, curve: curve);
 
   /// Animates the controlled [PdfViewPinch] to the previous page.
   ///
@@ -185,7 +205,7 @@ class PdfControllerPinch extends TransformationController {
     required Duration duration,
     required Curve curve,
   }) =>
-      goToPage(pageNumber: page - 1, duration: duration, curve: curve);
+      animateToPage(pageNumber: page - 1, duration: duration, curve: curve);
 
   /// Current view rectangle.
   /// If the controller is not ready([PdfViewPinch]), the property

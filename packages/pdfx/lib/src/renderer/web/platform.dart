@@ -249,15 +249,14 @@ class PdfPageImageWeb extends PdfPageImage {
 
     // Convert the image to PNG
     final completer = Completer<void>();
-    final blob = await canvas.toBlob();
-    final data = BytesBuilder();
+    final blob = await canvas.toBlob('image/jpeg');
+
+    late Uint8List data;
     final reader = html.FileReader()..readAsArrayBuffer(blob);
-    reader.onLoadEnd.listen(
-      (html.ProgressEvent e) {
-        data.add(reader.result as List<int>);
-        completer.complete();
-      },
-    );
+    reader.onLoadEnd.listen((html.ProgressEvent e) {
+      data = Uint8List.fromList(reader.result as List<int>);
+      completer.complete();
+    });
     await completer.future;
 
     return PdfPageImageWeb(
@@ -265,7 +264,7 @@ class PdfPageImageWeb extends PdfPageImage {
       pageNumber: pageNumber,
       width: width,
       height: height,
-      bytes: data.toBytes(),
+      bytes: data,
       format: format,
       quality: quality,
       pdfJsPage: pdfJsPage,
@@ -323,43 +322,25 @@ class PdfPageTextureWeb extends PdfPageTexture {
     double? fullHeight,
     String? backgroundColor,
     bool allowAntiAliasing = true,
-  }) async {
-    try {
-      await _renderRaw(
-        documentId: documentId,
-        pageNumber: pageNumber,
-        pageId: pageId!,
-        sourceX: sourceX,
-        sourceY: sourceY,
-        width: width,
-        height: height,
-        fullWidth: fullWidth,
-        backgroundColor: backgroundColor,
-        dontFlip: true,
-        handleRawData: (src, width, height) async {
-          final destX = destinationX;
-          final destY = destinationY;
-          final data = _updateTexSize(id, textureWidth!, textureHeight!);
-          final destStride = data.stride;
-          final bpl = width * 4;
-          int dp = data.getOffset(destX, destY);
-          int sp = bpl * (height - 1);
-          for (int y = 0; y < height; y++) {
-            for (int i = 0; i < bpl; i++) {
-              data.data[dp + i] = src[sp + i];
-            }
-            dp += destStride;
-            sp -= bpl;
-          }
-          PdfxWeb._eventStreamController.sink.add(id);
+  }) {
+    return _renderRaw(
+      documentId: documentId,
+      pageNumber: pageNumber,
+      pageId: pageId!,
+      sourceX: sourceX,
+      sourceY: sourceY,
+      width: width,
+      height: height,
+      fullWidth: fullWidth,
+      backgroundColor: backgroundColor,
+      dontFlip: false,
+      handleRawData: (src, width, height) {
+        _updateTexSize(id, textureWidth!, textureHeight!, src);
+        PdfxWeb._eventStreamController.sink.add(id);
 
-          return true;
-        },
-      );
-      return true;
-    } catch (error) {
-      return false;
-    }
+        return true;
+      },
+    );
   }
 
   @override
@@ -372,16 +353,24 @@ class PdfPageTextureWeb extends PdfPageTexture {
       other.pageId == pageId &&
       other.pageNumber == pageNumber;
 
-  RgbaData _updateTexSize(int id, int width, int height) {
+  RgbaData _updateTexSize(int id, int width, int height,
+      [Uint8List? sourceData]) {
     final oldData = _textures[id];
     if (oldData != null && oldData.width == width && oldData.height == height) {
       return oldData;
     }
-    final data = _textures[id] = RgbaData.alloc(
-      id: id,
-      width: width,
-      height: height,
-    );
+    final data = _textures[id] = sourceData != null
+        ? RgbaData(
+            id,
+            width,
+            height,
+            sourceData,
+          )
+        : RgbaData.alloc(
+            id: id,
+            width: width,
+            height: height,
+          );
     js_util.setProperty(html.window, 'pdfx_texture_$id', data);
     return data;
   }
@@ -447,26 +436,22 @@ class PdfPageTextureWeb extends PdfPageTexture {
     final rendererContext = PdfjsRenderContext(
       canvasContext: context,
       viewport: vp,
+      enableWebGL: true,
     );
 
     await js_util
         .promiseToFuture<void>(page.renderer.render(rendererContext).promise);
 
-    final data =
-        context.getImageData(0, 0, _width, _height).data.buffer.asUint8List();
-
-    // // Convert the image to PNG
-    // final completer = Completer<void>();
-    // final blob = await canvas.toBlob();
-    // final data = BytesBuilder();
-    // final reader = html.FileReader()..readAsArrayBuffer(blob);
-    // reader.onLoadEnd.listen(
-    //   (html.ProgressEvent e) {
-    //     data.add(reader.result as List<int>);
-    //     completer.complete();
-    //   },
-    // );
-    // await completer.future;
+    // Convert the image to PNG
+    final completer = Completer<void>();
+    final blob = await canvas.toBlob('image/jpeg');
+    late Uint8List data;
+    final reader = html.FileReader()..readAsArrayBuffer(blob);
+    reader.onLoadEnd.listen((html.ProgressEvent e) {
+      data = Uint8List.fromList(reader.result as List<int>);
+      completer.complete();
+    });
+    await completer.future;
 
     return handleRawData(data, _width, _height);
   }

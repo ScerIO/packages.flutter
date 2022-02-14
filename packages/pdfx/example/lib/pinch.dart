@@ -11,8 +11,7 @@ class PinchPage extends StatefulWidget {
 
 class _PinchPageState extends State<PinchPage> {
   static const int _initialPage = 2;
-  int _actualPageNumber = _initialPage, _allPagesCount = 0;
-  bool isSampleDoc = true;
+  bool _isSampleDoc = true;
   late PdfControllerPinch _pdfControllerPinch;
 
   @override
@@ -46,11 +45,14 @@ class _PinchPageState extends State<PinchPage> {
               );
             },
           ),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              '$_actualPageNumber/$_allPagesCount',
-              style: const TextStyle(fontSize: 22),
+          PdfPageNumber(
+            controller: _pdfControllerPinch,
+            builder: (_, loadingState, page, pagesCount) => Container(
+              alignment: Alignment.center,
+              child: Text(
+                '$page/${pagesCount ?? 0}',
+                style: const TextStyle(fontSize: 22),
+              ),
             ),
           ),
           IconButton(
@@ -65,14 +67,14 @@ class _PinchPageState extends State<PinchPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              if (isSampleDoc) {
-                _pdfControllerPinch
-                    .loadDocument(PdfDocument.openAsset('assets/dummy.pdf'));
+              if (_isSampleDoc) {
+                _pdfControllerPinch.loadDocument(
+                    PdfDocument.openAsset('assets/flutter_tutorial.pdf'));
               } else {
                 _pdfControllerPinch
-                    .loadDocument(PdfDocument.openAsset('assets/sample.pdf'));
+                    .loadDocument(PdfDocument.openAsset('assets/hello.pdf'));
               }
-              isSampleDoc = !isSampleDoc;
+              _isSampleDoc = !_isSampleDoc;
             },
           )
         ],
@@ -80,19 +82,15 @@ class _PinchPageState extends State<PinchPage> {
       body: CustomPerformanceOverlay(
         enabled: false,
         child: PdfViewPinch(
-          documentLoader: const Center(child: CircularProgressIndicator()),
-          pageLoader: const Center(child: CircularProgressIndicator()),
+          builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
+            options: const DefaultBuilderOptions(),
+            documentLoaderBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+            pageLoaderBuilder: (_) =>
+                const Center(child: CircularProgressIndicator()),
+            errorBuilder: (_, error) => Center(child: Text(error.toString())),
+          ),
           controller: _pdfControllerPinch,
-          onDocumentLoaded: (document) {
-            setState(() {
-              _allPagesCount = document.pagesCount;
-            });
-          },
-          onPageChanged: (page) {
-            setState(() {
-              _actualPageNumber = page;
-            });
-          },
         ),
       ),
     );

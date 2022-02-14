@@ -64,14 +64,9 @@ class _PdfTextureState extends State<PdfTexture> {
   Future<void> _requestUpdate() async {
     final data = widget.data;
     if (data != null) {
-      final descriptor = ui.ImageDescriptor.raw(
-        await ui.ImmutableBuffer.fromUint8List(data.data),
-        width: data.width,
-        height: data.height,
-        pixelFormat: ui.PixelFormat.rgba8888,
-      );
-      final codec = await descriptor.instantiateCodec();
+      final codec = await ui.instantiateImageCodec(data.data);
       final frame = await codec.getNextFrame();
+
       _image = frame.image;
     } else {
       _image = null;
@@ -79,6 +74,12 @@ class _PdfTextureState extends State<PdfTexture> {
     if (mounted) {
       setState(() {});
     }
+  }
+}
+
+class RawImageStreamCompleter extends ImageStreamCompleter {
+  RawImageStreamCompleter(ui.Image image) {
+    setImage(ImageInfo(image: image));
   }
 }
 

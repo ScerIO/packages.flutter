@@ -12,7 +12,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 final _lock = Lock();
-final _api = PdfRendererApi();
+final _api = PdfxApi();
 
 class PdfxPlatformPigeon extends PdfxPlatform {
   PdfDocument _open(OpenReply result, String sourceName) => PdfDocumentPigeon._(
