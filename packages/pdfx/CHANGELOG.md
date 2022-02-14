@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Fixed android launch
+
 ## 2.0.0
 
 * Provide more docs

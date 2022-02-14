@@ -39,7 +39,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
     ) {
         val resultResponse = Pigeon.OpenReply()
         try {
-            val documentRenderer = openDataDocument(message.data)
+            val documentRenderer = openDataDocument(message.data!!)
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -60,7 +60,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         val resultResponse = Pigeon.OpenReply()
         try {
             val path = message.path
-            val documentRenderer = openFileDocument(File(path))
+            val documentRenderer = openFileDocument(File(path!!))
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -85,7 +85,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         val resultResponse = Pigeon.OpenReply()
         try {
             val path = message.path
-            val documentRenderer = openAssetDocument(path)
+            val documentRenderer = openAssetDocument(path!!)
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -106,7 +106,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
     override fun closeDocument(message: Pigeon.IdMessage) {
         try {
             val id = message.id
-            documents.close(id)
+            documents.close(id!!)
         } catch (e: NullPointerException) {
             throw PdfRendererException("pdf_renderer", "Need call arguments: id!", null)
         } catch (e: RepositoryItemNotFoundException) {
@@ -122,10 +122,10 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
     ) {
         val resultResponse = Pigeon.GetPageReply()
         try {
-            val documentId = message.documentId
-            val pageNumber = message.pageNumber.toInt()
+            val documentId = message.documentId!!
+            val pageNumber = message.pageNumber!!.toInt()
 
-            if (message.autoCloseAndroid) {
+            if (message.autoCloseAndroid!!) {
                 documents.get(documentId).openPage(pageNumber).use { page ->
                     resultResponse.width = page.width.toDouble()
                     resultResponse.height = page.height.toDouble()
@@ -154,18 +154,18 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
     ) {
         val resultResponse = Pigeon.RenderPageReply()
         try {
-            val pageId = message.pageId
-            val width = message.width.toInt()
-            val height = message.height.toInt()
+            val pageId = message.pageId!!
+            val width = message.width!!.toInt()
+            val height = message.height!!.toInt()
             val format = message.format?.toInt() ?: 1 //0 Bitmap.CompressFormat.PNG
             val backgroundColor = message.backgroundColor
             val color = if (backgroundColor != null) Color.parseColor(backgroundColor) else Color.TRANSPARENT
 
-            val crop = message.crop
-            val cropX = if (crop) message.cropX.toInt() else 0
-            val cropY = if (crop) message.cropY.toInt() else 0
-            val cropH = if (crop) message.cropHeight.toInt() else 0
-            val cropW = if (crop) message.width.toInt() else 0
+            val crop = message.crop!!
+            val cropX = if (crop) message.cropX!!.toInt() else 0
+            val cropY = if (crop) message.cropY!!.toInt() else 0
+            val cropH = if (crop) message.cropHeight!!.toInt() else 0
+            val cropW = if (crop) message.width!!.toInt() else 0
 
             val quality = message.quality?.toInt() ?: 100
 
@@ -194,7 +194,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
     override fun closePage(message: Pigeon.IdMessage) {
         try {
-            val id = message.id
+            val id = message.id!!
             pages.close(id)
         } catch (e: NullPointerException) {
             throw PdfRendererException("pdf_renderer", "Need call arguments: id!", null)
@@ -218,21 +218,21 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         message: Pigeon.UpdateTextureMessage,
         result: Pigeon.Result<Void>
     ) {
-        val texId = message.textureId.toInt()
-        val pageNumber = message.pageNumber.toInt()
+        val texId = message.textureId!!.toInt()
+        val pageNumber = message.pageNumber!!.toInt()
         val tex = textures[texId]
-        val document = documents.get(message.documentId)
+        val document = documents.get(message.documentId!!)
 
 
         document.openPage(pageNumber).use { page ->
             val fullWidth = message.fullWidth ?: page.width.toDouble()
             val fullHeight = message.fullHeight ?: page.height.toDouble()
-            val destX = message.destinationX.toInt()
-            val destY = message.destinationY.toInt()
-            val width = message.width.toInt()
-            val height = message.height.toInt()
-            val srcX = message.sourceX.toInt()
-            val srcY = message.sourceY.toInt()
+            val destX = message.destinationX!!.toInt()
+            val destY = message.destinationY!!.toInt()
+            val width = message.width!!.toInt()
+            val height = message.height!!.toInt()
+            val srcX = message.sourceX!!.toInt()
+            val srcY = message.sourceY!!.toInt()
             val backgroundColor = message.backgroundColor
 
             if (width <= 0 || height <= 0) {
@@ -249,8 +249,8 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 }
                 page.render(bmp, null, mat, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
-                val texWidth = message.textureWidth.toInt()
-                val texHeight = message.textureHeight.toInt()
+                val texWidth = message.textureWidth!!.toInt()
+                val texHeight = message.textureHeight!!.toInt()
                 if (texWidth != 0 && texHeight != 0) {
                     tex.surfaceTexture()?.setDefaultBufferSize(texWidth, texHeight)
                 }
@@ -275,16 +275,16 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         message: Pigeon.ResizeTextureMessage,
         result: Pigeon.Result<Void>
     ) {
-        val texId = message.textureId.toInt()
-        val width = message.width.toInt()
-        val height = message.height.toInt()
+        val texId = message.textureId!!.toInt()
+        val width = message.width!!.toInt()
+        val height = message.height!!.toInt()
         val tex = textures[texId]
         tex?.surfaceTexture()?.setDefaultBufferSize(width, height)
         result.success(null)
     }
 
     override fun unregisterTexture(message: Pigeon.UnregisterTextureMessage?) {
-        val id = message!!.id.toInt()
+        val id = message!!.id!!.toInt()
         val tex = textures[id]
         tex?.release()
         textures.remove(id)
