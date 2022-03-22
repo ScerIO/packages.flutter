@@ -1,8 +1,9 @@
-import 'package:epub_view/src/epub_view.dart';
+import 'package:epub_view/src/data/models/chapter.dart';
+import 'package:epub_view/src/ui/epub_view.dart';
 import 'package:flutter/material.dart';
 
-class EpubReaderTableOfContents extends StatelessWidget {
-  const EpubReaderTableOfContents({
+class EpubViewTableOfContents extends StatelessWidget {
+  const EpubViewTableOfContents({
     required this.controller,
     this.padding,
     this.itemBuilder,
@@ -22,34 +23,34 @@ class EpubReaderTableOfContents extends StatelessWidget {
   final Widget? loader;
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<List<EpubViewChapter>?>(
-        stream: controller.tableOfContentsStream,
-        builder: (_, snapshot) {
+  Widget build(BuildContext context) =>
+      ValueListenableBuilder<List<EpubViewChapter>>(
+        valueListenable: controller.tableOfContentsListenable,
+        builder: (_, data, child) {
           Widget content;
 
-          if (snapshot.hasData) {
-            final toc = snapshot.data!;
+          if (data.isNotEmpty) {
             content = ListView.builder(
               padding: padding,
               key: Key('$runtimeType.content'),
               itemBuilder: (context, index) =>
-                  itemBuilder?.call(context, index, toc[index], toc.length) ??
+                  itemBuilder?.call(context, index, data[index], data.length) ??
                   ListTile(
-                    title: Text(toc[index].title!.trim()),
+                    title: Text(data[index].title!.trim()),
                     onTap: () =>
-                        controller.scrollTo(index: toc[index].startIndex),
+                        controller.scrollTo(index: data[index].startIndex),
                   ),
-              itemCount: toc.length,
+              itemCount: data.length,
             );
           } else {
             content = KeyedSubtree(
               key: Key('$runtimeType.loader'),
-              child: loader ?? Center(child: CircularProgressIndicator()),
+              child: loader ?? const Center(child: CircularProgressIndicator()),
             );
           }
 
           return AnimatedSwitcher(
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             transitionBuilder: (Widget child, Animation<double> animation) =>
                 FadeTransition(child: child, opacity: animation),
             child: content,

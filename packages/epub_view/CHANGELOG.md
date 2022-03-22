@@ -1,3 +1,71 @@
+## 3.0.0
+
+* Refactored code
+* Removed `rxdart` dependency
+* Renamed widgets:
+```diff
+-EpubActualChapter
++EpubViewActualChapter
+
+-EpubReaderTableOfContents
++EpubViewTableOfContents
+```
+* New custom builders api. Example: 
+```dart
+EpubView(
+  builders: EpubViewBuilders<DefaultBuilderOptions>(
+    options: const DefaultBuilderOptions(
+      loaderSwitchDuration: const Duration(seconds: 1),
+      transitionBuilder: SomeWidget.transitionBuilder,
+      chapterPadding: const EdgeInsets.all(8),
+      paragraphPadding: const EdgeInsets.symmetric(horizontal: 16),
+      textStyle: const TextStyle(
+        height: 1.25,
+        fontSize: 16,
+      ),
+    ),
+    chapterBuilder: SomeWidget.chapterBuilder,
+    chapterDividerBuilder: (_) => const Divider(),
+    loaderBuilder: (_) =>
+        const Center(child: CircularProgressIndicator()),
+    errorBuilder: (_, error) => Center(child: Text(error.toString())),
+    builder: SomeWidget.builder,
+  ),
+)
+```
+* New document loader api. Example:
+```dart
+// and load from assets
+EpubDocument.openAsset('assets/book.epub');
+
+// load from memory
+EpubDocument.openData(Uint8List);
+
+// load from file
+EpubDocument.openFile(File);
+
+// and load from internet
+import 'package:internet_file/internet_file.dart';
+
+// The cors policy is required on the server. 
+// You can raise your cors proxy.
+PdfDocument.openData(InternetFile.get('https://link.to/book.epub'))
+```
+Migration: 
+```diff
+- import 'package:flutter/services.dart' show rootBundle;
+- 
+- Future<Uint8List> _loadFromAssets(String assetName) async {
+-  final bytes = await rootBundle.load(assetName);
+-  return bytes.buffer.asUint8List();
+- }
+
+_epubController = EpubController(
+-   document: EpubReader.readBook(_loadFromAssets('assets/book.epub')),
++   document: EpubDocument.openAsset('assets/book.epub'),
+);
+```
+
 ## 2.3.0
 
 * Epub v3 support 

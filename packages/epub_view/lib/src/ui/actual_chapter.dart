@@ -1,10 +1,11 @@
-import 'package:epub_view/src/epub_view.dart';
+import 'package:epub_view/src/data/models/chapter_view_value.dart';
+import 'package:epub_view/src/ui/epub_view.dart';
 import 'package:flutter/material.dart';
 
 typedef ChapterBuilder = Widget Function(EpubChapterViewValue? chapter);
 
-class EpubActualChapter extends StatelessWidget {
-  const EpubActualChapter({
+class EpubViewActualChapter extends StatelessWidget {
+  const EpubViewActualChapter({
     required this.controller,
     required this.builder,
     this.loader,
@@ -18,33 +19,34 @@ class EpubActualChapter extends StatelessWidget {
   final Alignment animationAlignment;
 
   @override
-  Widget build(BuildContext context) => StreamBuilder<EpubChapterViewValue?>(
-        stream: controller.currentValueStream,
-        builder: (_, snapshot) {
+  Widget build(BuildContext context) =>
+      ValueListenableBuilder<EpubChapterViewValue?>(
+        valueListenable: controller.currentValueListenable,
+        builder: (_, data, child) {
           Widget content;
 
-          if (snapshot.hasData) {
+          if (data != null) {
             content = KeyedSubtree(
-              key: Key('$runtimeType.chapter-${snapshot.data!.chapterNumber}'),
-              child: builder(snapshot.data),
+              key: Key('$runtimeType.chapter-${data.chapterNumber}'),
+              child: builder(data),
             );
           } else {
             content = KeyedSubtree(
               key: Key('$runtimeType.loader'),
-              child: loader ?? Center(child: CircularProgressIndicator()),
+              child: loader ?? const Center(child: CircularProgressIndicator()),
             );
           }
 
           return AnimatedSwitcher(
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             switchInCurve: Curves.easeIn,
             switchOutCurve: Curves.easeOut,
             transitionBuilder: (Widget child, Animation<double> animation) =>
                 SlideTransition(
               child: FadeTransition(child: child, opacity: animation),
               position: Tween<Offset>(
-                begin: Offset(0, -0.15),
-                end: Offset(0, 0),
+                begin: const Offset(0, -0.15),
+                end: const Offset(0, 0),
               ).animate(animation),
             ),
             layoutBuilder:

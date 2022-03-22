@@ -1,6 +1,4 @@
-import 'package:epub_view/src/utils.dart';
 import 'package:epubx/epubx.dart';
-import 'package:flutter/foundation.dart';
 import 'package:html/dom.dart';
 
 class EpubCfiGenerator {
@@ -43,12 +41,12 @@ class EpubCfiGenerator {
 
     // Find position of current node in parent list
     int index = 0;
-    currentNode.parent!.children.forEach((node) {
+    for (var node in currentNode.parent!.children) {
       if (node == currentNode) {
         currentNodePosition = index;
       }
       index++;
-    });
+    }
 
     // Convert position to the CFI even-integer representation
     final int cfiPosition = (currentNodePosition + 1) * 2;
@@ -97,7 +95,7 @@ class EpubCfiGenerator {
 
     if (chapter.Anchor == null) {
       // filename w/o extension
-      edRef = fileNameAsChapterName(chapter.ContentFileName!);
+      edRef = _fileNameAsChapterName(chapter.ContentFileName!);
     }
 
     for (var i = 0; i < items.length; i++) {
@@ -119,8 +117,7 @@ class EpubCfiGenerator {
     // Check that the package document is non-empty
     // and contains an item ref element for the supplied id ref
     if (packageDocument == null) {
-      throw FlutterError(
-          'A package document must be supplied to generate a CFI');
+      throw Exception('A package document must be supplied to generate a CFI');
     }
     // Commented, because there may be cases when id is not listed in object!!!
     // else if (getIdRefIndex(idRef, packageDocument) == -1) {
@@ -132,12 +129,15 @@ class EpubCfiGenerator {
 
   void validateStartElement(Node? startElement) {
     if (startElement == null) {
-      throw FlutterError('$startElement: CFI target element is null');
+      throw Exception('$startElement: CFI target element is null');
     }
 
     if (startElement.nodeType != Node.ELEMENT_NODE) {
-      throw FlutterError(
+      throw Exception(
           '$startElement: CFI target element is not an HTML element');
     }
   }
+
+  String _fileNameAsChapterName(String path) =>
+      path.split('/').last.replaceFirst(RegExp(r'\.[^.]+$'), '');
 }

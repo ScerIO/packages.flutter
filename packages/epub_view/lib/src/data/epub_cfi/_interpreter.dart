@@ -1,5 +1,4 @@
-import 'package:epub_view/src/epub_cfi/parser.dart';
-import 'package:flutter/foundation.dart';
+import 'package:epub_view/src/data/epub_cfi/_parser.dart';
 import 'package:html/dom.dart';
 
 class EpubCfiInterpreter {
@@ -27,7 +26,7 @@ class EpubCfiInterpreter {
       CfiStep? indexStepNode, Element? currentElement) {
     // Check node type; throw error if wrong type
     if (indexStepNode == null || indexStepNode.type != 'indexStep') {
-      throw FlutterError('$indexStepNode: expected index step node');
+      throw Exception('$indexStepNode: expected index step node');
     }
 
     // Index step
@@ -37,7 +36,7 @@ class EpubCfiInterpreter {
     if ((indexStepNode.idAssertion ?? '').isNotEmpty) {
       if (!_targetIdMatchesIdAssertion(
           stepTarget!, indexStepNode.idAssertion)) {
-        throw FlutterError(
+        throw Exception(
             // ignore: lines_longer_than_80_chars
             '${indexStepNode.idAssertion}: ${stepTarget.attributes['id']} Id assertion failed');
       }
@@ -51,8 +50,7 @@ class EpubCfiInterpreter {
     // Check node type; throw error if wrong type
     if (indirectionStepNode == null ||
         indirectionStepNode.type != 'indirectionStep') {
-      throw FlutterError(
-          '$indirectionStepNode: expected indirection step node');
+      throw Exception('$indirectionStepNode: expected indirection step node');
     }
 
     // Indirection step
@@ -63,7 +61,7 @@ class EpubCfiInterpreter {
     if (indirectionStepNode.idAssertion != null) {
       if (!_targetIdMatchesIdAssertion(
           stepTarget!, indirectionStepNode.idAssertion)) {
-        throw FlutterError(
+        throw Exception(
             // ignore: lines_longer_than_80_chars
             '${indirectionStepNode.idAssertion}: ${stepTarget.attributes['id']} Id assertion failed');
       }

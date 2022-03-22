@@ -1,4 +1,11 @@
-part of 'epub_view.dart';
+import 'package:html/dom.dart' as dom;
+import 'package:html/parser.dart' show parse;
+
+import 'epub_cfi/epub_cfi.dart';
+import 'epub_parser.dart';
+import 'models/paragraph.dart';
+
+export 'package:epubx/epubx.dart' hide Image;
 
 class EpubCfiReader {
   EpubCfiReader()
@@ -54,7 +61,7 @@ class EpubCfiReader {
       document.documentElement,
       cfiFragment.path!.localPath!,
     );
-    final int? paragraphNumber = _getParagraphIndexByElement(element);
+    final int? paragraphNumber = getParagraphIndexByElement(element);
 
     return paragraphNumber;
   }
@@ -159,7 +166,7 @@ class EpubCfiReader {
     return index;
   }
 
-  int? _getParagraphIndexByElement(dom.Element? element) {
+  int? getParagraphIndexByElement(dom.Element? element) {
     if (element == null) {
       return null;
     }

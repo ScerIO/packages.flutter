@@ -1,4 +1,9 @@
-part of 'epub_view.dart';
+import 'package:epub_view/src/data/epub_cfi_reader.dart';
+import 'package:html/dom.dart' as dom;
+
+import 'models/paragraph.dart';
+
+export 'package:epubx/epubx.dart' hide Image;
 
 List<EpubChapter> parseChapters(EpubBook epubBook) =>
     epubBook.Chapters!.fold<List<EpubChapter>>(
@@ -74,13 +79,6 @@ ParseParagraphsResult parseParagraphs(
   );
 
   return ParseParagraphsResult(paragraphs, chapterIndexes);
-}
-
-class Paragraph {
-  Paragraph(this.element, this.chapterIndex);
-
-  final dom.Element element;
-  final int chapterIndex;
 }
 
 class ParseParagraphsResult {

@@ -1,13 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'
-    show SystemChrome, SystemUiOverlayStyle, rootBundle;
+import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -15,13 +14,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance!.addObserver(this);
     super.initState();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
@@ -31,7 +30,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Brightness get platformBrightness =>
-      MediaQueryData.fromWindow(WidgetsBinding.instance.window)
+      MediaQueryData.fromWindow(WidgetsBinding.instance!.window)
           .platformBrightness;
 
   void _setSystemUIOverlayStyle() {
@@ -64,27 +63,25 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           brightness: Brightness.dark,
         ),
         debugShowCheckedModeBanner: false,
-        home: MyHomePage(),
+        home: const MyHomePage(),
       );
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key}) : super(key: key);
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  EpubController _epubReaderController;
+  late EpubController _epubReaderController;
 
   @override
   void initState() {
-    final loadedBook =
-        _loadFromAssets('assets/New-Findings-on-Shirdi-Sai-Baba.epub');
     _epubReaderController = EpubController(
-      document: EpubReader.readBook(loadedBook),
-      //  document: EpubReader,
+      document:
+          EpubDocument.openAsset('assets/New-Findings-on-Shirdi-Sai-Baba.epub'),
       // epubCfi:
       //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
       // epubCfi:
@@ -99,38 +96,33 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  Future<Uint8List> _loadFromAssets(String assetName) async {
-    final bytes = await rootBundle.load(assetName);
-    return bytes.buffer.asUint8List();
-  }
-
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: EpubActualChapter(
+          title: EpubViewActualChapter(
             controller: _epubReaderController,
             builder: (chapterValue) => Text(
-              (chapterValue?.chapter?.Title?.trim() ?? '').replaceAll('\n', ''),
+              chapterValue?.chapter?.Title?.replaceAll('\n', '').trim() ?? '',
               textAlign: TextAlign.start,
             ),
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(Icons.save_alt),
+              icon: const Icon(Icons.save_alt),
               color: Colors.white,
               onPressed: () => _showCurrentEpubCfi(context),
             ),
           ],
         ),
         drawer: Drawer(
-          child: EpubReaderTableOfContents(controller: _epubReaderController),
+          child: EpubViewTableOfContents(controller: _epubReaderController),
         ),
         body: EpubView(
+          builders: EpubViewBuilders<DefaultBuilderOptions>(
+            options: const DefaultBuilderOptions(),
+            chapterDividerBuilder: (_) => const Divider(),
+          ),
           controller: _epubReaderController,
-          onDocumentLoaded: (document) {
-            print('isLoaded: $document');
-          },
-          dividerBuilder: (_) => Divider(),
         ),
       );
 

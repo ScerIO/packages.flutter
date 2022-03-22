@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 
 class EpubCfiParser {
   final int reportFailures = 0;
@@ -69,7 +68,7 @@ class EpubCfiParser {
 
     if (startRule != null) {
       if (parseFunctions[startRule!] == null) {
-        throw FlutterError('Invalid rule name: ' + quote(startRule!) + '.');
+        throw Exception('Invalid rule name: ' + quote(startRule!) + '.');
       }
     } else {
       startRule = 'fragment';
@@ -131,14 +130,12 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"epubcfi(\"');
+        _matchFailed('"epubcfi("');
       }
     }
     if (result0 != null) {
       result1 = _parseRange();
-      if (result1 == null) {
-        result1 = _parsePath();
-      }
+      result1 ??= _parsePath();
       if (result1 != null) {
         if (input.codeUnitAt(pos) == 41) {
           result2 = ')';
@@ -146,7 +143,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\")\"');
+            _matchFailed('")"');
           }
         }
         if (result2 != null) {
@@ -193,7 +190,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\",\"');
+            _matchFailed('","');
           }
         }
         if (result2 != null) {
@@ -205,7 +202,7 @@ class EpubCfiParser {
             } else {
               result4 = null;
               if (reportFailures == 0) {
-                _matchFailed('\",\"');
+                _matchFailed('","');
               }
             }
             if (result4 != null) {
@@ -303,18 +300,14 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
 
     result1 = _parseIndexStep();
-    if (result1 == null) {
-      result1 = _parseIndirectionStep();
-    }
+    result1 ??= _parseIndirectionStep();
     if (result1 != null) {
       result0 = [];
       result3 = [];
       while (result1 != null) {
         result3.add(result1);
         result1 = _parseIndexStep();
-        if (result1 == null) {
-          result1 = _parseIndirectionStep();
-        }
+        result1 ??= _parseIndirectionStep();
       }
     } else {
       result0 = null;
@@ -322,9 +315,8 @@ class EpubCfiParser {
     }
     if (result0 != null) {
       result2 = _parseTerminus();
-      result2 = result2 != null
-          ? result2
-          : CfiTerminus(
+      result2 = result2 ??
+          CfiTerminus(
               type: 'textTerminus', offsetValue: null, textAssertion: null);
       // ignore: unnecessary_null_comparison
       if (result2 != null) {
@@ -360,7 +352,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"/\"');
+        _matchFailed('"/"');
       }
     }
     if (result0 != null) {
@@ -373,7 +365,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\"[\"');
+            _matchFailed('"["');
           }
         }
         if (result2 != null) {
@@ -385,7 +377,7 @@ class EpubCfiParser {
             } else {
               result4 = null;
               if (reportFailures == 0) {
-                _matchFailed('\"]\"');
+                _matchFailed('"]"');
               }
             }
             if (result4 != null) {
@@ -402,7 +394,7 @@ class EpubCfiParser {
           result2 = null;
           pos = pos2;
         }
-        result2 = result2 != null ? result2 : '';
+        result2 = result2 ?? '';
         if (result2 != null) {
           result0 = [result0, result1, result2];
         } else {
@@ -442,7 +434,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"!/\"');
+        _matchFailed('"!/"');
       }
     }
     if (result0 != null) {
@@ -455,7 +447,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\"[\"');
+            _matchFailed('"["');
           }
         }
         if (result2 != null) {
@@ -467,7 +459,7 @@ class EpubCfiParser {
             } else {
               result4 = null;
               if (reportFailures == 0) {
-                _matchFailed('\"]\"');
+                _matchFailed('"]"');
               }
             }
             if (result4 != null) {
@@ -484,7 +476,7 @@ class EpubCfiParser {
           result2 = null;
           pos = pos2;
         }
-        result2 = result2 != null ? result2 : '';
+        result2 = result2 ?? '';
         if (result2 != null) {
           result0 = [result0, result1, result2];
         } else {
@@ -524,7 +516,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\":\"');
+        _matchFailed('":"');
       }
     }
     if (result0 != null) {
@@ -537,7 +529,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\"[\"');
+            _matchFailed('"["');
           }
         }
         if (result2 != null) {
@@ -549,7 +541,7 @@ class EpubCfiParser {
             } else {
               result4 = null;
               if (reportFailures == 0) {
-                _matchFailed('\"]\"');
+                _matchFailed('"]"');
               }
             }
             if (result4 != null) {
@@ -566,7 +558,7 @@ class EpubCfiParser {
           result2 = null;
           pos = pos2;
         }
-        result2 = result2 != null ? result2 : '';
+        result2 = result2 ?? '';
         if (result2 != null) {
           result0 = [result0, result1, result2];
         } else {
@@ -616,14 +608,12 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
 
     result0 = _parseCsv();
-    result0 = result0 != null
-        ? result0
-        : CfiCsv(type: 'csv', preAssertion: null, postAssertion: null);
+    result0 =
+        result0 ?? CfiCsv(type: 'csv', preAssertion: null, postAssertion: null);
     if (result0 != null) {
       result1 = _parseParameter();
-      result1 = result1 != null
-          ? result1
-          : CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null);
+      result1 = result1 ??
+          CfiParameter(type: 'parameter', lHSValue: null, rHSValue: null);
       if (result1 != null) {
         result0 = [result0, result1];
       } else {
@@ -659,7 +649,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\";\"');
+        _matchFailed('";"');
       }
     }
     if (result0 != null) {
@@ -671,7 +661,7 @@ class EpubCfiParser {
         } else {
           result2 = null;
           if (reportFailures == 0) {
-            _matchFailed('\"=\"');
+            _matchFailed('"="');
           }
         }
         if (result2 != null) {
@@ -713,7 +703,7 @@ class EpubCfiParser {
     final int pos0 = pos, pos1 = pos;
 
     result0 = _parseValue();
-    result0 = result0 != null ? result0 : '';
+    result0 = result0 ?? '';
 
     if (result0 != null) {
       if (input.codeUnitAt(pos) == 44) {
@@ -722,17 +712,17 @@ class EpubCfiParser {
       } else {
         result1 = null;
         if (reportFailures == 0) {
-          _matchFailed('\",\"');
+          _matchFailed('","');
         }
       }
 
       // added for parsing values like [2^[1^]], without ","
-      result1 = result1 != null ? result1 : '';
+      result1 = result1 ?? '';
 
       // ignore: unnecessary_null_comparison
       if (result1 != null) {
         result2 = _parseValue();
-        result2 = result2 != null ? result2 : '';
+        result2 = result2 ?? '';
         // ignore: unnecessary_null_comparison
         if (result2 != null) {
           result0 = [result0, result1, result2];
@@ -767,17 +757,13 @@ class EpubCfiParser {
     final int pos0 = pos;
 
     result1 = _parseEscapedSpecialChars();
-    if (result1 == null) {
-      result1 = _parseCharacter();
-    }
+    result1 ??= _parseCharacter();
     if (result1 != null) {
       result0 = <String>[];
       while (result1 != null) {
         result0.add(result1);
         result1 = _parseEscapedSpecialChars();
-        if (result1 == null) {
-          result1 = _parseCharacter();
-        }
+        result1 ??= _parseCharacter();
       }
     } else {
       result0 = null;
@@ -799,9 +785,7 @@ class EpubCfiParser {
     result1 = _parseEscapedSpecialChars();
     if (result1 == null) {
       result1 = _parseCharacter();
-      if (result1 == null) {
-        result1 = _parseSpace();
-      }
+      result1 ??= _parseSpace();
     }
     if (result1 != null) {
       result0 = <String>[];
@@ -810,9 +794,7 @@ class EpubCfiParser {
         result1 = _parseEscapedSpecialChars();
         if (result1 == null) {
           result1 = _parseCharacter();
-          if (result1 == null) {
-            result1 = _parseSpace();
-          }
+          result1 ??= _parseSpace();
         }
       }
     } else {
@@ -998,7 +980,7 @@ class EpubCfiParser {
       } else {
         result1 = null;
         if (reportFailures == 0) {
-          _matchFailed('\".\"');
+          _matchFailed('"."');
         }
       }
       if (result1 != null) {
@@ -1083,7 +1065,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"0\"');
+        _matchFailed('"0"');
       }
     }
     if (result0 == null) {
@@ -1158,7 +1140,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\" \"');
+        _matchFailed('" "');
       }
     }
     if (result0 != null) {
@@ -1180,7 +1162,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"^\"');
+        _matchFailed('"^"');
       }
     }
     if (result0 != null) {
@@ -1197,12 +1179,12 @@ class EpubCfiParser {
     final int pos0 = pos;
 
     if (input.codeUnitAt(pos) == 34) {
-      result0 = '\"';
+      result0 = '"';
       pos++;
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"\\\"\"');
+        _matchFailed('"\\""');
       }
     }
     if (result0 != null) {
@@ -1224,7 +1206,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"[\"');
+        _matchFailed('"["');
       }
     }
     if (result0 == null) {
@@ -1234,7 +1216,7 @@ class EpubCfiParser {
       } else {
         result0 = null;
         if (reportFailures == 0) {
-          _matchFailed('\"]\"');
+          _matchFailed('"]"');
         }
       }
     }
@@ -1257,7 +1239,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"(\"');
+        _matchFailed('"("');
       }
     }
     if (result0 == null) {
@@ -1267,7 +1249,7 @@ class EpubCfiParser {
       } else {
         result0 = null;
         if (reportFailures == 0) {
-          _matchFailed('\")\"');
+          _matchFailed('")"');
         }
       }
     }
@@ -1290,7 +1272,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\",\"');
+        _matchFailed('","');
       }
     }
     if (result0 != null) {
@@ -1312,7 +1294,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\";\"');
+        _matchFailed('";"');
       }
     }
     if (result0 != null) {
@@ -1334,7 +1316,7 @@ class EpubCfiParser {
     } else {
       result0 = null;
       if (reportFailures == 0) {
-        _matchFailed('\"=\"');
+        _matchFailed('"="');
       }
     }
     if (result0 != null) {
@@ -1388,7 +1370,7 @@ class EpubCfiParser {
           } else {
             result0 = null;
             if (reportFailures == 0) {
-              _matchFailed('\"-\"');
+              _matchFailed('"-"');
             }
           }
           // ignore: invariant_booleans
@@ -1399,7 +1381,7 @@ class EpubCfiParser {
             } else {
               result0 = null;
               if (reportFailures == 0) {
-                _matchFailed('\"_\"');
+                _matchFailed('"_"');
               }
             }
             // ignore: invariant_booleans
@@ -1410,7 +1392,7 @@ class EpubCfiParser {
               } else {
                 result0 = null;
                 if (reportFailures == 0) {
-                  _matchFailed('\".\"');
+                  _matchFailed('"."');
                 }
               }
             }
@@ -1652,7 +1634,7 @@ class ErrorPosition {
 }
 
 class CfiSyntaxException extends Equatable implements Exception {
-  CfiSyntaxException(
+  const CfiSyntaxException(
     this.expected,
     this.found,
     this.offset,

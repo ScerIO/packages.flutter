@@ -1,9 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:epub_view/epub_view.dart';
-import 'package:epub_view/src/epub_cfi/interpreter.dart';
-import 'package:epub_view/src/epub_cfi/parser.dart';
+import 'package:epub_view/src/data/epub_cfi/epub_cfi.dart';
+import 'package:epub_view/src/data/epub_cfi_reader.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:html/dom.dart';

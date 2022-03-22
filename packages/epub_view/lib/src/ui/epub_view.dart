@@ -2,86 +2,57 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart' show IterableExtension;
-import 'package:epubx/epubx.dart' hide Image;
+import 'package:epub_view/src/data/epub_cfi_reader.dart';
+import 'package:epub_view/src/data/epub_parser.dart';
+import 'package:epub_view/src/data/models/chapter.dart';
+import 'package:epub_view/src/data/models/chapter_view_value.dart';
+import 'package:epub_view/src/data/models/paragraph.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:html/dom.dart' as dom;
-import 'package:html/parser.dart' show parse;
-import 'package:rxdart/rxdart.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-
-import 'epub_cfi/generator.dart';
-import 'epub_cfi/interpreter.dart';
-import 'epub_cfi/parser.dart';
 
 export 'package:epubx/epubx.dart' hide Image;
 
-part 'epub_data.dart';
-part 'epub_parser.dart';
-part 'epub_controller.dart';
-part 'epub_cfi_reader.dart';
+part '../epub_controller.dart';
+part '../helpers/epub_view_builders.dart';
 
-const MIN_TRAILING_EDGE = 0.55;
-const MIN_LEADING_EDGE = -0.05;
-
-const _defaultTextStyle = TextStyle(
-  height: 1.25,
-  fontSize: 16,
-);
-
-typedef ChaptersBuilder = Widget Function(
-  BuildContext context,
-  List<EpubChapter> chapters,
-  List<Paragraph> paragraphs,
-  int index,
-);
+const _minTrailingEdge = 0.55;
+const _minLeadingEdge = -0.05;
 
 typedef ExternalLinkPressed = void Function(String href);
 
 class EpubView extends StatefulWidget {
   const EpubView({
     required this.controller,
-    this.itemBuilder,
     this.onExternalLinkPressed,
-    this.loaderSwitchDuration,
-    this.loader,
-    this.errorBuilder,
-    this.dividerBuilder,
-    this.onChange,
+    this.onChapterChanged,
     this.onDocumentLoaded,
     this.onDocumentError,
-    this.chapterPadding = const EdgeInsets.all(8),
-    this.paragraphPadding = const EdgeInsets.symmetric(horizontal: 16),
-    this.textStyle = _defaultTextStyle,
+    this.builders = const EpubViewBuilders<DefaultBuilderOptions>(
+      options: DefaultBuilderOptions(),
+    ),
     Key? key,
   }) : super(key: key);
 
   final EpubController controller;
   final ExternalLinkPressed? onExternalLinkPressed;
 
-  /// Show document loading error message inside [EpubView]
-  final Widget Function(Exception? error)? errorBuilder;
-  final Widget Function(EpubChapter value)? dividerBuilder;
-  final void Function(EpubChapterViewValue? value)? onChange;
+  final void Function(EpubChapterViewValue? value)? onChapterChanged;
 
   /// Called when a document is loaded
-  final void Function(EpubBook? document)? onDocumentLoaded;
+  final void Function(EpubBook document)? onDocumentLoaded;
 
   /// Called when a document loading error
   final void Function(Exception? error)? onDocumentError;
-  final Duration? loaderSwitchDuration;
-  final Widget? loader;
-  final EdgeInsetsGeometry chapterPadding;
-  final EdgeInsetsGeometry paragraphPadding;
-  final ChaptersBuilder? itemBuilder;
-  final TextStyle textStyle;
+
+  /// Builders
+  final EpubViewBuilders builders;
 
   @override
   _EpubViewState createState() => _EpubViewState();
 }
 
 class _EpubViewState extends State<EpubView> {
-  _EpubViewLoadingState _loadingState = _EpubViewLoadingState.loading;
   Exception? _loadingError;
   ItemScrollController? _itemScrollController;
   ItemPositionsListener? _itemPositionListener;
@@ -89,48 +60,58 @@ class _EpubViewState extends State<EpubView> {
   List<Paragraph> _paragraphs = [];
   EpubCfiReader? _epubCfiReader;
   EpubChapterViewValue? _currentValue;
-  bool _initialized = false;
+  final _chapterIndexes = <int>[];
 
-  final List<int> _chapterIndexes = [];
-  final BehaviorSubject<EpubChapterViewValue?> _actualChapter =
-      BehaviorSubject();
-  final BehaviorSubject<bool> _bookLoaded = BehaviorSubject();
+  EpubController get _controller => widget.controller;
 
   @override
   void initState() {
+    super.initState();
     _itemScrollController = ItemScrollController();
     _itemPositionListener = ItemPositionsListener.create();
-    widget.controller._attach(this);
-    super.initState();
+    _controller._attach(this);
+    _controller.loadingState.addListener(() {
+      switch (_controller.loadingState.value) {
+        case EpubViewLoadingState.loading:
+          break;
+        case EpubViewLoadingState.success:
+          widget.onDocumentLoaded?.call(_controller._document!);
+          break;
+        case EpubViewLoadingState.error:
+          widget.onDocumentError?.call(_loadingError);
+          break;
+      }
+
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
   void dispose() {
     _itemPositionListener!.itemPositions.removeListener(_changeListener);
-    _actualChapter.close();
-    _bookLoaded.close();
-    widget.controller._detach();
+    _controller._detach();
     super.dispose();
   }
 
   Future<bool> _init() async {
-    if (_initialized) {
+    if (_controller.isBookLoaded.value) {
       return true;
     }
-    _chapters = parseChapters(widget.controller._document!);
+    _chapters = parseChapters(_controller._document!);
     final parseParagraphsResult =
-        parseParagraphs(_chapters, widget.controller._document!.Content);
+        parseParagraphs(_chapters, _controller._document!.Content);
     _paragraphs = parseParagraphsResult.flatParagraphs;
     _chapterIndexes.addAll(parseParagraphsResult.chapterIndexes);
 
     _epubCfiReader = EpubCfiReader.parser(
-      cfiInput: widget.controller.epubCfi,
+      cfiInput: _controller.epubCfi,
       chapters: _chapters,
       paragraphs: _paragraphs,
     );
     _itemPositionListener!.itemPositions.addListener(_changeListener);
-    _initialized = true;
-    _bookLoaded.sink.add(true);
+    _controller.isBookLoaded.value = true;
 
     return true;
   }
@@ -157,8 +138,8 @@ class _EpubViewState extends State<EpubView> {
       paragraphNumber: paragraphIndex + 1,
       position: position,
     );
-    _actualChapter.sink.add(_currentValue);
-    widget.onChange?.call(_currentValue);
+    _controller.currentValueListenable.value = _currentValue;
+    widget.onChapterChanged?.call(_currentValue);
   }
 
   void _gotoEpubCfi(
@@ -171,7 +152,7 @@ class _EpubViewState extends State<EpubView> {
     final index = _epubCfiReader?.paragraphIndexByCfiFragment;
 
     if (index == null) {
-      return null;
+      return;
     }
 
     _itemScrollController?.scrollTo(
@@ -182,9 +163,9 @@ class _EpubViewState extends State<EpubView> {
     );
   }
 
-  void _onLinkPressed(String href, void Function(String href)? openExternal) {
+  void _onLinkPressed(String href) {
     if (href.contains('://')) {
-      openExternal?.call(href);
+      widget.onExternalLinkPressed?.call(href);
       return;
     }
 
@@ -208,7 +189,7 @@ class _EpubViewState extends State<EpubView> {
       final chapter = _chapterByFileName(hrefFileName);
       if (chapter != null) {
         final cfi = _epubCfiReader?.generateCfiChapter(
-          book: widget.controller._document,
+          book: _controller._document,
           chapter: chapter,
           additional: ['/4/2'],
         );
@@ -223,9 +204,9 @@ class _EpubViewState extends State<EpubView> {
 
       if (chapter != null && paragraph != null) {
         final paragraphIndex =
-            _epubCfiReader?._getParagraphIndexByElement(paragraph.element);
+            _epubCfiReader?.getParagraphIndexByElement(paragraph.element);
         final cfi = _epubCfiReader?.generateCfi(
-          book: widget.controller._document,
+          book: _controller._document,
           chapter: chapter,
           paragraphIndex: paragraphIndex,
         );
@@ -309,136 +290,151 @@ class _EpubViewState extends State<EpubView> {
     int posIndex = positionIndex;
     if (trailingEdge != null &&
         leadingEdge != null &&
-        trailingEdge < MIN_TRAILING_EDGE &&
-        leadingEdge < MIN_LEADING_EDGE) {
+        trailingEdge < _minTrailingEdge &&
+        leadingEdge < _minLeadingEdge) {
       posIndex += 1;
     }
 
     return posIndex;
   }
 
-  void _changeLoadingState(_EpubViewLoadingState state) {
-    if (state == _EpubViewLoadingState.success) {
-      widget.onDocumentLoaded?.call(widget.controller._document);
-    } else if (state == _EpubViewLoadingState.error) {
-      widget.onDocumentError?.call(_loadingError);
-    }
-    setState(() {
-      _loadingState = state;
-    });
-  }
-
-  Widget _buildDivider(EpubChapter chapter) =>
-      widget.dividerBuilder?.call(chapter) ??
-      Container(
+  static Widget _chapterDividerBuilder(EpubChapter chapter) => Container(
         height: 56,
         width: double.infinity,
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.all(16),
+        decoration: const BoxDecoration(
           color: Color(0x24000000),
         ),
         alignment: Alignment.centerLeft,
         child: Text(
           chapter.Title ?? '',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w600,
           ),
         ),
       );
 
-  Widget _defaultItemBuilder(int index) {
-    if (_paragraphs.isEmpty) {
+  static Widget _chapterBuilder(
+    BuildContext context,
+    EpubViewBuilders builders,
+    EpubBook document,
+    List<EpubChapter> chapters,
+    List<Paragraph> paragraphs,
+    int index,
+    int chapterIndex,
+    int paragraphIndex,
+    ExternalLinkPressed onExternalLinkPressed,
+  ) {
+    if (paragraphs.isEmpty) {
       return Container();
     }
 
-    final chapterIndex = _getChapterIndexBy(positionIndex: index);
+    final defaultBuilder = builders as EpubViewBuilders<DefaultBuilderOptions>;
+    final options = defaultBuilder.options;
 
     return Column(
       children: <Widget>[
-        if (chapterIndex >= 0 &&
-            _getParagraphIndexBy(positionIndex: index) == 0)
-          _buildDivider(_chapters[chapterIndex]),
+        if (chapterIndex >= 0 && paragraphIndex == 0)
+          builders.chapterDividerBuilder(chapters[chapterIndex]),
         Html(
-          data: _paragraphs[index].element.outerHtml,
-          onLinkTap: (href, _, __, ___) =>
-              _onLinkPressed(href!, widget.onExternalLinkPressed),
+          data: paragraphs[index].element.outerHtml,
+          onLinkTap: (href, _, __, ___) => onExternalLinkPressed(href!),
           style: {
             'html': Style(
-              padding: widget.paragraphPadding as EdgeInsets?,
-            ).merge(Style.fromTextStyle(widget.textStyle)),
+              padding: options.paragraphPadding as EdgeInsets?,
+            ).merge(Style.fromTextStyle(options.textStyle)),
           },
-          customRender: {
-            'img': (context, child) {
+          customRenders: {
+            tagMatcher('img'):
+                CustomRender.widget(widget: (context, buildChildren) {
               final url = context.tree.element!.attributes['src']!
                   .replaceAll('../', '');
               return Image(
                 image: MemoryImage(
-                  Uint8List.fromList(widget
-                      .controller._document!.Content!.Images![url]!.Content!),
+                  Uint8List.fromList(
+                    document.Content!.Images![url]!.Content!,
+                  ),
                 ),
               );
-            }
+            }),
           },
         ),
       ],
     );
   }
 
-  Widget _buildLoaded() {
-    Widget _buildItem(BuildContext context, int index) =>
-        widget.itemBuilder?.call(context, _chapters, _paragraphs, index) ??
-        _defaultItemBuilder(index);
-
+  Widget _buildLoaded(BuildContext context) {
     return ScrollablePositionedList.builder(
       initialScrollIndex: _epubCfiReader!.paragraphIndexByCfiFragment ?? 0,
       itemCount: _paragraphs.length,
       itemScrollController: _itemScrollController,
       itemPositionsListener: _itemPositionListener,
-      itemBuilder: _buildItem,
+      itemBuilder: (BuildContext context, int index) {
+        return widget.builders.chapterBuilder(
+          context,
+          widget.builders,
+          widget.controller._document!,
+          _chapters,
+          _paragraphs,
+          index,
+          _getChapterIndexBy(positionIndex: index),
+          _getParagraphIndexBy(positionIndex: index),
+          _onLinkPressed,
+        );
+      },
+    );
+  }
+
+  static Widget _builder(
+    BuildContext context,
+    EpubViewBuilders builders,
+    EpubViewLoadingState state,
+    WidgetBuilder loadedBuilder,
+    Exception? loadingError,
+  ) {
+    final Widget content = () {
+      switch (state) {
+        case EpubViewLoadingState.loading:
+          return KeyedSubtree(
+            key: const Key('epubx.root.loading'),
+            child: builders.loaderBuilder?.call(context) ?? const SizedBox(),
+          );
+        case EpubViewLoadingState.error:
+          return KeyedSubtree(
+            key: const Key('epubx.root.error'),
+            child: Padding(
+              padding: const EdgeInsets.all(32),
+              child: builders.errorBuilder?.call(context, loadingError!) ??
+                  Center(child: Text(loadingError.toString())),
+            ),
+          );
+        case EpubViewLoadingState.success:
+          return KeyedSubtree(
+            key: const Key('epubx.root.success'),
+            child: loadedBuilder(context),
+          );
+      }
+    }();
+
+    final defaultBuilder = builders as EpubViewBuilders<DefaultBuilderOptions>;
+    final options = defaultBuilder.options;
+
+    return AnimatedSwitcher(
+      duration: options.loaderSwitchDuration,
+      transitionBuilder: options.transitionBuilder,
+      child: content,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget? content;
-
-    switch (_loadingState) {
-      case _EpubViewLoadingState.loading:
-        content = KeyedSubtree(
-          key: Key('$runtimeType.root.loading'),
-          child: widget.loader ?? SizedBox(),
-        );
-        break;
-      case _EpubViewLoadingState.error:
-        content = KeyedSubtree(
-          key: Key('$runtimeType.root.error'),
-          child: Padding(
-            padding: EdgeInsets.all(32),
-            child: widget.errorBuilder?.call(_loadingError) ??
-                Center(child: Text(_loadingError.toString())),
-          ),
-        );
-        break;
-      case _EpubViewLoadingState.success:
-        content = KeyedSubtree(
-          key: Key('$runtimeType.root.success'),
-          child: _buildLoaded(),
-        );
-        break;
-    }
-
-    return AnimatedSwitcher(
-      duration: widget.loaderSwitchDuration ?? Duration(milliseconds: 500),
-      transitionBuilder: (child, animation) =>
-          FadeTransition(opacity: animation, child: child),
-      child: content,
+    return widget.builders.builder(
+      context,
+      widget.builders,
+      _controller.loadingState.value,
+      _buildLoaded,
+      _loadingError,
     );
   }
-}
-
-enum _EpubViewLoadingState {
-  loading,
-  error,
-  success,
 }
