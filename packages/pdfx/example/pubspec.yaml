@@ -11,9 +11,9 @@ dependencies:
     sdk: flutter
   pdfx:
     path: ../
-  performance: ^0.1.0+1
+  internet_file: ^1.0.0+2
   universal_platform: ^1.0.0+1
-
+  performance: ^0.1.0+1
 
 dev_dependencies:
   flutter_test:
@@ -21,6 +21,10 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   flutter_lints: ^1.0.4
+
+dependency_overrides:
+  photo_view:
+    git: https://github.com/bluefireteam/photo_view
 
 flutter:
   uses-material-design: true

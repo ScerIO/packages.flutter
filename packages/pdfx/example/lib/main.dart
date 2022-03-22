@@ -24,7 +24,6 @@ class _MyAppState extends State<MyApp> {
           child: UniversalPlatform.isWindows
               ? const SimplePage()
               : const PinchPage(),
-          // child: const SimplePage(),
         ),
       );
 }

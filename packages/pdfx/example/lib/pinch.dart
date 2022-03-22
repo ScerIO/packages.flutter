@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:internet_file/internet_file.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:performance/performance.dart';
 
@@ -17,7 +18,12 @@ class _PinchPageState extends State<PinchPage> {
   @override
   void initState() {
     _pdfControllerPinch = PdfControllerPinch(
-      document: PdfDocument.openAsset('assets/hello.pdf'),
+      // document: PdfDocument.openAsset('assets/hello.pdf'),
+      document: PdfDocument.openData(
+        InternetFile.get(
+          'https://api.codetabs.com/v1/proxy/?quest=http://www.africau.edu/images/default/sample.pdf',
+        ),
+      ),
       initialPage: _initialPage,
     );
     super.initState();

@@ -16,11 +16,11 @@ class _SimplePageState extends State<SimplePage> {
 
   @override
   void initState() {
+    super.initState();
     _pdfController = PdfController(
       document: PdfDocument.openAsset('assets/hello.pdf'),
       initialPage: _initialPage,
     );
-    super.initState();
   }
 
   @override
@@ -88,10 +88,30 @@ class _SimplePageState extends State<SimplePage> {
                 const Center(child: CircularProgressIndicator()),
             pageLoaderBuilder: (_) =>
                 const Center(child: CircularProgressIndicator()),
+            pageBuilder: _pageBuilder,
           ),
           controller: _pdfController,
         ),
       ),
+    );
+  }
+
+  PhotoViewGalleryPageOptions _pageBuilder(
+    BuildContext context,
+    Future<PdfPageImage> pageImage,
+    int index,
+    PdfDocument document,
+  ) {
+    return PhotoViewGalleryPageOptions(
+      imageProvider: PdfPageImageProvider(
+        pageImage,
+        index,
+        document.id,
+      ),
+      minScale: PhotoViewComputedScale.contained * 1,
+      maxScale: PhotoViewComputedScale.contained * 2,
+      initialScale: PhotoViewComputedScale.contained * 1.0,
+      heroAttributes: PhotoViewHeroAttributes(tag: '${document.id}-$index'),
     );
   }
 }

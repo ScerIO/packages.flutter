@@ -1,3 +1,9 @@
+## 2.0.1+2
+
+* Fixed broken links at pub.dev
+* Fixed readme
+* Update pdfjs version in installation script
+
 ## 2.0.1+1
 
 * Update readme

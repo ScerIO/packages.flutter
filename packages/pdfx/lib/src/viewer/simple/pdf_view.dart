@@ -76,7 +76,7 @@ class PdfView extends StatefulWidget {
   _PdfViewState createState() => _PdfViewState();
 }
 
-class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
+class _PdfViewState extends State<PdfView> {
   final Map<int, PdfPageImage?> _pages = {};
   PdfController get _controller => widget.controller;
   Exception? _loadingError;
@@ -200,8 +200,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
       );
 
   Widget _buildLoaded(BuildContext context) => PhotoViewGallery.builder(
-        builder: (BuildContext context, int index) =>
-            widget.builders.pageBuilder(
+        builder: (context, index) => widget.builders.pageBuilder(
           context,
           _getPageImage(index),
           index,
@@ -213,7 +212,7 @@ class _PdfViewState extends State<PdfView> with SingleTickerProviderStateMixin {
             const SizedBox(),
         backgroundDecoration: widget.backgroundDecoration,
         pageController: _controller._pageController,
-        onPageChanged: (int index) {
+        onPageChanged: (index) {
           _currentIndex = index;
           final pageNumber = index + 1;
           widget.onPageChanged?.call(pageNumber);

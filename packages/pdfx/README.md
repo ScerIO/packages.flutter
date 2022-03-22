@@ -69,29 +69,29 @@ PdfView(
 
 ### PdfView & PdfViewPinch
 
-| Parameter        	| Description                                                                                                    	| PdfViewPinch / PdfView 	|
-|------------------	|----------------------------------------------------------------------------------------------------------------	|------------------------	|
-| controller       	| Pages control. See [page control](#page-control) and  [additional pdf info](#additional-pdf-info)              	| + / +                  	|
-| onPageChanged    	| Called whenever the page in the center of the viewport changes.  See [Document callbacks](#document-callbacks) 	| + / +                  	|
-| onDocumentLoaded 	| Called when a document is loaded. See [Document callbacks](#document-callbacks)                                	| + / +                  	|
-| onDocumentError  	| Called when a document loading error. Exception is passed in the attributes                                    	| + / +                  	|
-| builders         	| Set of pdf view builders. See [Custom builders](#custom-builders)                                              	| + / +                  	|
-| scrollDirection  	| Page turning direction                                                                                         	| + / +                  	|
-| renderer         	| Custom PdfRenderer options.  See [custom renderer options](#custom-renderer-options)                           	| - / +                  	|
-| pageSnapping     	| Set to false for mouse wheel scroll on web                                                                     	| - / +                  	|
-| physics          	| How the widgets should respond to user input                                                                   	| - / +                  	|
-| padding          	| Padding for the every page.                                                                                    	| + / -                  	|
+| Parameter        	| Description                                                                                                    | PdfViewPinch / PdfView |
+|------------------	|----------------------------------------------------------------------------------------------------------------|------------------------|
+| controller       	| Pages control. See [page control](#page-control) and  [additional pdf info](#additional-pdf-info)              | + / +                  |
+| onPageChanged    	| Called whenever the page in the center of the viewport changes.  See [Document callbacks](#document-callbacks) | + / +                  |
+| onDocumentLoaded 	| Called when a document is loaded. See [Document callbacks](#document-callbacks)                                | + / +                  |
+| onDocumentError  	| Called when a document loading error. Exception is passed in the attributes                                    | + / +                  |
+| builders         	| Set of pdf view builders. See [Custom builders](#custom-builders)                                              | + / +                  |
+| scrollDirection  	| Page turning direction                                                                                         | + / +                  |
+| renderer         	| Custom PdfRenderer options.  See [custom renderer options](#custom-renderer-options)                           | - / +                  |
+| pageSnapping     	| Set to false for mouse wheel scroll on web                                                                     | - / +                  |
+| physics          	| How the widgets should respond to user input                                                                   | - / +                  |
+| padding          	| Padding for the every page.                                                                                    | + / -                  |
 
 ### PdfViewBuilders & PdfViewPinchBuilders
 
-| Parameter             	| Description                                                                                       	| PdfViewPinchBuilders / PdfViewBuilders 	|
-|-----------------------	|---------------------------------------------------------------------------------------------------	|----------------------------------------	|
-| options               	| Additional options for builder                                                                    	| + / +                                  	|
-| documentLoaderBuilder 	| Widget showing when pdf document loading                                                          	| + / +                                  	|
-| pageLoaderBuilder     	| Widget showing when pdf page loading                                                              	| + / +                                  	|
-| errorBuilder          	| Show document loading error message                                                               	| + / +                                  	|
-| builder               	| Root view builder for animate pdf loading state                                                   	| + / +                                  	|
-| pageBuilder           	| Callback called to render a widget for each page. See [custom page builder](#custom-page-builder) 	| - / +                                  	|
+| Parameter             	| Description                                                                                       | PdfViewPinchBuilders / PdfViewBuilders |
+|-----------------------	|---------------------------------------------------------------------------------------------------|----------------------------------------|
+| options               	| Additional options for builder                                                                    | + / +                                  |
+| documentLoaderBuilder 	| Widget showing when pdf document loading                                                          | + / +                                  |
+| pageLoaderBuilder     	| Widget showing when pdf page loading                                                              | + / +                                  |
+| errorBuilder          	| Show document loading error message                                                               | + / +                                  |
+| builder               	| Root view builder for animate pdf loading state                                                   | + / +                                  |
+| pageBuilder           	| Callback called to render a widget for each page. See [custom page builder](#custom-page-builder) | - / +                                  |
 
 ## Additional examples
 
