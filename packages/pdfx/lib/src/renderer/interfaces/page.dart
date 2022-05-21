@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 
-import 'package:extension/enum.dart';
+import 'package:extension/extension.dart';
 import 'package:meta/meta.dart';
 import 'document.dart';
 
