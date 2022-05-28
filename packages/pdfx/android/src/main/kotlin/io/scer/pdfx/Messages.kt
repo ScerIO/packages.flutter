@@ -165,7 +165,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             val cropX = if (crop) message.cropX!!.toInt() else 0
             val cropY = if (crop) message.cropY!!.toInt() else 0
             val cropH = if (crop) message.cropHeight!!.toInt() else 0
-            val cropW = if (crop) message.width!!.toInt() else 0
+            val cropW = if (crop) message.cropWidth!!.toInt() else 0
 
             val quality = message.quality?.toInt() ?: 100
 
