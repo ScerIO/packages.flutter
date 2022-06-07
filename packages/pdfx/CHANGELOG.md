@@ -1,3 +1,7 @@
+## 2.0.1+3
+
+* Update photo_view dependency to 0.14.0
+
 ## 2.0.1+2
 
 * Fixed broken links at pub.dev
