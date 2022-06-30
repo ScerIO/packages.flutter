@@ -1,3 +1,7 @@
+## 2.3.14
+
+* Upgrade dependency `device_info_plus` to v4
+
 ## 2.1.0
 
 * Update `[photo_view]` dependency to 0.14.0 [](https://github.com/ScerIO/packages.flutter/pull/306)
