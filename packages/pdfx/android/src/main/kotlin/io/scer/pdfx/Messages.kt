@@ -252,7 +252,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 val texWidth = message.textureWidth!!.toInt()
                 val texHeight = message.textureHeight!!.toInt()
                 if (texWidth != 0 && texHeight != 0) {
-                    tex.surfaceTexture()?.setDefaultBufferSize(texWidth, texHeight)
+                    tex.surfaceTexture().setDefaultBufferSize(texWidth, texHeight)
                 }
 
                 Surface(tex.surfaceTexture()).use {
@@ -283,8 +283,8 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         result.success(null)
     }
 
-    override fun unregisterTexture(message: Pigeon.UnregisterTextureMessage?) {
-        val id = message!!.id!!.toInt()
+    override fun unregisterTexture(message: Pigeon.UnregisterTextureMessage) {
+        val id = message.id!!.toInt()
         val tex = textures[id]
         tex?.release()
         textures.remove(id)
