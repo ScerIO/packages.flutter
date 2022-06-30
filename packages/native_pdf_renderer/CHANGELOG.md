@@ -19,7 +19,7 @@
 ## 4.0.1
 
 * Fixed MacOS app crush when used format: PdfPageFormat.WEBP
-* Fixed Windows build [pull#233](https://github.com/rbcprolabs/packages.flutter/pull/233)
+* Fixed Windows build [pull#233](https://github.com/ScerIO/packages.flutter/pull/233)
 
 ## 4.0.0
 
@@ -27,34 +27,34 @@
 * Added dependency `[universal_platform]` for detect platform anywhere
 * Replace dependency `[device_info]` to `[device_info_plus]`
 * Update pdf.js version in readme
-* Transfer the bitmap through a temporary file for performance save on *android*, *ios* & *macOS* [issue#150](https://github.com/rbcprolabs/packages.flutter/issues/150)
+* Transfer the bitmap through a temporary file for performance save on *android*, *ios* & *macOS* [issue#150](https://github.com/ScerIO/packages.flutter/issues/150)
 * __BREAKING__: `[hasSupport]` renamed to`[hasPdfSupport]`
 
 ## 3.1.1
 
-* Adds flutter error when PDF is locked and unreadable [pull#211](https://github.com/rbcprolabs/packages.flutter/pull/211)
+* Adds flutter error when PDF is locked and unreadable [pull#211](https://github.com/ScerIO/packages.flutter/pull/211)
 
 ## 3.1.0
 
-* Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)
+* Windows support [pull#174](https://github.com/ScerIO/packages.flutter/pull/174)
 
 ## 3.0.0 
 
-* Resolved [issue#147](https://github.com/rbcprolabs/packages.flutter/issues/147), null-safety migration
+* Resolved [issue#147](https://github.com/ScerIO/packages.flutter/issues/147), null-safety migration
 
 ## 2.4.0 
 
-* Fixed [pull#131](https://github.com/rbcprolabs/packages.flutter/pull/131), rendering of landscape-orientation PDF files on iOS
-* Fixed [pull#137](https://github.com/rbcprolabs/packages.flutter/pull/137), crash caused by invalid PDF format
+* Fixed [pull#131](https://github.com/ScerIO/packages.flutter/pull/131), rendering of landscape-orientation PDF files on iOS
+* Fixed [pull#137](https://github.com/ScerIO/packages.flutter/pull/137), crash caused by invalid PDF format
 
 ## 2.3.2
 
-* Fixed [issue#74](https://github.com/rbcprolabs/packages.flutter/issues/74), min ios version now 2 instead 11
-* Fixed [issue#76](https://github.com/rbcprolabs/packages.flutter/issues/76), page width & height exception on web
+* Fixed [issue#74](https://github.com/ScerIO/packages.flutter/issues/74), min ios version now 2 instead 11
+* Fixed [issue#76](https://github.com/ScerIO/packages.flutter/issues/76), page width & height exception on web
 
 ## 2.3.1
 
-* Fixed [issue#50](https://github.com/rbcprolabs/packages.flutter/issues/50)
+* Fixed [issue#50](https://github.com/ScerIO/packages.flutter/issues/50)
 
 ## 2.3.0
 
@@ -74,7 +74,7 @@
 
 ## 2.0.1
 
-* Fixed [issue#60](https://github.com/rbcprolabs/packages.flutter/issues/60)
+* Fixed [issue#60](https://github.com/ScerIO/packages.flutter/issues/60)
 
 ## 2.0.0
 
@@ -88,19 +88,19 @@
 
 ## 1.8.1
 
-* Fixed ios render crash [issue#29](https://github.com/rbcprolabs/packages.flutter/issues/29)
+* Fixed ios render crash [issue#29](https://github.com/ScerIO/packages.flutter/issues/29)
 
 ## 1.8.0
 
 * Set minimal flutter version to 1.10
 * Update synchronized package
-* Fixed android build [issue#34](https://github.com/rbcprolabs/packages.flutter/issues/34)
+* Fixed android build [issue#34](https://github.com/ScerIO/packages.flutter/issues/34)
 
 ## 1.7.0
 
-* Fixed PDF crop on Android [pull#25](https://github.com/rbcprolabs/packages.flutter/pull/25))
+* Fixed PDF crop on Android [pull#25](https://github.com/ScerIO/packages.flutter/pull/25))
 * Added package synchronized for sequential access to the native api render to reduce the likelihood of a crash due to lack of memory. 
-Additional information: [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14) & [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)  
+Additional information: [issue#14](https://github.com/ScerIO/packages.flutter/issues/14) & [issue#16](https://github.com/ScerIO/packages.flutter/issues/16)  
 
 ## 1.6.2
 

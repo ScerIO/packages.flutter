@@ -11,23 +11,23 @@
 
 ## 5.0.0
 
-* Update photo_view dependency to 0.13.0 [pull#225](https://github.com/rbcprolabs/packages.flutter/pull/225)
+* Update photo_view dependency to 0.13.0 [pull#225](https://github.com/ScerIO/packages.flutter/pull/225)
 * Fixed another document loading
 * Upgrade `[pdf_renderer]` to 4.0.0
 
 ## 4.2.0
 
-* Update photo_view dependency to 0.12.0 [pull#203](https://github.com/rbcprolabs/packages.flutter/pull/203)
-* Fixed null check operator used on a null value when closing PdfView widget [pull#207](https://github.com/rbcprolabs/packages.flutter/pull/207)
+* Update photo_view dependency to 0.12.0 [pull#203](https://github.com/ScerIO/packages.flutter/pull/203)
+* Fixed null check operator used on a null value when closing PdfView widget [pull#207](https://github.com/ScerIO/packages.flutter/pull/207)
 
 ## 4.1.0
 
-* Windows support [pull#174](https://github.com/rbcprolabs/packages.flutter/pull/174)
-* Fixed [issue#180](https://github.com/rbcprolabs/packages.flutter/issues/180), renderer import problem
+* Windows support [pull#174](https://github.com/ScerIO/packages.flutter/pull/174)
+* Fixed [issue#180](https://github.com/ScerIO/packages.flutter/issues/180), renderer import problem
 
 ## 4.0.1
 
-* Fixed [issue#170](https://github.com/rbcprolabs/packages.flutter/issues/170), 4.0.0 not works
+* Fixed [issue#170](https://github.com/ScerIO/packages.flutter/issues/170), 4.0.0 not works
 
 ## 4.0.0
 
@@ -41,7 +41,7 @@
 
 ## 3.9.1
 
-* Fixed [issue#119](https://github.com/rbcprolabs/packages.flutter/issues/119), Initial page isn't working 
+* Fixed [issue#119](https://github.com/ScerIO/packages.flutter/issues/119), Initial page isn't working 
 * Update dependency `extended_image`
 
 ## 3.9.0
@@ -54,17 +54,17 @@
 
 ## 3.7.0
 
-* Added `initialPage` in `PdfController.loadDocument` method [issue#89](https://github.com/rbcprolabs/packages.flutter/issues/89)
-* Fixed crash when switching between pdf [issue#93](https://github.com/rbcprolabs/packages.flutter/issues/93)
+* Added `initialPage` in `PdfController.loadDocument` method [issue#89](https://github.com/ScerIO/packages.flutter/issues/89)
+* Fixed crash when switching between pdf [issue#93](https://github.com/ScerIO/packages.flutter/issues/93)
 
 ## 3.6.2
 
-* Fixed [issue#78](https://github.com/rbcprolabs/packages.flutter/issues/78), loadDocument in PdfController not working
+* Fixed [issue#78](https://github.com/ScerIO/packages.flutter/issues/78), loadDocument in PdfController not working
 
 ## 3.6.1
 
-* Fixed [issue#74](https://github.com/rbcprolabs/packages.flutter/issues/74), min ios version now 2 instead 11
-* Fixed [issue#76](https://github.com/rbcprolabs/packages.flutter/issues/76), page width & height exception on web
+* Fixed [issue#74](https://github.com/ScerIO/packages.flutter/issues/74), min ios version now 2 instead 11
+* Fixed [issue#76](https://github.com/ScerIO/packages.flutter/issues/76), page width & height exception on web
 * Update dependency `extended_image`
 
 ## 3.6.0
@@ -75,7 +75,7 @@
 
 ## 3.5.2
 
-* Fixed error handle [issue#71](https://github.com/rbcprolabs/packages.flutter/issues/71)
+* Fixed error handle [issue#71](https://github.com/ScerIO/packages.flutter/issues/71)
 
 ## 3.5.1
 
@@ -87,7 +87,7 @@
 
 ## 3.5.0
 
-* Scroll with mouse wheel for web [issue#69](https://github.com/rbcprolabs/packages.flutter/issues/69)
+* Scroll with mouse wheel for web [issue#69](https://github.com/ScerIO/packages.flutter/issues/69)
 
 ## 3.4.0
 
@@ -99,7 +99,7 @@
 
 ## 3.2.1
 
-* Fixed [issue#65](https://github.com/rbcprolabs/packages.flutter/issues/65) `PdfController.jumpToPage`
+* Fixed [issue#65](https://github.com/ScerIO/packages.flutter/issues/65) `PdfController.jumpToPage`
 
 ## 3.2.0
 
@@ -111,7 +111,7 @@
 
 ## 3.1.0
 
-* Added `pageSnapping`, `physics` [issue#58](https://github.com/rbcprolabs/packages.flutter/issues/58)
+* Added `pageSnapping`, `physics` [issue#58](https://github.com/ScerIO/packages.flutter/issues/58)
 * Fixed `errorBuilder`
 
 ## 3.1.0-dev.2
@@ -120,7 +120,7 @@
 
 ## 3.0.1
 
-* Fixed issues: [issue#57](https://github.com/rbcprolabs/packages.flutter/issues/57), [issue#55](https://github.com/rbcprolabs/packages.flutter/issues/55) 
+* Fixed issues: [issue#57](https://github.com/ScerIO/packages.flutter/issues/57), [issue#55](https://github.com/ScerIO/packages.flutter/issues/55) 
 
 ## 3.1.0-dev.1
 
@@ -129,7 +129,7 @@
 ## 3.0.0
 
 * Added more docs & examples in readme
-* Fixed [issue#54](https://github.com/rbcprolabs/packages.flutter/issues/54), [issue#39](https://github.com/rbcprolabs/packages.flutter/issues/39)
+* Fixed [issue#54](https://github.com/ScerIO/packages.flutter/issues/54), [issue#39](https://github.com/ScerIO/packages.flutter/issues/39)
 * `render` property work fixed
 * Renamed `PDFView` to `PdfView`
 * Removed constructor `PDFView.builder`, `builder` property now available in `PdfView` constructor
@@ -154,7 +154,7 @@ from `PageController` saved in `PdfController`)
 
 * Set minimal flutter version to 1.10
 * Upgrade packages
-* Fixed bugs with crashes [issue#14](https://github.com/rbcprolabs/packages.flutter/issues/14), [issue#16](https://github.com/rbcprolabs/packages.flutter/issues/16)
+* Fixed bugs with crashes [issue#14](https://github.com/ScerIO/packages.flutter/issues/14), [issue#16](https://github.com/ScerIO/packages.flutter/issues/16)
 
 ## 2.1.1
 

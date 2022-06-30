@@ -1,6 +1,7 @@
-## 2.0.1+3
+## 2.1.0
 
-* Update photo_view dependency to 0.14.0
+* Update `[photo_view]` dependency to 0.14.0 [](https://github.com/ScerIO/packages.flutter/pull/306)
+* Fixed render crop [pull#35](https://github.com/ScerIO/packages.flutter/pull/305)
 
 ## 2.0.1+2
 

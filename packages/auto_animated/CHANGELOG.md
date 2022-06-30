@@ -21,7 +21,7 @@
 
 ## 2.0.1 
 
-* Fix missing import for `LiveOptions` ([issue#23](https://github.com/rbcprolabs/packages.flutter/issues/23))
+* Fix missing import for `LiveOptions` ([issue#23](https://github.com/ScerIO/packages.flutter/issues/23))
 
 ## 2.0.0
 

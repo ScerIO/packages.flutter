@@ -3,7 +3,7 @@ description: Demonstrates how to use the explorer plugin.
 version: 1.0.0+1
 publish_to: 'none' 
 environment:
-  sdk: '>=2.8.0 <3.0.0'
+  sdk: ">=2.17.1 <3.0.0"
 
 dependencies:
   flutter:

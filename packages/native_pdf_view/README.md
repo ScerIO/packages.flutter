@@ -25,7 +25,7 @@ dependencies:
 
 | Live                      | Screenshot                 |
 |---------------------------|----------------------------|
-|![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/live.gif?raw=true)  | ![](https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/native_pdf_view/example/media/screenshot.png?raw=true)  |
+|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/native_pdf_view/example/media/live.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/native_pdf_view/example/media/screenshot.png?raw=true)  |
 
 
 ## Getting Started

@@ -4,7 +4,7 @@ Pure flutter widget (non native) for view EPUB documents on all platforms. Based
 
 ## Showcase
 
-<img width="50%" src="https://raw.githubusercontent.com/rbcprolabs/packages.flutter/master/packages/epub_view/example/media/example.gif?raw=true" />
+<img width="50%" src="https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/epub_view/example/media/example.gif?raw=true" />
 
 ## Getting Started
 In your flutter project add the dependency:
