@@ -1,7 +1,7 @@
 export 'src/renderer/has_pdf_support.dart';
 export 'src/renderer/interfaces/document.dart';
-export 'src/renderer/interfaces/page.dart';
-export '/src/renderer/web/pdfx_plugin.dart';
+export 'src/renderer/interfaces/page.dart'
+    if (dart.library.html) '/src/renderer/web/pdfx_plugin.dart';
 export 'src/renderer/rgba_data.dart';
 
 export 'package:photo_view/photo_view.dart';
