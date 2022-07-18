@@ -20,7 +20,7 @@ In your flutter project add the dependency:
 flutter pub add pdfx
 ```
 
-For web run tool for automatically add pdfjs library in index.html:
+For web run tool for automatically add pdfjs library (CDN) in index.html:
 ```shell
 flutter pub run pdfx:install_web
 ```

@@ -20,10 +20,13 @@
 library pdf.js;
 
 import 'dart:html';
+import 'dart:js';
 import 'dart:js_util';
 import 'dart:typed_data';
 
 import 'package:js/js.dart';
+
+bool checkPdfjsLibInstallation() => context['pdfjsLib'] != null;
 
 @JS('pdfjsLib.getDocument')
 external _PDFDocumentLoadingTask _pdfjsGetDocument(Object data);

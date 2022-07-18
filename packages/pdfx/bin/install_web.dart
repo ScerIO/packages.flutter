@@ -1,18 +1,16 @@
 import 'dart:io';
 
-const findString =
-    '<script src="main.dart.js" type="application/javascript"></script>';
+const findString = '<body>';
 
-const _template =
-    """<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
+const _template = """$findString
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.js" type="text/javascript"></script>
   <script type="text/javascript">
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/build/pdf.worker.min.js";
     pdfRenderOptions = {
       cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.12.313/cmaps/',
       cMapPacked: true,
     }
-  </script>
-  $findString""";
+  </script>""";
 
 void main(List<String> args) async {
   stdout.writeln('[Modify web/index.hml by addition pdfjs]');

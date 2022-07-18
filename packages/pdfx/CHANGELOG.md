@@ -1,7 +1,9 @@
 ## 2.2.0
 
 * Upgrade dependency `device_info_plus` to v4
-* Fix some bugs
+* Fixed flutter 3.0 build
+* Fixed web install script 
+* Fixed some bugs
 
 ## 2.1.0
 

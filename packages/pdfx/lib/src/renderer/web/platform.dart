@@ -26,6 +26,10 @@ int _texId = -1;
 
 class PdfxWeb extends PdfxPlatform {
   PdfxWeb() {
+    assert(
+        checkPdfjsLibInstallation(),
+        'pdf.js not added in web/index.html. '
+        'Run «flutter pub run pdfx:install_web» or add script manually');
     _eventChannel.setController(_eventStreamController);
   }
 
