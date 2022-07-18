@@ -1,16 +1,16 @@
 import 'package:flutter/widgets.dart' hide Stack;
 
-class _Animatable {
-  _Animatable(this.key, this.callback);
+class Animatable {
+  Animatable(this.key, this.callback);
 
   final Key? key;
   final VoidCallback callback;
 }
 
-class _DirectionStack {
-  _DirectionStack(this.items, this.direction);
+class DirectionStack {
+  DirectionStack(this.items, this.direction);
 
-  final List<_Animatable> items;
+  final List<Animatable> items;
   final AnimationDirection direction;
 }
 
@@ -27,7 +27,7 @@ class VisibilityStack {
     AnimationDirection.toStart: false,
   };
 
-  _DirectionStack _stack = _DirectionStack([], AnimationDirection.toEnd);
+  DirectionStack _stack = DirectionStack([], AnimationDirection.toEnd);
   final Map<Key?, bool> _alreadyAnimated = {};
 
   AnimationDirection _direction = AnimationDirection.toEnd;
@@ -37,15 +37,15 @@ class VisibilityStack {
       return;
     }
     animate(
-      _DirectionStack(List.from(_stack.items), _stack.direction),
+      DirectionStack(List.from(_stack.items), _stack.direction),
       showItemInterval ~/ 10,
     );
-    _stack = _DirectionStack([], direction);
+    _stack = DirectionStack([], direction);
     _direction = direction;
   }
 
   void add(Key? key, VoidCallback callback) {
-    _stack.items.add(_Animatable(key, callback));
+    _stack.items.add(Animatable(key, callback));
 
     _alreadyAnimated[key] = false;
 
@@ -55,8 +55,8 @@ class VisibilityStack {
     }
   }
 
-  void show(_DirectionStack stack) {
-    _Animatable animatable;
+  void show(DirectionStack stack) {
+    Animatable animatable;
     if (stack.direction == AnimationDirection.toEnd) {
       animatable = stack.items.first;
       stack.items.removeAt(0);
@@ -70,7 +70,7 @@ class VisibilityStack {
 
   bool isAlreadyAnimated(Key? key) => _alreadyAnimated[key] ?? false;
 
-  void animate(_DirectionStack stack, Duration showItemInterval) {
+  void animate(DirectionStack stack, Duration showItemInterval) {
     if (_isAnimatedTo[stack.direction]!) {
       return;
     }
@@ -95,8 +95,8 @@ class VisibilityStack {
   }
 
   @override
-  bool operator ==(Object o) =>
-      o is VisibilityStack && showItemInterval == o.showItemInterval;
+  bool operator ==(Object other) =>
+      other is VisibilityStack && showItemInterval == other.showItemInterval;
 
   @override
   int get hashCode => showItemInterval.hashCode;

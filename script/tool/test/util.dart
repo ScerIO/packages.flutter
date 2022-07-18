@@ -81,9 +81,8 @@ class PlatformDetails {
 ///
 /// This returns a Directory rather than a RepositoryPackage because there is no
 /// guarantee that the returned directory is a package.
-Directory getExampleDir(RepositoryPackage package) {
-  return package.directory.childDirectory('example');
-}
+Directory getExampleDir(RepositoryPackage package) =>
+    package.directory.childDirectory('example');
 
 /// Creates a plugin package with the given [name] in [packagesDirectory].
 ///
@@ -447,12 +446,11 @@ class ProcessCall {
   final String? workingDir;
 
   @override
-  bool operator ==(dynamic other) {
-    return other is ProcessCall &&
-        executable == other.executable &&
-        listsEqual(args, other.args) &&
-        workingDir == other.workingDir;
-  }
+  bool operator ==(Object other) =>
+      other is ProcessCall &&
+      executable == other.executable &&
+      listsEqual(args, other.args) &&
+      workingDir == other.workingDir;
 
   @override
   int get hashCode => Object.hash(executable, args, workingDir);

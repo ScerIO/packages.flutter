@@ -76,10 +76,9 @@ void main() {
       // Default to simulating the plugin never having been published.
       mockHttpStatus = 404;
       mockHttpResponse = null;
-      final MockClient mockClient = MockClient((http.Request request) async {
-        return http.Response(json.encode(mockHttpResponse),
-            mockHttpResponse == null ? mockHttpStatus : 200);
-      });
+      final MockClient mockClient = MockClient((http.Request request) async =>
+          http.Response(json.encode(mockHttpResponse),
+              mockHttpResponse == null ? mockHttpStatus : 200));
 
       processRunner = RecordingProcessRunner();
       final VersionCheckCommand command = VersionCheckCommand(packagesDir,
@@ -728,18 +727,17 @@ This is necessary because of X, Y, and Z
 
     group('missing change detection', () {
       Future<List<String>> _runWithMissingChangeDetection(
-          List<String> extraArgs,
-          {void Function(Error error)? errorHandler}) async {
-        return runCapturingPrint(
-            runner,
-            <String>[
-              'version-check',
-              '--base-sha=main',
-              '--check-for-missing-changes',
-              ...extraArgs,
-            ],
-            errorHandler: errorHandler);
-      }
+              List<String> extraArgs,
+              {void Function(Error error)? errorHandler}) async =>
+          runCapturingPrint(
+              runner,
+              <String>[
+                'version-check',
+                '--base-sha=main',
+                '--check-for-missing-changes',
+                ...extraArgs,
+              ],
+              errorHandler: errorHandler);
 
       test('passes for unchanged packages', () async {
         final RepositoryPackage plugin =

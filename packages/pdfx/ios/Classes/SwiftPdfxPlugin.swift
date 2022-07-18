@@ -30,8 +30,8 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         PdfxApiSetup(messenger, api);
     }
 
-    public func openDocumentDataMessage(_ message: OpenDataMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
-        guard let data = message?.data else {
+    public func openDocumentDataMessage(_ message: OpenDataMessage, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let data = message.data else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
@@ -50,8 +50,8 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         completion(result, nil);
     }
 
-    public func openDocumentFileMessage(_ message: OpenPathMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
-        guard let pdfFilePath = message?.path else {
+    public func openDocumentFileMessage(_ message: OpenPathMessage, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let pdfFilePath = message.path else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
@@ -70,8 +70,8 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         completion(result, nil);
     }
 
-    public func openDocumentAssetMessage(_ message: OpenPathMessage?, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
-        guard let name = message?.path else {
+    public func openDocumentAssetMessage(_ message: OpenPathMessage, completion: @escaping (OpenReply?, FlutterError?) -> Void) {
+        guard let name = message.path else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Arguments not sended",
                                        details: nil))
@@ -96,10 +96,10 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         }
     }
 
-    public func getPageMessage(_ message: GetPageMessage?, completion: @escaping (GetPageReply?, FlutterError?) -> Void) {
+    public func getPageMessage(_ message: GetPageMessage, completion: @escaping (GetPageReply?, FlutterError?) -> Void) {
         do {
-            let documentId = message!.documentId
-            let pageNumber = message!.pageNumber
+            let documentId = message.documentId
+            let pageNumber = message.pageNumber
 
             let result = GetPageReply.init();
 
@@ -122,15 +122,15 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         }
     }
 
-    public func renderPageMessage(_ message: RenderPageMessage?, completion: @escaping (RenderPageReply?, FlutterError?) -> Void) {
+    public func renderPageMessage(_ message: RenderPageMessage, completion: @escaping (RenderPageReply?, FlutterError?) -> Void) {
         // Set crop if required
         var cropZone: CGRect? = nil
-        if (message!.crop!.boolValue){
-            let cWidth = message!.cropWidth!.intValue
-            let cHeight = message!.cropHeight!.intValue
-            if (cWidth != message!.width!.intValue || cHeight != message!.height!.intValue){
-                cropZone = CGRect(x: message!.cropX as! Int,
-                                  y: message!.cropY as! Int,
+        if (message.crop!.boolValue){
+            let cWidth = message.cropWidth!.intValue
+            let cHeight = message.cropHeight!.intValue
+            if (cWidth != message.width!.intValue || cHeight != message.height!.intValue){
+                cropZone = CGRect(x: message.cropX as! Int,
+                                  y: message.cropY as! Int,
                                   width: cWidth,
                                   height: cHeight)
             }
@@ -139,14 +139,14 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         dispQueue.async {
             let result = RenderPageReply.init()
             do {
-                let page = try self.pages.get(id: message!.pageId!)
+                let page = try self.pages.get(id: message.pageId!)
                 if let data = page.render(
-                    width: message!.width!.intValue,
-                    height: message!.height!.intValue,
+                    width: message.width!.intValue,
+                    height: message.height!.intValue,
                     crop: cropZone,
-                    compressFormat: CompressFormat(rawValue: message!.format!.intValue)!,
-                    backgroundColor: message!.backgroundColor!,
-                    quality: message!.quality!.intValue
+                    compressFormat: CompressFormat(rawValue: message.format!.intValue)!,
+                    backgroundColor: message.backgroundColor!,
+                    quality: message.quality!.intValue
                 ) {
                     result.width = NSNumber.init(value: data.width)
                     result.height = NSNumber.init(value: data.height)
@@ -193,35 +193,35 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
             textures[texId!] = nil
     }
 
-    public func resizeTextureMessage(_ message: ResizeTextureMessage?, completion: @escaping (FlutterError?) -> Void) {
-        let texId = message!.textureId?.int64Value
+    public func resizeTextureMessage(_ message: ResizeTextureMessage, completion: @escaping (FlutterError?) -> Void) {
+        let texId = message.textureId?.int64Value
         guard let pageTex = textures[texId!] else {
             return completion(FlutterError(code: "RENDER_ERROR",
                                            message: "No texture of texId=\(String(describing: texId!))",
                                        details: nil))
         }
-        let width = message!.width?.intValue,
-            height = message!.height?.intValue
+        let width = message.width?.intValue,
+            height = message.height?.intValue
         pageTex.resize(width: width!, height: height!)
         return completion(nil)
     }
 
-    public func updateTextureMessage(_ message: UpdateTextureMessage?, completion: @escaping (FlutterError?) -> Void) {
-        let texId = message!.textureId?.int64Value
-        let pageId = message!.pageId!
-        let destX = message?.destinationX?.intValue
-        let destY = message?.destinationY?.intValue
-        let width = message?.width?.intValue
-        let height = message?.height?.intValue
-        let srcX = message?.sourceX?.intValue
-        let srcY = message?.sourceY?.intValue
-        let fw = message?.fullWidth?.doubleValue
-        let fh = message?.fullHeight?.doubleValue
-        let backgroundColor = message?.backgroundColor
-        let allowAntialiasing = message!.allowAntiAliasing?.boolValue
+    public func updateTextureMessage(_ message: UpdateTextureMessage, completion: @escaping (FlutterError?) -> Void) {
+        let texId = message.textureId?.int64Value
+        let pageId = message.pageId!
+        let destX = message.destinationX?.intValue
+        let destY = message.destinationY?.intValue
+        let width = message.width?.intValue
+        let height = message.height?.intValue
+        let srcX = message.sourceX?.intValue
+        let srcY = message.sourceY?.intValue
+        let fw = message.fullWidth?.doubleValue
+        let fh = message.fullHeight?.doubleValue
+        let backgroundColor = message.backgroundColor
+        let allowAntialiasing = message.allowAntiAliasing?.boolValue
 
-        let tw = message?.textureWidth?.intValue
-        let th = message?.textureHeight?.intValue
+        let tw = message.textureWidth?.intValue
+        let th = message.textureHeight?.intValue
 
         let pageTex = textures[texId!]!
 

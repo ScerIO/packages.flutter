@@ -60,7 +60,7 @@ class ExplorerToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _controller = ControllerProvider.of(context)!.explorerController;
+    final controller = ControllerProvider.of(context)!.explorerController;
     final i18n = ExplorerLocalizations.of(context);
 
     final safeTopPadding = MediaQuery.of(context).padding.top;
@@ -71,26 +71,26 @@ class ExplorerToolbar extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(child: ExplorerBreadCrumbs()),
-          VerticalDivider(indent: 8, endIndent: 8),
+          const Expanded(child: ExplorerBreadCrumbs()),
+          const VerticalDivider(indent: 8, endIndent: 8),
           Row(
             children: [
               IconButton(
-                icon: Icon(Icons.refresh),
-                onPressed: _controller.refresh,
+                icon: const Icon(Icons.refresh),
+                onPressed: controller.refresh,
               ),
               PopupMenuButton<String>(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onSelected: (String value) async {
                   if (value == 'directory') {
                     final folderName =
                         await openModal(context, i18n!.folderName);
-                    _controller.newDirectory(folderName!);
+                    controller.newDirectory(folderName!);
                   } else if (value == 'file') {
                     final fileName = await openModal(context, i18n!.fileName);
-                    _controller.newFile(fileName!);
+                    controller.newFile(fileName!);
                   } else if (value == 'upload') {
-                    _controller.uploadLocalFiles();
+                    controller.uploadLocalFiles();
                   }
                 },
                 tooltip: 'Add',
@@ -99,34 +99,34 @@ class ExplorerToolbar extends StatelessWidget {
                     value: 'directory',
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.create_new_folder),
-                        SizedBox(width: 16),
+                        const Icon(Icons.create_new_folder),
+                        const SizedBox(width: 16),
                         Text(i18n!.newFolder),
                       ],
                     ),
                   ),
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem<String>(
                     value: 'file',
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.note_add),
-                        SizedBox(width: 16),
+                        const Icon(Icons.note_add),
+                        const SizedBox(width: 16),
                         Text(i18n.newFile),
                       ],
                     ),
                   ),
-                  PopupMenuDivider(),
+                  const PopupMenuDivider(),
                   PopupMenuItem<String>(
                     value: 'upload',
+                    enabled: controller.hasUploadFilesCallback,
                     child: Row(
                       children: <Widget>[
-                        Icon(Icons.upload_file),
-                        SizedBox(width: 16),
+                        const Icon(Icons.upload_file),
+                        const SizedBox(width: 16),
                         Text(i18n.uploadFiles),
                       ],
                     ),
-                    enabled: _controller.hasUploadFilesCallback,
                   ),
                 ],
               ),

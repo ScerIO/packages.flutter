@@ -464,7 +464,7 @@ ${indentation}The first version listed in CHANGELOG.md is $fromChangeLog.
     // If NEXT wasn't the first section, it should not exist at all.
     if (!hasNextSection) {
       final RegExp nextRegex = RegExp(r'^#+\s*NEXT\s*$');
-      if (lines.any((String line) => nextRegex.hasMatch(line))) {
+      if (lines.any(nextRegex.hasMatch)) {
         printError(badNextErrorMessage);
         return false;
       }

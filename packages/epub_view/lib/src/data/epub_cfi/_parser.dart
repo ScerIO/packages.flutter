@@ -21,22 +21,18 @@ class EpubCfiParser {
    * because JSHint does not like the first and IE the second.
    */
   static String quote(String s) =>
-      '"' +
-      s
-          .replaceAll(RegExp(r'\\'), '\\\\') // backslash
+      '"${s.replaceAll(RegExp(r'\\'), '\\\\') // backslash
           .replaceAll(RegExp(r'"'), '\\"') // closing quote character
           .replaceAll(RegExp(r'\x08'), '\\b') // backspace
           .replaceAll(RegExp(r'\t'), '\\t') // horizontal tab
           .replaceAll(RegExp(r'\n'), '\\n') // line feed
           .replaceAll(RegExp(r'\f'), '\\f') // form feed
           .replaceAll(RegExp(r'\r'), '\\r') // carriage return
-          .replaceAllMapped(RegExp(r'[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]'),
-              (Match m) => Uri.encodeFull(m[0]!)) +
-      '"';
+          .replaceAllMapped(RegExp(r'[\x00-\x07\x0B\x0E-\x1F\x80-\uFFFF]'), (Match m) => Uri.encodeFull(m[0]!))}"';
 
-  dynamic parse(String? _input, String? _startRule) {
-    input = _input ?? '';
-    startRule = _startRule;
+  dynamic parse(String? preInput, String? preStartRule) {
+    input = preInput ?? '';
+    startRule = preStartRule;
 
     final parseFunctions = {
       'fragment': _parseFragment,
@@ -68,7 +64,7 @@ class EpubCfiParser {
 
     if (startRule != null) {
       if (parseFunctions[startRule!] == null) {
-        throw Exception('Invalid rule name: ' + quote(startRule!) + '.');
+        throw Exception('Invalid rule name: ${quote(startRule!)}.');
       }
     } else {
       startRule = 'fragment';
@@ -1660,9 +1656,7 @@ class CfiSyntaxException extends Equatable implements Exception {
         break;
       default:
         expectedHumanized =
-            expected.sublist(0, expected.length - 1).join(', ') +
-                ' or ' +
-                expected[expected.length - 1];
+            '${expected.sublist(0, expected.length - 1).join(', ')} or ${expected[expected.length - 1]}';
     }
 
     foundHumanized =

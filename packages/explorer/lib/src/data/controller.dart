@@ -23,8 +23,8 @@ class ExplorerController {
       StreamController<ExplorerAction>.broadcast();
   Stream<ExplorerAction> get actionStream => _actions.stream;
 
-  void _attach(_ExplorerState _explorerState) {
-    this._explorerState = _explorerState;
+  void _attach(_ExplorerState explorerState) {
+    _explorerState = explorerState;
     provider.go(provider.entryPath).then((entries) {
       if (_files.isClosed) {
         return;

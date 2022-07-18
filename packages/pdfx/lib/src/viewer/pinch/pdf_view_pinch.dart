@@ -62,7 +62,7 @@ class PdfViewPinch extends StatefulWidget {
 
   /// Default page builder
   @override
-  _PdfViewPinchState createState() => _PdfViewPinchState();
+  State<PdfViewPinch> createState() => _PdfViewPinchState();
 }
 
 class _PdfViewPinchState extends State<PdfViewPinch>
@@ -569,29 +569,6 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           child: Container(
             width: page.rect!.width,
             height: page.rect!.height,
-            child: Stack(children: [
-              ValueListenableBuilder<int>(
-                valueListenable: page._previewNotifier,
-                builder: (context, value, child) => page.preview != null
-                    ? Positioned.fill(
-                        child: PdfTexture(textureId: page.preview!.id),
-                      )
-                    : Container(),
-              ),
-              ValueListenableBuilder<int>(
-                valueListenable: page._realSizeNotifier,
-                builder: (context, value, child) =>
-                    page.realSizeOverlayRect != null && page.realSize != null
-                        ? Positioned(
-                            left: page.realSizeOverlayRect!.left,
-                            top: page.realSizeOverlayRect!.top,
-                            width: page.realSizeOverlayRect!.width,
-                            height: page.realSizeOverlayRect!.height,
-                            child: PdfTexture(textureId: page.realSize!.id),
-                          )
-                        : Container(),
-              ),
-            ]),
             decoration: const BoxDecoration(
               color: Color.fromARGB(255, 250, 250, 250),
               boxShadow: [
@@ -599,6 +576,31 @@ class _PdfViewPinchState extends State<PdfViewPinch>
                   color: Color(0x73000000),
                   blurRadius: 4,
                   offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                ValueListenableBuilder<int>(
+                  valueListenable: page._previewNotifier,
+                  builder: (context, value, child) => page.preview != null
+                      ? Positioned.fill(
+                          child: PdfTexture(textureId: page.preview!.id),
+                        )
+                      : Container(),
+                ),
+                ValueListenableBuilder<int>(
+                  valueListenable: page._realSizeNotifier,
+                  builder: (context, value, child) =>
+                      page.realSizeOverlayRect != null && page.realSize != null
+                          ? Positioned(
+                              left: page.realSizeOverlayRect!.left,
+                              top: page.realSizeOverlayRect!.top,
+                              width: page.realSizeOverlayRect!.width,
+                              height: page.realSizeOverlayRect!.height,
+                              child: PdfTexture(textureId: page.realSize!.id),
+                            )
+                          : Container(),
                 ),
               ],
             ),

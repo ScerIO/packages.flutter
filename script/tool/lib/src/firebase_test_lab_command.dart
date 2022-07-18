@@ -345,14 +345,14 @@ class FirebaseTestLabCommand extends PackageLoopingCommand {
   /// annotation that means that the test will reports the results of running
   /// the Dart integration tests.
   Future<bool> _testsContainDartIntegrationTestRunner(
-      Directory uiTestDirectory) async {
-    return uiTestDirectory
-        .list(recursive: true, followLinks: false)
-        .where((FileSystemEntity entity) => entity is File)
-        .cast<File>()
-        .any((File file) {
-      return file.basename.endsWith('.java') &&
-          file.readAsStringSync().contains('@RunWith(FlutterTestRunner.class)');
-    });
-  }
+          Directory uiTestDirectory) async =>
+      uiTestDirectory
+          .list(recursive: true, followLinks: false)
+          .where((FileSystemEntity entity) => entity is File)
+          .cast<File>()
+          .any((File file) =>
+              file.basename.endsWith('.java') &&
+              file
+                  .readAsStringSync()
+                  .contains('@RunWith(FlutterTestRunner.class)'));
 }

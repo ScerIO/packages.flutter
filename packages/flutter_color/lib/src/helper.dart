@@ -64,5 +64,5 @@ extension ColorHelper on Color {
   Color? mix(Color another, double amount) => Color.lerp(this, another, amount);
 
   /// Convert color to hex string
-  String get asHexString => '#' + value.toRadixString(16).toUpperCase();
+  String get asHexString => '#${value.toRadixString(16).toUpperCase()}';
 }

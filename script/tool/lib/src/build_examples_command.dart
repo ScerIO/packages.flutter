@@ -115,7 +115,7 @@ class BuildExamplesCommand extends PackageLoopingCommand {
   Future<void> initializeRun() async {
     final List<String> platformFlags = _platforms.keys.toList();
     platformFlags.sort();
-    if (!platformFlags.any((String platform) => getBoolArg(platform))) {
+    if (!platformFlags.any(getBoolArg)) {
       printError(
           'None of ${platformFlags.map((String platform) => '--$platform').join(', ')} '
           'were specified. At least one platform must be provided.');
@@ -142,9 +142,8 @@ class BuildExamplesCommand extends PackageLoopingCommand {
             .toSet()
         : requestedPlatforms.toSet();
 
-    String platformDisplayList(Iterable<_PlatformDetails> platforms) {
-      return platforms.map((_PlatformDetails p) => p.label).join(', ');
-    }
+    String platformDisplayList(Iterable<_PlatformDetails> platforms) =>
+        platforms.map((_PlatformDetails p) => p.label).join(', ');
 
     if (buildPlatforms.isEmpty) {
       final String unsupported = requestedPlatforms.length == 1

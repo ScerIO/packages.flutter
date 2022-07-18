@@ -152,7 +152,7 @@ class PublishCheckCommand extends PackageLoopingCommand {
           outputBuffer.write(output);
         }
       },
-      onDone: () => stdOutCompleter.complete(),
+      onDone: stdOutCompleter.complete,
     );
 
     final Completer<void> stdInCompleter = Completer<void>();
@@ -167,7 +167,7 @@ class PublishCheckCommand extends PackageLoopingCommand {
           outputBuffer.write(output);
         }
       },
-      onDone: () => stdInCompleter.complete(),
+      onDone: stdInCompleter.complete,
     );
 
     if (await process.exitCode == 0) {

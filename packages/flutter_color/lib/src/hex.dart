@@ -14,7 +14,7 @@ class HexColor extends Color {
   static int getColorFromHex(String hex) {
     String hexColor = hex.toUpperCase().replaceAll('#', '');
     if (hexColor.length == 6) {
-      hexColor = 'FF' + hexColor;
+      hexColor = 'FF$hexColor';
     }
     return int.parse(hexColor, radix: 16);
   }

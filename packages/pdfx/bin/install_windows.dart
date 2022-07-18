@@ -19,7 +19,7 @@ void main(List<String> args) async {
     exit(2);
   }
 
-  await cMakeFile.writeAsString(document + '\n\n' + _template);
+  await cMakeFile.writeAsString('$document\n\n$_template');
 
   stdout.writeln('installation successfully');
 }

@@ -58,8 +58,8 @@ class DependabotCheckCommand extends PackageLoopingCommand {
     const String typeKey = 'package-ecosystem';
     const String dirKey = 'directory';
     _gradleDirs = entries
-        .where((dynamic entry) => entry[typeKey] == 'gradle')
-        .map((dynamic entry) => (entry as YamlMap)[dirKey] as String)
+        .where((entry) => entry[typeKey] == 'gradle')
+        .map((entry) => (entry as YamlMap)[dirKey] as String)
         .toSet();
   }
 

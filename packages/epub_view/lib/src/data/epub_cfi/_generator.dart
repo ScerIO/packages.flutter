@@ -53,13 +53,9 @@ class EpubCfiGenerator {
 
     // Create CFI step with id assertion, if the element has an id
     if (currentNode.attributes.containsKey('id')) {
-      elementStep = '/' +
-          cfiPosition.toString() +
-          '[' +
-          currentNode.attributes['id']! +
-          ']';
+      elementStep = '/$cfiPosition[${currentNode.attributes['id']!}]';
     } else {
-      elementStep = '/' + cfiPosition.toString();
+      elementStep = '/$cfiPosition';
     }
 
     // If a parent is an html element return the (last) step for this content
@@ -78,7 +74,7 @@ class EpubCfiGenerator {
       //   element may require an indirection
       //   step to navigate to, thus requiring that ! is always prepend.
       if (topLevelElement == 'html') {
-        return '!' + elementStep;
+        return '!$elementStep';
       } else {
         return elementStep;
       }

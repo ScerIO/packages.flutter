@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 /// Entry view
 class EntryExplorer extends StatefulWidget {
-  EntryExplorer({
+  const EntryExplorer({
     required this.entry,
     this.onPressed,
     this.onLongPress,
@@ -22,7 +22,7 @@ class EntryExplorer extends StatefulWidget {
   final void Function(RelativeRect position)? onLongPress;
 
   @override
-  _EntryExplorerState createState() => _EntryExplorerState();
+  State<EntryExplorer> createState() => _EntryExplorerState();
 }
 
 class _EntryExplorerState extends State<EntryExplorer> {
@@ -31,6 +31,43 @@ class _EntryExplorerState extends State<EntryExplorer> {
   @override
   Widget build(BuildContext context) => Listener(
         child: InkWell(
+          // child: Flex(
+          //   direction: Axis.vertical,
+          //   // mainAxisAlignment: MainAxisAlignment.center,
+          //   // crossAxisAlignment: CrossAxisAlignment.center,
+          //   children: [
+          //     Flexible(
+          //       flex: 2,
+          //       child: Icon(
+          //         iconByEntry(widget.entry),
+          //         size: 48,
+          //       ),
+          //     ),
+          //     SizedBox(height: 8),
+          //     Flexible(
+          //       flex: 1,
+          //       child: Text(
+          //         widget.entry.name,
+          //         textAlign: TextAlign.center,
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          onTap: widget.onPressed,
+          onLongPress: () {
+            final RenderBox overlay =
+                Overlay.of(context)!.context.findRenderObject() as RenderBox;
+
+            widget.onLongPress!(RelativeRect.fromLTRB(
+              _tapDownPosition.dx,
+              _tapDownPosition.dy,
+              overlay.size.width - _tapDownPosition.dx,
+              overlay.size.height - _tapDownPosition.dy,
+            ));
+          },
+          onTapDown: (TapDownDetails details) {
+            _tapDownPosition = details.globalPosition;
+          },
           // child: Flex(
           //   direction: Axis.vertical,
           //   // mainAxisAlignment: MainAxisAlignment.center,
@@ -86,21 +123,6 @@ class _EntryExplorerState extends State<EntryExplorer> {
               );
             },
           ),
-          onTap: widget.onPressed,
-          onLongPress: () {
-            final RenderBox overlay =
-                Overlay.of(context)!.context.findRenderObject() as RenderBox;
-
-            widget.onLongPress!(RelativeRect.fromLTRB(
-              _tapDownPosition.dx,
-              _tapDownPosition.dy,
-              overlay.size.width - _tapDownPosition.dx,
-              overlay.size.height - _tapDownPosition.dy,
-            ));
-          },
-          onTapDown: (TapDownDetails details) {
-            _tapDownPosition = details.globalPosition;
-          },
         ),
         onPointerDown: (PointerDownEvent event) {
           if (!(event.kind == PointerDeviceKind.mouse &&
@@ -117,7 +139,6 @@ class _EntryExplorerState extends State<EntryExplorer> {
             overlay.size.width - event.position.dx,
             overlay.size.height - event.position.dy,
           ));
-          print('!!!! RB clicked');
         },
       );
 }

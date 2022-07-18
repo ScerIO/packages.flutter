@@ -146,7 +146,7 @@ class RepositoryPackage {
     // example directory for other Dart packages.
     return exampleDirectory
         .listSync()
-        .where((FileSystemEntity entity) => isPackage(entity))
+        .where(isPackage)
         // isPackage guarantees that the cast to Directory is safe.
         .map((FileSystemEntity entity) =>
             RepositoryPackage(entity as Directory));

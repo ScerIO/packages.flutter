@@ -90,9 +90,7 @@ this command.
       platformMacOS: _PlatformDetails('macOS', _testMacOS),
       platformWindows: _PlatformDetails('Windows', _testWindows),
     };
-    _requestedPlatforms = _platforms.keys
-        .where((String platform) => getBoolArg(platform))
-        .toList();
+    _requestedPlatforms = _platforms.keys.where(getBoolArg).toList();
     _requestedPlatforms.sort();
 
     if (_requestedPlatforms.isEmpty) {
@@ -197,19 +195,18 @@ this command.
 
   Future<_PlatformResult> _testAndroid(
       RepositoryPackage plugin, _TestMode mode) async {
-    bool exampleHasUnitTests(RepositoryPackage example) {
-      return example
-              .platformDirectory(FlutterPlatform.android)
-              .childDirectory('app')
-              .childDirectory('src')
-              .childDirectory('test')
-              .existsSync() ||
-          plugin
-              .platformDirectory(FlutterPlatform.android)
-              .childDirectory('src')
-              .childDirectory('test')
-              .existsSync();
-    }
+    bool exampleHasUnitTests(RepositoryPackage example) =>
+        example
+            .platformDirectory(FlutterPlatform.android)
+            .childDirectory('app')
+            .childDirectory('src')
+            .childDirectory('test')
+            .existsSync() ||
+        plugin
+            .platformDirectory(FlutterPlatform.android)
+            .childDirectory('src')
+            .childDirectory('test')
+            .existsSync();
 
     bool exampleHasNativeIntegrationTests(RepositoryPackage example) {
       final Directory integrationTestDirectory = example
@@ -333,14 +330,12 @@ this command.
     return _PlatformResult(RunState.succeeded);
   }
 
-  Future<_PlatformResult> _testIOS(RepositoryPackage plugin, _TestMode mode) {
-    return _runXcodeTests(plugin, 'iOS', mode,
-        extraFlags: _iOSDestinationFlags);
-  }
+  Future<_PlatformResult> _testIOS(RepositoryPackage plugin, _TestMode mode) =>
+      _runXcodeTests(plugin, 'iOS', mode, extraFlags: _iOSDestinationFlags);
 
-  Future<_PlatformResult> _testMacOS(RepositoryPackage plugin, _TestMode mode) {
-    return _runXcodeTests(plugin, 'macOS', mode);
-  }
+  Future<_PlatformResult> _testMacOS(
+          RepositoryPackage plugin, _TestMode mode) =>
+      _runXcodeTests(plugin, 'macOS', mode);
 
   /// Runs all applicable tests for [plugin], printing status and returning
   /// the test result.
@@ -452,10 +447,9 @@ this command.
       return _PlatformResult(RunState.skipped);
     }
 
-    bool isTestBinary(File file) {
-      return file.basename.endsWith('_test.exe') ||
-          file.basename.endsWith('_tests.exe');
-    }
+    bool isTestBinary(File file) =>
+        file.basename.endsWith('_test.exe') ||
+        file.basename.endsWith('_tests.exe');
 
     return _runGoogleTestTests(plugin, 'Windows', 'Debug',
         isTestBinary: isTestBinary);
@@ -467,10 +461,8 @@ this command.
       return _PlatformResult(RunState.skipped);
     }
 
-    bool isTestBinary(File file) {
-      return file.basename.endsWith('_test') ||
-          file.basename.endsWith('_tests');
-    }
+    bool isTestBinary(File file) =>
+        file.basename.endsWith('_test') || file.basename.endsWith('_tests');
 
     // Since Linux uses a single-config generator, building-examples only
     // generates the build files for release, so the tests have to be run in

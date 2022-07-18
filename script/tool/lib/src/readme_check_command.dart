@@ -264,8 +264,7 @@ ${indentation * 2}Please use standard capitalizations: ${sortedListString(expect
 
   /// Returns true if the README still has the boilerplate from the
   /// `flutter create` templates.
-  bool _containsTemplateBoilerplate(List<String> readmeLines) {
-    return readmeLines.any((String line) =>
-        line.contains('For help getting started with Flutter'));
-  }
+  bool _containsTemplateBoilerplate(List<String> readmeLines) =>
+      readmeLines.any((String line) =>
+          line.contains('For help getting started with Flutter'));
 }

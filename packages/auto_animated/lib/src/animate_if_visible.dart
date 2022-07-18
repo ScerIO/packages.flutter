@@ -38,7 +38,7 @@ class AnimateIfVisible extends StatefulWidget {
   final bool reAnimateOnVisibility;
 
   @override
-  _AnimateIfVisibleState createState() => _AnimateIfVisibleState();
+  State<AnimateIfVisible> createState() => _AnimateIfVisibleState();
 }
 
 class _AnimateIfVisibleState extends State<AnimateIfVisible>
@@ -69,11 +69,11 @@ class _AnimateIfVisibleState extends State<AnimateIfVisible>
   @override
   Widget build(BuildContext context) => VisibilityDetector(
         key: widget.key!,
+        onVisibilityChanged: _visibilityChanged,
         child: widget.builder(
           context,
           _controller.view,
         ),
-        onVisibilityChanged: _visibilityChanged,
       );
 
   void _visibilityChanged(VisibilityInfo info) {
@@ -120,7 +120,7 @@ class AnimateIfVisibleWrapper extends StatefulWidget {
   final Duration delay, showItemInterval;
 
   @override
-  _AnimateIfVisibleWrapperState createState() =>
+  State<AnimateIfVisibleWrapper> createState() =>
       _AnimateIfVisibleWrapperState();
 }
 
@@ -159,8 +159,8 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
   Widget build(BuildContext context) => _VisibilityStackProvider(
         stack: _stack,
         child: NotificationListener<ScrollNotification>(
-          child: widget.child,
           onNotification: _handleScrollNotifications,
+          child: widget.child,
         ),
       );
 
@@ -201,7 +201,7 @@ class _AnimateIfVisibleWrapperState extends State<AnimateIfVisibleWrapper> {
 }
 
 class _VisibilityStackProvider extends InheritedWidget {
-  _VisibilityStackProvider({
+  const _VisibilityStackProvider({
     required Widget child,
     required this.stack,
     Key? key,

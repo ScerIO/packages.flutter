@@ -21,14 +21,11 @@ class GitVersionFinder {
   /// The base sha used to get diff.
   String? _baseSha;
 
-  static bool _isPubspec(String file) {
-    return file.trim().endsWith('pubspec.yaml');
-  }
+  static bool _isPubspec(String file) => file.trim().endsWith('pubspec.yaml');
 
   /// Get a list of all the pubspec.yaml file that is changed.
-  Future<List<String>> getChangedPubSpecs() async {
-    return (await getChangedFiles()).where(_isPubspec).toList();
-  }
+  Future<List<String>> getChangedPubSpecs() async =>
+      (await getChangedFiles()).where(_isPubspec).toList();
 
   /// Get a list of all the changed files.
   Future<List<String>> getChangedFiles(

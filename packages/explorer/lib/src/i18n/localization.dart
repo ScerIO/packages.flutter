@@ -12,7 +12,7 @@ class ExplorerLocalizations with StringResources {
             : locale.toString();
     final String canonicalLocaleName = Intl.canonicalizedLocale(localeName);
     Intl.defaultLocale = canonicalLocaleName;
-    print('canonicalLocaleName ' + canonicalLocaleName);
+    // print('canonicalLocaleName $canonicalLocaleName');
     await initializeMessages(canonicalLocaleName);
     return ExplorerLocalizations();
   }

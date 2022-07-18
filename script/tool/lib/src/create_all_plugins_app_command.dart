@@ -199,8 +199,7 @@ class CreateAllPluginsAppCommand extends PluginCommand {
     return pathDependencies;
   }
 
-  String _pubspecToString(Pubspec pubspec) {
-    return '''
+  String _pubspecToString(Pubspec pubspec) => '''
 ### Generated file. Do not edit. Run `pub global run flutter_plugin_tools gen-pubspec` to update.
 name: ${pubspec.name}
 description: ${pubspec.description}
@@ -216,7 +215,6 @@ dependency_overrides:${_pubspecMapString(pubspec.dependencyOverrides)}
 
 dev_dependencies:${_pubspecMapString(pubspec.devDependencies)}
 ###''';
-  }
 
   String _pubspecMapString(Map<String, dynamic> values) {
     final StringBuffer buffer = StringBuffer();

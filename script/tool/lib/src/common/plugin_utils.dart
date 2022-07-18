@@ -17,9 +17,8 @@ enum PlatformSupport {
 }
 
 /// Returns true if [package] is a Flutter plugin.
-bool isFlutterPlugin(RepositoryPackage package) {
-  return _readPluginPubspecSection(package) != null;
-}
+bool isFlutterPlugin(RepositoryPackage package) =>
+    _readPluginPubspecSection(package) != null;
 
 /// Returns true if [package] is a Flutter [platform] plugin.
 ///

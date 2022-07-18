@@ -181,14 +181,10 @@ abstract class PluginCommand extends Command<void> {
   }
 
   /// Convenience accessor for boolean arguments.
-  bool getBoolArg(String key) {
-    return (argResults![key] as bool?) ?? false;
-  }
+  bool getBoolArg(String key) => (argResults![key] as bool?) ?? false;
 
   /// Convenience accessor for String arguments.
-  String getStringArg(String key) {
-    return (argResults![key] as String?) ?? '';
-  }
+  String getStringArg(String key) => (argResults![key] as String?) ?? '';
 
   /// Convenience accessor for List<String> arguments.
   List<String> getStringListArg(String key) {
@@ -437,18 +433,15 @@ abstract class PluginCommand extends Command<void> {
 
   /// Returns the files contained, recursively, within the packages
   /// involved in this command execution.
-  Stream<File> getFiles() {
-    return getTargetPackages().asyncExpand<File>(
-        (PackageEnumerationEntry entry) => getFilesForPackage(entry.package));
-  }
+  Stream<File> getFiles() => getTargetPackages().asyncExpand<File>(
+      (PackageEnumerationEntry entry) => getFilesForPackage(entry.package));
 
   /// Returns the files contained, recursively, within [package].
-  Stream<File> getFilesForPackage(RepositoryPackage package) {
-    return package.directory
-        .list(recursive: true, followLinks: false)
-        .where((FileSystemEntity entity) => entity is File)
-        .cast<File>();
-  }
+  Stream<File> getFilesForPackage(RepositoryPackage package) =>
+      package.directory
+          .list(recursive: true, followLinks: false)
+          .where((FileSystemEntity entity) => entity is File)
+          .cast<File>();
 
   /// Retrieve an instance of [GitVersionFinder] based on `_baseShaArg` and [gitDir].
   ///
@@ -477,10 +470,9 @@ abstract class PluginCommand extends Command<void> {
     // if .../packages/parentName/candidatePackageName/...
     // looks like a path in a federated plugin package (candidatePackageName)
     // rather than a top-level package (parentName).
-    bool isFederatedPackage(String candidatePackageName, String parentName) {
-      return candidatePackageName == parentName ||
-          candidatePackageName.startsWith('${parentName}_');
-    }
+    bool isFederatedPackage(String candidatePackageName, String parentName) =>
+        candidatePackageName == parentName ||
+        candidatePackageName.startsWith('${parentName}_');
 
     for (final String path in changedFiles) {
       final List<String> pathComponents = p.posix.split(path);

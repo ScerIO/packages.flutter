@@ -68,9 +68,7 @@ class DriveExamplesCommand extends PackageLoopingCommand {
       platformWeb,
       platformWindows,
     ];
-    final int platformCount = platformSwitches
-        .where((String platform) => getBoolArg(platform))
-        .length;
+    final int platformCount = platformSwitches.where(getBoolArg).length;
     // The flutter tool currently doesn't accept multiple device arguments:
     // https://github.com/flutter/flutter/issues/35733
     // If that is implemented, this check can be relaxed.

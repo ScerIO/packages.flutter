@@ -193,11 +193,10 @@ class LicenseCheckCommand extends PluginCommand {
     String comment, {
     String prefix = '',
     String suffix = '',
-  }) {
-    return '$prefix${comment}Copyright 2013 The Flutter Authors. All rights reserved.\n'
-        '${comment}Use of this source code is governed by a BSD-style license that can be\n'
-        '${comment}found in the LICENSE file.$suffix\n';
-  }
+  }) =>
+      '$prefix${comment}Copyright 2013 The Flutter Authors. All rights reserved.\n'
+      '${comment}Use of this source code is governed by a BSD-style license that can be\n'
+      '${comment}found in the LICENSE file.$suffix\n';
 
   /// Checks all license blocks for [codeFiles], returning any that fail
   /// validation.
@@ -276,9 +275,8 @@ class LicenseCheckCommand extends PluginCommand {
             _ignoredFullBasenameList.contains(p.basename(path)));
   }
 
-  bool _isThirdParty(File file) {
-    return path.split(file.path).contains('third_party');
-  }
+  bool _isThirdParty(File file) =>
+      path.split(file.path).contains('third_party');
 
   Future<List<File>> _getAllFiles() => packagesDir.parent
       .list(recursive: true, followLinks: false)

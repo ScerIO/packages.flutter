@@ -46,11 +46,10 @@ class GradleProject {
   Future<int> runCommand(
     String target, {
     List<String> arguments = const <String>[],
-  }) {
-    return processRunner.runAndStream(
-      gradleWrapper.path,
-      <String>[target, ...arguments],
-      workingDir: androidDirectory,
-    );
-  }
+  }) =>
+      processRunner.runAndStream(
+        gradleWrapper.path,
+        <String>[target, ...arguments],
+        workingDir: androidDirectory,
+      );
 }

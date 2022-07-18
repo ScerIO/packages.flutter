@@ -8,8 +8,10 @@ import 'package:flutter/material.dart';
 
 /// Available actions view for explorer builder
 class ExplorerActionView extends StatefulWidget {
+  const ExplorerActionView({Key? key}) : super(key: key);
+
   @override
-  _ExplorerActionViewState createState() => _ExplorerActionViewState();
+  State<ExplorerActionView> createState() => _ExplorerActionViewState();
 }
 
 class _ExplorerActionViewState extends State<ExplorerActionView>
@@ -24,7 +26,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
 
     _subscription = _controller.actionStream.listen((state) {
@@ -54,7 +56,7 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
       initialData: ExplorerActionEmpty(),
       stream: _controller.actionStream,
       builder: (_, snapshot) {
-        Widget content = SizedBox();
+        Widget content = const SizedBox();
         if (snapshot.data is ExplorerActionCopy ||
             snapshot.data is ExplorerActionMove) {
           content = Container(
@@ -82,12 +84,12 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
                       );
                     },
                   ),
-                SizedBox(width: 16),
-                VerticalDivider(indent: 8, endIndent: 8),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
+                const VerticalDivider(indent: 8, endIndent: 8),
+                const SizedBox(width: 16),
                 TextButton(
-                  child: Text(i18n!.cancel),
                   onPressed: _controller.cancelAction,
+                  child: Text(i18n!.cancel),
                 ),
               ],
             ),
@@ -97,8 +99,8 @@ class _ExplorerActionViewState extends State<ExplorerActionView>
         return SliverToBoxAdapter(
           child: SlideTransition(
             position: Tween(
-              begin: Offset(0, -1),
-              end: Offset(0, 0),
+              begin: const Offset(0, -1),
+              end: const Offset(0, 0),
             ).animate(_animationController),
             child: content,
           ),

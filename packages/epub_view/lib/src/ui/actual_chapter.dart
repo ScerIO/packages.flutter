@@ -43,19 +43,19 @@ class EpubViewActualChapter extends StatelessWidget {
             switchOutCurve: Curves.easeOut,
             transitionBuilder: (Widget child, Animation<double> animation) =>
                 SlideTransition(
-              child: FadeTransition(child: child, opacity: animation),
               position: Tween<Offset>(
                 begin: const Offset(0, -0.15),
                 end: const Offset(0, 0),
               ).animate(animation),
+              child: FadeTransition(opacity: animation, child: child),
             ),
             layoutBuilder:
                 (Widget? currentChild, List<Widget> previousChildren) => Stack(
+              alignment: animationAlignment,
               children: <Widget>[
                 ...previousChildren,
                 if (currentChild != null) currentChild,
               ],
-              alignment: animationAlignment,
             ),
             child: content,
           );

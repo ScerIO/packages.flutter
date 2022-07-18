@@ -256,15 +256,14 @@ class UpdateReleaseInfoCommand extends PackageLoopingCommand {
   /// ```
   /// [ '* A line.', '* Another line.' ]
   /// ```
-  Iterable<String> _changelogAdditionsAsList({String listMarker = '*'}) {
-    return getStringArg(_changelogFlag).split('\n').map((String entry) {
-      String standardizedEntry = entry.trim();
-      if (!standardizedEntry.endsWith('.')) {
-        standardizedEntry = '$standardizedEntry.';
-      }
-      return '$listMarker $standardizedEntry';
-    });
-  }
+  Iterable<String> _changelogAdditionsAsList({String listMarker = '*'}) =>
+      getStringArg(_changelogFlag).split('\n').map((String entry) {
+        String standardizedEntry = entry.trim();
+        if (!standardizedEntry.endsWith('.')) {
+          standardizedEntry = '$standardizedEntry.';
+        }
+        return '$listMarker $standardizedEntry';
+      });
 
   /// Updates the version in [package]'s pubspec according to [type], returning
   /// the new version, or null if there was an error updating the version.

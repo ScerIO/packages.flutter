@@ -8,8 +8,10 @@ import 'package:flutter_breadcrumb/flutter_breadcrumb.dart';
 
 /// Location (path) breadcrumbs view for explorer builder
 class ExplorerBreadCrumbs extends StatefulWidget {
+  const ExplorerBreadCrumbs({Key? key}) : super(key: key);
+
   @override
-  _ExplorerBreadCrumbsState createState() => _ExplorerBreadCrumbsState();
+  State<ExplorerBreadCrumbs> createState() => _ExplorerBreadCrumbsState();
 }
 
 class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
@@ -26,7 +28,7 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
 
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
     );
 
     _subscription = _controller.stream.listen((state) {
@@ -67,19 +69,18 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
           }
         });
 
-        return Container(
-          child: BreadCrumb(
-            overflow: ScrollableOverflow(controller: _scrollController),
-            items: <BreadCrumbItem>[
-              for (final crumb in _controller.breadCrumbs)
-                BreadCrumbItem(
-                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                  content: Text(crumb.name, style: theme.textTheme.bodyText1),
-                  onTap: () => _controller.go(crumb.path),
-                ),
-            ],
-            divider: Icon(Icons.chevron_right),
-          ),
+        return BreadCrumb(
+          overflow: ScrollableOverflow(controller: _scrollController),
+          items: <BreadCrumbItem>[
+            for (final crumb in _controller.breadCrumbs)
+              BreadCrumbItem(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                content: Text(crumb.name, style: theme.textTheme.bodyText1),
+                onTap: () => _controller.go(crumb.path),
+              ),
+          ],
+          divider: const Icon(Icons.chevron_right),
         );
       },
     );

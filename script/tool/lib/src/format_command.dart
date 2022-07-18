@@ -240,10 +240,9 @@ class FormatCommand extends PluginCommand {
   }
 
   Iterable<String> _getPathsWithExtensions(
-      Iterable<String> files, Set<String> extensions) {
-    return files.where(
-        (String filePath) => extensions.contains(path.extension(filePath)));
-  }
+          Iterable<String> files, Set<String> extensions) =>
+      files.where(
+          (String filePath) => extensions.contains(path.extension(filePath)));
 
   Future<String> _getGoogleFormatterPath() async {
     final String javaFormatterPath = path.join(

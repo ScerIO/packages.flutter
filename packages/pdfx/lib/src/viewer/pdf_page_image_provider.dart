@@ -1,3 +1,4 @@
+// ignore: unnecessary_import
 import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
 import 'package:flutter/foundation.dart';
@@ -19,6 +20,7 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   final double scale;
 
   @override
+  // ignore: deprecated_member_use
   ImageStreamCompleter load(PdfPageImageProvider key, DecoderCallback decode) =>
       MultiFrameImageStreamCompleter(
         codec: _loadAsync(key, decode),
@@ -33,7 +35,9 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
       SynchronousFuture<PdfPageImageProvider>(this);
 
   Future<ui.Codec> _loadAsync(
-      PdfPageImageProvider key, DecoderCallback decode) async {
+      PdfPageImageProvider key,
+      // ignore: deprecated_member_use
+      DecoderCallback decode) async {
     assert(key == this);
 
     final loadedPdfPageImage = await pdfPageImage;
@@ -62,5 +66,5 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   }
 
   @override
-  int get hashCode => hashValues(pageNumber, documentId, scale);
+  int get hashCode => Object.hash(pageNumber, documentId, scale);
 }

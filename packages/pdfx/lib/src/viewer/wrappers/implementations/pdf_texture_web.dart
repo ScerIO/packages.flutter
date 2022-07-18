@@ -15,7 +15,7 @@ class PdfTexture extends StatefulWidget {
   final int textureId;
 
   @override
-  _PdfTextureState createState() => _PdfTextureState();
+  State<PdfTexture> createState() => _PdfTextureState();
 
   RgbaData? get data =>
       js_util.getProperty(html.window, 'pdfx_texture_$textureId') as RgbaData?;

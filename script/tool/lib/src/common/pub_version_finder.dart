@@ -46,8 +46,8 @@ class PubVersionFinder {
     }
     final List<Version> versions =
         (json.decode(response.body)['versions'] as List<dynamic>)
-            .map<Version>((final dynamic versionString) =>
-                Version.parse(versionString as String))
+            .map<Version>(
+                (final versionString) => Version.parse(versionString as String))
             .toList();
 
     return PubVersionFinderResponse(

@@ -29,7 +29,7 @@ void main() {
     } catch (e) {
       expect(
         e.toString(),
-        FlutterError('A package document must be supplied to generate a CFI')
+        Exception('A package document must be supplied to generate a CFI')
             .toString(),
       );
     }
@@ -48,7 +48,7 @@ void main() {
       // when the id is not in the spine list
       expect(
         e.toString(),
-        FlutterError(
+        Exception(
                 // ignore: lines_longer_than_80_chars
                 'The id ref of the content document could not be found in the spine')
             .toString(),
@@ -79,7 +79,7 @@ void main() {
     } catch (e) {
       expect(
         e.toString(),
-        FlutterError('null: CFI target element is null').toString(),
+        Exception('null: CFI target element is null').toString(),
       );
     }
 
@@ -95,8 +95,7 @@ void main() {
     } catch (e) {
       expect(
         e.toString(),
-        FlutterError(
-                '<!-- comment -->: CFI target element is not an HTML element')
+        Exception('<!-- comment -->: CFI target element is not an HTML element')
             .toString(),
       );
     }

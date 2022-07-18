@@ -106,21 +106,20 @@ void main() {
 
     // Returns the ProcessCall to expect for checking the targets present in
     // the [package]'s [platform]/Runner.xcodeproj.
-    ProcessCall _getTargetCheckCall(Directory package, String platform) {
-      return ProcessCall(
-          'xcrun',
-          <String>[
-            'xcodebuild',
-            '-list',
-            '-json',
-            '-project',
-            package
-                .childDirectory(platform)
-                .childDirectory('Runner.xcodeproj')
-                .path,
-          ],
-          null);
-    }
+    ProcessCall _getTargetCheckCall(Directory package, String platform) =>
+        ProcessCall(
+            'xcrun',
+            <String>[
+              'xcodebuild',
+              '-list',
+              '-json',
+              '-project',
+              package
+                  .childDirectory(platform)
+                  .childDirectory('Runner.xcodeproj')
+                  .path,
+            ],
+            null);
 
     // Returns the ProcessCall to expect for running the tests in the
     // workspace [platform]/Runner.xcworkspace, with the given extra flags.
@@ -129,43 +128,40 @@ void main() {
       String platform, {
       String? destination,
       List<String> extraFlags = const <String>[],
-    }) {
-      return ProcessCall(
-          'xcrun',
-          <String>[
-            'xcodebuild',
-            'test',
-            '-workspace',
-            '$platform/Runner.xcworkspace',
-            '-scheme',
-            'Runner',
-            '-configuration',
-            'Debug',
-            if (destination != null) ...<String>['-destination', destination],
-            ...extraFlags,
-            'GCC_TREAT_WARNINGS_AS_ERRORS=YES',
-          ],
-          package.path);
-    }
+    }) =>
+        ProcessCall(
+            'xcrun',
+            <String>[
+              'xcodebuild',
+              'test',
+              '-workspace',
+              '$platform/Runner.xcworkspace',
+              '-scheme',
+              'Runner',
+              '-configuration',
+              'Debug',
+              if (destination != null) ...<String>['-destination', destination],
+              ...extraFlags,
+              'GCC_TREAT_WARNINGS_AS_ERRORS=YES',
+            ],
+            package.path);
 
     // Returns the ProcessCall to expect for build the Linux unit tests for the
     // given plugin.
-    ProcessCall _getLinuxBuildCall(RepositoryPackage plugin) {
-      return ProcessCall(
-          'cmake',
-          <String>[
-            '--build',
-            getExampleDir(plugin)
-                .childDirectory('build')
-                .childDirectory('linux')
-                .childDirectory('x64')
-                .childDirectory('release')
-                .path,
-            '--target',
-            'unit_tests'
-          ],
-          null);
-    }
+    ProcessCall _getLinuxBuildCall(RepositoryPackage plugin) => ProcessCall(
+        'cmake',
+        <String>[
+          '--build',
+          getExampleDir(plugin)
+              .childDirectory('build')
+              .childDirectory('linux')
+              .childDirectory('x64')
+              .childDirectory('release')
+              .path,
+          '--target',
+          'unit_tests'
+        ],
+        null);
 
     test('fails if no platforms are provided', () async {
       Error? commandError;
@@ -1598,22 +1594,20 @@ void main() {
 
     // Returns the ProcessCall to expect for build the Windows unit tests for
     // the given plugin.
-    ProcessCall _getWindowsBuildCall(RepositoryPackage plugin) {
-      return ProcessCall(
-          _fakeCmakeCommand,
-          <String>[
-            '--build',
-            getExampleDir(plugin)
-                .childDirectory('build')
-                .childDirectory('windows')
-                .path,
-            '--target',
-            'unit_tests',
-            '--config',
-            'Debug'
-          ],
-          null);
-    }
+    ProcessCall _getWindowsBuildCall(RepositoryPackage plugin) => ProcessCall(
+        _fakeCmakeCommand,
+        <String>[
+          '--build',
+          getExampleDir(plugin)
+              .childDirectory('build')
+              .childDirectory('windows')
+              .path,
+          '--target',
+          'unit_tests',
+          '--config',
+          'Debug'
+        ],
+        null);
 
     group('Windows', () {
       test('runs unit tests', () async {

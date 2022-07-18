@@ -82,7 +82,7 @@ class LiveSliverGrid extends StatefulWidget {
   final SliverGridDelegate gridDelegate;
 
   @override
-  _LiveSliverGridState createState() => _LiveSliverGridState();
+  State<LiveSliverGrid> createState() => _LiveSliverGridState();
 }
 
 class _LiveSliverGridState extends State<LiveSliverGrid>

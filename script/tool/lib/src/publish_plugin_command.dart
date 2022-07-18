@@ -353,8 +353,8 @@ Safe to ignore if the package is deleted in this commit.
     final io.Process publish = await processRunner.start(
         flutterCommand, <String>['pub', 'publish', ..._publishFlags],
         workingDirectory: package.directory);
-    publish.stdout.transform(utf8.decoder).listen((String data) => print(data));
-    publish.stderr.transform(utf8.decoder).listen((String data) => print(data));
+    publish.stdout.transform(utf8.decoder).listen(print);
+    publish.stderr.transform(utf8.decoder).listen(print);
     _stdinSubscription ??= _stdin
         .transform(utf8.decoder)
         .listen((String data) => publish.stdin.writeln(data));
@@ -388,7 +388,6 @@ Safe to ignore if the package is deleted in this commit.
     required String tag,
     required _RemoteInfo remote,
   }) async {
-    assert(remote != null && tag != null);
     if (!getBoolArg(_dryRunFlag)) {
       final io.ProcessResult result = await (await gitDir).runCommand(
         <String>['push', remote.name, tag],
@@ -423,9 +422,7 @@ If running this command on CI, you can set the pub credential content in the $_p
 
   /// Returns the correct path where the pub credential is stored.
   @visibleForTesting
-  static String getCredentialPath() {
-    return _credentialsPath;
-  }
+  static String getCredentialPath() => _credentialsPath;
 }
 
 /// The path in which pub expects to find its credentials file.

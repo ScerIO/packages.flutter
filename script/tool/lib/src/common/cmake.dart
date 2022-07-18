@@ -63,9 +63,7 @@ class CMakeProject {
   ///
   /// Assumes the project has been built at least once, such that the CMake
   /// generation step has run.
-  String getCmakeCommand() {
-    return _cmakeCommand;
-  }
+  String getCmakeCommand() => _cmakeCommand;
 
   /// Returns the CMake command to run build commands for this project. This is
   /// used to initialize _cmakeCommand, and should not be called directly.
@@ -102,17 +100,16 @@ class CMakeProject {
   Future<int> runBuild(
     String target, {
     List<String> arguments = const <String>[],
-  }) {
-    return processRunner.runAndStream(
-      getCmakeCommand(),
-      <String>[
-        '--build',
-        buildDirectory.path,
-        '--target',
-        target,
-        if (platform.isWindows) ...<String>['--config', buildMode],
-        ...arguments,
-      ],
-    );
-  }
+  }) =>
+      processRunner.runAndStream(
+        getCmakeCommand(),
+        <String>[
+          '--build',
+          buildDirectory.path,
+          '--target',
+          target,
+          if (platform.isWindows) ...<String>['--config', buildMode],
+          ...arguments,
+        ],
+      );
 }
