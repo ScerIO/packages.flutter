@@ -1,6 +1,6 @@
 <img src=".github/MEDIA/logo.png" alt="Flutter plugins" width="100%">
 
-[![Build Status](https://api.cirrus-ci.com/github/rbcprolabs/packages.flutter.svg)](https://cirrus-ci.com/github/rbcprolabs/packages.flutter/master)
+[![Build Status](https://api.cirrus-ci.com/github/rbcprolabs/packages.flutter.svg)](https://cirrus-ci.com/github/rbcprolabs/packages.flutter/main)
 
 ## Available packages and plugins 
 
@@ -22,29 +22,29 @@
 
 
 [auto_animated_pub]: https://pub.dev/packages/auto_animated
-[auto_animated_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/auto_animated
+[auto_animated_code]: https://github.com/rbcprolabs/packages.flutter/tree/main/packages/auto_animated
 [auto_animated_badge]: https://img.shields.io/pub/v/auto_animated.svg
 
 [flutter_color_pub]: https://pub.dev/packages/flutter_color
-[flutter_color_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/flutter_color
+[flutter_color_code]: https://github.com/rbcprolabs/packages.flutter/tree/main/packages/flutter_color
 [flutter_color_badge]: https://img.shields.io/pub/v/flutter_color.svg
 
 [pdfx_pub]: https://pub.dev/packages/pdfx
-[pdfx_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/pdfx
+[pdfx_code]: https://github.com/rbcprolabs/packages.flutter/tree/main/packages/pdfx
 [pdfx_badge]: https://img.shields.io/pub/v/pdfx.svg
 
 [epub_view_pub]: https://pub.dev/packages/epub_view
-[epub_view_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/epub_view
+[epub_view_code]: https://github.com/rbcprolabs/packages.flutter/tree/main/packages/epub_view
 [epub_view_badge]: https://img.shields.io/pub/v/epub_view.svg
 
 [explorer_pub]: https://pub.dev/packages/explorer
-[explorer_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/explorer
+[explorer_code]: https://github.com/rbcprolabs/packages.flutter/tree/main/packages/explorer
 [explorer_badge]: https://img.shields.io/pub/v/explorer.svg
 
 [native_pdf_renderer_pub]: https://pub.dev/packages/native_pdf_renderer
-[native_pdf_renderer_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_renderer
+[native_pdf_renderer_code]: https://github.com/ScerIO/packages.flutter/tree/f39ebb28281e1c9560757a49d20d18a013529f00/packages/native_pdf_renderer
 [native_pdf_renderer_badge]: https://img.shields.io/pub/v/native_pdf_renderer.svg
 
 [native_pdf_view_pub]: https://pub.dev/packages/native_pdf_view
-[native_pdf_view_code]: https://github.com/rbcprolabs/packages.flutter/tree/master/packages/native_pdf_view
+[native_pdf_view_code]: https://github.com/ScerIO/packages.flutter/tree/f39ebb28281e1c9560757a49d20d18a013529f00/packages/native_pdf_view
 [native_pdf_view_badge]: https://img.shields.io/pub/v/native_pdf_view.svg
