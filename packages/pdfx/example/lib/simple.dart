@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:performance/performance.dart';
 
 class SimplePage extends StatefulWidget {
   const SimplePage({Key? key}) : super(key: key);
 
   @override
-  _SimplePageState createState() => _SimplePageState();
+  State<SimplePage> createState() => _SimplePageState();
 }
 
 class _SimplePageState extends State<SimplePage> {
@@ -79,19 +78,16 @@ class _SimplePageState extends State<SimplePage> {
           ),
         ],
       ),
-      body: CustomPerformanceOverlay(
-        enabled: false,
-        child: PdfView(
-          builders: PdfViewBuilders<DefaultBuilderOptions>(
-            options: const DefaultBuilderOptions(),
-            documentLoaderBuilder: (_) =>
-                const Center(child: CircularProgressIndicator()),
-            pageLoaderBuilder: (_) =>
-                const Center(child: CircularProgressIndicator()),
-            pageBuilder: _pageBuilder,
-          ),
-          controller: _pdfController,
+      body: PdfView(
+        builders: PdfViewBuilders<DefaultBuilderOptions>(
+          options: const DefaultBuilderOptions(),
+          documentLoaderBuilder: (_) =>
+              const Center(child: CircularProgressIndicator()),
+          pageLoaderBuilder: (_) =>
+              const Center(child: CircularProgressIndicator()),
+          pageBuilder: _pageBuilder,
         ),
+        controller: _pdfController,
       ),
     );
   }

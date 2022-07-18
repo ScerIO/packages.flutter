@@ -4,7 +4,7 @@
 
 | ListView                  | GridView                   | Sliver                       |
 | ---                       | ---                        | ---                          |
-|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/auto_animated/example/media/2.0/list.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/auto_animated/example/media/2.0/grid.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/auto_animated/example/media/2.0/sliver.gif?raw=true)  |
+|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/auto_animated/example/media/2.0/list.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/auto_animated/example/media/2.0/grid.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/auto_animated/example/media/2.0/sliver.gif?raw=true)  |
 
 ## Getting Started
 

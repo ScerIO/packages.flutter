@@ -8,7 +8,7 @@ Support custom providers and any platforms
 
 | Context menu              | Actions                    | New & Upload                 |
 | ---                       | ---                        | ---                          |
-|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/explorer/example/media/1.0/context.jpg?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/explorer/example/media/1.0/actions.jpg?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/explorer/example/media/1.0/new.jpg?raw=true)  |
+|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/explorer/example/media/1.0/context.jpg?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/explorer/example/media/1.0/actions.jpg?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/explorer/example/media/1.0/new.jpg?raw=true)  |
 
 ## Getting Started
 

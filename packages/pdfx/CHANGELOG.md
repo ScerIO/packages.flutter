@@ -1,6 +1,7 @@
-## 2.3.14
+## 2.2.0
 
 * Upgrade dependency `device_info_plus` to v4
+* Fix some bugs
 
 ## 2.1.0
 

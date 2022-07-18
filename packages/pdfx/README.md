@@ -12,7 +12,7 @@ Includes 2 api:
 
 | PdfViewPinch              | PdfView                    |
 |---------------------------|----------------------------|
-|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/pdfx/example/media/pinch.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/master/packages/pdfx/example/media/simple.gif?raw=true)  |
+|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/pinch.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/simple.gif?raw=true)  |
 
 ## Getting Started
 In your flutter project add the dependency:

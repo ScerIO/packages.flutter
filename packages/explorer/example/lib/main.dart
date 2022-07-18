@@ -14,8 +14,8 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({
-    this.appDocDir,
-    Key key,
+    required this.appDocDir,
+    Key? key,
   }) : super(key: key);
 
   final Directory appDocDir;
@@ -25,7 +25,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ExplorerController _controller;
+  late ExplorerController _controller;
 
   @override
   void initState() {
@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   void filePressed(ExplorerFile file) {
-    if (file.size > 200000) {
+    if ((file.size ?? 0) > 200000) {
       final snackBar =
           SnackBar(content: Text('Can\'t open files with size > 200kb'));
 

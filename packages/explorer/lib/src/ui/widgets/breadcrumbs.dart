@@ -60,7 +60,7 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
       initialData: _initialData,
       stream: _controller.stream,
       builder: (_, snapshot) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (_scrollController!.hasClients) {
             _scrollController!
                 .jumpTo(_scrollController!.position.maxScrollExtent);

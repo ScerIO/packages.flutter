@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key) {
+  MyApp({Key? key}) : super(key: key) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,

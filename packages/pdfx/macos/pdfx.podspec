@@ -10,10 +10,10 @@ Pod::Spec.new do |s|
   Flutter Plugin to render a PDF file.
   Downloaded by pub (not CocoaPods).
                        DESC
-  s.homepage         = 'https://github.com/ScerIO/packages.flutter/tree/master/packages/pdfx'
+  s.homepage         = 'https://github.com/ScerIO/packages.flutter/tree/main/packages/pdfx'
   s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'Serge Shkurko' => 'sergeshkurko@outlook.com' }
-  s.source           = { :http => 'https://github.com/ScerIO/packages.flutter/tree/master/packages/pdfx' }
+  s.source           = { :http => 'https://github.com/ScerIO/packages.flutter/tree/main/packages/pdfx' }
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
 

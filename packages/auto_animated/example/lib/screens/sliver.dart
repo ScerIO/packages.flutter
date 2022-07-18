@@ -8,7 +8,7 @@ class SliverExample extends StatefulWidget {
 }
 
 class _SliverExampleState extends State<SliverExample> {
-  ScrollController _scrollController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {

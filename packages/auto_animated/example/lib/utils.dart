@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class VerticalItem extends StatelessWidget {
   const VerticalItem({
-    @required this.title,
-    Key key,
+    required this.title,
+    Key? key,
   }) : super(key: key);
 
   final String title;
@@ -22,8 +22,8 @@ class VerticalItem extends StatelessWidget {
 
 class HorizontalItem extends StatelessWidget {
   const HorizontalItem({
-    @required this.title,
-    Key key,
+    required this.title,
+    Key? key,
   }) : super(key: key);
 
   final String title;
