@@ -1,3 +1,7 @@
+## 3.1.0
+
+* Upgrade `visibility_detector` dependency
+
 ## 3.0.1
 
 * Upgrade `visibility_detector` dependency
