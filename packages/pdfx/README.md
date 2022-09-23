@@ -154,7 +154,7 @@ PdfView(
   renderer: (PdfPage page) => page.render(
     width: page.width * 2,
     height: page.height * 2,
-    format: PdfPageFormat.JPEG,
+    format: PdfPageImageFormat.jpeg,
     backgroundColor: '#FFFFFF',
   ),
 );
