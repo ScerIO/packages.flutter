@@ -28,4 +28,5 @@ flutter:
   assets:
     - assets/flutter_tutorial.pdf
     - assets/hello.pdf
+    - assets/password.pdf
 

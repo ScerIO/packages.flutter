@@ -34,11 +34,11 @@ abstract class PdfxPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<PdfDocument> openFile(String filePath);
+  Future<PdfDocument> openFile(String filePath, {String? password});
 
-  Future<PdfDocument> openAsset(String name);
+  Future<PdfDocument> openAsset(String name, {String? password});
 
-  Future<PdfDocument> openData(FutureOr<Uint8List> data);
+  Future<PdfDocument> openData(FutureOr<Uint8List> data, {String? password});
 }
 
 class PdfNotSupportException implements Exception {
