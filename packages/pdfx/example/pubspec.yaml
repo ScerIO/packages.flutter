@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   pdfx:
     path: ../
-  internet_file: ^1.0.0+2
+  internet_file: ^1.2.0
   universal_platform: ^1.0.0+1
   performance: ^0.1.0+1
 

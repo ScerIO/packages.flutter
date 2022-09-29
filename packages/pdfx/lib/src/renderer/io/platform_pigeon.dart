@@ -146,6 +146,7 @@ class PdfPagePigeon extends PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    bool forPrint = false,
     @visibleForTesting bool removeTempFile = true,
   }) =>
       _lock.synchronized<PdfPageImage?>(() async {
@@ -164,6 +165,7 @@ class PdfPagePigeon extends PdfPage {
           backgroundColor: backgroundColor,
           crop: cropRect,
           quality: quality,
+          forPrint: forPrint,
           removeTempFile: removeTempFile,
         );
       });
@@ -235,6 +237,7 @@ class PdfPageImagePigeon extends PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
+    required bool forPrint,
     required bool removeTempFile,
   }) async {
     if (format == PdfPageImageFormat.webp &&
@@ -261,7 +264,8 @@ class PdfPageImagePigeon extends PdfPageImage {
       ..cropY = crop?.top.toInt()
       ..cropWidth = crop?.width.toInt()
       ..cropHeight = crop?.height.toInt()
-      ..quality = quality);
+      ..quality = quality
+      ..forPrint = forPrint);
 
     final retWidth = result.width, retHeight = result.height;
     late final Uint8List pixels;

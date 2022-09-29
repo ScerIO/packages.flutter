@@ -50,6 +50,7 @@ class RenderPageMessage {
   int? cropHeight;
   int? cropWidth;
   int? quality;
+  bool? forPrint;
 }
 
 class RenderPageReply {

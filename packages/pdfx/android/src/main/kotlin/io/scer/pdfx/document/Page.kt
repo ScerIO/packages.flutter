@@ -33,13 +33,14 @@ class Page(
         pageRenderer.close()
     }
 
-    fun render(file: File, width: Int, height: Int, background: Int, format: Int, crop: Boolean, cropX: Int, cropY: Int, cropW: Int, cropH: Int, quality: Int): Data {
+    fun render(file: File, width: Int, height: Int, background: Int, format: Int, crop: Boolean, cropX: Int, cropY: Int, cropW: Int, cropH: Int, quality: Int, forPrint: Boolean): Data {
         val bitmap = Bitmap.createBitmap(
             width,
             height,
             Bitmap.Config.ARGB_8888)
         bitmap.eraseColor(background)
-        pageRenderer.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+        val mode = if (forPrint) PdfRenderer.Page.RENDER_MODE_FOR_PRINT else PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY
+        pageRenderer.render(bitmap, null, null, mode)
 
 
         if (crop && (cropW != width || cropH != height)) {

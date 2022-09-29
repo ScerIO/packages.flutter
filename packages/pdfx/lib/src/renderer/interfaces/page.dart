@@ -3,6 +3,7 @@ import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
 
 import 'package:meta/meta.dart';
+
 import 'document.dart';
 
 part 'page_image.dart';
@@ -61,6 +62,7 @@ abstract class PdfPage {
   /// [format] - image type, all types can be seen here [PdfPageImageFormat]
   /// [cropRect] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
+  /// [forPrint] - hint to the rendering quality (Android only)
   Future<PdfPageImage?> render({
     required double width,
     required double height,
@@ -68,6 +70,7 @@ abstract class PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    bool forPrint = false,
     @visibleForTesting bool removeTempFile = true,
   });
 
