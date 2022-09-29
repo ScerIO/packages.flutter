@@ -5,7 +5,7 @@ env:
 
 tool_setup_template: &TOOL_SETUP_TEMPLATE
   tool_setup_script:
-    - git fetch origin master
+    - git fetch origin main
     - cd script/tool
     - dart pub get
 
