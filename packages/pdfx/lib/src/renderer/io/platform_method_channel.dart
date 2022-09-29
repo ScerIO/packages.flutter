@@ -154,6 +154,7 @@ class PdfPageMethodChannel extends PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    bool printQuality = false,
     @visibleForTesting bool removeTempFile = true,
   }) =>
       _lock.synchronized<PdfPageImage?>(() async {
@@ -172,6 +173,7 @@ class PdfPageMethodChannel extends PdfPage {
           backgroundColor: backgroundColor,
           crop: cropRect,
           quality: quality,
+          printQuality: printQuality,
           removeTempFile: removeTempFile,
         );
       });
@@ -238,6 +240,7 @@ class PdfPageImageMethodChannel extends PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
+    required bool printQuality,
     required bool removeTempFile,
   }) async {
     if (format == PdfPageImageFormat.webp &&
@@ -265,6 +268,7 @@ class PdfPageImageMethodChannel extends PdfPageImage {
       'crop_height': crop?.height.toInt(),
       'crop_width': crop?.width.toInt(),
       'quality': quality,
+      'printQuality': printQuality,
     });
 
     if (obj is! Map<dynamic, dynamic>) {

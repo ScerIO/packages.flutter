@@ -146,6 +146,7 @@ class PdfPageWeb extends PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    bool printQuality = false,
     @visibleForTesting bool removeTempFile = true,
   }) {
     if (document.isClosed) {
@@ -163,6 +164,7 @@ class PdfPageWeb extends PdfPage {
       backgroundColor: backgroundColor,
       crop: cropRect,
       quality: quality,
+      printQuality: printQuality,
       removeTempFile: removeTempFile,
       pdfJsPage: pdfJsPage,
     );
@@ -229,6 +231,7 @@ class PdfPageImageWeb extends PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
+    required bool printQuality,
     required bool removeTempFile,
     required PdfjsPage pdfJsPage,
   }) async {

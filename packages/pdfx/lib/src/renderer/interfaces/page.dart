@@ -61,6 +61,7 @@ abstract class PdfPage {
   /// [format] - image type, all types can be seen here [PdfPageImageFormat]
   /// [cropRect] - render only the necessary part of the image
   /// [quality] - hint to the JPEG and WebP compression algorithms (0-100)
+  /// [printQuality] - hint to the rendering quality
   Future<PdfPageImage?> render({
     required double width,
     required double height,
@@ -68,6 +69,7 @@ abstract class PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
+    bool printQuality = false,
     @visibleForTesting bool removeTempFile = true,
   });
 

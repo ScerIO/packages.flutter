@@ -166,6 +166,7 @@ class RenderPageMessage {
     this.cropHeight,
     this.cropWidth,
     this.quality,
+    this.printQuality
   });
 
   String? pageId;
@@ -179,6 +180,7 @@ class RenderPageMessage {
   int? cropHeight;
   int? cropWidth;
   int? quality;
+  bool? printQuality;
 
   Object encode() {
     final Map<Object?, Object?> pigeonMap = <Object?, Object?>{};
@@ -193,6 +195,7 @@ class RenderPageMessage {
     pigeonMap['cropHeight'] = cropHeight;
     pigeonMap['cropWidth'] = cropWidth;
     pigeonMap['quality'] = quality;
+    pigeonMap['printQuality'] = printQuality;
     return pigeonMap;
   }
 
@@ -210,6 +213,7 @@ class RenderPageMessage {
       cropHeight: pigeonMap['cropHeight'] as int?,
       cropWidth: pigeonMap['cropWidth'] as int?,
       quality: pigeonMap['quality'] as int?,
+      printQuality: pigeonMap['printQuality'] as bool?,
     );
   }
 }
