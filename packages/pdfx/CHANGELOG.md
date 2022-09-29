@@ -1,3 +1,8 @@
+## 2.3.0
+
+* Added option `forPrint` in image render [pull#301](https://github.com/ScerIO/packages.flutter/pull/301)
+* Updated dependencies
+
 ## 2.2.0
 
 * Upgrade dependency `device_info_plus` to v4
@@ -7,8 +12,8 @@
 
 ## 2.1.0
 
-* Update `[photo_view]` dependency to 0.14.0 [](https://github.com/ScerIO/packages.flutter/pull/306)
-* Fixed render crop [pull#35](https://github.com/ScerIO/packages.flutter/pull/305)
+* Update `[photo_view]` dependency to 0.14.0 [pull#306](https://github.com/ScerIO/packages.flutter/pull/306)
+* Fixed render crop [pull#305](https://github.com/ScerIO/packages.flutter/pull/305)
 
 ## 2.0.1+2
 

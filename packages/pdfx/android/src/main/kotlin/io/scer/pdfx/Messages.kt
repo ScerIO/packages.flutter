@@ -158,6 +158,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             val width = message.width!!.toInt()
             val height = message.height!!.toInt()
             val format = message.format?.toInt() ?: 1 //0 Bitmap.CompressFormat.PNG
+            val forPrint = message.forPrint ?: false;
             val backgroundColor = message.backgroundColor
             val color = if (backgroundColor != null) Color.parseColor(backgroundColor) else Color.TRANSPARENT
 
@@ -181,7 +182,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             tempOutFolder.mkdirs()
             val tempOutFile = File(tempOutFolder, "$randomFilename.$tempOutFileExtension")
 
-            val pageImage = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality)
+            val pageImage = page.render(tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality, forPrint)
             resultResponse.path = pageImage.path
             resultResponse.width = pageImage.width.toLong()
             resultResponse.height = pageImage.height.toLong()

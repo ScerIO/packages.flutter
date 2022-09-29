@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:js/js_util.dart' as js_util;
 import 'package:meta/meta.dart';
-
 import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 import 'package:pdfx/src/renderer/interfaces/platform.dart';
@@ -146,7 +145,7 @@ class PdfPageWeb extends PdfPage {
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,
-    bool printQuality = false,
+    bool forPrint = false,
     @visibleForTesting bool removeTempFile = true,
   }) {
     if (document.isClosed) {
@@ -164,7 +163,7 @@ class PdfPageWeb extends PdfPage {
       backgroundColor: backgroundColor,
       crop: cropRect,
       quality: quality,
-      printQuality: printQuality,
+      forPrint: forPrint,
       removeTempFile: removeTempFile,
       pdfJsPage: pdfJsPage,
     );
@@ -231,7 +230,7 @@ class PdfPageImageWeb extends PdfPageImage {
     required String? backgroundColor,
     required Rect? crop,
     required int quality,
-    required bool printQuality,
+    required bool forPrint,
     required bool removeTempFile,
     required PdfjsPage pdfJsPage,
   }) async {
