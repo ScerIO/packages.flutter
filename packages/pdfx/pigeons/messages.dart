@@ -11,10 +11,12 @@ import 'package:pigeon/pigeon.dart';
 ))
 class OpenDataMessage {
   Uint8List? data;
+  String? password;
 }
 
 class OpenPathMessage {
   String? path;
+  String? password;
 }
 
 class OpenReply {

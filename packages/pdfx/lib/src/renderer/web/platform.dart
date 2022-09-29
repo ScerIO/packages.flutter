@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:html' as html;
 import 'dart:js' as js;
+
 // ignore: unnecessary_import
 import 'dart:typed_data';
 
@@ -43,30 +44,33 @@ class PdfxWeb extends PdfxPlatform {
         pagesCount: obj['pagesCount'] as int,
       );
 
-  Future<Map<String, dynamic>> _openDocumentData(ByteBuffer data) async {
-    final document = await pdfjsGetDocumentFromData(data);
+  Future<Map<String, dynamic>> _openDocumentData(ByteBuffer data,
+      {String? password}) async {
+    final document = await pdfjsGetDocumentFromData(data, password: password);
 
     return _documents.register(document).infoMap;
   }
 
   @override
-  Future<PdfDocument> openAsset(String name) async {
+  Future<PdfDocument> openAsset(String name, {String? password}) async {
     final bytes = await rootBundle.load(name);
     final data = bytes.buffer;
-    final obj = await _openDocumentData(data);
+    final obj = await _openDocumentData(data, password: password);
 
     return _open(obj, 'asset:$name');
   }
 
   @override
-  Future<PdfDocument> openData(FutureOr<Uint8List> data) async {
-    final obj = await _openDocumentData((await data).buffer);
+  Future<PdfDocument> openData(FutureOr<Uint8List> data,
+      {String? password}) async {
+    final obj =
+        await _openDocumentData((await data).buffer, password: password);
 
     return _open(obj, 'memory:binary');
   }
 
   @override
-  Future<PdfDocument> openFile(String filePath) {
+  Future<PdfDocument> openFile(String filePath, {String? password}) {
     throw PlatformException(
         code: 'Unimplemented',
         details: 'The plugin for web doesn\'t implement '
@@ -304,8 +308,10 @@ class PdfPageTextureWeb extends PdfPageTexture {
 
   @override
   int? get textureWidth => _texWidth;
+
   @override
   int? get textureHeight => _texHeight;
+
   @override
   bool get hasUpdatedTexture => _texWidth != null;
 

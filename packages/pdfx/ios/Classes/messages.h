@@ -22,13 +22,17 @@ NS_ASSUME_NONNULL_BEGIN
 @class UnregisterTextureMessage;
 
 @interface OpenDataMessage : NSObject
-+ (instancetype)makeWithData:(nullable FlutterStandardTypedData *)data;
++ (instancetype)makeWithData:(nullable FlutterStandardTypedData *)data
+    password:(nullable NSString *)password;
 @property(nonatomic, strong, nullable) FlutterStandardTypedData * data;
+@property(nonatomic, copy, nullable) NSString * password;
 @end
 
 @interface OpenPathMessage : NSObject
-+ (instancetype)makeWithPath:(nullable NSString *)path;
++ (instancetype)makeWithPath:(nullable NSString *)path
+    password:(nullable NSString *)password;
 @property(nonatomic, copy, nullable) NSString * path;
+@property(nonatomic, copy, nullable) NSString * password;
 @end
 
 @interface OpenReply : NSObject

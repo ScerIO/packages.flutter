@@ -93,39 +93,47 @@ static id GetNullableObjectAtIndex(NSArray* array, NSInteger key) {
 @end
 
 @implementation OpenDataMessage
-+ (instancetype)makeWithData:(nullable FlutterStandardTypedData *)data {
++ (instancetype)makeWithData:(nullable FlutterStandardTypedData *)data
+    password:(nullable NSString *)password {
   OpenDataMessage* pigeonResult = [[OpenDataMessage alloc] init];
   pigeonResult.data = data;
+  pigeonResult.password = password;
   return pigeonResult;
 }
 + (OpenDataMessage *)fromMap:(NSDictionary *)dict {
   OpenDataMessage *pigeonResult = [[OpenDataMessage alloc] init];
   pigeonResult.data = GetNullableObject(dict, @"data");
+  pigeonResult.password = GetNullableObject(dict, @"password");
   return pigeonResult;
 }
 + (nullable OpenDataMessage *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [OpenDataMessage fromMap:dict] : nil; }
 - (NSDictionary *)toMap {
   return @{
     @"data" : (self.data ?: [NSNull null]),
+    @"password" : (self.password ?: [NSNull null]),
   };
 }
 @end
 
 @implementation OpenPathMessage
-+ (instancetype)makeWithPath:(nullable NSString *)path {
++ (instancetype)makeWithPath:(nullable NSString *)path
+    password:(nullable NSString *)password {
   OpenPathMessage* pigeonResult = [[OpenPathMessage alloc] init];
   pigeonResult.path = path;
+  pigeonResult.password = password;
   return pigeonResult;
 }
 + (OpenPathMessage *)fromMap:(NSDictionary *)dict {
   OpenPathMessage *pigeonResult = [[OpenPathMessage alloc] init];
   pigeonResult.path = GetNullableObject(dict, @"path");
+  pigeonResult.password = GetNullableObject(dict, @"password");
   return pigeonResult;
 }
 + (nullable OpenPathMessage *)nullableFromMap:(NSDictionary *)dict { return (dict) ? [OpenPathMessage fromMap:dict] : nil; }
 - (NSDictionary *)toMap {
   return @{
     @"path" : (self.path ?: [NSNull null]),
+    @"password" : (self.password ?: [NSNull null]),
   };
 }
 @end

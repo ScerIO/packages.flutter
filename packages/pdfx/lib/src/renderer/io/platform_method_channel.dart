@@ -1,4 +1,5 @@
 import 'dart:async';
+
 // ignore: unnecessary_import
 import 'dart:typed_data';
 
@@ -27,7 +28,7 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
 
   /// Open PDF document from filesystem path
   @override
-  Future<PdfDocument> openFile(String filePath) async {
+  Future<PdfDocument> openFile(String filePath, {String? password}) async {
     if (UniversalPlatform.isWeb) {
       throw PlatformNotSupportedException();
     }
@@ -42,7 +43,7 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
 
   /// Open PDF document from application assets
   @override
-  Future<PdfDocument> openAsset(String name) async => _open(
+  Future<PdfDocument> openAsset(String name, {String? password}) async => _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
           name,
@@ -52,7 +53,9 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
 
   /// Open PDF file from memory (Uint8List)
   @override
-  Future<PdfDocument> openData(FutureOr<Uint8List> data) async => _open(
+  Future<PdfDocument> openData(FutureOr<Uint8List> data,
+          {String? password}) async =>
+      _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
           await data,
