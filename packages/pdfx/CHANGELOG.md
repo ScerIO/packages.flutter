@@ -1,6 +1,7 @@
 ## 2.3.0
 
 * Added option `forPrint` in image render [pull#301](https://github.com/ScerIO/packages.flutter/pull/301)
+* Added password support (web only) [pull#354](https://github.com/ScerIO/packages.flutter/pull/354)
 * Updated dependencies
 
 ## 2.2.0

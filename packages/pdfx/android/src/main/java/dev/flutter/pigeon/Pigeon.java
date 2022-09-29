@@ -30,27 +30,42 @@ public class Pigeon {
       this.data = setterArg;
     }
 
+    private @Nullable String password;
+    public @Nullable String getPassword() { return password; }
+    public void setPassword(@Nullable String setterArg) {
+      this.password = setterArg;
+    }
+
     public static final class Builder {
       private @Nullable byte[] data;
       public @NonNull Builder setData(@Nullable byte[] setterArg) {
         this.data = setterArg;
         return this;
       }
+      private @Nullable String password;
+      public @NonNull Builder setPassword(@Nullable String setterArg) {
+        this.password = setterArg;
+        return this;
+      }
       public @NonNull OpenDataMessage build() {
         OpenDataMessage pigeonReturn = new OpenDataMessage();
         pigeonReturn.setData(data);
+        pigeonReturn.setPassword(password);
         return pigeonReturn;
       }
     }
     @NonNull Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("data", data);
+      toMapResult.put("password", password);
       return toMapResult;
     }
     static @NonNull OpenDataMessage fromMap(@NonNull Map<String, Object> map) {
       OpenDataMessage pigeonResult = new OpenDataMessage();
       Object data = map.get("data");
       pigeonResult.setData((byte[])data);
+      Object password = map.get("password");
+      pigeonResult.setPassword((String)password);
       return pigeonResult;
     }
   }
@@ -63,27 +78,42 @@ public class Pigeon {
       this.path = setterArg;
     }
 
+    private @Nullable String password;
+    public @Nullable String getPassword() { return password; }
+    public void setPassword(@Nullable String setterArg) {
+      this.password = setterArg;
+    }
+
     public static final class Builder {
       private @Nullable String path;
       public @NonNull Builder setPath(@Nullable String setterArg) {
         this.path = setterArg;
         return this;
       }
+      private @Nullable String password;
+      public @NonNull Builder setPassword(@Nullable String setterArg) {
+        this.password = setterArg;
+        return this;
+      }
       public @NonNull OpenPathMessage build() {
         OpenPathMessage pigeonReturn = new OpenPathMessage();
         pigeonReturn.setPath(path);
+        pigeonReturn.setPassword(password);
         return pigeonReturn;
       }
     }
     @NonNull Map<String, Object> toMap() {
       Map<String, Object> toMapResult = new HashMap<>();
       toMapResult.put("path", path);
+      toMapResult.put("password", password);
       return toMapResult;
     }
     static @NonNull OpenPathMessage fromMap(@NonNull Map<String, Object> map) {
       OpenPathMessage pigeonResult = new OpenPathMessage();
       Object path = map.get("path");
       pigeonResult.setPath((String)path);
+      Object password = map.get("password");
+      pigeonResult.setPassword((String)password);
       return pigeonResult;
     }
   }
