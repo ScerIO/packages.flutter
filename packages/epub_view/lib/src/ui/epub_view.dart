@@ -31,12 +31,13 @@ class EpubView extends StatefulWidget {
     this.builders = const EpubViewBuilders<DefaultBuilderOptions>(
       options: DefaultBuilderOptions(),
     ),
+    this.shrinkWrap = false,
     Key? key,
   }) : super(key: key);
 
   final EpubController controller;
   final ExternalLinkPressed? onExternalLinkPressed;
-
+  final bool shrinkWrap;
   final void Function(EpubChapterViewValue? value)? onChapterChanged;
 
   /// Called when a document is loaded
@@ -366,6 +367,7 @@ class _EpubViewState extends State<EpubView> {
 
   Widget _buildLoaded(BuildContext context) {
     return ScrollablePositionedList.builder(
+      shrinkWrap: widget.shrinkWrap,
       initialScrollIndex: _epubCfiReader!.paragraphIndexByCfiFragment ?? 0,
       itemCount: _paragraphs.length,
       itemScrollController: _itemScrollController,
