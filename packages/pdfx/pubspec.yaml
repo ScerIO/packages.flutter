@@ -15,10 +15,10 @@ dependencies:
     sdk: flutter
   plugin_platform_interface: ^2.1.2
   js: ^0.6.4
-  device_info_plus: ^5.0.0
+  device_info_plus: ^8.0.0
   uuid: ^3.0.6
   meta: ^1.7.0
-  extension: ^0.5.0
+  extension: ^0.6.0
   synchronized: ^3.0.0+2
   universal_platform: ^1.0.0+1
   photo_view: ^0.14.0
