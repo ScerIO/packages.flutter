@@ -190,6 +190,7 @@ class _PdfViewState extends State<PdfView> {
           index,
           document.id,
         ),
+        filterQuality: FilterQuality.medium,
         minScale: PhotoViewComputedScale.contained * 1,
         maxScale: PhotoViewComputedScale.contained * 3.0,
         initialScale: PhotoViewComputedScale.contained * 1.0,
