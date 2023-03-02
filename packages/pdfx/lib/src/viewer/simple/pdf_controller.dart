@@ -34,7 +34,7 @@ class PdfController with BasePdfController {
 
   /// Actual showed page
   @override
-  int get page => (_pdfViewState!._currentIndex) + 1;
+  int get page => pageListenable.value;
 
   /// Count of all pages in document
   @override
@@ -105,21 +105,14 @@ class PdfController with BasePdfController {
     assert(_pdfViewState != null);
 
     try {
-      print('1');
       if (page != initialPage) {
-        print('2');
         _pdfViewState?.widget.onPageChanged?.call(initialPage);
-        print('3');
         pageListenable.value = initialPage;
       }
-      print('4');
       _reInitPageController(initialPage);
-      print('5');
-      _pdfViewState!._currentIndex = this.initialPage = initialPage;
-      print('about to await document');
+      this.initialPage = initialPage;
 
       _document = await documentFuture;
-      print('set document');
       loadingState.value = PdfLoadingState.success;
     } catch (error) {
       _pdfViewState!._loadingError =
