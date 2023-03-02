@@ -105,18 +105,25 @@ class PdfController with BasePdfController {
     assert(_pdfViewState != null);
 
     try {
+      print('1');
       if (page != initialPage) {
+        print('2');
         _pdfViewState?.widget.onPageChanged?.call(initialPage);
+        print('3');
         pageListenable.value = initialPage;
       }
+      print('4');
       _reInitPageController(initialPage);
+      print('5');
       _pdfViewState!._currentIndex = this.initialPage = initialPage;
+      print('about to await document');
 
       _document = await documentFuture;
+      print('set document');
       loadingState.value = PdfLoadingState.success;
     } catch (error) {
       _pdfViewState!._loadingError =
-          error is Exception ? error : Exception('Unknown error');
+          error is Exception ? error : Exception('Unknown error - ${error.toString()}');
       loadingState.value = PdfLoadingState.error;
     }
   }
