@@ -104,13 +104,6 @@ class PdfController with BasePdfController {
   }) async {
     assert(_pdfViewState != null);
 
-    if (!await hasPdfSupport()) {
-      _pdfViewState!._loadingError = Exception(
-          'This device does not support the display of PDF documents');
-      loadingState.value = PdfLoadingState.error;
-      return;
-    }
-
     try {
       if (page != initialPage) {
         _pdfViewState?.widget.onPageChanged?.call(initialPage);

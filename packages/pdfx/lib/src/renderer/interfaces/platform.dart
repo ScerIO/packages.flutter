@@ -1,15 +1,28 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:pdfx/src/renderer/has_pdf_support.dart';
 import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/io/platform_method_channel.dart';
 import 'package:pdfx/src/renderer/io/platform_pigeon.dart';
+import 'package:pdfx/src/renderer/platform_not_supported.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 final _usePigeon = UniversalPlatform.isIOS ||
     UniversalPlatform.isMacOS ||
     UniversalPlatform.isAndroid;
+
+PdfxPlatform _initialisePdfxPlatform() {
+  Future<void> checkSupported() async {
+    if (!await hasPdfSupport()) {
+      PdfxPlatform.instance = PdfxPlatformNotSupported();
+    }
+  }
+  unawaited(checkSupported());
+
+  return _usePigeon ? PdfxPlatformPigeon() : PdfxPlatformMethodChannel();
+}
 
 /// Abstraction layer to isolate [PdfDocument] implementation
 /// from the public interface.
@@ -19,8 +32,7 @@ abstract class PdfxPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static PdfxPlatform _instance =
-      _usePigeon ? PdfxPlatformPigeon() : PdfxPlatformMethodChannel();
+  static PdfxPlatform _instance = _initialisePdfxPlatform();
 
   /// The default instance of [PdfxPlatform] to use.
   ///
