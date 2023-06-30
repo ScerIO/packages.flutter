@@ -5,7 +5,7 @@ issue_tracker: https://github.com/ScerIO/packages.flutter/issues?q=is%3Aissue+is
 version: 2.2.0
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: '>=2.12.0 <4.0.0'
   flutter: '>=2.0.0'
 
 dependencies:
@@ -13,20 +13,19 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter     
-  intl: ^0.17.0  
+  intl: ^0.18.0
   flutter_breadcrumb: ^1.0.1
   auto_animated: ^3.1.0
-  sliver_tools: ^0.2.8
+  sliver_tools: ^0.2.10
   universal_platform: ^1.0.0+1
   path: ^1.8.2
   meta: ^1.8.0
-  io: ^1.0.3
+  io: ^1.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-#   intl_translation: ^0.17.10+1
+  flutter_lints: ^2.0.2
 
 scripts:
   i18n_to_arb: flutter pub run intl_translation:extract_to_arb --output-dir=locales lib/src/i18n/string_resources.dart

@@ -1,3 +1,7 @@
+## 3.1.0
+
+* Upgrade dependencies
+
 ## 3.0.0
 
 * Refactored code

@@ -340,26 +340,31 @@ class _EpubViewState extends State<EpubView> {
           builders.chapterDividerBuilder(chapters[chapterIndex]),
         Html(
           data: paragraphs[index].element.outerHtml,
-          onLinkTap: (href, _, __, ___) => onExternalLinkPressed(href!),
+          onLinkTap: (href, _, __) => onExternalLinkPressed(href!),
           style: {
             'html': Style(
-              padding: options.paragraphPadding as EdgeInsets?,
+              padding: HtmlPaddings.only(
+                top: (options.paragraphPadding as EdgeInsets?)?.top,
+                right: (options.paragraphPadding as EdgeInsets?)?.right,
+                bottom: (options.paragraphPadding as EdgeInsets?)?.bottom,
+                left: (options.paragraphPadding as EdgeInsets?)?.left,
+              ),
             ).merge(Style.fromTextStyle(options.textStyle)),
           },
-          customRenders: {
-            tagMatcher('img'):
-                CustomRender.widget(widget: (context, buildChildren) {
-              final url = context.tree.element!.attributes['src']!
-                  .replaceAll('../', '');
-              return Image(
-                image: MemoryImage(
-                  Uint8List.fromList(
-                    document.Content!.Images![url]!.Content!,
-                  ),
-                ),
-              );
-            }),
-          },
+          extensions: [
+            TagExtension(
+              tagsToExtend: {"img"},
+              builder: (imageContext) {
+                final url =
+                    imageContext.attributes['src']!.replaceAll('../', '');
+                final content = Uint8List.fromList(
+                    document.Content!.Images![url]!.Content!);
+                return Image(
+                  image: MemoryImage(content),
+                );
+              },
+            ),
+          ],
         ),
       ],
     );

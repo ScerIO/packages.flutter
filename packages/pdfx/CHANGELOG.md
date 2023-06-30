@@ -1,3 +1,11 @@
+## 2.4.0
+
+* Upgrade dependencies
+* Dart 3, Flutter 3.10 compatibility [pull#404](https://github.com/ScerIO/packages.flutter/pull/404)
+* Transfer Pdf support check from viewer to renderer [pull#392](https://github.com/ScerIO/packages.flutter/pull/392)
+* Added reverse option in `PdfView`  [pull#412](https://github.com/ScerIO/packages.flutter/pull/412)
+* Fixup rendering issues in chromium based web-browsers [pull#402](https://github.com/ScerIO/packages.flutter/pull/402)
+
 ## 2.3.0
 
 * Added option `forPrint` in image render [pull#301](https://github.com/ScerIO/packages.flutter/pull/301)
