@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  visibility_detector: ^0.3.3
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:
