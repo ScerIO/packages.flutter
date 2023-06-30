@@ -77,6 +77,7 @@ PdfView(
 | onDocumentError  	| Called when a document loading error. Exception is passed in the attributes                                    | + / +                  |
 | builders         	| Set of pdf view builders. See [Custom builders](#custom-builders)                                              | + / +                  |
 | scrollDirection  	| Page turning direction                                                                                         | + / +                  |
+| reverse  	        | Reverse scroll direction, useful for RTL support                                                               | - / +                  |
 | renderer         	| Custom PdfRenderer options.  See [custom renderer options](#custom-renderer-options)                           | - / +                  |
 | pageSnapping     	| Set to false for mouse wheel scroll on web                                                                     | - / +                  |
 | physics          	| How the widgets should respond to user input                                                                   | - / +                  |

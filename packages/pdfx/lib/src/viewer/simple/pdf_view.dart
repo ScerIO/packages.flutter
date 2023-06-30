@@ -28,6 +28,7 @@ class PdfView extends StatefulWidget {
     ),
     this.renderer = _render,
     this.scrollDirection = Axis.horizontal,
+    this.reverse = false,
     this.pageSnapping = true,
     this.physics,
     this.backgroundDecoration = const BoxDecoration(),
@@ -54,6 +55,9 @@ class PdfView extends StatefulWidget {
 
   /// Page turning direction
   final Axis scrollDirection;
+
+  /// Reverse scroll direction, useful for RTL support
+  final bool reverse;
 
   /// Set to false to disable page snapping, useful for custom scroll behavior.
   final bool pageSnapping;
@@ -219,6 +223,7 @@ class _PdfViewState extends State<PdfView> {
           _controller.pageListenable.value = pageNumber;
         },
         scrollDirection: widget.scrollDirection,
+        reverse: widget.reverse,
         scrollPhysics: widget.physics,
       );
 }
