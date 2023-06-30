@@ -38,8 +38,8 @@ class Page {
   }) async {
     final html.CanvasElement canvas =
         js.context['document'].createElement('canvas');
-    final html.CanvasRenderingContext2D context =
-        canvas.getContext('2d') as html.CanvasRenderingContext2D;
+    final html.CanvasRenderingContext2D context = canvas
+        .getContext('2d', {"alpha": false}) as html.CanvasRenderingContext2D;
 
     final viewport = renderer
         .getViewport(PdfjsViewportParams(scale: width / _viewport.width));
