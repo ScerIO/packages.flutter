@@ -102,7 +102,7 @@ class PdfController with BasePdfController {
     Future<PdfDocument> documentFuture, {
     int initialPage = 1,
   }) async {
-    assert(_pdfViewState != null);
+    if (_pdfViewState == null) return;
 
     try {
       if (page != initialPage) {
