@@ -56,7 +56,7 @@ class _EntryExplorerState extends State<EntryExplorer> {
           onTap: widget.onPressed,
           onLongPress: () {
             final RenderBox overlay =
-                Overlay.of(context)!.context.findRenderObject() as RenderBox;
+                Overlay.of(context).context.findRenderObject() as RenderBox;
 
             widget.onLongPress!(RelativeRect.fromLTRB(
               _tapDownPosition.dx,
@@ -131,7 +131,7 @@ class _EntryExplorerState extends State<EntryExplorer> {
           }
 
           final RenderBox overlay =
-              Overlay.of(context)!.context.findRenderObject() as RenderBox;
+              Overlay.of(context).context.findRenderObject() as RenderBox;
 
           widget.onLongPress!(RelativeRect.fromLTRB(
             event.position.dx,
