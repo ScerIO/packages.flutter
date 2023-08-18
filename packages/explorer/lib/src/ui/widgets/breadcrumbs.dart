@@ -76,7 +76,7 @@ class _ExplorerBreadCrumbsState extends State<ExplorerBreadCrumbs>
               BreadCrumbItem(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                content: Text(crumb.name, style: theme.textTheme.bodyText1),
+                content: Text(crumb.name, style: theme.textTheme.bodyMedium),
                 onTap: () => _controller.go(crumb.path),
               ),
           ],

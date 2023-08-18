@@ -34,7 +34,7 @@ class PdfController with BasePdfController {
 
   /// Actual showed page
   @override
-  int get page => (_pdfViewState!._currentIndex) + 1;
+  int get page => pageListenable.value;
 
   /// Count of all pages in document
   @override
@@ -102,14 +102,7 @@ class PdfController with BasePdfController {
     Future<PdfDocument> documentFuture, {
     int initialPage = 1,
   }) async {
-    assert(_pdfViewState != null);
-
-    if (!await hasPdfSupport()) {
-      _pdfViewState!._loadingError = Exception(
-          'This device does not support the display of PDF documents');
-      loadingState.value = PdfLoadingState.error;
-      return;
-    }
+    if (_pdfViewState == null) return;
 
     try {
       if (page != initialPage) {
@@ -117,7 +110,7 @@ class PdfController with BasePdfController {
         pageListenable.value = initialPage;
       }
       _reInitPageController(initialPage);
-      _pdfViewState!._currentIndex = this.initialPage = initialPage;
+      this.initialPage = initialPage;
 
       _document = await documentFuture;
       loadingState.value = PdfLoadingState.success;

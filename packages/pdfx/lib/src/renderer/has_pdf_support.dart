@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:universal_platform/universal_platform.dart';
 
+final _deviceInfo = DeviceInfoPlugin();
+
 Future<bool> hasPdfSupport() async {
   if (UniversalPlatform.isMacOS ||
       UniversalPlatform.isIOS ||
@@ -11,9 +13,8 @@ Future<bool> hasPdfSupport() async {
     return true;
   }
   if (UniversalPlatform.isAndroid) {
-    final deviceInfo = DeviceInfoPlugin();
-    final androidInfo = await deviceInfo.androidInfo;
-    return androidInfo.version.sdkInt! >= 21;
+    final androidInfo = await _deviceInfo.androidInfo;
+    return androidInfo.version.sdkInt >= 21;
   }
   return false;
 }

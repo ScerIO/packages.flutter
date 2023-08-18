@@ -1,3 +1,11 @@
+## 3.2.0
+
+* Upgrade epubx dependency
+
+## 3.1.0
+
+* Upgrade dependencies
+
 ## 3.0.0
 
 * Refactored code

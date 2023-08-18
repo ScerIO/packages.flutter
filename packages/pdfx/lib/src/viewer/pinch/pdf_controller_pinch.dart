@@ -68,14 +68,6 @@ class PdfControllerPinch extends TransformationController
   }) async {
     assert(_state != null);
 
-    if (!await hasPdfSupport()) {
-      _state!._loadingError = Exception(
-          'This device does not support the display of PDF documents');
-
-      loadingState.value = PdfLoadingState.error;
-      return;
-    }
-
     try {
       _state?._releasePages();
 
@@ -254,11 +246,6 @@ class PdfControllerPinch extends TransformationController
 
   void _detach() {
     _state = null;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }
 

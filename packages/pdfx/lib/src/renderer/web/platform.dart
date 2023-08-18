@@ -241,8 +241,8 @@ class PdfPageImageWeb extends PdfPageImage {
     final preViewport = pdfJsPage.getViewport(PdfjsViewportParams(scale: 1));
     final html.CanvasElement canvas =
         js.context['document'].createElement('canvas');
-    final html.CanvasRenderingContext2D context =
-        canvas.getContext('2d') as html.CanvasRenderingContext2D;
+    final html.CanvasRenderingContext2D context = canvas
+        .getContext('2d', {"alpha": false}) as html.CanvasRenderingContext2D;
 
     final viewport = pdfJsPage
         .getViewport(PdfjsViewportParams(scale: width / preViewport.width));
@@ -441,8 +441,8 @@ class PdfPageTextureWeb extends PdfPageTexture {
       ..width = preWidth
       ..height = preHeight;
 
-    final html.CanvasRenderingContext2D context =
-        canvas.getContext('2d') as html.CanvasRenderingContext2D;
+    final html.CanvasRenderingContext2D context = canvas
+        .getContext('2d', {"alpha": false}) as html.CanvasRenderingContext2D;
 
     if (backgroundColor != null) {
       context

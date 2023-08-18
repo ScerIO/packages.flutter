@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:flutter/widgets.dart'
     hide InteractiveViewer, TransformationController;
-import 'package:pdfx/src/renderer/has_pdf_support.dart';
 import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 import 'package:pdfx/src/viewer/base/base_pdf_builders.dart';

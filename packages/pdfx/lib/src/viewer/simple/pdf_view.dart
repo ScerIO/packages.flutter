@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:pdfx/src/renderer/has_pdf_support.dart';
 import 'package:pdfx/src/renderer/interfaces/document.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 import 'package:pdfx/src/viewer/base/base_pdf_builders.dart';
@@ -28,6 +27,7 @@ class PdfView extends StatefulWidget {
     ),
     this.renderer = _render,
     this.scrollDirection = Axis.horizontal,
+    this.reverse = false,
     this.pageSnapping = true,
     this.physics,
     this.backgroundDecoration = const BoxDecoration(),
@@ -55,6 +55,9 @@ class PdfView extends StatefulWidget {
   /// Page turning direction
   final Axis scrollDirection;
 
+  /// Reverse scroll direction, useful for RTL support
+  final bool reverse;
+
   /// Set to false to disable page snapping, useful for custom scroll behavior.
   final bool pageSnapping;
 
@@ -80,13 +83,11 @@ class _PdfViewState extends State<PdfView> {
   final Map<int, PdfPageImage?> _pages = {};
   PdfController get _controller => widget.controller;
   Exception? _loadingError;
-  late int _currentIndex;
 
   @override
   void initState() {
     super.initState();
     _controller._attach(this);
-    _currentIndex = _controller._pageController!.initialPage;
     _controller.loadingState.addListener(() {
       switch (_controller.loadingState.value) {
         case PdfLoadingState.loading:
@@ -213,12 +214,12 @@ class _PdfViewState extends State<PdfView> {
         backgroundDecoration: widget.backgroundDecoration,
         pageController: _controller._pageController,
         onPageChanged: (index) {
-          _currentIndex = index;
           final pageNumber = index + 1;
-          widget.onPageChanged?.call(pageNumber);
           _controller.pageListenable.value = pageNumber;
+          widget.onPageChanged?.call(pageNumber);
         },
         scrollDirection: widget.scrollDirection,
+        reverse: widget.reverse,
         scrollPhysics: widget.physics,
       );
 }
