@@ -21,7 +21,8 @@ dependencies:
   extension: ^0.6.0
   synchronized: ^3.1.0
   universal_platform: ^1.0.0+1
-  photo_view: ^0.14.0
+  photo_view:
+    git: https://github.com/LucazzP/photo_view.git
   vector_math: ^2.1.4
 
 dev_dependencies:
