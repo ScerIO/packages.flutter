@@ -97,6 +97,7 @@ class _SimplePageState extends State<SimplePage> {
     Future<PdfPageImage> pageImage,
     int index,
     PdfDocument document,
+    PhotoViewController? controller,
   ) {
     return PhotoViewGalleryPageOptions(
       imageProvider: PdfPageImageProvider(
@@ -104,6 +105,7 @@ class _SimplePageState extends State<SimplePage> {
         index,
         document.id,
       ),
+      controller: controller,
       minScale: PhotoViewComputedScale.contained * 1,
       maxScale: PhotoViewComputedScale.contained * 2,
       initialScale: PhotoViewComputedScale.contained * 1.0,

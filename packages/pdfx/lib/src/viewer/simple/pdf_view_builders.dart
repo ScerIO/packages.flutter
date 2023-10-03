@@ -12,6 +12,9 @@ typedef PdfViewPageBuilder = PhotoViewGalleryPageOptions Function(
 
   /// pdf document
   PdfDocument document,
+  
+  // controller for result photo
+  PhotoViewController? controller,
 );
 
 typedef PdfViewBuilder<T> = Widget Function(

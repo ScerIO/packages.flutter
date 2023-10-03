@@ -28,9 +28,10 @@ class PdfView extends StatefulWidget {
     this.renderer = _render,
     this.scrollDirection = Axis.horizontal,
     this.reverse = false,
-    this.pageSnapping = true,
+    this.pageSnapping = false,
     this.physics,
     this.backgroundDecoration = const BoxDecoration(),
+    this.photoViewController,
     Key? key,
   }) : super(key: key);
 
@@ -66,6 +67,9 @@ class PdfView extends StatefulWidget {
 
   /// Determines the physics of a [PdfView] widget.
   final ScrollPhysics? physics;
+
+  /// Controller for photo view.
+  final PhotoViewController? photoViewController;
 
   /// Default PdfRenderer options
   static Future<PdfPageImage?> _render(PdfPage page) => page.render(
@@ -187,6 +191,7 @@ class _PdfViewState extends State<PdfView> {
     Future<PdfPageImage> pageImage,
     int index,
     PdfDocument document,
+    PhotoViewController? controller,
   ) =>
       PhotoViewGalleryPageOptions(
         imageProvider: PdfPageImageProvider(
@@ -194,6 +199,7 @@ class _PdfViewState extends State<PdfView> {
           index,
           document.id,
         ),
+        controller: controller,
         minScale: PhotoViewComputedScale.contained * 1,
         maxScale: PhotoViewComputedScale.contained * 3.0,
         initialScale: PhotoViewComputedScale.contained * 1.0,
@@ -206,6 +212,7 @@ class _PdfViewState extends State<PdfView> {
           _getPageImage(index),
           index,
           _controller._document!,
+          widget.photoViewController,
         ),
         itemCount: _controller._document?.pagesCount ?? 0,
         loadingBuilder: (_, __) =>
@@ -221,5 +228,6 @@ class _PdfViewState extends State<PdfView> {
         scrollDirection: widget.scrollDirection,
         reverse: widget.reverse,
         scrollPhysics: widget.physics,
+        allowImplicitScrolling: widget.pageSnapping,
       );
 }
