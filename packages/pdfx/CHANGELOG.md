@@ -1,3 +1,8 @@
+## 2.5.1
+
+* Added the ability to control the scaling of the pdf display 
+* Downgrade uuid dependence
+
 ## 2.5.0
 
 * Upgrade dependencies
