@@ -1,6 +1,7 @@
 // ignore: unnecessary_import
 import 'dart:typed_data';
 import 'dart:ui' as ui show Codec;
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
@@ -21,7 +22,7 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
 
   @override
   // ignore: deprecated_member_use
-  ImageStreamCompleter load(PdfPageImageProvider key, DecoderCallback decode) =>
+  ImageStreamCompleter load(PdfPageImageProvider key, ImageDecoderCallback decode) =>
       MultiFrameImageStreamCompleter(
         codec: _loadAsync(key, decode),
         scale: key.scale,
@@ -37,7 +38,7 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   Future<ui.Codec> _loadAsync(
       PdfPageImageProvider key,
       // ignore: deprecated_member_use
-      DecoderCallback decode) async {
+      ImageDecoderCallback decode) async {
     assert(key == this);
 
     final loadedPdfPageImage = await pdfPageImage;
@@ -48,7 +49,9 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
           'cannot be loaded as an image.');
     }
 
-    return decode(bytes);
+    final ImmutableBuffer buffer = await ImmutableBuffer.fromUint8List(bytes);
+
+    return decode(buffer);
   }
 
   @override
