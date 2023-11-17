@@ -6,12 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 
-typedef DecoderCallback = Future<ui.Codec> Function(
-  Uint8List bytes, {
-  int cacheWidth,
-  int cacheHeight,
-});
-
 class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   const PdfPageImageProvider(
     this.pdfPageImage,
