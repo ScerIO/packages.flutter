@@ -1,16 +1,16 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui show Codec, ImmutableBuffer;
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:pdfx/src/renderer/interfaces/page.dart';
 
 class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   const PdfPageImageProvider(
-      this.pdfPageImage,
-      this.pageNumber,
-      this.documentId, {
-        this.scale = 1.0,
-      });
+    this.pdfPageImage,
+    this.pageNumber,
+    this.documentId, {
+    this.scale = 1.0,
+  });
 
   final Future<PdfPageImage> pdfPageImage;
   final int pageNumber;
@@ -19,21 +19,20 @@ class PdfPageImageProvider extends ImageProvider<PdfPageImageProvider> {
   final double scale;
 
   @override
-  ImageStreamCompleter load(PdfPageImageProvider key, DecoderBufferCallback decode) => MultiFrameImageStreamCompleter(
-    codec: _loadAsync(key, decode),
-    scale: key.scale,
-    informationCollector: () sync* {
-      yield ErrorDescription('Page: $pageNumber, DocumentId: $documentId');
-    },
-  );
+  ImageStreamCompleter loadImage(PdfPageImageProvider key, ImageDecoderCallback decode) =>
+      MultiFrameImageStreamCompleter(
+        codec: _loadAsync(key, decode),
+        scale: key.scale,
+        informationCollector: () sync* {
+          yield ErrorDescription('Page: $pageNumber, DocumentId: $documentId');
+        },
+      );
 
   @override
   Future<PdfPageImageProvider> obtainKey(ImageConfiguration configuration) =>
       SynchronousFuture<PdfPageImageProvider>(this);
 
-  Future<ui.Codec> _loadAsync(
-      PdfPageImageProvider key,
-      DecoderBufferCallback decode) async {
+  Future<Codec> _loadAsync(PdfPageImageProvider key, ImageDecoderCallback decode) async {
     assert(key == this);
 
     final loadedPdfPageImage = await pdfPageImage;
