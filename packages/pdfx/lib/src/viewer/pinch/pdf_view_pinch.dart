@@ -310,7 +310,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       return;
     }
     _forceUpdatePagePreviews = false;
-    for (final page in _pages) {
+    for (var i = 0; i < _pages.length; i++) {
+      final page = _pages[i];
       if (page.rect == null) {
         continue;
       }
@@ -385,7 +386,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     final exposed = Rect.fromLTWH(
         -m.row0[3], -m.row1[3], _lastViewSize!.width, _lastViewSize!.height);
     final distBase = max(_lastViewSize!.height, _lastViewSize!.width);
-    for (final page in _pages) {
+    for (var i = 0; i < _pages.length; i++) {
+      final page = _pages[i];
       if (page.rect == null ||
           page.status != _PdfPageLoadingStatus.pageLoaded) {
         continue;
@@ -548,7 +550,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           Rect.fromLTWH(-m.row0[3], -m.row1[3], viewSize.width, viewSize.height)
               .inflate(_padding);
 
-      for (final page in _pages) {
+      for (var i = 0; i < _pages.length; i++) {
+        final page = _pages[i];
         if (page.rect == null) {
           continue;
         }
