@@ -22,6 +22,8 @@ download_project(
   pdfium
   URL
   ${PDFIUM_URL}
+  DOWNLOAD_EXTRACT_TIMESTAMP
+  FALSE
 )
 
 # This value is used when generating builds using this plugin, so it must
