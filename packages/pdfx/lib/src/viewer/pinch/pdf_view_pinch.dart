@@ -66,7 +66,7 @@ class PdfViewPinch extends StatefulWidget {
   final Axis scrollDirection;
 
   /// Pdf widget page background decoration
-  final BoxDecoration? backgroundDecoration;
+  final BoxDecoration backgroundDecoration;
 
   /// Default page builder
   @override
