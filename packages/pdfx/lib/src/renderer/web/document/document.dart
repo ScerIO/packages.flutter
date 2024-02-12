@@ -17,7 +17,9 @@ class Document {
         'pagesCount': pagesCount,
       };
 
-  void close() {}
+  void close() {
+    document.destroy();
+  }
 
   Future<PdfjsPage> openPage(int? pageNumber) =>
       promiseToFuture<PdfjsPage>(document.getPage(pageNumber!));
