@@ -31,7 +31,16 @@ class PdfViewPinch extends StatefulWidget {
     ),
     this.scrollDirection = Axis.vertical,
     this.padding = 10,
-    this.backgroundDecoration = const BoxDecoration(),
+    this.backgroundDecoration = const BoxDecoration(
+      color: Color.fromARGB(255, 250, 250, 250),
+      boxShadow: [
+        BoxShadow(
+          color: Color(0x73000000),
+          blurRadius: 4,
+          offset: Offset(2, 2),
+        ),
+      ],
+    ),
     Key? key,
   }) : super(key: key);
 
@@ -57,7 +66,7 @@ class PdfViewPinch extends StatefulWidget {
   final Axis scrollDirection;
 
   /// Pdf widget page background decoration
-  final BoxDecoration? backgroundDecoration;
+  final BoxDecoration backgroundDecoration;
 
   /// Default page builder
   @override
@@ -568,16 +577,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           child: Container(
             width: page.rect!.width,
             height: page.rect!.height,
-            decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 250, 250, 250),
-              boxShadow: [
-                BoxShadow(
-                  color: Color(0x73000000),
-                  blurRadius: 4,
-                  offset: Offset(2, 2),
-                ),
-              ],
-            ),
+            decoration: widget.backgroundDecoration,
             child: Stack(
               children: [
                 ValueListenableBuilder<int>(
