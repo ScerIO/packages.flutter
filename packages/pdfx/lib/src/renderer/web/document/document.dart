@@ -1,5 +1,11 @@
-import 'package:js/js_util.dart';
+import 'dart:js_interop';
+
 import 'package:pdfx/src/renderer/web/pdfjs.dart';
+
+typedef DocumentInfo = ({
+  String id,
+  int pagesCount,
+});
 
 class Document {
   Document({
@@ -12,13 +18,13 @@ class Document {
 
   int get pagesCount => document.numPages;
 
-  Map<String, dynamic> get infoMap => {
-        'id': id,
-        'pagesCount': pagesCount,
-      };
+  DocumentInfo get info => (
+        id: id,
+        pagesCount: pagesCount,
+      );
 
   void close() {}
 
-  Future<PdfjsPage> openPage(int? pageNumber) =>
-      promiseToFuture<PdfjsPage>(document.getPage(pageNumber!));
+  Future<PdfjsPage> openPage(int pageNumber) =>
+      document.getPage(pageNumber).toDart;
 }
