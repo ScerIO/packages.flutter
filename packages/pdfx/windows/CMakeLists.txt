@@ -3,7 +3,7 @@ set(PROJECT_NAME "pdfx")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
 set(ARCH "x64")
-set(PDFIUM_VERSION "4634" CACHE STRING "Version of pdfium used")
+set(PDFIUM_VERSION "4690" CACHE STRING "Version of pdfium used")
 
 string(COMPARE GREATER_EQUAL ${PDFIUM_VERSION} "4690" PDFIUM_BINARY_NEW_FORMAT)
 
@@ -22,6 +22,8 @@ download_project(
   pdfium
   URL
   ${PDFIUM_URL}
+  DOWNLOAD_EXTRACT_TIMESTAMP
+  FALSE
 )
 
 # This value is used when generating builds using this plugin, so it must
