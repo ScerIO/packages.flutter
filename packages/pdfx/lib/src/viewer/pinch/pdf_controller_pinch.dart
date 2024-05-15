@@ -98,9 +98,7 @@ class PdfControllerPinch extends TransformationController
       _state!._pages.addAll(pages);
 
       if (initialPage > 1) {
-        _state?.widget.onPageChanged?.call(initialPage);
         _pendingInitialPage = initialPage;
-        pageListenable.value = initialPage;
       }
 
       loadingState.value = PdfLoadingState.success;

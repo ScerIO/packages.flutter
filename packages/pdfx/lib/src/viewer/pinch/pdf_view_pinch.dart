@@ -269,8 +269,10 @@ class _PdfViewPinchState extends State<PdfViewPinch>
 
     Matrix4? m;
     final pendingInitialPage = _controller.pendingInitialPage;
+    bool shouldNotifyPageChanged = false;
     if (pendingInitialPage != null) {
       m = _controller.calculatePageFitMatrix(pageNumber: pendingInitialPage);
+      shouldNotifyPageChanged = true;
     }
     m ??= _controller.value;
 
@@ -310,6 +312,11 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       _needPagePreviewGeneration();
     } else {
       _needRealSizeOverlayUpdate();
+    }
+
+    if (shouldNotifyPageChanged && pendingInitialPage != null) {
+      widget.onPageChanged?.call(pendingInitialPage);
+      _controller.pageListenable.value = pendingInitialPage;
     }
   }
 
