@@ -388,8 +388,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
 
     const fullPurgeDistThreshold = 33;
     const partialRemovalDistThreshold = 8;
-
-    final dpr = MediaQuery.of(context).devicePixelRatio;
+ 
+    final dpr = View.of(context).devicePixelRatio;
     final m = _controller.value;
     final r = m.row0[0];
     final exposed = Rect.fromLTWH(
