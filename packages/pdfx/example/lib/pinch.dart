@@ -23,7 +23,7 @@ class _PinchPageState extends State<PinchPage> {
       // document: PdfDocument.openAsset('assets/hello.pdf'),
       document: PdfDocument.openData(
         InternetFile.get(
-          'https://api.codetabs.com/v1/proxy/?quest=http://www.africau.edu/images/default/sample.pdf',
+          'https://www.aeee.in/wp-content/uploads/2020/08/Sample-pdf.pdf',
         ),
       ),
       initialPage: _initialPage,
