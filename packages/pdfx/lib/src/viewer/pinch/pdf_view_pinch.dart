@@ -266,7 +266,16 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     if (_lastViewSize == null || _pages.isEmpty) {
       return;
     }
-    final m = _controller.value;
+
+    Matrix4? m;
+    final pendingInitialPage = _controller.pendingInitialPage;
+    bool shouldNotifyPageChanged = false;
+    if (pendingInitialPage != null) {
+      m = _controller.calculatePageFitMatrix(pageNumber: pendingInitialPage);
+      shouldNotifyPageChanged = true;
+    }
+    m ??= _controller.value;
+
     final r = m.row0[0];
     final exposed = Rect.fromLTWH(
         -m.row0[3], -m.row1[3], _lastViewSize!.width, _lastViewSize!.height);
@@ -303,6 +312,11 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       _needPagePreviewGeneration();
     } else {
       _needRealSizeOverlayUpdate();
+    }
+
+    if (shouldNotifyPageChanged && pendingInitialPage != null) {
+      widget.onPageChanged?.call(pendingInitialPage);
+      _controller.pageListenable.value = pendingInitialPage;
     }
   }
 
@@ -389,7 +403,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
     const fullPurgeDistThreshold = 33;
     const partialRemovalDistThreshold = 8;
 
-    final dpr = MediaQuery.of(context).devicePixelRatio;
+    final dpr = View.of(context).devicePixelRatio;
     final m = _controller.value;
     final r = m.row0[0];
     final exposed = Rect.fromLTWH(
