@@ -265,7 +265,11 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
     }
 
     func openFileDocument(pdfFilePath: String) -> CGPDFDocument? {
-        return CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
+        let docment = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
+        if docment?.isEncrypted == true {
+            return nil
+        }
+        return docment
     }
 
     func openAssetDocument(name: String) -> CGPDFDocument? {
