@@ -261,7 +261,11 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
 
     func openDataDocument(data: Data) -> CGPDFDocument? {
         guard let datProv = CGDataProvider(data: data as CFData) else { return nil }
-        return CGPDFDocument(datProv)
+        let docment = CGPDFDocument(datProv)
+        if docment?.isUnlocked == false {
+            return nil
+        }
+        return docment
     }
 
     func openFileDocument(pdfFilePath: String) -> CGPDFDocument? {
