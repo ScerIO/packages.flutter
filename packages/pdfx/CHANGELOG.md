@@ -1,3 +1,11 @@
+## 2.7.0
+
+* Fixed pageSnapping option [pull#435](https://github.com/ScerIO/packages.flutter/pull/435)
+* Migrated to package:web [pull#493](https://github.com/ScerIO/packages.flutter/pull/493)
+* Bumped device_info_plus dependency to ^10.0.1 [pull#487](https://github.com/ScerIO/packages.flutter/pull/487)
+* Adjusted default zoom parameters [pull#487](https://github.com/ScerIO/packages.flutter/pull/487)
+* Fixed memory leak (Web) [pull#484](https://github.com/ScerIO/packages.flutter/pull/484)
+
 ## 2.6.0
 
 * Flutter 3.16 compatibility
