@@ -1,6 +1,6 @@
-<img src=".github/MEDIA/logo.png" alt="Flutter plugins" width="100%">
+<!-- [![Build Status](https://api.cirrus-ci.com/github/ScerIO/packages.flutter.svg)](https://cirrus-ci.com/github/scerio/packages.flutter/main) -->
 
-[![Build Status](https://api.cirrus-ci.com/github/ScerIO/packages.flutter.svg)](https://cirrus-ci.com/github/scerio/packages.flutter/main)
+❗️ __If you want to be a new maintainer, will__ [send me a message](https://t.me/Serge_Shkurko)
 
 ## Available packages and plugins 
 

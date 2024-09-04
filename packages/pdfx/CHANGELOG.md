@@ -5,6 +5,7 @@
 * Bumped device_info_plus dependency to ^10.0.1 [pull#487](https://github.com/ScerIO/packages.flutter/pull/487)
 * Adjusted default zoom parameters [pull#487](https://github.com/ScerIO/packages.flutter/pull/487)
 * Fixed memory leak (Web) [pull#484](https://github.com/ScerIO/packages.flutter/pull/484)
+* Upgrade dependencies
 
 ## 2.6.0
 
