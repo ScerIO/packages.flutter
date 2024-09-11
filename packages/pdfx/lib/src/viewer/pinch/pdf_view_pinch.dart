@@ -31,6 +31,8 @@ class PdfViewPinch extends StatefulWidget {
     ),
     this.scrollDirection = Axis.vertical,
     this.padding = 10,
+    this.minScale = 1.0,
+    this.maxScale = 20.0,
     this.backgroundDecoration = const BoxDecoration(
       color: Color.fromARGB(255, 250, 250, 250),
       boxShadow: [
@@ -46,6 +48,12 @@ class PdfViewPinch extends StatefulWidget {
 
   /// Padding for the every page.
   final double padding;
+
+  /// The minimum document zoom scale.
+  final double minScale;
+
+  /// The maximum document zoom scale.
+  final double maxScale;
 
   /// Page management
   final PdfControllerPinch controller;
@@ -91,6 +99,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
   bool _forceUpdatePagePreviews = true;
 
   double get _padding => widget.padding;
+  double get _minScale => widget.minScale;
+  double get _maxScale => widget.maxScale;
 
   @override
   void initState() {
@@ -548,8 +558,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
           constrained: false,
           alignPanAxis: false,
           boundaryMargin: const EdgeInsets.all(double.infinity),
-          minScale: 0.25,
-          maxScale: 20,
+          minScale: _minScale,
+          maxScale: _maxScale,
           panEnabled: true,
           scaleEnabled: true,
           child: SafeArea(
