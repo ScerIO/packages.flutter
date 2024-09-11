@@ -136,7 +136,7 @@ class PdfController with BasePdfController {
 
     _pdfViewState = pdfViewState;
 
-    _reInitPageController(initialPage);
+    _reInitPageController(page);
 
     if (_document == null) {
       _loadDocument(document, initialPage: initialPage);
