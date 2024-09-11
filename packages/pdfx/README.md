@@ -82,6 +82,8 @@ PdfView(
 | pageSnapping     	| Set to false for mouse wheel scroll on web                                                                     | - / +                  |
 | physics          	| How the widgets should respond to user input                                                                   | - / +                  |
 | padding          	| Padding for the every page.                                                                                    | + / -                  |
+| minScale          | The minimum document zoom scale.                                                                               | + / -                  |
+| maxScale          | The maximum document zoom scale.                                                                               | + / -                  |
 
 ### PdfViewBuilders & PdfViewPinchBuilders
 
@@ -109,7 +111,7 @@ pdfController.jumpTo(3);
 // Animate to specified page
 _pdfController.animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.ease);
 
-// Animate to next page 
+// Animate to next page
 _pdfController.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
 
 // Animate to previous page
