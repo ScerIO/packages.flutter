@@ -22,6 +22,7 @@ library pdf.js;
 import 'dart:js_interop';
 import 'dart:typed_data';
 
+import 'package:pdfx/src/renderer/web/constants.dart';
 import 'package:web/web.dart' as web;
 
 bool checkPdfjsLibInstallation() => _pdfjsLib != null;
@@ -29,8 +30,7 @@ bool checkPdfjsLibInstallation() => _pdfjsLib != null;
 @JS('pdfjsLib')
 external PdfjsLib? get _pdfjsLib;
 
-@JS('pdfRenderOptions')
-external PdfjsRenderOptions get _pdfRenderOptions;
+PdfjsRenderOptions get _pdfRenderOptions => Constants.defaultPdfjsRenderOptions;
 
 extension type PdfjsLib(JSObject _) implements JSObject {
   external PdfjsDocumentTask getDocument(PdfjsRenderOptions options);
@@ -55,8 +55,12 @@ extension type PdfjsRenderOptions._(JSObject _) implements JSObject {
     String? password,
   });
 
-  external String get cMapUrl;
+  external const factory PdfjsRenderOptions.constant({
+    String cMapUrl,
+    bool cMapPacked,
+  });
 
+  external String get cMapUrl;
   external bool get cMapPacked;
 }
 
