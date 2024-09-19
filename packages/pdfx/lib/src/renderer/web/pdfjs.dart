@@ -30,7 +30,11 @@ bool checkPdfjsLibInstallation() => _pdfjsLib != null;
 @JS('pdfjsLib')
 external PdfjsLib? get _pdfjsLib;
 
-PdfjsRenderOptions get _pdfRenderOptions => Constants.defaultPdfjsRenderOptions;
+@JS("pdfRenderOptions")
+external PdfjsRenderOptions? get _pdfRenderOptionsFromContext;
+
+// Safe check
+PdfjsRenderOptions get _pdfRenderOptions => _pdfRenderOptionsFromContext ?? Constants.defaultPdfjsRenderOptions;
 
 extension type PdfjsLib(JSObject _) implements JSObject {
   external PdfjsDocumentTask getDocument(PdfjsRenderOptions options);
@@ -55,7 +59,7 @@ extension type PdfjsRenderOptions._(JSObject _) implements JSObject {
     String? password,
   });
 
-  external const factory PdfjsRenderOptions.constant({
+  external factory PdfjsRenderOptions.constant({
     String cMapUrl,
     bool cMapPacked,
   });
