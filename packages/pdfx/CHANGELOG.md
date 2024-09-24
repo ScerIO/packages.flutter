@@ -1,3 +1,9 @@
+## 2.8.0
+
+* Added zoom scale customizable [pull#529](https://github.com/ScerIO/packages.flutter/pull/529)
+* Fixed web [pull#533](https://github.com/ScerIO/packages.flutter/pull/533)
+* Fixed avoid resetting to initialPage each view [pull#530](https://github.com/ScerIO/packages.flutter/pull/530)
+
 ## 2.7.0
 
 * Fixed pageSnapping option [pull#435](https://github.com/ScerIO/packages.flutter/pull/435)
