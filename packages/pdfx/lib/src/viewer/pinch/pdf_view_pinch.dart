@@ -291,7 +291,7 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         -m.row0[3], -m.row1[3], _lastViewSize!.width, _lastViewSize!.height);
 
     final rawDocumentProgress =
-        (-m.row1[3] / (_docSize!.height - _lastViewSize!.height));
+        ((-m.row1[3] / r / r) / (_docSize!.height - _lastViewSize!.height));
     const precisionFactor = 10000;
     _controller._documentProgress =
         ((rawDocumentProgress * precisionFactor).round() / precisionFactor)
