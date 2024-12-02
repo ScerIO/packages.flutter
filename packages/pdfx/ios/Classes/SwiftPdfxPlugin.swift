@@ -269,11 +269,21 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
     }
 
     func openFileDocument(pdfFilePath: String) -> CGPDFDocument? {
-        let docment = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
-        if docment?.isEncrypted == true {
+        //        let docment = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
+        //        if docment?.isEncrypted == true {
+        //            return nil
+        //        }
+        //        return docment
+        guard let document = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL) else {
             return nil
         }
-        return docment
+        
+        // 如果加密，尝试用空密码解锁
+        if document.isEncrypted {
+            _ = document.unlockWithPassword("")
+        }
+        
+        return document
     }
 
     func openAssetDocument(name: String) -> CGPDFDocument? {
