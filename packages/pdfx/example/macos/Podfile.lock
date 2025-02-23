@@ -1,28 +1,22 @@
 PODS:
-  - device_info_plus_macos (0.0.1):
-    - FlutterMacOS
   - FlutterMacOS (1.0.0)
   - pdfx (1.0.0):
     - FlutterMacOS
 
 DEPENDENCIES:
-  - device_info_plus_macos (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - pdfx (from `Flutter/ephemeral/.symlinks/plugins/pdfx/macos`)
 
 EXTERNAL SOURCES:
-  device_info_plus_macos:
-    :path: Flutter/ephemeral/.symlinks/plugins/device_info_plus_macos/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
   pdfx:
     :path: Flutter/ephemeral/.symlinks/plugins/pdfx/macos
 
 SPEC CHECKSUMS:
-  device_info_plus_macos: 1ad388a1ef433505c4038e7dd9605aadd1e2e9c7
-  FlutterMacOS: 57701585bf7de1b3fc2bb61f6378d73bbdea8424
-  pdfx: 4df46bcbc64f3186ef6b6306c8c8a24487390843
+  FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
+  pdfx: 1e79f57f7a6ce2f4a4c30f21fa54d3dc82441b51
 
-PODFILE CHECKSUM: 6eac6b3292e5142cfc23bdeb71848a40ec51c14c
+PODFILE CHECKSUM: 353c8bcc5d5b0994e508d035b5431cfe18c1dea7
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.16.2
