@@ -186,12 +186,9 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 val cropW = if (crop) message.width?.toInt() ?: 0 else 0
 
                 val quality = message.quality?.toInt() ?: 100
+                val forPrint = message.forPrint ?: false
 
                 val page = pages.get(pageId)
-                if (page == null) {
-                    result.error(PdfRendererException("pdf_renderer", "Page not found for ID: $pageId", null))
-                    return@launch
-                }
 
                 val tempOutFileExtension = when (format) {
                     0 -> "jpg"
@@ -208,7 +205,18 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
                 //  background thread render
                 val pageImage = page.render(
-                    tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality
+                    file = tempOutFile,
+                    width = width,
+                    height = height,
+                    background = color,
+                    format = format,
+                    crop = crop,
+                    cropX = cropX,
+                    cropY = cropY,
+                    cropW = cropW,
+                    cropH = cropH,
+                    quality = quality,
+                    forPrint = forPrint,
                 )
 
                 withContext(Dispatchers.Main) {
