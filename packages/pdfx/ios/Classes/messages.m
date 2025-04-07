@@ -595,7 +595,7 @@ static id GetNullableObjectAtIndex(NSArray* array, NSInteger key) {
 }
 @end
 
-NSObject<FlutterMessageCodec> *PdfxApiGetCodec(void) {
+NSObject<FlutterMessageCodec> *PdfxApiGetCodec() {
   static dispatch_once_t sPred = 0;
   static FlutterStandardMessageCodec *sSharedObject = nil;
   dispatch_once(&sPred, ^{
