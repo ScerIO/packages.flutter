@@ -2,11 +2,11 @@ name: pdfx
 description: Flutter plugin to render & show PDF pages as images on Web, MacOS, Windows, Android and iOS.
 repository: https://github.com/ScerIO/packages.flutter/tree/main/packages/pdfx
 issue_tracker: https://github.com/ScerIO/packages.flutter/issues?q=is%3Aissue+is%3Aopen+label%3A%22p%3A+pdfx%22
-version: 2.8.0
+version: 2.9.0
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
-  flutter: '>=3.19.0'
+  flutter: '>=3.24.0'
 
 dependencies:
   flutter:
@@ -14,19 +14,20 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
-  uuid: ^4.5.0
+  device_info_plus: ^11.3.3
+  uuid: ^4.5.1
   meta: ^1.15.0
   extension: ^0.6.0
-  synchronized: ^3.2.0
+  synchronized: ^3.3.0+3
   universal_platform: ^1.1.0
   photo_view: ^0.15.0
   vector_math: ^2.1.4
-  web: ^1.0.0
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.3
+  flutter_lints: ^5.0.0
   pigeon: ^4.2.14
 
 flutter:
