@@ -10,9 +10,9 @@ Includes 2 api:
 
 ## Showcase
 
-| PdfViewPinch              | PdfView                    |
-|---------------------------|----------------------------|
-|![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/pinch.gif?raw=true)  | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/simple.gif?raw=true)  |
+| PdfViewPinch                                                                                                       | PdfView                                                                                                             |
+|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/pinch.gif?raw=true) | ![](https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/pdfx/example/media/simple.gif?raw=true) |
 
 ## Getting Started
 In your flutter project add the dependency:
