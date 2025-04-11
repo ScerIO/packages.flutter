@@ -1,6 +1,7 @@
 import Foundation
+import UIKit
 
-extension NSColor {
+extension UIColor {
     convenience init(hexString: String) {
         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = UInt64()

@@ -76,8 +76,8 @@ class Page {
         var success = false
         var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
         let compressionQuality = CGFloat(quality) / 100
-        tempData.withUnsafeMutableBytes { (ptr) in
-            let rawPtr = ptr.baseAddress
+        tempData.withUnsafeMutableBytes { (ptr: UnsafeMutableRawBufferPointer) in
+            guard let rawPtr = ptr.baseAddress else { return }
             let rgb = CGColorSpaceCreateDeviceRGB()
             let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {

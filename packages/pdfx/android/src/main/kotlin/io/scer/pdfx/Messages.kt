@@ -208,7 +208,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
                 //  background thread render
                 val pageImage = page.render(
-                    tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality
+                    tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality, forPrint = false
                 )
 
                 withContext(Dispatchers.Main) {
