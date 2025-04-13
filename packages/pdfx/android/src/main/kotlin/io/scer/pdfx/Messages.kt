@@ -84,7 +84,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
     override fun openDocumentAsset(
         message: Pigeon.OpenPathMessage,
-        result: Pigeon.Result<Pigeon.OpenReply>
+        result: Pigeon.Result<Pigeon.OpenReply>val resultResponse = Pigeon.RenderPageReply()
     ) {
         val resultResponse = Pigeon.OpenReply()
         try {
@@ -186,6 +186,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 val cropW = if (crop) message.width?.toInt() ?: 0 else 0
 
                 val quality = message.quality?.toInt() ?: 100
+                val forPrint = message.forPrint ?: false
 
                 val page = pages.get(pageId)
                 if (page == null) {
@@ -267,7 +268,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             val srcX = message.sourceX!!.toInt()
             val srcY = message.sourceY!!.toInt()
             val backgroundColor = message.backgroundColor
-            val forPrint = message.forPrint ?: false;
+           
 
             if (width <= 0 || height <= 0) {
                 result.error(PdfRendererException("pdf_renderer", "updateTexture width/height == 0", null))
