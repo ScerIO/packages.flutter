@@ -1,6 +1,5 @@
 package io.scer.pdfx
 
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Rect
@@ -11,6 +10,8 @@ import android.util.Log
 import android.util.SparseArray
 import android.view.Surface
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.toColorInt
 import dev.flutter.pigeon.Pigeon
 import io.flutter.BuildConfig
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -21,19 +22,20 @@ import io.scer.pdfx.resources.RepositoryItemNotFoundException
 import io.scer.pdfx.utils.CreateRendererException
 import io.scer.pdfx.utils.randomFilename
 import io.scer.pdfx.utils.toFile
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.IOException
-import java.lang.RuntimeException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.IOException
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
-               private val documents: DocumentRepository,
-               private val pages: PageRepository) : Pigeon.PdfxApi {
+class Messages(
+    private val binding: FlutterPlugin.FlutterPluginBinding,
+    private val documents: DocumentRepository,
+    private val pages: PageRepository
+) : Pigeon.PdfxApi {
 
     private val textures: SparseArray<TextureRegistry.SurfaceProducer> = SparseArray()
 
@@ -114,7 +116,11 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         } catch (e: NullPointerException) {
             throw PdfRendererException("pdf_renderer", "Need call arguments: id!", null)
         } catch (e: RepositoryItemNotFoundException) {
-            throw PdfRendererException("pdf_renderer", "Document not exist in documents repository", null)
+            throw PdfRendererException(
+                "pdf_renderer",
+                "Document not exist in documents repository",
+                null
+            )
         } catch (e: Exception) {
             throw PdfRendererException("pdf_renderer", "Unknown error", null)
         }
@@ -144,9 +150,21 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
             result.success(resultResponse)
         } catch (e: NullPointerException) {
-            result.error(PdfRendererException("pdf_renderer", "Need call arguments: documentId & page!", null))
+            result.error(
+                PdfRendererException(
+                    "pdf_renderer",
+                    "Need call arguments: documentId & page!",
+                    null
+                )
+            )
         } catch (e: RepositoryItemNotFoundException) {
-            result.error(PdfRendererException("pdf_renderer", "Document not exist in documents", null))
+            result.error(
+                PdfRendererException(
+                    "pdf_renderer",
+                    "Document not exist in documents",
+                    null
+                )
+            )
         } catch (e: Exception) {
             result.error(PdfRendererException("pdf_renderer", "Unknown error", null))
         }
@@ -177,7 +195,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
 
                 val format = message.format?.toInt() ?: 1
                 val backgroundColor = message.backgroundColor
-                val color = backgroundColor?.let { Color.parseColor(it) } ?: Color.TRANSPARENT
+                val color = backgroundColor?.toColorInt() ?: Color.TRANSPARENT
 
                 val crop = message.crop ?: false
                 val cropX = if (crop) message.cropX?.toInt() ?: 0 else 0
@@ -188,10 +206,6 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 val quality = message.quality?.toInt() ?: 100
 
                 val page = pages.get(pageId)
-                if (page == null) {
-                    result.error(PdfRendererException("pdf_renderer", "Page not found for ID: $pageId", null))
-                    return@launch
-                }
 
                 val tempOutFileExtension = when (format) {
                     0 -> "jpg"
@@ -200,15 +214,27 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                     else -> "jpg"
                 }
 
-                val tempOutFolder = File(binding.applicationContext.cacheDir, "pdf_renderer_cache").apply {
-                    mkdirs()
-                }
+                val tempOutFolder =
+                    File(binding.applicationContext.cacheDir, "pdf_renderer_cache").apply {
+                        mkdirs()
+                    }
 
                 val tempOutFile = File(tempOutFolder, "$randomFilename.$tempOutFileExtension")
 
                 //  background thread render
                 val pageImage = page.render(
-                    tempOutFile, width, height, color, format, crop, cropX, cropY, cropW, cropH, quality
+                    tempOutFile,
+                    width,
+                    height,
+                    color,
+                    format,
+                    crop,
+                    cropX,
+                    cropY,
+                    cropW,
+                    cropH,
+                    quality,
+                    forPrint = false
                 )
 
                 withContext(Dispatchers.Main) {
@@ -269,16 +295,34 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             val backgroundColor = message.backgroundColor
 
             if (width <= 0 || height <= 0) {
-                result.error(PdfRendererException("pdf_renderer", "updateTexture width/height == 0", null))
+                result.error(
+                    PdfRendererException(
+                        "pdf_renderer",
+                        "updateTexture width/height == 0",
+                        null
+                    )
+                )
             }
 
             val mat = Matrix()
-            mat.setValues(floatArrayOf((fullWidth / page.width).toFloat(), 0f, -srcX.toFloat(), 0f, (fullHeight / page.height).toFloat(), -srcY.toFloat(), 0f, 0f, 1f))
+            mat.setValues(
+                floatArrayOf(
+                    (fullWidth / page.width).toFloat(),
+                    0f,
+                    -srcX.toFloat(),
+                    0f,
+                    (fullHeight / page.height).toFloat(),
+                    -srcY.toFloat(),
+                    0f,
+                    0f,
+                    1f
+                )
+            )
 
             try {
-                val bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                val bmp = createBitmap(width, height)
                 if (backgroundColor != null) {
-                    bmp.eraseColor(Color.parseColor(backgroundColor))
+                    bmp.eraseColor(backgroundColor.toColorInt())
                 }
                 page.render(bmp, null, mat, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
 
@@ -297,7 +341,13 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 }
                 result.success(null)
             } catch (e: Exception) {
-                result.error(PdfRendererException("pdf_renderer", "updateTexture Unknown error", null))
+                result.error(
+                    PdfRendererException(
+                        "pdf_renderer",
+                        "updateTexture Unknown error",
+                        null
+                    )
+                )
             }
 
         }
@@ -376,8 +426,7 @@ class PdfRendererException internal constructor(code: String?, message: String?,
 fun <R> Surface.use(block: (Surface) -> R): R {
     try {
         return block(this)
-    }
-    finally {
+    } finally {
         this.release()
     }
 }
