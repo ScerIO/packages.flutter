@@ -4,12 +4,10 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.pdf.PdfRenderer
-import android.os.Build
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.util.SparseArray
 import android.view.Surface
-import androidx.annotation.RequiresApi
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.toColorInt
 import dev.flutter.pigeon.Pigeon
@@ -30,7 +28,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 
-@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 class Messages(
     private val binding: FlutterPlugin.FlutterPluginBinding,
     private val documents: DocumentRepository,
@@ -205,6 +202,8 @@ class Messages(
 
                 val quality = message.quality?.toInt() ?: 100
 
+                val forPrint = message.forPrint ?: false
+
                 val page = pages.get(pageId)
 
                 val tempOutFileExtension = when (format) {
@@ -234,7 +233,7 @@ class Messages(
                     cropW,
                     cropH,
                     quality,
-                    forPrint = false
+                    forPrint = forPrint
                 )
 
                 withContext(Dispatchers.Main) {
