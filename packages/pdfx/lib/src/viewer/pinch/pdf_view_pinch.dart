@@ -43,8 +43,8 @@ class PdfViewPinch extends StatefulWidget {
         ),
       ],
     ),
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// Padding for the every page.
   final double padding;

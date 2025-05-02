@@ -12,8 +12,8 @@ class PdfPageNumber extends StatelessWidget {
   const PdfPageNumber({
     required this.controller,
     required this.builder,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final BasePdfController controller;
   final PdfPageNumberBuilder builder;

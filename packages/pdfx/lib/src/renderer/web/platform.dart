@@ -79,14 +79,10 @@ class PdfxWeb extends PdfxPlatform {
 /// Handles PDF document loaded on memory.
 class PdfDocumentWeb extends PdfDocument {
   PdfDocumentWeb._({
-    required String sourceName,
-    required String id,
-    required int pagesCount,
-  }) : super(
-          sourceName: sourceName,
-          id: id,
-          pagesCount: pagesCount,
-        );
+    required super.sourceName,
+    required super.id,
+    required super.pagesCount,
+  });
 
   @override
   Future<void> close() async {
@@ -122,18 +118,13 @@ class PdfDocumentWeb extends PdfDocument {
 
 class PdfPageWeb extends PdfPage {
   PdfPageWeb({
-    required PdfDocument document,
-    required String id,
-    required int pageNumber,
-    required double width,
-    required double height,
+    required super.document,
+    required super.id,
+    required super.pageNumber,
+    required super.width,
+    required super.height,
     required this.pdfJsPage,
   }) : super(
-          document: document,
-          id: id,
-          pageNumber: pageNumber,
-          width: width,
-          height: height,
           autoCloseAndroid: false,
         );
 
@@ -195,23 +186,15 @@ class PdfPageWeb extends PdfPage {
 
 class PdfPageImageWeb extends PdfPageImage {
   PdfPageImageWeb({
-    required String? id,
-    required int pageNumber,
-    required int? width,
-    required int? height,
-    required Uint8List bytes,
+    required super.id,
+    required super.pageNumber,
+    required super.width,
+    required super.height,
+    required super.bytes,
     required this.pdfJsPage,
-    required PdfPageImageFormat format,
-    required int quality,
-  }) : super(
-          id: id,
-          pageNumber: pageNumber,
-          width: width,
-          height: height,
-          bytes: bytes,
-          format: format,
-          quality: quality,
-        );
+    required super.format,
+    required super.quality,
+  });
 
   final PdfjsPage pdfJsPage;
 
@@ -289,14 +272,10 @@ class PdfPageImageWeb extends PdfPageImage {
 
 class PdfPageTextureWeb extends PdfPageTexture {
   PdfPageTextureWeb({
-    required int id,
-    required String? pageId,
-    required int pageNumber,
-  }) : super(
-          id: id,
-          pageId: pageId,
-          pageNumber: pageNumber,
-        );
+    required super.id,
+    required super.pageId,
+    required super.pageNumber,
+  });
 
   int? _texWidth;
   int? _texHeight;

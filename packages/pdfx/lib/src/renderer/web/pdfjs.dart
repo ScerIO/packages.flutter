@@ -16,9 +16,6 @@
 
 // ignore_for_file: public_member_api_docs
 
-@JS()
-library pdf.js;
-
 import 'dart:js_interop';
 import 'dart:typed_data';
 
@@ -34,7 +31,8 @@ external PdfjsLib? get _pdfjsLib;
 external PdfjsRenderOptions? get _pdfRenderOptionsFromContext;
 
 // Safe check
-PdfjsRenderOptions get _pdfRenderOptions => _pdfRenderOptionsFromContext ?? Constants.defaultPdfjsRenderOptions;
+PdfjsRenderOptions get _pdfRenderOptions =>
+    _pdfRenderOptionsFromContext ?? Constants.defaultPdfjsRenderOptions;
 
 extension type PdfjsLib(JSObject _) implements JSObject {
   external PdfjsDocumentTask getDocument(PdfjsRenderOptions options);
