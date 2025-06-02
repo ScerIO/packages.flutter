@@ -1,3 +1,12 @@
+## 2.9.2
+
+* Fixed PdfViewPinch when compiling to WASM [pull#586](https://github.com/ScerIO/packages.flutter/pull/586)
+
+## 2.9.1
+
+* Fixed Android [pull#564](https://github.com/ScerIO/packages.flutter/pull/564)
+* Fixed iOS [pull#565](https://github.com/ScerIO/packages.flutter/pull/565)
+
 ## 2.9.0
 
 * Implemented document progress feature [pull#537](https://github.com/ScerIO/packages.flutter/pull/537)
