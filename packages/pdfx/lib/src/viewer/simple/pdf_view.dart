@@ -31,8 +31,8 @@ class PdfView extends StatefulWidget {
     this.pageSnapping = true,
     this.physics,
     this.backgroundDecoration = const BoxDecoration(),
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// Page management
   final PdfController controller;
