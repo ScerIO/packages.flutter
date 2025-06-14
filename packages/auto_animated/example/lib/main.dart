@@ -42,8 +42,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(
-          backgroundColor: Colors.grey[100],
           scaffoldBackgroundColor: Colors.grey[200],
+          colorScheme: ColorScheme.dark(),
         ),
         home: Scaffold(
           body: _children[_selectedIndex],
