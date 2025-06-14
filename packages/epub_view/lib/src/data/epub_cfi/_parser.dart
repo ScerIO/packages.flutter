@@ -1039,7 +1039,7 @@ class EpubCfiParser {
     }
     if (result0 != null) {
       result0 = ((offset, intPartVal, fracPartVal) =>
-              intPartVal.join('') + '.' + fracPartVal.join(''))(
+              "${intPartVal.join('')}.${fracPartVal.join('')}")(
           pos0, result0[0], result0[2]);
     }
     if (result0 == null) {
