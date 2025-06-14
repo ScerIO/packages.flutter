@@ -4,7 +4,7 @@ Pure flutter widget (non native) for view EPUB documents on all platforms. Based
 
 ## Showcase
 
-<img width="50%" src="https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/epub_view/example/media/example.gif?raw=true" />
+<img width="50%" src="https://raw.githubusercontent.com/ScerIO/packages.flutter/main/packages/epub_view/example/media/example.gif?raw=true"  alt="Snapshot of epub_view example project"/>
 
 ## Getting Started
 In your flutter project add the dependency:
@@ -60,22 +60,24 @@ Widget build(BuildContext context) => Scaffold(
 ### How start from last view position?
 This method allows you to keep the exact reading position even inside the chapter:
 ```dart
-_epubController = EpubController(
-  // initialize with epub cfi string for open book from last position
-  epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
-);
+void main() {
+  _epubController = EpubController(
+    // initialize with epub cfi string for open book from last position
+    epubCfi: 'epubcfi(/6/6[chapter-2]!/4/2/1612)',
+  );
 
 // Attach controller
-EpubView(
-  controller: _epubController,
-);
+  EpubView(
+    controller: _epubController,
+  );
 
 // Get epub cfi string
 // for example output - epubcfi(/6/6[chapter-2]!/4/2/1612)
-final cfi = _epubController.generateEpubCfi();
+  final cfi = _epubController.generateEpubCfi();
 
 // or usage controller for navigate
-_epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
+  _epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
+}
 ```
 
 ## Api
@@ -84,12 +86,17 @@ _epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
 
 **Local document open:**
 ```dart
-EpubDocument.openAsset('assets/sample.pdf')
+void main() {
+  FutureOr<Uint8List> data = []; // Uint8List from file
+  
+  EpubDocument.openAsset('assets/sample.pdf');
 
-EpubDocument.openData(FutureOr<Uint8List> data)
+  EpubDocument.openData(data);
 
 // Not supports on Web
-EpubDocument.openFile('path/to/file/on/device')
+  EpubDocument.openFile('path/to/file/on/device');
+}
+
 ```
 **Network document open:**
 
@@ -102,30 +109,36 @@ And use it
 ```dart
 import 'package:internet_file/internet_file.dart';
 
-// The cors policy is required on the server. 
+void main() {
+  // The cors policy is required on the server. 
 // You can raise your cors proxy.
-EpubDocument.openData(InternetFile.get('https://link.to/book.epub'))
+  EpubDocument.openData(InternetFile.get('https://link.to/book.epub'));
+}
 ```
 
 ### Control document
 ```dart
-// Get epub cfi string of actual view insets
+void main() {
+  // Get epub cfi string of actual view insets
 // for example output - epubcfi(/6/6[chapter-2]!/4/2/1612)
-final cfi = _epubController.generateEpubCfi();
+  final cfi = _epubController.generateEpubCfi();
 
 // Navigate to paragraph in document
-_epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
+  _epubController.gotoEpubCfi('epubcfi(/6/6[chapter-2]!/4/2/1612)');
+}
 ```
 
 ### Document callbacks
 ```dart
-EpubView(
-  controller: epubController,
-  
-  onExternalLinkPressed: (href) {},
+void main() {
+  EpubView(
+    controller: epubController,
 
-  onDocumentLoaded: (document) {},
-  onChapterChanged: (chapter) {},
-  onDocumentError: (error) {},
-);
+    onExternalLinkPressed: (href) {},
+
+    onDocumentLoaded: (document) {},
+    onChapterChanged: (chapter) {},
+    onDocumentError: (error) {},
+  );
+}
 ```

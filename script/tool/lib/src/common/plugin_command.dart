@@ -144,6 +144,9 @@ abstract class PluginCommand extends Command<void> {
   /// The command to use when running `flutter`.
   String get flutterCommand => platform.isWindows ? 'flutter.bat' : 'flutter';
 
+  /// The command to use when running `dart`.
+  String get dartCommand => 'dart';
+
   /// The shard of the overall command execution that this instance should run.
   int get shardIndex {
     if (_shardIndex == null) {

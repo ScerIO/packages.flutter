@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Brightness get platformBrightness =>
-      MediaQueryData.fromView(WidgetsBinding.instance.window)
-          .platformBrightness;
+      MediaQueryData.fromView(View.of(context)).platformBrightness;
 
   void _setSystemUIOverlayStyle() {
     if (platformBrightness == Brightness.light) {
