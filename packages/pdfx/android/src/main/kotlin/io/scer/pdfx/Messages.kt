@@ -264,7 +264,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
                 }
             }
 
-            override fun onSurfaceCleanup() {
+            override fun onSurfaceDestroyed() {
                 // ignore - Surface is used once to draw bitmap
             }
         })
