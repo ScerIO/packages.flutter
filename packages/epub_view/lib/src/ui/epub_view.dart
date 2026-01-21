@@ -251,7 +251,7 @@ class _EpubViewState extends State<EpubView> {
       trailingEdge: trailingEdge,
       leadingEdge: leadingEdge,
     );
-    final index = posIndex >= _chapterIndexes.last
+    final index = posIndex >= _chapterIndexes.length
         ? _chapterIndexes.length
         : _chapterIndexes.indexWhere((chapterIndex) {
             if (posIndex < chapterIndex) {
