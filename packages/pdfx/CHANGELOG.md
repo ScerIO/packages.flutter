@@ -1,3 +1,7 @@
+## 2.9.3
+
+* Added Swift Package Manager support for iOS.
+
 ## 2.9.2
 
 * Fixed PdfViewPinch when compiling to WASM [pull#586](https://github.com/ScerIO/packages.flutter/pull/586)
