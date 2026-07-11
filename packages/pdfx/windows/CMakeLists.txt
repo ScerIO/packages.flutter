@@ -2,8 +2,14 @@ cmake_minimum_required(VERSION 3.15)
 set(PROJECT_NAME "pdfx")
 project(${PROJECT_NAME} LANGUAGES CXX)
 
-set(ARCH "x64")
-set(PDFIUM_VERSION "4690" CACHE STRING "Version of pdfium used")
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "ARM64")
+  set(ARCH "arm64")
+  # chromium/4690 does not provide win-arm64 binaries; use a release that does.
+  set(PDFIUM_VERSION "7202" CACHE STRING "Version of pdfium used")
+else()
+  set(ARCH "x64")
+  set(PDFIUM_VERSION "4690" CACHE STRING "Version of pdfium used")
+endif()
 
 string(COMPARE GREATER_EQUAL ${PDFIUM_VERSION} "4690" PDFIUM_BINARY_NEW_FORMAT)
 
