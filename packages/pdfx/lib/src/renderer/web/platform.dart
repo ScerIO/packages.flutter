@@ -24,11 +24,13 @@ final _textures = <int, RgbaData>{};
 int _texId = -1;
 
 class PdfxWeb extends PdfxPlatform {
+  // The pdf.js presence check deliberately does NOT run here: this
+  // constructor runs during web plugin registration for every app that
+  // merely depends on pdfx, so a missing script killed apps (and tools such
+  // as the widget previewer) that never open a PDF. The check lives in
+  // _openDocumentData instead, the funnel every open path goes through, so
+  // it fires only when a PDF is actually opened.
   PdfxWeb() {
-    assert(
-        checkPdfjsLibInstallation(),
-        'pdf.js not added in web/index.html. '
-        'Run «flutter pub run pdfx:install_web» or add script manually');
     _eventChannel.setController(_eventStreamController);
   }
 
@@ -44,6 +46,12 @@ class PdfxWeb extends PdfxPlatform {
 
   Future<DocumentInfo> _openDocumentData(ByteBuffer data,
       {String? password}) async {
+    // A StateError (not an assert) so release builds also fail with a clear
+    // message instead of an obscure pdf.js JS error.
+    if (!checkPdfjsLibInstallation()) {
+      throw StateError('pdf.js not added in web/index.html. '
+          'Run «flutter pub run pdfx:install_web» or add script manually');
+    }
     final document = await pdfjsGetDocumentFromData(data, password: password);
 
     return _documents.register(document).info;

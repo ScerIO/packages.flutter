@@ -1,3 +1,9 @@
+## 2.9.3
+
+* Web: moved the pdf.js presence check from plugin registration to document
+  open, so apps that depend on pdfx without opening a PDF no longer fail to
+  start when pdf.js is not in web/index.html
+
 ## 2.9.2
 
 * Fixed PdfViewPinch when compiling to WASM [pull#586](https://github.com/ScerIO/packages.flutter/pull/586)
