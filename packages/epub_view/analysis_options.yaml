@@ -11,3 +11,10 @@ analyzer:
     - "**/*.config.dart"
     - "**/example/**"
     - "**/*test.dart"
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
