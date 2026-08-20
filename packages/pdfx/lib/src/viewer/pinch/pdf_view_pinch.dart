@@ -291,12 +291,12 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         -m.row0[3], -m.row1[3], _lastViewSize!.width, _lastViewSize!.height);
 
     if (_lastViewSize?.height != null) {
-      // Cuando el documento cabe exactamente en el viewport (o cuando ambos
-      // aún miden 0 en el primer frame en Android edge-to-edge), el divisor
-      // (_docSize.height - _lastViewSize.height) es 0 y produce NaN/Infinity.
-      // Sin este guard, .round() crashea con "Infinity or NaN toInt" y el
-      // PDF se queda en blanco. Al normalizar a 0.0 el progreso es
-      // consistente: no hay recorrido pendiente cuando todo cabe en pantalla.
+      // When the document exactly fits the viewport (or both still measure 0
+      // on the first frame under Android edge-to-edge), the divisor
+      // (_docSize.height - _lastViewSize.height) is 0 and yields NaN/Infinity.
+      // Without this guard, .round() crashes with "Infinity or NaN toInt" and
+      // the PDF is left blank. Normalizing to 0.0 keeps progress consistent:
+      // there is no remaining scroll when everything fits on screen.
       var rawDocumentProgress =
           ((exposed.bottom / r - _lastViewSize!.height) /
               (_docSize!.height - _lastViewSize!.height));
