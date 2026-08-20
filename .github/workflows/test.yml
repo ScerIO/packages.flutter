@@ -48,5 +48,11 @@ jobs:
         working-directory: packages/${{ matrix.package }}
       - run: flutter analyze --fatal-infos
         working-directory: packages/${{ matrix.package }}
-      - run: flutter test
+      - name: Run tests
         working-directory: packages/${{ matrix.package }}
+        run: |
+          if [ -d test ]; then
+            flutter test
+          else
+            echo "No test directory, skipping."
+          fi
