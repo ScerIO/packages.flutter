@@ -5,9 +5,9 @@ extension ColorHelper on Color {
   Color lighter(int percents) {
     assert(percents >= 1 && percents <= 100);
     final int rgbPercent = (percents / 100 * 255).round();
-    int red = this.red + rgbPercent,
-        green = this.green + rgbPercent,
-        blue = this.blue + rgbPercent;
+    int red = (this.r * 255.0).round() + rgbPercent,
+        green = (this.g * 255.0).round() + rgbPercent,
+        blue = (this.b * 255.0).round() + rgbPercent;
     if (red > 255) {
       red = 255;
     }
@@ -17,16 +17,16 @@ extension ColorHelper on Color {
     if (blue > 255) {
       blue = 255;
     }
-    return Color.fromARGB(alpha, red, green, blue);
+    return Color.fromARGB((this.a * 255.0).round(), red, green, blue);
   }
 
   /// Make color darker by so many [percents]
   Color darker(int percents) {
     assert(percents >= 1 && percents <= 100);
     final int rgbPercent = (percents / 100 * 255).round();
-    int red = this.red - rgbPercent,
-        green = this.green - rgbPercent,
-        blue = this.blue - rgbPercent;
+    int red = (this.r * 255.0).round() - rgbPercent,
+        green = (this.g * 255.0).round() - rgbPercent,
+        blue = (this.b * 255.0).round() - rgbPercent;
     if (red < 0) {
       red = 0;
     }
@@ -36,7 +36,7 @@ extension ColorHelper on Color {
     if (blue < 0) {
       blue = 0;
     }
-    return Color.fromARGB(alpha, red, green, blue);
+    return Color.fromARGB((this.a * 255.0).round(), red, green, blue);
   }
 
   /// Linearly interpolate between two colors.
@@ -64,5 +64,5 @@ extension ColorHelper on Color {
   Color? mix(Color another, double amount) => Color.lerp(this, another, amount);
 
   /// Convert color to hex string
-  String get asHexString => '#${value.toRadixString(16).toUpperCase()}';
+  String get asHexString => '#${toARGB32().toRadixString(16).toUpperCase()}';
 }

@@ -6,15 +6,18 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   group('hex color', () {
     test('Normal color', () {
-      expect(HexColor('#FFFFFF').value, equals(const Color(0xFFFFFFFF).value));
-      expect(HexColor('FFFFFF').value, equals(const Color(0xFFFFFFFF).value));
+      expect(HexColor('#FFFFFF').toARGB32(),
+          equals(const Color(0xFFFFFFFF).toARGB32()));
+      expect(HexColor('FFFFFF').toARGB32(),
+          equals(const Color(0xFFFFFFFF).toARGB32()));
     });
     test('Color with transparent', () {
-      expect(
-          HexColor('#B1FFFFFF').value, equals(const Color(0xB1FFFFFF).value));
-      expect(
-          HexColor('#00FFFFFF').value, equals(const Color(0x00FFFFFF).value));
-      expect(HexColor('00FFFFFF').value, equals(const Color(0x00FFFFFF).value));
+      expect(HexColor('#B1FFFFFF').toARGB32(),
+          equals(const Color(0xB1FFFFFF).toARGB32()));
+      expect(HexColor('#00FFFFFF').toARGB32(),
+          equals(const Color(0x00FFFFFF).toARGB32()));
+      expect(HexColor('00FFFFFF').toARGB32(),
+          equals(const Color(0x00FFFFFF).toARGB32()));
     });
   });
 
