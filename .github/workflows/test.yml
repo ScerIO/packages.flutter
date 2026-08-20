@@ -30,7 +30,9 @@ jobs:
   test:
     needs: detect-changes
     if: ${{ needs.detect-changes.outputs.packages != '[]' }}
-    runs-on: ubuntu-latest
+    # pdfx has no Linux support (see lib/src/renderer/has_pdf_support.dart), so it needs a
+    # runner for one of its supported platforms; macOS covers macOS/iOS-class PDF support.
+    runs-on: ${{ matrix.package == 'pdfx' && 'macos-latest' || 'ubuntu-latest' }}
     strategy:
       fail-fast: false
       matrix:
