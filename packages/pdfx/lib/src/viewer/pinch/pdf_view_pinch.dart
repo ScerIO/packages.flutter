@@ -309,9 +309,8 @@ class _PdfViewPinchState extends State<PdfViewPinch>
       // Without this guard, .round() crashes with "Infinity or NaN toInt" and
       // the PDF is left blank. Normalizing to 0.0 keeps progress consistent:
       // there is no remaining scroll when everything fits on screen.
-      var rawDocumentProgress =
-          ((exposed.bottom / r - _lastViewSize!.height) /
-              (_docSize!.height - _lastViewSize!.height));
+      var rawDocumentProgress = ((exposed.bottom / r - _lastViewSize!.height) /
+          (_docSize!.height - _lastViewSize!.height));
       if (rawDocumentProgress.isNaN || rawDocumentProgress.isInfinite) {
         rawDocumentProgress = 0.0;
       }
