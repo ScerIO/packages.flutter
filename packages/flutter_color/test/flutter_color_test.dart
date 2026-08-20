@@ -43,14 +43,18 @@ void main() {
     });
 
     test('mix', () {
-      expect(const Color(0xFFFFFFFF).mix(const Color(0xFF000000), 1),
-          const Color(0xFF000000));
-      expect(const Color(0xFFFFFFFF).mix(const Color(0xFF000000), .5),
-          const Color(0xFF7F7F7F));
-      expect(const Color(0xFFB5A642).mix(const Color(0xFF6C541E), .37),
-          const Color(0xFF998734));
-      expect(const Color(0xFFFF0000).mix(const Color(0xFF00FF00), .25),
-          const Color(0xFFBF3F00));
+      expect(
+          const Color(0xFFFFFFFF).mix(const Color(0xFF000000), 1)!.toARGB32(),
+          0xFF000000);
+      expect(
+          const Color(0xFFFFFFFF).mix(const Color(0xFF000000), .5)!.toARGB32(),
+          0xFF808080);
+      expect(
+          const Color(0xFFB5A642).mix(const Color(0xFF6C541E), .37)!.toARGB32(),
+          0xFF9A8835);
+      expect(
+          const Color(0xFFFF0000).mix(const Color(0xFF00FF00), .25)!.toARGB32(),
+          0xFFBF4000);
     });
   });
 }
