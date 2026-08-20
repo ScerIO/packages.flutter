@@ -16,7 +16,7 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   uuid: ^4.5.1
   meta: ^1.15.0
-  extension: ^0.6.0
+  extension: ">=0.6.0 <2.0.0"
   synchronized: ^3.3.0+3
   universal_platform: ^1.1.0
   photo_view: ^0.15.0
