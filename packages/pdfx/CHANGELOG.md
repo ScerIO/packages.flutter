@@ -1,3 +1,13 @@
+## NEXT
+
+* Supported AGP 9 built-in Kotlin [pull#624](https://github.com/ScerIO/packages.flutter/pull/624)
+* Supported Windows ARM64 build [pull#620](https://github.com/ScerIO/packages.flutter/pull/620)
+* Fixed Windows build failure on CMake < 3.24 [pull#612](https://github.com/ScerIO/packages.flutter/pull/612)
+* Fixed WASM incompatibilities [pull#611](https://github.com/ScerIO/packages.flutter/pull/611)
+* Exposed `onInteractionStart`/`onInteractionUpdate`/`onInteractionEnd` on `PdfViewPinch` [pull#594](https://github.com/ScerIO/packages.flutter/pull/594)
+* Replaced deprecated `Matrix4.translate`/`Matrix4.scale` calls [pull#630](https://github.com/ScerIO/packages.flutter/pull/630)
+* Updated docs to use `dart run` instead of the deprecated `flutter pub run` [pull#597](https://github.com/ScerIO/packages.flutter/pull/597)
+
 ## 2.9.2
 
 * Fixed PdfViewPinch when compiling to WASM [pull#586](https://github.com/ScerIO/packages.flutter/pull/586)
