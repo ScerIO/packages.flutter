@@ -62,7 +62,7 @@ class PdfDocumentPigeon extends PdfDocument {
     required super.sourceName,
     required super.id,
     required super.pagesCount,
-  })  : _pages = List<PdfPage?>.filled(pagesCount, null);
+  }) : _pages = List<PdfPage?>.filled(pagesCount, null);
 
   final List<PdfPage?> _pages;
 

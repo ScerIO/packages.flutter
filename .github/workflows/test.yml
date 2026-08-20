@@ -1,0 +1,50 @@
+name: CI Flutter Packages
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            auto_animated:
+              - 'packages/auto_animated/**'
+            epub_view:
+              - 'packages/epub_view/**'
+            explorer:
+              - 'packages/explorer/**'
+            flutter_color:
+              - 'packages/flutter_color/**'
+            pdfx:
+              - 'packages/pdfx/**'
+
+  test:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.packages != '[]' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.detect-changes.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+        working-directory: packages/${{ matrix.package }}
+      - run: dart format --output=none --set-exit-if-changed .
+        working-directory: packages/${{ matrix.package }}
+      - run: flutter analyze --fatal-infos
+        working-directory: packages/${{ matrix.package }}
+      - run: flutter test
+        working-directory: packages/${{ matrix.package }}
