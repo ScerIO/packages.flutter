@@ -160,7 +160,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///The codec used by PdfxApi.
 NSObject<FlutterMessageCodec> *PdfxApiGetCodec(void);
 
-/// Rebuild: `flutter pub run pigeon --input pigeons/message.dart`
+/// Rebuild: `dart run pigeon --input pigeons/message.dart`
 /// After build edit ios/Classes/pigeon/messages.m
 /// replace `#import <Flutter/Flutter.h>` to
 /// ````

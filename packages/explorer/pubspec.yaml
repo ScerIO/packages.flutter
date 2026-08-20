@@ -28,5 +28,5 @@ dev_dependencies:
   flutter_lints: ^2.0.2
 
 scripts:
-  i18n_to_arb: flutter pub run intl_translation:extract_to_arb --output-dir=locales lib/src/i18n/string_resources.dart
-  i18n_from_arb: flutter pub run intl_translation:generate_from_arb lib/src/i18n/string_resources.dart locales/*.arb --output-dir=lib/src/i18n/messages
+  i18n_to_arb: dart run intl_translation:extract_to_arb --output-dir=locales lib/src/i18n/string_resources.dart
+  i18n_from_arb: dart run intl_translation:generate_from_arb lib/src/i18n/string_resources.dart locales/*.arb --output-dir=lib/src/i18n/messages

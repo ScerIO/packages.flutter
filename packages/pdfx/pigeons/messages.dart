@@ -97,7 +97,7 @@ class UnregisterTextureMessage {
   int? id;
 }
 
-/// Rebuild: `flutter pub run pigeon --input pigeons/message.dart`
+/// Rebuild: `dart run pigeon --input pigeons/message.dart`
 /// After build edit ios/Classes/pigeon/messages.m
 /// replace `#import <Flutter/Flutter.h>` to
 /// ````
