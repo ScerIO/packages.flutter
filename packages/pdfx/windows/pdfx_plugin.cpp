@@ -89,7 +89,21 @@ void PdfxPlugin::HandleMethodCall(
   /// Open document from flutter asset
   ///
   if (method_call.method_name().compare(kOpenDocumentAssetMethod) == 0) {
-    auto name = std::get<std::string>(*method_call.arguments());
+    const auto* arguments =
+        std::get_if<flutter::EncodableMap>(method_call.arguments());
+
+    auto vName = arguments->find(flutter::EncodableValue("name"));
+    if (vName == arguments->end()) {
+      result->Error("pdfx_exception", "name is required");
+      return;
+    }
+    auto name = std::get<std::string>(vName->second);
+
+    const char* password = nullptr;
+    auto vPassword = arguments->find(flutter::EncodableValue("password"));
+    if (vPassword != arguments->end() && !vPassword->second.IsNull()) {
+      password = std::get<std::string>(vPassword->second).c_str();
+    }
 
     // Get .exe base path
     WCHAR basePath[MAX_PATH];
@@ -105,7 +119,7 @@ void PdfxPlugin::HandleMethodCall(
         utf8_encode(basePath) + "\\data\\flutter_assets\\" + name;
 
     try {
-      std::shared_ptr<Document> doc = openDocument(path);
+      std::shared_ptr<Document> doc = openDocument(path, password);
 
       auto mp = flutter::EncodableMap{};
       mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
@@ -121,10 +135,24 @@ void PdfxPlugin::HandleMethodCall(
   /// Open document from file
   ///
   else if (method_call.method_name().compare(kOpenDocumentFileMethod) == 0) {
-    auto name = std::get<std::string>(*method_call.arguments());
+    const auto* arguments =
+        std::get_if<flutter::EncodableMap>(method_call.arguments());
+
+    auto vPath = arguments->find(flutter::EncodableValue("path"));
+    if (vPath == arguments->end()) {
+      result->Error("pdfx_exception", "path is required");
+      return;
+    }
+    auto name = std::get<std::string>(vPath->second);
+
+    const char* password = nullptr;
+    auto vPassword = arguments->find(flutter::EncodableValue("password"));
+    if (vPassword != arguments->end() && !vPassword->second.IsNull()) {
+      password = std::get<std::string>(vPassword->second).c_str();
+    }
 
     try {
-      std::shared_ptr<Document> doc = openDocument(name);
+      std::shared_ptr<Document> doc = openDocument(name, password);
 
       auto mp = flutter::EncodableMap{};
       mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);
@@ -140,10 +168,24 @@ void PdfxPlugin::HandleMethodCall(
   /// Open document from data stream
   ///
   else if (method_call.method_name().compare(kOpenDocumentDataMethod) == 0) {
-    auto data = std::get<std::vector<uint8_t>>(*method_call.arguments());
+    const auto* arguments =
+        std::get_if<flutter::EncodableMap>(method_call.arguments());
+
+    auto vData = arguments->find(flutter::EncodableValue("data"));
+    if (vData == arguments->end()) {
+      result->Error("pdfx_exception", "data is required");
+      return;
+    }
+    auto data = std::get<std::vector<uint8_t>>(vData->second);
+
+    const char* password = nullptr;
+    auto vPassword = arguments->find(flutter::EncodableValue("password"));
+    if (vPassword != arguments->end() && !vPassword->second.IsNull()) {
+      password = std::get<std::string>(vPassword->second).c_str();
+    }
 
     try {
-      std::shared_ptr<Document> doc = openDocument(data);
+      std::shared_ptr<Document> doc = openDocument(data, password);
 
       auto mp = flutter::EncodableMap{};
       mp[flutter::EncodableValue("id")] = flutter::EncodableValue(doc->id);

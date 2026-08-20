@@ -69,7 +69,7 @@ std::unordered_map<std::string, std::shared_ptr<Document>> document_repository;
 std::unordered_map<std::string, std::shared_ptr<Page>> page_repository;
 int lastId = 0;
 
-std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
+std::shared_ptr<Document> openDocument(std::vector<uint8_t> data, const char* password) {
   if (document_repository.size() == 0) {
     FPDF_LIBRARY_CONFIG config;
     config.version = 2;
@@ -82,13 +82,13 @@ std::shared_ptr<Document> openDocument(std::vector<uint8_t> data) {
   lastId++;
   std::string strId = std::to_string(lastId);
 
-  std::shared_ptr<Document> doc = std::make_shared<Document>(data, strId);
+  std::shared_ptr<Document> doc = std::make_shared<Document>(data, strId, password);
   document_repository[strId] = doc;
 
   return doc;
 }
 
-std::shared_ptr<Document> openDocument(std::string name) {
+std::shared_ptr<Document> openDocument(std::string name, const char* password) {
   if (document_repository.size() == 0) {
     FPDF_LIBRARY_CONFIG config;
     config.version = 2;
@@ -101,7 +101,7 @@ std::shared_ptr<Document> openDocument(std::string name) {
   lastId++;
   std::string strId = std::to_string(lastId);
 
-  std::shared_ptr<Document> doc = std::make_shared<Document>(name, strId);
+  std::shared_ptr<Document> doc = std::make_shared<Document>(name, strId, password);
   document_repository[strId] = doc;
 
   return doc;
@@ -151,17 +151,17 @@ PageRender renderPage(std::string id, int width, int height, ImageFormat format,
 
 //
 
-Document::Document(std::vector<uint8_t> dataRef, std::string id) : id{id} {
+Document::Document(std::vector<uint8_t> dataRef, std::string id, const char* password) : id{id} {
   // Copy data into object to keep it in memory
   data.swap(dataRef);
 
-  document = FPDF_LoadMemDocument64(data.data(), data.size(), nullptr);
+  document = FPDF_LoadMemDocument64(data.data(), data.size(), password);
   if (!document) {
     throw std::invalid_argument("Document failed to open");
   }
 }
 
-Document::Document(std::string file, std::string id) : id{id} {
+Document::Document(std::string file, std::string id, const char* password) : id{id} {
   HANDLE hFile;
 
   // If is root path, add \\?\ to support long file names
@@ -204,7 +204,7 @@ Document::Document(std::string file, std::string id) : id{id} {
   CloseHandle(hFile);
 
   // Load PDF
-  document = FPDF_LoadMemDocument64(data.data(), bytesRead, nullptr);
+  document = FPDF_LoadMemDocument64(data.data(), bytesRead, password);
   if (!document) {
     throw std::invalid_argument("Document failed to open");
   }

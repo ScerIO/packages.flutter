@@ -41,8 +41,8 @@ class Document {
   std::vector<uint8_t> data;
 
  public:
-  Document(std::vector<uint8_t> data, std::string id);
-  Document(std::string file, std::string id);
+  Document(std::vector<uint8_t> data, std::string id, const char* password = nullptr);
+  Document(std::string file, std::string id, const char* password = nullptr);
 
   ~Document();
 
@@ -67,8 +67,8 @@ class Page {
                     unsigned long background, CropDetails* crop);
 };
 
-std::shared_ptr<Document> openDocument(std::vector<uint8_t> data);
-std::shared_ptr<Document> openDocument(std::string name);
+std::shared_ptr<Document> openDocument(std::vector<uint8_t> data, const char* password = nullptr);
+std::shared_ptr<Document> openDocument(std::string name, const char* password = nullptr);
 
 void closeDocument(std::string id);
 std::shared_ptr<Page> openPage(std::string docId, int index);

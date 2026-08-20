@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:internet_file/internet_file.dart';
 import 'package:pdfx/pdfx.dart';
-import 'package:universal_platform/universal_platform.dart';
 
 class PinchPage extends StatefulWidget {
   const PinchPage({Key? key}) : super(key: key);
@@ -10,11 +9,9 @@ class PinchPage extends StatefulWidget {
   State<PinchPage> createState() => _PinchPageState();
 }
 
-enum DocShown { sample, tutorial, hello, password }
-
 class _PinchPageState extends State<PinchPage> {
   static const int _initialPage = 1;
-  DocShown _showing = DocShown.sample;
+  String _title = 'Sample PDF';
   late PdfControllerPinch _pdfControllerPinch;
 
   @override
@@ -42,7 +39,7 @@ class _PinchPageState extends State<PinchPage> {
     return Scaffold(
       backgroundColor: Colors.grey,
       appBar: AppBar(
-        title: const Text('Pdfx example'),
+        title: Text(_title),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.navigate_before),
@@ -72,34 +69,49 @@ class _PinchPageState extends State<PinchPage> {
               );
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              switch (_showing) {
-                case DocShown.sample:
-                case DocShown.tutorial:
-                  _pdfControllerPinch.loadDocument(
-                      PdfDocument.openAsset('assets/flutter_tutorial.pdf'));
-                  _showing = DocShown.hello;
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.file_open),
+            onSelected: (String asset) {
+              String title;
+              switch (asset) {
+                case 'assets/hello.pdf':
+                  title = 'Hello PDF';
                   break;
-                case DocShown.hello:
-                  _pdfControllerPinch
-                      .loadDocument(PdfDocument.openAsset('assets/hello.pdf'));
-                  _showing = UniversalPlatform.isWeb
-                      ? DocShown.password
-                      : DocShown.tutorial;
+                case 'assets/flutter_tutorial.pdf':
+                  title = 'Flutter Tutorial';
                   break;
-
-                case DocShown.password:
-                  _pdfControllerPinch.loadDocument(PdfDocument.openAsset(
-                    'assets/password.pdf',
-                    password: 'MyPassword',
-                  ));
-                  _showing = DocShown.tutorial;
+                case 'assets/password.pdf':
+                  title = 'Password Protected PDF';
                   break;
+                default:
+                  title = 'Pdfx example';
               }
+              setState(() {
+                _title = title;
+              });
+              String? password;
+              if (asset == 'assets/password.pdf') {
+                password = 'MyPassword';
+              }
+              _pdfControllerPinch.loadDocument(
+                PdfDocument.openAsset(asset, password: password),
+              );
             },
-          )
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'assets/hello.pdf',
+                child: Text('Hello PDF'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'assets/flutter_tutorial.pdf',
+                child: Text('Flutter Tutorial'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'assets/password.pdf',
+                child: Text('Password Protected'),
+              ),
+            ],
+          ),
         ],
       ),
       body: PdfViewPinch(

@@ -4,9 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Rect
+import android.graphics.pdf.LoadParams
 import android.graphics.pdf.PdfRenderer
 import android.os.Build
 import android.os.ParcelFileDescriptor
+import android.os.ext.SdkExtensions
 import android.util.Log
 import android.util.SparseArray
 import android.view.Surface
@@ -45,7 +47,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
     ) {
         val resultResponse = Pigeon.OpenReply()
         try {
-            val documentRenderer = openDataDocument(message.data!!)
+            val documentRenderer = openDataDocument(message.data!!, message.password)
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -66,7 +68,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         val resultResponse = Pigeon.OpenReply()
         try {
             val path = message.path
-            val documentRenderer = openFileDocument(File(path!!))
+            val documentRenderer = openFileDocument(File(path!!), message.password)
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -91,7 +93,7 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         val resultResponse = Pigeon.OpenReply()
         try {
             val path = message.path
-            val documentRenderer = openAssetDocument(path!!)
+            val documentRenderer = openAssetDocument(path!!, message.password)
             val document = documents.register(documentRenderer)
             resultResponse.id = document.id
             resultResponse.pagesCount = document.pagesCount.toLong()
@@ -356,16 +358,16 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
         surfaceProducers.remove(id)
     }
 
-    private fun openDataDocument(data: ByteArray): Pair<ParcelFileDescriptor, PdfRenderer> {
+    private fun openDataDocument(data: ByteArray, password: String?): Pair<ParcelFileDescriptor, PdfRenderer> {
         val tempDataFile = File(binding.applicationContext.cacheDir, "$randomFilename.pdf")
         if (!tempDataFile.exists()) {
             tempDataFile.writeBytes(data)
         }
         Log.d("pdf_renderer", "OpenDataDocument. Created file: " + tempDataFile.path)
-        return openFileDocument(tempDataFile)
+        return openFileDocument(tempDataFile, password)
     }
 
-    private fun openAssetDocument(assetPath: String): Pair<ParcelFileDescriptor, PdfRenderer> {
+    private fun openAssetDocument(assetPath: String, password: String?): Pair<ParcelFileDescriptor, PdfRenderer> {
         val fullAssetPath = binding.flutterAssets.getAssetFilePathByName(assetPath)
         val tempAssetFile = File(binding.applicationContext.cacheDir, "$randomFilename.pdf")
         if (!tempAssetFile.exists()) {
@@ -374,14 +376,22 @@ class Messages(private val binding : FlutterPlugin.FlutterPluginBinding,
             inputStream.close()
         }
         Log.d("pdf_renderer", "OpenAssetDocument. Created file: " + tempAssetFile.path)
-        return openFileDocument(tempAssetFile)
+        return openFileDocument(tempAssetFile, password)
     }
 
-    private fun openFileDocument(file: File): Pair<ParcelFileDescriptor, PdfRenderer> {
+    private fun openFileDocument(file: File, password: String?): Pair<ParcelFileDescriptor, PdfRenderer> {
         Log.d("pdf_renderer", "OpenFileDocument. File: " + file.path)
         val fileDescriptor = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY)
         return if (fileDescriptor != null) {
-            val pdfRenderer = PdfRenderer(fileDescriptor)
+            val pdfRenderer = if (password != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM && SdkExtensions.getExtensionVersion(Build.VERSION_CODES.S) >= 13) {
+                    PdfRenderer(fileDescriptor, LoadParams.Builder().setPassword(password).build())
+                } else {
+                    throw CreateRendererException()
+                }
+            } else {
+                PdfRenderer(fileDescriptor)
+            }
             Pair(fileDescriptor, pdfRenderer)
         } else throw CreateRendererException()
     }

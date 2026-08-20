@@ -34,7 +34,10 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
     return _open(
       (await _channel.invokeMethod<Map<dynamic, dynamic>>(
         'open.document.file',
-        filePath,
+        {
+          'path': filePath,
+          'password': password,
+        },
       ))!,
       'file:$filePath',
     );
@@ -45,7 +48,10 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
   Future<PdfDocument> openAsset(String name, {String? password}) async => _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.asset',
-          name,
+          {
+            'name': name,
+            'password': password,
+          },
         ))!,
         'asset:$name',
       );
@@ -57,7 +63,10 @@ class PdfxPlatformMethodChannel extends PdfxPlatform {
       _open(
         (await _channel.invokeMethod<Map<dynamic, dynamic>>(
           'open.document.data',
-          await data,
+          {
+            'data': await data,
+            'password': password,
+          },
         ))!,
         'memory:binary',
       );

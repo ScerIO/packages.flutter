@@ -36,7 +36,7 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        guard let renderer = openDataDocument(data: data.data) else {
+        guard let renderer = openDataDocument(data: data.data, password: message.password) else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
@@ -56,7 +56,7 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        guard let renderer = openFileDocument(pdfFilePath: pdfFilePath)  else {
+        guard let renderer = openFileDocument(pdfFilePath: pdfFilePath, password: message.password)  else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
@@ -76,7 +76,7 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
                                        message: "Arguments not sended",
                                        details: nil))
         }
-        guard let renderer = openAssetDocument(name: name)  else {
+        guard let renderer = openAssetDocument(name: name, password: message.password)  else {
             return completion(nil, FlutterError(code: "RENDER_ERROR",
                                        message: "Invalid PDF format",
                                        details: nil))
@@ -259,24 +259,38 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
 
     }
 
-    func openDataDocument(data: Data) -> CGPDFDocument? {
+    func openDataDocument(data: Data, password: String?) -> CGPDFDocument? {
         guard let datProv = CGDataProvider(data: data as CFData) else { return nil }
-        let docment = CGPDFDocument(datProv)
-        if docment?.isUnlocked == false {
-            return nil
+        guard let document = CGPDFDocument(datProv) else { return nil }
+
+        if document.isEncrypted {
+            if let password = password {
+                document.unlockWithPassword(password)
+            }
+            if !document.isUnlocked {
+                return nil
+            }
         }
-        return docment
+
+        return document
     }
 
-    func openFileDocument(pdfFilePath: String) -> CGPDFDocument? {
-        let docment = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL)
-        if docment?.isEncrypted == true {
-            return nil
+    func openFileDocument(pdfFilePath: String, password: String?) -> CGPDFDocument? {
+        guard let document = CGPDFDocument(URL(fileURLWithPath: pdfFilePath) as CFURL) else { return nil }
+
+        if document.isEncrypted {
+            if let password = password {
+                document.unlockWithPassword(password)
+            }
+            if !document.isUnlocked {
+                return nil
+            }
         }
-        return docment
+
+        return document
     }
 
-    func openAssetDocument(name: String) -> CGPDFDocument? {
+    func openAssetDocument(name: String, password: String?) -> CGPDFDocument? {
         #if os(iOS)
         guard let path = Bundle.main.path(forResource: "Frameworks/App.framework/flutter_assets/" + name, ofType: "") else {
             return nil
@@ -285,7 +299,7 @@ public class SwiftPdfxPlugin: NSObject, FlutterPlugin, PdfxApi {
         let path = Bundle.main.bundlePath + "/Contents/Frameworks/App.framework/Resources/flutter_assets/" + name;
         #endif
 
-        return openFileDocument(pdfFilePath: path)
+        return openFileDocument(pdfFilePath: path, password: password)
     }
 }
 
