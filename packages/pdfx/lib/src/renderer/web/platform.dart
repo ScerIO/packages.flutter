@@ -24,11 +24,13 @@ final _textures = <int, RgbaData>{};
 int _texId = -1;
 
 class PdfxWeb extends PdfxPlatform {
+  // The pdf.js presence check deliberately does NOT run here: this
+  // constructor runs during web plugin registration for every app that
+  // merely depends on pdfx, so a missing script killed apps (and tools such
+  // as the widget previewer) that never open a PDF. The check lives in
+  // _openDocumentData instead, the funnel every open path goes through, so
+  // it fires only when a PDF is actually opened.
   PdfxWeb() {
-    assert(
-        checkPdfjsLibInstallation(),
-        'pdf.js not added in web/index.html. '
-        'Run «flutter pub run pdfx:install_web» or add script manually');
     _eventChannel.setController(_eventStreamController);
   }
 
@@ -44,6 +46,12 @@ class PdfxWeb extends PdfxPlatform {
 
   Future<DocumentInfo> _openDocumentData(ByteBuffer data,
       {String? password}) async {
+    // A StateError (not an assert) so release builds also fail with a clear
+    // message instead of an obscure pdf.js JS error.
+    if (!checkPdfjsLibInstallation()) {
+      throw StateError('pdf.js not added in web/index.html. '
+          'Run «dart run pdfx:install_web» or add script manually');
+    }
     final document = await pdfjsGetDocumentFromData(data, password: password);
 
     return _documents.register(document).info;
@@ -79,14 +87,10 @@ class PdfxWeb extends PdfxPlatform {
 /// Handles PDF document loaded on memory.
 class PdfDocumentWeb extends PdfDocument {
   PdfDocumentWeb._({
-    required String sourceName,
-    required String id,
-    required int pagesCount,
-  }) : super(
-          sourceName: sourceName,
-          id: id,
-          pagesCount: pagesCount,
-        );
+    required super.sourceName,
+    required super.id,
+    required super.pagesCount,
+  });
 
   @override
   Future<void> close() async {
@@ -122,18 +126,13 @@ class PdfDocumentWeb extends PdfDocument {
 
 class PdfPageWeb extends PdfPage {
   PdfPageWeb({
-    required PdfDocument document,
-    required String id,
-    required int pageNumber,
-    required double width,
-    required double height,
+    required super.document,
+    required super.id,
+    required super.pageNumber,
+    required super.width,
+    required super.height,
     required this.pdfJsPage,
   }) : super(
-          document: document,
-          id: id,
-          pageNumber: pageNumber,
-          width: width,
-          height: height,
           autoCloseAndroid: false,
         );
 
@@ -195,23 +194,15 @@ class PdfPageWeb extends PdfPage {
 
 class PdfPageImageWeb extends PdfPageImage {
   PdfPageImageWeb({
-    required String? id,
-    required int pageNumber,
-    required int? width,
-    required int? height,
-    required Uint8List bytes,
+    required super.id,
+    required super.pageNumber,
+    required super.width,
+    required super.height,
+    required super.bytes,
     required this.pdfJsPage,
-    required PdfPageImageFormat format,
-    required int quality,
-  }) : super(
-          id: id,
-          pageNumber: pageNumber,
-          width: width,
-          height: height,
-          bytes: bytes,
-          format: format,
-          quality: quality,
-        );
+    required super.format,
+    required super.quality,
+  });
 
   final PdfjsPage pdfJsPage;
 
@@ -289,14 +280,10 @@ class PdfPageImageWeb extends PdfPageImage {
 
 class PdfPageTextureWeb extends PdfPageTexture {
   PdfPageTextureWeb({
-    required int id,
-    required String? pageId,
-    required int pageNumber,
-  }) : super(
-          id: id,
-          pageId: pageId,
-          pageNumber: pageNumber,
-        );
+    required super.id,
+    required super.pageId,
+    required super.pageNumber,
+  });
 
   int? _texWidth;
   int? _texHeight;

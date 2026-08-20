@@ -1,0 +1,98 @@
+name: Publish
+
+on:
+  push:
+    tags:
+      - '*-v*'
+  workflow_dispatch:
+    inputs:
+      package:
+        description: 'Limit to a single package (leave empty to auto-detect all)'
+        required: false
+        type: choice
+        default: ''
+        options:
+          - ''
+          - auto_animated
+          - epub_view
+          - explorer
+          - flutter_color
+          - pdfx
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.detect.outputs.packages }}
+      has_packages: ${{ steps.detect.outputs.has_packages }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: detect
+        run: |
+          set -e
+          TAG_VERSION=""
+          if [ "${{ github.event_name }}" = "push" ]; then
+            # Tag format is <package>-v<version>, e.g. auto_animated-v1.2.3
+            TAG="${{ github.ref_name }}"
+            CANDIDATES="${TAG%-v*}"
+            TAG_VERSION="${TAG##*-v}"
+          elif [ -n "${{ inputs.package }}" ]; then
+            CANDIDATES="${{ inputs.package }}"
+          else
+            CANDIDATES="auto_animated epub_view explorer flutter_color pdfx"
+          fi
+
+          TO_PUBLISH="[]"
+          for pkg in $CANDIDATES; do
+            LOCAL_VERSION=$(awk '/^version: */{print $2}' "packages/$pkg/pubspec.yaml" | tr -d '"' | tr -d "'" | tr -d '\r')
+
+            if [ -n "$TAG_VERSION" ] && [ "$LOCAL_VERSION" != "$TAG_VERSION" ]; then
+              echo "::error::Tag $TAG expects version $TAG_VERSION but packages/$pkg/pubspec.yaml has $LOCAL_VERSION"
+              exit 1
+            fi
+
+            PUBLISHED_VERSION=$(curl -s "https://pub.dev/api/packages/$pkg" | jq -r '.latest.version // "0.0.0"')
+
+            # sort -V is not a fully spec-compliant semver comparator (e.g. prerelease
+            # precedence), but it is good enough for this repo's plain x.y.z versions.
+            HIGHEST=$(printf '%s\n%s' "$PUBLISHED_VERSION" "$LOCAL_VERSION" | sort -V | tail -n1)
+
+            if [ "$LOCAL_VERSION" != "$PUBLISHED_VERSION" ] && [ "$HIGHEST" = "$LOCAL_VERSION" ]; then
+              echo "$pkg needs publish: $PUBLISHED_VERSION -> $LOCAL_VERSION"
+              TO_PUBLISH=$(echo "$TO_PUBLISH" | jq -c --arg p "$pkg" '. + [$p]')
+            else
+              echo "$pkg up to date (local=$LOCAL_VERSION, published=$PUBLISHED_VERSION)"
+            fi
+          done
+
+          echo "packages=$TO_PUBLISH" >> "$GITHUB_OUTPUT"
+          if [ "$TO_PUBLISH" = "[]" ]; then
+            echo "has_packages=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_packages=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    needs: detect
+    if: needs.detect.outputs.has_packages == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJson(needs.detect.outputs.packages) }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter pub get
+        working-directory: packages/${{ matrix.package }}
+      - run: dart pub publish --force --verbose
+        working-directory: packages/${{ matrix.package }}

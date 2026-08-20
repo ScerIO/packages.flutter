@@ -1,3 +1,29 @@
+## NEXT
+
+* Added Swift Package Manager support for iOS and macOS, consolidating the duplicated Apple implementation into shared Darwin sources while retaining CocoaPods compatibility [pull#623](https://github.com/ScerIO/packages.flutter/pull/623)
+* Fixed a NaN/Infinity crash in `PdfViewPinch` document progress when the document exactly fits the viewport [pull#621](https://github.com/ScerIO/packages.flutter/pull/621)
+* Raised the minimum Flutter version to 3.29.0, since the current `onSurfaceAvailable`/`onSurfaceCleanup` `SurfaceProducer.Callback` overrides do not exist on older engines and failed to compile on Flutter 3.24-3.28 [issue#580](https://github.com/ScerIO/packages.flutter/issues/580)
+
+## 2.10.0
+
+* Supported AGP 9 built-in Kotlin [pull#624](https://github.com/ScerIO/packages.flutter/pull/624)
+* Supported Windows ARM64 build [pull#620](https://github.com/ScerIO/packages.flutter/pull/620)
+* Fixed Windows build failure on CMake < 3.24 [pull#612](https://github.com/ScerIO/packages.flutter/pull/612)
+* Fixed WASM incompatibilities [pull#611](https://github.com/ScerIO/packages.flutter/pull/611)
+* Exposed `onInteractionStart`/`onInteractionUpdate`/`onInteractionEnd` on `PdfViewPinch` [pull#594](https://github.com/ScerIO/packages.flutter/pull/594)
+* Replaced deprecated `Matrix4.translate`/`Matrix4.scale` calls [pull#630](https://github.com/ScerIO/packages.flutter/pull/630)
+* Updated docs to use `dart run` instead of the deprecated `flutter pub run` [pull#597](https://github.com/ScerIO/packages.flutter/pull/597)
+* Web: moved the pdf.js presence check from plugin registration to document open, so apps that depend on pdfx without opening a PDF no longer fail to start when pdf.js is not in web/index.html [pull#633](https://github.com/ScerIO/packages.flutter/pull/633)
+
+## 2.9.2
+
+* Fixed PdfViewPinch when compiling to WASM [pull#586](https://github.com/ScerIO/packages.flutter/pull/586)
+
+## 2.9.1
+
+* Fixed Android [pull#564](https://github.com/ScerIO/packages.flutter/pull/564)
+* Fixed iOS [pull#565](https://github.com/ScerIO/packages.flutter/pull/565)
+
 ## 2.9.0
 
 * Implemented document progress feature [pull#537](https://github.com/ScerIO/packages.flutter/pull/537)

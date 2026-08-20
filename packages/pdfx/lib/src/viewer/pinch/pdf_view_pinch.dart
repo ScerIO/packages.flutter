@@ -26,6 +26,9 @@ class PdfViewPinch extends StatefulWidget {
     this.onPageChanged,
     this.onDocumentLoaded,
     this.onDocumentError,
+    this.onInteractionStart,
+    this.onInteractionUpdate,
+    this.onInteractionEnd,
     this.builders = const PdfViewPinchBuilders<DefaultBuilderOptions>(
       options: DefaultBuilderOptions(),
     ),
@@ -43,8 +46,8 @@ class PdfViewPinch extends StatefulWidget {
         ),
       ],
     ),
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   /// Padding for the every page.
   final double padding;
@@ -75,6 +78,15 @@ class PdfViewPinch extends StatefulWidget {
 
   /// Pdf widget page background decoration
   final BoxDecoration backgroundDecoration;
+
+  /// Called when the user starts a pan or scale gesture on the widget.
+  final GestureScaleStartCallback? onInteractionStart;
+
+  /// Called when the user ends a pan or scale gesture on the widget.
+  final GestureScaleEndCallback? onInteractionEnd;
+
+  /// Called when the user updates a pan or scale gesture on the widget.
+  final GestureScaleUpdateCallback? onInteractionUpdate;
 
   /// Default page builder
   @override
@@ -291,9 +303,17 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         -m.row0[3], -m.row1[3], _lastViewSize!.width, _lastViewSize!.height);
 
     if (_lastViewSize?.height != null) {
-      final rawDocumentProgress =
-          ((exposed.bottom / r - _lastViewSize!.height) /
-              (_docSize!.height - _lastViewSize!.height));
+      // When the document exactly fits the viewport (or both still measure 0
+      // on the first frame under Android edge-to-edge), the divisor
+      // (_docSize.height - _lastViewSize.height) is 0 and yields NaN/Infinity.
+      // Without this guard, .round() crashes with "Infinity or NaN toInt" and
+      // the PDF is left blank. Normalizing to 0.0 keeps progress consistent:
+      // there is no remaining scroll when everything fits on screen.
+      var rawDocumentProgress = ((exposed.bottom / r - _lastViewSize!.height) /
+          (_docSize!.height - _lastViewSize!.height));
+      if (rawDocumentProgress.isNaN || rawDocumentProgress.isInfinite) {
+        rawDocumentProgress = 0.0;
+      }
       const precisionFactor = 10000;
       _controller._documentProgress =
           ((rawDocumentProgress * precisionFactor).round() / precisionFactor)
@@ -564,6 +584,9 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         _reLayout(viewSize);
         final docSize = _docSize ?? const Size(10, 10); // dummy size
         return InteractiveViewer(
+          onInteractionStart: widget.onInteractionStart,
+          onInteractionEnd: widget.onInteractionEnd,
+          onInteractionUpdate: widget.onInteractionUpdate,
           transformationController: _controller,
           scrollControls: InteractiveViewerScrollControls.scrollPans,
           constrained: false,

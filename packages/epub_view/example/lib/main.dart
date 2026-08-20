@@ -5,7 +5,7 @@ import 'package:flutter/services.dart' show SystemChrome, SystemUiOverlayStyle;
 void main() => runApp(const MyApp());
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -30,8 +30,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 
   Brightness get platformBrightness =>
-      MediaQueryData.fromView(WidgetsBinding.instance.window)
-          .platformBrightness;
+      WidgetsBinding.instance.platformDispatcher.platformBrightness;
 
   void _setSystemUIOverlayStyle() {
     if (platformBrightness == Brightness.light) {
@@ -68,7 +67,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -82,6 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _epubReaderController = EpubController(
       document:
           // EpubDocument.openAsset('assets/New-Findings-on-Shirdi-Sai-Baba.epub'),
+          // EpubDocument.openUrl('https://www.gutenberg.org/ebooks/11.epub.images'),
           EpubDocument.openAsset('assets/New-Findings-on-Shirdi-Sai-Baba.epub'),
       // epubCfi:
       //     'epubcfi(/6/26[id4]!/4/2/2[id4]/22)', // book.epub Chapter 3 paragraph 10
@@ -127,7 +127,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       );
 
-  void _showCurrentEpubCfi(context) {
+  void _showCurrentEpubCfi(BuildContext context) {
     final cfi = _epubReaderController.generateEpubCfi();
 
     if (cfi != null) {

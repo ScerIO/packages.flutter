@@ -74,7 +74,7 @@ class InteractiveViewer extends StatefulWidget {
   ///
   /// The [child] parameter must not be null.
   InteractiveViewer({
-    Key? key,
+    super.key,
     this.clipBehavior = Clip.hardEdge,
     this.alignPanAxis = false,
     this.boundaryMargin = EdgeInsets.zero,
@@ -106,8 +106,7 @@ class InteractiveViewer extends StatefulWidget {
                   boundaryMargin.bottom.isFinite &&
                   boundaryMargin.left.isFinite),
         ),
-        builder = null,
-        super(key: key);
+        builder = null;
 
   /// Creates an InteractiveViewer for a child that is created on demand.
   ///
@@ -117,7 +116,7 @@ class InteractiveViewer extends StatefulWidget {
   /// The [builder] parameter must not be null. See its docs for an example of
   /// using it to optimize a large child.
   InteractiveViewer.builder({
-    Key? key,
+    super.key,
     this.clipBehavior = Clip.hardEdge,
     this.alignPanAxis = false,
     this.boundaryMargin = EdgeInsets.zero,
@@ -149,8 +148,7 @@ class InteractiveViewer extends StatefulWidget {
                   boundaryMargin.left.isFinite),
         ),
         constrained = false,
-        child = null,
-        super(key: key);
+        child = null;
 
   /// If set to [Clip.none], the child may extend beyond the size of the InteractiveViewer,
   /// but it will not receive gestures in these areas.
@@ -861,9 +859,11 @@ class _InteractiveViewerState extends State<InteractiveViewer>
         : translation;
 
     final Matrix4 nextMatrix = matrix.clone()
-      ..translate(
+      ..translateByDouble(
         alignedTranslation.dx,
         alignedTranslation.dy,
+        0.0,
+        1.0,
       );
 
     // Transform the viewport to determine where its four corners will be after
@@ -969,7 +969,8 @@ class _InteractiveViewerState extends State<InteractiveViewer>
       widget.maxScale,
     );
     final double clampedScale = clampedTotalScale / currentScale;
-    return matrix.clone()..scale(clampedScale);
+    return matrix.clone()
+      ..scaleByDouble(clampedScale, clampedScale, clampedScale, 1.0);
   }
 
   // Return a new matrix representing the given matrix after applying the given
@@ -982,9 +983,9 @@ class _InteractiveViewerState extends State<InteractiveViewer>
       focalPoint,
     );
     return matrix.clone()
-      ..translate(focalPointScene.dx, focalPointScene.dy)
+      ..translateByDouble(focalPointScene.dx, focalPointScene.dy, 0.0, 1.0)
       ..rotateZ(-rotation)
-      ..translate(-focalPointScene.dx, -focalPointScene.dy);
+      ..translateByDouble(-focalPointScene.dx, -focalPointScene.dy, 0.0, 1.0);
   }
 
   // Returns true iff the given _GestureType is enabled.
@@ -1421,13 +1422,12 @@ class _InteractiveViewerState extends State<InteractiveViewer>
 // InteractiveViewer's depending on if it's using a builder or a child.
 class _InteractiveViewerBuilt extends StatelessWidget {
   const _InteractiveViewerBuilt({
-    Key? key,
     required this.child,
     required this.childKey,
     required this.clipBehavior,
     required this.constrained,
     required this.matrix,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final GlobalKey childKey;
@@ -1598,9 +1598,14 @@ Quad _transformViewport(Matrix4 matrix, Rect viewport) {
 // the given amount.
 Quad _getAxisAlignedBoundingBoxWithRotation(Rect rect, double rotation) {
   final Matrix4 rotationMatrix = Matrix4.identity()
-    ..translate(rect.size.width / 2, rect.size.height / 2)
+    ..translateByDouble(rect.size.width / 2, rect.size.height / 2, 0.0, 1.0)
     ..rotateZ(rotation)
-    ..translate(-rect.size.width / 2, -rect.size.height / 2);
+    ..translateByDouble(
+      -rect.size.width / 2,
+      -rect.size.height / 2,
+      0.0,
+      1.0,
+    );
   final Quad boundariesRotated = Quad.points(
     rotationMatrix.transform3(Vector3(rect.left, rect.top, 0.0)),
     rotationMatrix.transform3(Vector3(rect.right, rect.top, 0.0)),

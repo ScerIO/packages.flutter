@@ -2,8 +2,9 @@ import 'package:pigeon/pigeon.dart';
 
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'lib/src/renderer/io/pigeon.dart',
-  objcHeaderOut: './ios/Classes/messages.h',
-  objcSourceOut: './ios/Classes/messages.m',
+  objcHeaderOut:
+      './darwin/pdfx/Sources/pdfx/messages/include/pdfx_messages/messages.h',
+  objcSourceOut: './darwin/pdfx/Sources/pdfx/messages/messages.m',
   javaOut: './android/src/main/java/dev/flutter/pigeon/Pigeon.java',
   javaOptions: JavaOptions(
     package: 'dev.flutter.pigeon',
@@ -97,7 +98,7 @@ class UnregisterTextureMessage {
   int? id;
 }
 
-/// Rebuild: `flutter pub run pigeon --input pigeons/message.dart`
+/// Rebuild: `dart run pigeon --input pigeons/message.dart`
 /// After build edit ios/Classes/pigeon/messages.m
 /// replace `#import <Flutter/Flutter.h>` to
 /// ````
