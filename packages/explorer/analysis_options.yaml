@@ -6,6 +6,7 @@ analyzer:
     - '**/*.g.dart'
     - '**/generated_plugin_registrant.dart'
     - '**/pigeon.dart'
+    - 'lib/src/i18n/messages/**'
     - build/**
     - android/**
     - ios/**

@@ -15,8 +15,8 @@ void main() async {
 class MyApp extends StatefulWidget {
   const MyApp({
     required this.appDocDir,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final Directory appDocDir;
 
