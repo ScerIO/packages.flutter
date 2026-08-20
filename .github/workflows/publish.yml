@@ -79,6 +79,7 @@ jobs:
     needs: detect
     if: needs.detect.outputs.has_packages == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       id-token: write
       contents: read
@@ -93,5 +94,5 @@ jobs:
           channel: stable
       - run: flutter pub get
         working-directory: packages/${{ matrix.package }}
-      - run: dart pub publish --force
+      - run: dart pub publish --force --verbose
         working-directory: packages/${{ matrix.package }}
