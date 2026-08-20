@@ -17,16 +17,14 @@ Downloaded by pub (not CocoaPods).
   s.source_files     = 'pdfx/Sources/**/*.{h,m,swift}'
   s.public_header_files = 'pdfx/Sources/**/include/**/*.h'
 
-  # Preserve the existing CocoaPods deployment targets while SwiftPM uses
-  # Flutter's current iOS and macOS minimums in Package.swift.
-  s.ios.deployment_target = '8.0'
-  s.osx.deployment_target = '10.11'
+  s.ios.deployment_target = '13.0'
+  s.osx.deployment_target = '10.15'
 
   s.ios.dependency 'Flutter'
   s.osx.dependency 'FlutterMacOS'
 
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
   # Flutter.framework does not contain an i386 slice.
-  s.ios.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
-  s.osx.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  s.ios.pod_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
   s.swift_version = '5.0'
 end

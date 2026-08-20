@@ -1,3 +1,7 @@
+## NEXT
+
+* Added Swift Package Manager support for iOS and macOS, consolidating the duplicated Apple implementation into shared Darwin sources while retaining CocoaPods compatibility [pull#623](https://github.com/ScerIO/packages.flutter/pull/623)
+
 ## 2.10.0
 
 * Supported AGP 9 built-in Kotlin [pull#624](https://github.com/ScerIO/packages.flutter/pull/624)
