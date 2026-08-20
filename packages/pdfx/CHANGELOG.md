@@ -7,6 +7,7 @@
 * Exposed `onInteractionStart`/`onInteractionUpdate`/`onInteractionEnd` on `PdfViewPinch` [pull#594](https://github.com/ScerIO/packages.flutter/pull/594)
 * Replaced deprecated `Matrix4.translate`/`Matrix4.scale` calls [pull#630](https://github.com/ScerIO/packages.flutter/pull/630)
 * Updated docs to use `dart run` instead of the deprecated `flutter pub run` [pull#597](https://github.com/ScerIO/packages.flutter/pull/597)
+* Web: moved the pdf.js presence check from plugin registration to document open, so apps that depend on pdfx without opening a PDF no longer fail to start when pdf.js is not in web/index.html [pull#633](https://github.com/ScerIO/packages.flutter/pull/633)
 
 ## 2.9.2
 
