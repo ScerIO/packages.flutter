@@ -8,8 +8,8 @@ class EpubViewTableOfContents extends StatelessWidget {
     this.padding,
     this.itemBuilder,
     this.loader,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final EdgeInsetsGeometry? padding;
   final EpubController controller;

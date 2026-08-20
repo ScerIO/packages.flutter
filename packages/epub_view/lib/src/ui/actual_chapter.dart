@@ -10,8 +10,8 @@ class EpubViewActualChapter extends StatelessWidget {
     required this.builder,
     this.loader,
     this.animationAlignment = Alignment.centerLeft,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final EpubController controller;
   final ChapterBuilder builder;
