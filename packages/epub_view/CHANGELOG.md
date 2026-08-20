@@ -1,4 +1,4 @@
-## NEXT
+## 3.3.0
 
 * Added support for opening books from a URL via `EpubDocument.openUrl` [pull#470](https://github.com/ScerIO/packages.flutter/pull/470)
 

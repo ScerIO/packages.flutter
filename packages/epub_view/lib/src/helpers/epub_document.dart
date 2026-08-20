@@ -32,6 +32,4 @@ class EpubDocument {
       throw Exception('Failed to load epub');
     }
   }
-
-
 }

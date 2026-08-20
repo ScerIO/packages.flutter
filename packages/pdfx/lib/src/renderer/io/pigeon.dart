@@ -418,97 +418,85 @@ class _PdfxApiCodec extends StandardMessageCodec {
     if (value is GetPageMessage) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is GetPageReply) {
+    } else if (value is GetPageReply) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is IdMessage) {
+    } else if (value is IdMessage) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is OpenDataMessage) {
+    } else if (value is OpenDataMessage) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is OpenPathMessage) {
+    } else if (value is OpenPathMessage) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is OpenReply) {
+    } else if (value is OpenReply) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is RegisterTextureReply) {
+    } else if (value is RegisterTextureReply) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is RenderPageMessage) {
+    } else if (value is RenderPageMessage) {
       buffer.putUint8(135);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is RenderPageReply) {
+    } else if (value is RenderPageReply) {
       buffer.putUint8(136);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is ResizeTextureMessage) {
+    } else if (value is ResizeTextureMessage) {
       buffer.putUint8(137);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is UnregisterTextureMessage) {
+    } else if (value is UnregisterTextureMessage) {
       buffer.putUint8(138);
       writeValue(buffer, value.encode());
-    } else 
-    if (value is UpdateTextureMessage) {
+    } else if (value is UpdateTextureMessage) {
       buffer.putUint8(139);
       writeValue(buffer, value.encode());
-    } else 
-{
+    } else {
       super.writeValue(buffer, value);
     }
   }
+
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128:       
+      case 128:
         return GetPageMessage.decode(readValue(buffer)!);
-      
-      case 129:       
+
+      case 129:
         return GetPageReply.decode(readValue(buffer)!);
-      
-      case 130:       
+
+      case 130:
         return IdMessage.decode(readValue(buffer)!);
-      
-      case 131:       
+
+      case 131:
         return OpenDataMessage.decode(readValue(buffer)!);
-      
-      case 132:       
+
+      case 132:
         return OpenPathMessage.decode(readValue(buffer)!);
-      
-      case 133:       
+
+      case 133:
         return OpenReply.decode(readValue(buffer)!);
-      
-      case 134:       
+
+      case 134:
         return RegisterTextureReply.decode(readValue(buffer)!);
-      
-      case 135:       
+
+      case 135:
         return RenderPageMessage.decode(readValue(buffer)!);
-      
-      case 136:       
+
+      case 136:
         return RenderPageReply.decode(readValue(buffer)!);
-      
-      case 137:       
+
+      case 137:
         return ResizeTextureMessage.decode(readValue(buffer)!);
-      
-      case 138:       
+
+      case 138:
         return UnregisterTextureMessage.decode(readValue(buffer)!);
-      
-      case 139:       
+
+      case 139:
         return UpdateTextureMessage.decode(readValue(buffer)!);
-      
-      default:      
+
+      default:
         return super.readValueOfType(type, buffer);
-      
     }
   }
 }
@@ -523,7 +511,8 @@ class PdfxApi {
   /// Constructor for [PdfxApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  PdfxApi({BinaryMessenger? binaryMessenger}) : _binaryMessenger = binaryMessenger;
+  PdfxApi({BinaryMessenger? binaryMessenger})
+      : _binaryMessenger = binaryMessenger;
 
   final BinaryMessenger? _binaryMessenger;
 
@@ -531,7 +520,8 @@ class PdfxApi {
 
   Future<OpenReply> openDocumentData(OpenDataMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.openDocumentData', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.openDocumentData', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -540,7 +530,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -558,7 +549,8 @@ class PdfxApi {
 
   Future<OpenReply> openDocumentFile(OpenPathMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.openDocumentFile', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.openDocumentFile', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -567,7 +559,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -585,7 +578,8 @@ class PdfxApi {
 
   Future<OpenReply> openDocumentAsset(OpenPathMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.openDocumentAsset', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.openDocumentAsset', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -594,7 +588,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -612,7 +607,8 @@ class PdfxApi {
 
   Future<void> closeDocument(IdMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.closeDocument', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.closeDocument', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -621,7 +617,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -634,7 +631,8 @@ class PdfxApi {
 
   Future<GetPageReply> getPage(GetPageMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.getPage', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.getPage', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -643,7 +641,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -661,7 +660,8 @@ class PdfxApi {
 
   Future<RenderPageReply> renderPage(RenderPageMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.renderPage', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.renderPage', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -670,7 +670,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -688,7 +689,8 @@ class PdfxApi {
 
   Future<void> closePage(IdMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.closePage', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.closePage', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -697,7 +699,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -710,7 +713,8 @@ class PdfxApi {
 
   Future<RegisterTextureReply> registerTexture() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.registerTexture', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.registerTexture', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(null) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -719,7 +723,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -737,7 +742,8 @@ class PdfxApi {
 
   Future<void> updateTexture(UpdateTextureMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.updateTexture', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.updateTexture', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -746,7 +752,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -759,7 +766,8 @@ class PdfxApi {
 
   Future<void> resizeTexture(ResizeTextureMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.resizeTexture', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.resizeTexture', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -768,7 +776,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,
@@ -781,7 +790,8 @@ class PdfxApi {
 
   Future<void> unregisterTexture(UnregisterTextureMessage arg_message) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.PdfxApi.unregisterTexture', codec, binaryMessenger: _binaryMessenger);
+        'dev.flutter.pigeon.PdfxApi.unregisterTexture', codec,
+        binaryMessenger: _binaryMessenger);
     final Map<Object?, Object?>? replyMap =
         await channel.send(<Object?>[arg_message]) as Map<Object?, Object?>?;
     if (replyMap == null) {
@@ -790,7 +800,8 @@ class PdfxApi {
         message: 'Unable to establish connection on channel.',
       );
     } else if (replyMap['error'] != null) {
-      final Map<Object?, Object?> error = (replyMap['error'] as Map<Object?, Object?>?)!;
+      final Map<Object?, Object?> error =
+          (replyMap['error'] as Map<Object?, Object?>?)!;
       throw PlatformException(
         code: (error['code'] as String?)!,
         message: error['message'] as String?,

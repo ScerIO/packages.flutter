@@ -1,4 +1,4 @@
-## NEXT
+## 2.10.0
 
 * Supported AGP 9 built-in Kotlin [pull#624](https://github.com/ScerIO/packages.flutter/pull/624)
 * Supported Windows ARM64 build [pull#620](https://github.com/ScerIO/packages.flutter/pull/620)

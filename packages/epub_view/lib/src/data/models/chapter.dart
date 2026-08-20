@@ -11,5 +11,5 @@ class EpubViewChapter {
 }
 
 class EpubViewSubChapter extends EpubViewChapter {
-  EpubViewSubChapter(String? title, int startIndex) : super(title, startIndex);
+  EpubViewSubChapter(super.title, super.startIndex);
 }
