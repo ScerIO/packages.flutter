@@ -213,7 +213,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.9.2"
+    version: "2.10.0"
   performance:
     dependency: "direct main"
     description:
