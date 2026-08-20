@@ -21,7 +21,7 @@ class MyApp extends StatefulWidget {
   final Directory appDocDir;
 
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
 
   void filePressed(ExplorerFile file) {
     if ((file.size ?? 0) > 200000) {
-      final snackBar =
+      const snackBar =
           SnackBar(content: Text('Can\'t open files with size > 200kb'));
 
       // Find the Scaffold in the widget tree and use it to show a SnackBar.
@@ -57,23 +57,23 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        localizationsDelegates: [
+        localizationsDelegates: const [
           ExplorerLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
-        supportedLocales: [
-          const Locale('en', ''),
-          const Locale('ru', ''),
-          const Locale('fr', ''),
+        supportedLocales: const [
+          Locale('en', ''),
+          Locale('ru', ''),
+          Locale('fr', ''),
         ],
         home: Scaffold(
           body: Explorer(
             controller: _controller,
             builder: (_) => [
-              ExplorerToolbar(),
-              ExplorerActionView(),
-              ExplorerFilesGridView(),
+              const ExplorerToolbar(),
+              const ExplorerActionView(),
+              const ExplorerFilesGridView(),
             ],
             filePressed: filePressed,
           ),
