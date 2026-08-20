@@ -1,4 +1,4 @@
-## NEXT
+## 2.1.1
 
 * Replaced deprecated `Color.red`/`green`/`blue`/`alpha`/`value` accessors with the float-based API [pull#629](https://github.com/ScerIO/packages.flutter/pull/629)
 
