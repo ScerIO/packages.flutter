@@ -133,9 +133,9 @@ extension type PdfjsViewportParams._(JSObject _) implements JSObject {
   external factory PdfjsViewportParams({
     double scale,
     int rotation, // 0, 90, 180, 270
-    double offsetX = 0,
-    double offsetY = 0,
-    bool dontFlip = false,
+    double offsetX,
+    double offsetY,
+    bool dontFlip,
   });
 
   external double get scale;
@@ -202,9 +202,9 @@ extension type PdfjsRenderContext._(JSObject _) implements JSObject {
   external factory PdfjsRenderContext({
     required web.CanvasRenderingContext2D canvasContext,
     required PdfjsViewport viewport,
-    String intent = 'display',
-    bool enableWebGL = false,
-    bool renderInteractiveForms = false,
+    String intent,
+    bool enableWebGL,
+    bool renderInteractiveForms,
     JSArray<JSNumber>? transform,
     JSAny imageLayer,
     JSAny canvasFactory,

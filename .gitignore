@@ -71,7 +71,7 @@ local.properties
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
 # Additional packages
-packages/**/pubspec.lock
+packages/*/pubspec.lock
 packages/**/build/
 generated_plugin_registrant.dart
 GeneratedPluginRegistrant.h

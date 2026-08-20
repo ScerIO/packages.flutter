@@ -21,8 +21,16 @@ rootProject.allprojects {
     }
 }
 
+// AGP 9 can run with or without built-in Kotlin, so inspect the consuming
+// app's explicit setting instead of inferring the mode from the AGP version.
+def builtInKotlinEnabled = (project.findProperty('android.builtInKotlin') ?: 'false')
+        .toString()
+        .toBoolean()
+
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
+if (!builtInKotlinEnabled) {
+    apply plugin: 'kotlin-android'
+}
 
 android {
     // Conditional for compatibility with AGP <4.2.
@@ -45,8 +53,10 @@ android {
         targetCompatibility JavaVersion.VERSION_11
     }
 
-    kotlinOptions {
-        jvmTarget = '11'
+    if (!builtInKotlinEnabled) {
+        kotlinOptions {
+            jvmTarget = '11'
+        }
     }
 }
 

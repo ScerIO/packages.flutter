@@ -22,12 +22,12 @@ flutter pub add pdfx
 
 For web run tool for automatically add pdfjs library (CDN) in index.html:
 ```shell
-flutter pub run pdfx:install_web
+dart run pdfx:install_web
 ```
 
 For windows run tool automatically add override for pdfium version property in CMakeLists.txt file:
 ```
-flutter pub run pdfx:install_windows
+dart run pdfx:install_windows
 ```
 
 ## Usage example
@@ -373,3 +373,4 @@ This plugin uses the iOS & MacOs native [CGPDFPage](https://developer.apple.com/
 
 ### On Windows
 This plugin uses [PDFium](https://pdfium.googlesource.com/pdfium/+/master/README.md)
+
