@@ -1,6 +1,8 @@
 ## NEXT
 
 * Added Swift Package Manager support for iOS and macOS, consolidating the duplicated Apple implementation into shared Darwin sources while retaining CocoaPods compatibility [pull#623](https://github.com/ScerIO/packages.flutter/pull/623)
+* Fixed a NaN/Infinity crash in `PdfViewPinch` document progress when the document exactly fits the viewport [pull#621](https://github.com/ScerIO/packages.flutter/pull/621)
+* Raised the minimum Flutter version to 3.29.0, since the current `onSurfaceAvailable`/`onSurfaceCleanup` `SurfaceProducer.Callback` overrides do not exist on older engines and failed to compile on Flutter 3.24-3.28 [issue#580](https://github.com/ScerIO/packages.flutter/issues/580)
 
 ## 2.10.0
 
