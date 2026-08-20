@@ -1,3 +1,7 @@
+## 2.3.1
+
+* Fixed `intl` constraint that could block `pub get` on newer Flutter SDKs [pull#627](https://github.com/ScerIO/packages.flutter/pull/627)
+
 ## 2.3.0
 
 * Upgrade dependencies
