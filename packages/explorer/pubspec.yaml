@@ -25,7 +25,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.2
+  flutter_lints: ">=2.0.2 <7.0.0"
 
 scripts:
   i18n_to_arb: dart run intl_translation:extract_to_arb --output-dir=locales lib/src/i18n/string_resources.dart
