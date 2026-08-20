@@ -1,4 +1,4 @@
-## NEXT
+## 2.11.0
 
 * Added Swift Package Manager support for iOS and macOS, consolidating the duplicated Apple implementation into shared Darwin sources while retaining CocoaPods compatibility [pull#623](https://github.com/ScerIO/packages.flutter/pull/623)
 * Fixed a NaN/Infinity crash in `PdfViewPinch` document progress when the document exactly fits the viewport [pull#621](https://github.com/ScerIO/packages.flutter/pull/621)
