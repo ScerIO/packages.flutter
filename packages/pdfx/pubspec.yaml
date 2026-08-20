@@ -37,8 +37,10 @@ flutter:
         pluginClass: PdfxPlugin
       ios:
         pluginClass: PdfxPlugin
+        sharedDarwinSource: true
       macos:
         pluginClass: PdfxPlugin
+        sharedDarwinSource: true
       windows:
         pluginClass: PdfxPlugin
       web:

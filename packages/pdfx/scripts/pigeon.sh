@@ -11,12 +11,7 @@ echo "$Green Success$Color_Off"
 echo "$BBlue Replace import in generated iOS pigeon file for support macOS$Color_Off"
 to="#if TARGET_OS_IOS\n#import <Flutter\/Flutter.h>\n#else\n#import <FlutterMacOS\/FlutterMacOS.h>\n#endif"
 from="#import <Flutter\/Flutter.h>"
-sed -i "" "s/$from/$to/g" "ios/Classes/messages.m"
-echo "$Green Success$Color_Off"
-
-
-echo "$BBlue Link macOS to iOS (universal) codebase$Color_Off"
-sh ./scripts/link_macos.sh
+sed -i "" "s/$from/$to/g" "darwin/pdfx/Sources/pdfx/messages/messages.m"
 echo "$Green Success$Color_Off"
 
 
