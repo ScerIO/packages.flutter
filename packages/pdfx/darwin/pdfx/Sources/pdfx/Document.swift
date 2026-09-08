@@ -76,22 +76,27 @@ class Page {
 
     func render(width: Int, height: Int, crop: CGRect?, compressFormat: CompressFormat, backgroundColor: String = "#ffffff", quality: Int) -> Page.DataResult? {
         let box = renderer.getBoxRect(.mediaBox)
-        let bitmapSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
-        let stride = Int(bitmapSize.width * 4)
-        var tempData = Data(repeating: 0, count: stride * Int(bitmapSize.height))
+        // `pageSize` is the raster the page is laid out on; `outputSize` is what we
+        // actually allocate. Without a crop they are the same. With one we allocate only
+        // the region and translate the page into place, instead of rasterizing the whole
+        // page and throwing most of it away.
+        let pageSize = isLandscape ? CGSize(width: height, height: width) : CGSize(width: width, height: height)
+        let outputSize = crop?.size ?? pageSize
+        let stride = Int(outputSize.width * 4)
+        var tempData = Data(repeating: 0, count: stride * Int(outputSize.height))
         var data: Data?
         var fileURL: URL?
         var success = false
-        var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: bitmapSize), rotate: 0, preserveAspectRatio: true)
+        var transform = renderer.getDrawingTransform(.mediaBox, rect: CGRect(origin: CGPoint.zero, size: pageSize), rotate: 0, preserveAspectRatio: true)
         let compressionQuality = CGFloat(quality) / 100
         tempData.withUnsafeMutableBytes { (ptr) in
             let rawPtr = ptr.baseAddress
             let rgb = CGColorSpaceCreateDeviceRGB()
-            let context = CGContext(data: rawPtr, width: Int(bitmapSize.width), height: Int(bitmapSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+            let context = CGContext(data: rawPtr, width: Int(outputSize.width), height: Int(outputSize.height), bitsPerComponent: 8, bytesPerRow: stride, space: rgb, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
             if context != nil {
                 // Credit: https://stackoverflow.com/a/35985236
                 // We change the context scale to fill completely the destination size (scale-down is handled by getDrawingTransform)
-                if box.width < bitmapSize.width {
+                if box.width < pageSize.width {
                     let sx = CGFloat(width) / box.width
                     let sy = CGFloat(height) / box.height
                     transform = transform.scaledBy(x: sx, y: sy)
@@ -101,11 +106,20 @@ class Page {
 
                     // Rotation handling
                     if rotationAngle == 180 || rotationAngle == 270 {
-                        transform.tx += bitmapSize.width
+                        transform.tx += pageSize.width
                     }
                     if rotationAngle == 90 || rotationAngle == 180 {
-                        transform.ty += bitmapSize.height
+                        transform.ty += pageSize.height
                     }
+                }
+                if let crop = crop {
+                    // `crop` arrives in image coordinates (origin top-left), while the
+                    // context draws bottom-up, hence the flipped y. Applied before the
+                    // page transform is concatenated so that it composes outside it.
+                    context!.translateBy(
+                        x: -crop.origin.x,
+                        y: -(pageSize.height - crop.origin.y - crop.size.height)
+                    )
                 }
                 context!.concatenate(transform)
                 #if os(iOS)
@@ -116,20 +130,10 @@ class Page {
                 context!.fill(box)
                 context!.drawPDFPage(renderer)
                 #if os(iOS)
-                var image = UIImage(cgImage: context!.makeImage()!)
+                let image = UIImage(cgImage: context!.makeImage()!)
                 #elseif os(macOS)
-                var image = NSBitmapImageRep(cgImage: context!.makeImage()!)
+                let image = NSBitmapImageRep(cgImage: context!.makeImage()!)
                 #endif
-
-                if (crop != nil) {
-                    // Perform cropping in Core Graphics
-                    let cutImageRef: CGImage = (image.cgImage?.cropping(to:crop!))!
-                    #if os(iOS)
-                    image = UIImage(cgImage: cutImageRef)
-                    #elseif os(macOS)
-                    image = NSBitmapImageRep(cgImage: cutImageRef)
-                    #endif
-                }
 
                 switch(compressFormat) {
                     case CompressFormat.JPEG:
