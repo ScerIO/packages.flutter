@@ -21,15 +21,24 @@ rootProject.allprojects {
     }
 }
 
-// AGP 9 can run with or without built-in Kotlin, so inspect the consuming
-// app's explicit setting instead of inferring the mode from the AGP version.
-def builtInKotlinEnabled = (project.findProperty('android.builtInKotlin') ?: 'false')
-        .toString()
-        .toBoolean()
+// AGP 9 compiles Kotlin itself (built-in Kotlin) and fails the build when a
+// library subproject applies the Kotlin Gradle Plugin (KGP). Built-in Kotlin is
+// on by default on AGP 9+ and can be opted out of with `android.builtInKotlin=false`
+// in the consuming app's gradle.properties; on AGP 8 the property has no effect.
+// An explicit `false` must be honoured, so the property is checked for presence
+// rather than truthiness (Groovy's `?:` would treat `false` as absent), and the
+// one resulting boolean drives plugin application and compiler configuration.
+// The pluginManager form keeps Flutter's static KGP detection (a text match on
+// `apply plugin: 'kotlin-android'`) from flagging this plugin. See
+// https://docs.flutter.dev/release/breaking-changes/migrate-to-built-in-kotlin/for-plugin-authors
+def agpMajor = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION.tokenize('.')[0] as int
+def builtInKotlinProperty = project.findProperty('android.builtInKotlin')
+def builtInKotlinEnabled = agpMajor >= 9 &&
+    (builtInKotlinProperty == null || builtInKotlinProperty.toString().toBoolean())
 
 apply plugin: 'com.android.library'
 if (!builtInKotlinEnabled) {
-    apply plugin: 'kotlin-android'
+    pluginManager.apply('kotlin-android')
 }
 
 android {
@@ -56,6 +65,14 @@ android {
     if (!builtInKotlinEnabled) {
         kotlinOptions {
             jvmTarget = '11'
+        }
+    }
+}
+
+if (builtInKotlinEnabled) {
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
         }
     }
 }
