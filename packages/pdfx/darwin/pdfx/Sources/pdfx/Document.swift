@@ -112,7 +112,16 @@ class Page {
                         transform.ty += pageSize.height
                     }
                 }
+                #if os(iOS)
+                context!.setFillColor(UIColor(hexString: backgroundColor).cgColor)
+                #elseif os(macOS)
+                context!.setFillColor(NSColor(hexString: backgroundColor).cgColor)
+                #endif
                 if let crop = crop {
+                    // A crop may reach outside the page, so paint the whole canvas like
+                    // Android and Windows do. Filled only once, so that a translucent
+                    // background isn't blended twice.
+                    context!.fill(CGRect(origin: CGPoint.zero, size: outputSize))
                     // `crop` arrives in image coordinates (origin top-left), while the
                     // context draws bottom-up, hence the flipped y. Applied before the
                     // page transform is concatenated so that it composes outside it.
@@ -122,12 +131,9 @@ class Page {
                     )
                 }
                 context!.concatenate(transform)
-                #if os(iOS)
-                context!.setFillColor(UIColor(hexString: backgroundColor).cgColor)
-                #elseif os(macOS)
-                context!.setFillColor(NSColor(hexString: backgroundColor).cgColor)
-                #endif
-                context!.fill(box)
+                if crop == nil {
+                    context!.fill(box)
+                }
                 context!.drawPDFPage(renderer)
                 #if os(iOS)
                 let image = UIImage(cgImage: context!.makeImage()!)

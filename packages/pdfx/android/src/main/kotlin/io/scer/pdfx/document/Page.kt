@@ -45,14 +45,9 @@ class Page(
             Bitmap.Config.ARGB_8888)
         bitmap.eraseColor(background)
 
-        // Render straight into a bitmap the size of the requested region instead of
-        // rasterizing the whole page and cropping afterwards: the transform scales the
-        // page onto a `width` x `height` raster and then shifts it so that the crop
-        // origin lands on (0, 0) of the destination bitmap. Output is identical, but
-        // peak memory follows the region rather than the full page, which matters when
-        // callers zoom in (a small region of a heavily scaled page is cheap, whereas
-        // the full page at the same scale can be hundreds of megabytes).
-        // This mirrors what the Windows backend already does in `Page::render`.
+        // Render straight into a bitmap the size of the requested region, so that peak
+        // memory follows the region rather than the full page. The transform scales the
+        // page onto a `width` x `height` raster and moves the crop origin to (0, 0).
         val transform = if (cropped) {
             Matrix().apply {
                 setValues(

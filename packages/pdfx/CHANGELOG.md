@@ -1,5 +1,6 @@
 ## NEXT
 
+* Fixed `cropRect` rendering on Android, which used the page width as the crop width, and made Android, iOS and macOS render only the requested region instead of allocating the full page [pull#649](https://github.com/ScerIO/packages.flutter/pull/649)
 * Fixed the Android build on AGP 9 when `android.builtInKotlin` is not set, and stopped Flutter from reporting pdfx as applying the Kotlin Gradle Plugin [pull#657](https://github.com/ScerIO/packages.flutter/pull/657)
 
 ## 2.11.0
