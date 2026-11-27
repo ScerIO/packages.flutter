@@ -66,7 +66,7 @@ abstract class PdfPage {
   Future<PdfPageImage?> render({
     required double width,
     required double height,
-    PdfPageImageFormat format = PdfPageImageFormat.jpeg,
+    PdfPageImageFormat format = PdfPageImageFormat.png,
     String? backgroundColor,
     Rect? cropRect,
     int quality = 100,

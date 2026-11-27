@@ -184,6 +184,37 @@ void main() {
       expect(pageImage.quality, 100);
     });
 
+    test('render default args', () async {
+      final width = page.width * 2, height = page.height * 2;
+      final pageImage = (await page.render(
+        width: width,
+        height: height,
+        removeTempFile: false,
+      ))!;
+
+      expect(log, <Matcher>[
+        isMethodCall(
+          'render',
+          arguments: {
+            'pageId': page.id,
+            'width': width,
+            'height': height,
+            'format': PdfPageImageFormat.png.value,
+            'backgroundColor': '#00FFFFFF',
+            'crop': false,
+            'crop_x': null,
+            'crop_y': null,
+            'crop_height': null,
+            'crop_width': null,
+            'quality': 100,
+            'forPrint': false,
+          },
+        ),
+      ]);
+
+      expect(pageImage.format, PdfPageImageFormat.png);
+    });
+
     test('close', () async {
       await page.close();
       expect(page.isClosed, isTrue);
