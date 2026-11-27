@@ -1,3 +1,7 @@
+## NEXT
+
+* Fixed the Android build on AGP 9 when `android.builtInKotlin` is not set, and stopped Flutter from reporting pdfx as applying the Kotlin Gradle Plugin [pull#657](https://github.com/ScerIO/packages.flutter/pull/657)
+
 ## 2.11.0
 
 * Added Swift Package Manager support for iOS and macOS, consolidating the duplicated Apple implementation into shared Darwin sources while retaining CocoaPods compatibility [pull#623](https://github.com/ScerIO/packages.flutter/pull/623)
