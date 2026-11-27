@@ -362,7 +362,13 @@ class _PdfViewPinchState extends State<PdfViewPinch>
   }
 
   void _needReLayout() {
-    Future.delayed(Duration.zero, () => setState(() {}));
+    Future.delayed(Duration.zero, () {
+      // The callback can land after this State was disposed (e.g. the viewer
+      // is unmounted in the same frame that scheduled the relayout).
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void _needPagePreviewGeneration() {
