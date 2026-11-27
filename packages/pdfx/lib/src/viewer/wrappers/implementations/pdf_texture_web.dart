@@ -2,7 +2,7 @@ import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'package:pdfx/src/renderer/rgba_data.dart';
 import 'package:pdfx/src/renderer/web/rgba_data.dart';
