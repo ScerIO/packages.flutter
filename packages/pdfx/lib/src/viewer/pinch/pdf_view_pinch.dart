@@ -258,15 +258,18 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         0.0, (maxWidth, page) => max(maxWidth, page.pageSize.width));
     final ratio = (viewSize.width - _padding * 2) / maxWidth;
     if (widget.scrollDirection == Axis.horizontal) {
+      final tallest = _pages.fold<double>(
+          0.0, (tallest, page) => max(tallest, page.pageSize.height * ratio));
+      final height = max(viewSize.height, tallest + _padding * 2);
       var left = _padding;
       for (int i = 0; i < _pages.length; i++) {
         final page = _pages[i];
         final w = page.pageSize.width * ratio;
         final h = page.pageSize.height * ratio;
-        page.rect = Rect.fromLTWH(left, _padding, w, h);
+        page.rect = Rect.fromLTWH(left, (height - h) / 2, w, h);
         left += w + _padding;
       }
-      _docSize = Size(left, viewSize.height);
+      _docSize = Size(max(left, viewSize.width), height);
     } else {
       var top = _padding;
       for (int i = 0; i < _pages.length; i++) {
@@ -276,7 +279,11 @@ class _PdfViewPinchState extends State<PdfViewPinch>
         page.rect = Rect.fromLTWH(_padding, top, w, h);
         top += h + _padding;
       }
-      _docSize = Size(viewSize.width, top);
+      final slack = max(0.0, viewSize.height - top) / 2;
+      for (final page in _pages) {
+        page.rect = page.rect!.translate(0, slack);
+      }
+      _docSize = Size(viewSize.width, max(top, viewSize.height));
     }
   }
 
